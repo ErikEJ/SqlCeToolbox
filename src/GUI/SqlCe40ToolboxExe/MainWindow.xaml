@@ -1,0 +1,16 @@
+﻿<Window x:Class="SqlCeToolbox.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:tab="http://fabtab.codeplex.com"
+        xmlns:tw="clr-namespace:ErikEJ.SqlCeToolbox.ToolWindows"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SQL Server Compact Toolbox" Height="600" Width="800" Loaded="Window_Loaded">
+    <Grid x:Name="MainGrid" Loaded="Window_Loaded">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="357" />
+            <ColumnDefinition Width="421*" />
+        </Grid.ColumnDefinitions>
+        
+        <tab:FabTabControl Name="fabTab" Grid.Column="1"></tab:FabTabControl>
+        <GridSplitter Width="5" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Left"></GridSplitter>
+    </Grid>
+</Window>

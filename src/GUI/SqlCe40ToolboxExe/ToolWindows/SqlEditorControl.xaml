@@ -1,0 +1,147 @@
+﻿<UserControl x:Class="ErikEJ.SqlCeToolbox.ToolWindows.SqlEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             Name="SqlEditorWindow" Loaded="SqlEditorWindow_Loaded">
+
+    <UserControl.Resources>
+        <Style x:Key="GridSplitterPreviewStyle">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Fill="#80000000"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="GridSplitterStyleSqlEditor" TargetType="{x:Type GridSplitter}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <Setter Property="PreviewStyle" Value="{StaticResource GridSplitterPreviewStyle}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridSplitter}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#FFF0F0F0"/>
+                                    <GradientStop Color="#FFC5C5C6" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <StackPanel Width="100" Margin="0,5,0,0">
+                                <Line Stroke="White" StrokeThickness="2" HorizontalAlignment="Center" Margin="0" X2="50" Y1="0" Y2="0" Height="2"/>
+                                <Line Stroke="#FFA0A0A0" StrokeThickness="2" HorizontalAlignment="Center" X2="50" Y1="0" Y2="0" Height="2"/>
+                                <Line Stroke="White" StrokeThickness="2" HorizontalAlignment="Center" Margin="0,2,0,0" X2="50" Y1="0" Y2="0" Height="2"/>
+                                <Line Stroke="#FFA0A0A0" StrokeThickness="2" HorizontalAlignment="Center" X2="50" Y1="0" Y2="0" Height="2"/>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Name="OpenButton" ToolTip="Open Existing Script" Click="OpenButton_Click" >
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="../Resources/OpenHS.png" />
+                        <TextBlock Margin="5,0,0,0">Open</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Name="SaveButton" Click="SaveButton_Click" >
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="../Resources/saveHS.png" />
+                        <TextBlock Margin="5,0,0,0">Save</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Separator></Separator>
+                <Button Name="ExecuteButton" ToolTip="Execute (Ctrl+E, Shift+Enter or F5)" Click="ExecuteButton_Click" >
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="../Resources/run.png" />
+                        <TextBlock Margin="5,0,0,0">Execute</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Name="ExecuteWithPlanButton" ToolTip="Execute statement(s) and display Actual Execution Plan" Click="ExecuteWithPlanButton_Click" >
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="../Resources/run.png" />
+                        <TextBlock Margin="5,0,0,0">Execute + Plan</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Name="ParseButton" ToolTip="Parse statement(s)" Click="ParseButton_Click">
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="../Resources/parse.png"></Image>
+                        <TextBlock Margin="5,0,0,0">Parse</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Name="EstimateButton" ToolTip="Display Estimated Execution Plan" Click="ShowPlanButton_Click">
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="../Resources/RelationshipsHS.png"></Image>
+                        <TextBlock Margin="5,0,0,0">Estimated Plan</TextBlock>
+                    </StackPanel>
+                </Button>
+                <Button Name="SearchButton" ToolTip="Search the text in the SQL editor" Click="SearchButton_Click" >
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="../Resources/search_glyph.png" Height="16" Width="16" />
+                        <TextBlock x:Name="txtSearch" Margin="5,0,0,0">Search</TextBlock>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+				<RowDefinition Height="22"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0"  Margin="0" CornerRadius="5" Grid.Column="1" Background="{StaticResource {x:Static SystemColors.WindowBrushKey}}">
+                <!--<TextBox x:Name="SqlTextBox" TextWrapping="Wrap" AcceptsReturn="True" 
+                          Background="Transparent" BorderBrush="Transparent" 
+                 FontFamily="Consolas" FontSize="14" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                         PreviewKeyDown="SqlTextBox_PreviewKeyDown" />-->
+                <avalonedit:TextEditor PreviewKeyDown="SqlTextBox_PreviewKeyDown" Margin="4" Name="SqlTextBox" FontFamily="Consolas" FontSize="14" ShowLineNumbers="False" />
+            </Border>
+            <GridSplitter ResizeDirection="Rows" Grid.Row="0" HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Bottom" Height="20" Style="{DynamicResource GridSplitterStyleSqlEditor}"/>
+            <Border Grid.Row="1"  Margin="0" CornerRadius="5" Grid.Column="1" Background="{StaticResource {x:Static SystemColors.WindowBrushKey}}" >
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
+                    <DockPanel Name="Resultspanel">
+                    </DockPanel>
+                </ScrollViewer>
+            </Border>
+            <StatusBar Grid.Row="2">
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <StatusBarItem>
+                    <TextBlock x:Name="txtTime">Duration: 00:00.000</TextBlock>
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="1">
+                    <TextBlock></TextBlock>
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="2">
+                    <TextBlock></TextBlock>
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="3">
+                    <TextBlock x:Name="txtVersion">4.0.0.0</TextBlock>
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
+    </DockPanel>
+</UserControl>

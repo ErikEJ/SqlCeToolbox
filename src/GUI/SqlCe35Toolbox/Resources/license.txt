@@ -1,0 +1,2 @@
+
+For license, see http://sqlcetoolbox.codeplex.com/license

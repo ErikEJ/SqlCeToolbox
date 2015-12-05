@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="ErikEJ.SqlCeToolbox.ToolWindows.ExtEditControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ExtendedGridControl="clr-namespace:ExtendedGrid.ExtendedGridControl;assembly=ExtendedGrid"
+             xmlns:ExtendedColumn="clr-namespace:ExtendedGrid.ExtendedColumn;assembly=ExtendedGrid"
+             xmlns:MyApp="clr-namespace:ErikEJ.SqlCeToolbox.ToolWindows"
+             mc:Ignorable="d" 
+             d:DesignHeight="309" d:DesignWidth="533"
+             x:Name="ExtEditWindow" Loaded="ExtEditWindow_Loaded" >
+
+    <Grid x:Name="masterGrid" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ExtendedGridControl:ExtendedDataGrid  x:Name="grid"  
+            RowHeaderWidth="0" 
+            ShowRowSummaries="False" 
+            VerticalAlignment="Top" 
+            ItemsSource="{Binding SourceTable}"  
+            AutoGenerateColumns="True" 
+            HideColumnChooser="False" 
+            SelectionMode="Extended" 
+            SelectionUnit="CellOrRowHeader" 
+            CanUserAddRows="False"
+            IsReadOnly="True"
+            RowBackground="White"
+            AlternatingRowBackground="White"
+            AutoGeneratingColumn="grid_AutoGeneratingColumn"
+            FontSize="14"
+            ClipboardCopyMode="IncludeHeader"
+            OnlyTwoWaySorting="True" 
+            SearchAutoFilterVisibility="Visible" 
+            AutoFilterFontSize="12"
+            CanUserReorderRows="True"
+
+            >
+            <ExtendedGridControl:ExtendedDataGrid.FooterDataTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Rows:" />
+                        <TextBlock Margin="3,0,0,0"  Text="{Binding ElementName=grid,Path=Items.Count}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ExtendedGridControl:ExtendedDataGrid.FooterDataTemplate>
+        </ExtendedGridControl:ExtendedDataGrid>
+    </Grid>
+</UserControl>

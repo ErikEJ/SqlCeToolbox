@@ -1,0 +1,13 @@
+﻿<Window x:Class="ErikEJ.SqlCeToolbox.Dialogs.ConnectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit.PropertyGrid;assembly=Xceed.Wpf.Toolkit"  
+        Title="Add SQL Compact Connection" Height="610" Width="288" Loaded="Window_Loaded">
+    <DockPanel VerticalAlignment="Stretch" >
+        <Button DockPanel.Dock="Top" x:Name="browse" Click="browse_Click">Browse...</Button>
+        <Button DockPanel.Dock="Top" x:Name="create" Click="create_Click"  >Create...</Button>
+        <Button DockPanel.Dock="Top" x:Name="btn" Click="btn_Click">Test  Connection</Button>
+        <Button DockPanel.Dock="Bottom" x:Name="close" Click="close_Click">Close</Button>
+        <extToolkit:PropertyGrid Name="Props"  DockPanel.Dock="Top" VerticalAlignment="Stretch" IsEnabled="True" TabIndex="0" DataContext="{Binding}"></extToolkit:PropertyGrid>
+    </DockPanel>
+</Window>

@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="ErikEJ.SqlCeToolbox.ToolWindows.ExplorerControl"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300"
+	  Loaded="MyToolWindow_Loaded">
+    <Grid x:Name="grid1" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28"  />
+            <RowDefinition  />
+        </Grid.RowDefinitions>
+        <ToolBarTray Background="White" x:Name="toolTray" >
+            <ToolBar Background="White" Name="explorerToolbar" ToolBarTray.IsLocked="True" ToolBar.OverflowMode="Never" Grid.Row="0">
+                <Button Name="Refresh" Click="ToolbarRefresh_Click" ToolTip="Refresh" Padding="0,0,0,0">
+                    <Image Name="imgRefresh" Height="20" Width="20" Stretch="None" Source="../Resources/refresh_16xLG.png" />
+                </Button>
+                <Separator x:Name="sep1" />
+                <Button Name="Options" Click="Options_Click" ToolTip="Options" Padding="0,0,0,0" >
+                    <Image Height="20" Width="20" Stretch="None" Source="../Resources/gear_16xLG.png"  />
+                </Button>
+                <Separator x:Name="sep2" />
+                <Button Name="About" Click="ToolbarAbout_Click" ToolTip="About" Padding="0,0,0,0" >
+                    <Image Height="20" Width="20" Stretch="None" Source="../Resources/StatusAnnotations_Help_and_inconclusive_16xLG_color.png" />
+                </Button>
+                <Separator x:Name="sep3" />
+                <Button Name="Feedback" Click="Feedback_Click" ToolTip="Feedback" Padding="0,0,0,0" >
+                    <Image Height="20" Width="20" Stretch="None" Source="../Resources/feedback.png" />
+                </Button>
+                <Button Name="Updated" Click="Update_Click" ToolTip="Update available!" Visibility="Collapsed" Padding="0,0,0,0" >
+                    <TextBlock Name="UpdatedText" FontWeight="DemiBold" Foreground="Red">Updated!</TextBlock>
+                </Button>
+                <Button Name="RuntimeMissing" Click="RuntimeMissing_Click" Padding="4,0,0,0" Visibility="Collapsed">
+                    <TextBlock x:Name="txtRuntime" FontWeight="DemiBold" Foreground="Yellow">SQLCE 4.0 &amp; 3.5 missing</TextBlock>
+                </Button>
+
+            </ToolBar>
+        </ToolBarTray>
+        <TreeView 
+            Grid.Row="1"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+            ScrollViewer.VerticalScrollBarVisibility="Auto" 
+            BorderBrush="Transparent" 
+            Name="TreeView1" 
+            SelectedItemChanged="TreeView1_SelectedItemChanged" 
+                    >
+            <TreeView.Resources>
+                <Style TargetType="TreeViewItem">
+                    <EventSetter Event="MouseRightButtonDown" Handler="TreeViewItem_MouseRightButtonDown">
+                    </EventSetter>
+                </Style>
+                <Style TargetType="{x:Type ScrollViewer}">
+                    <Setter Property="Template" Value="{DynamicResource AppleStyleScrollBarStyle}"/>
+                </Style>
+            </TreeView.Resources>
+            <TreeViewItem Name="ItemDatabases" >
+                <TreeViewItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="../Resources/Root.PNG" Height="16" Width="16"></Image>
+                        <TextBlock Name="txtConnections" Padding="3" Text="Data Connections"></TextBlock>
+                    </StackPanel>
+                </TreeViewItem.Header>
+            </TreeViewItem>
+            <StackPanel Visibility="Collapsed" Orientation="Horizontal">
+                <Image Source="../Resources/RSS.PNG" Height="16" Width="16"></Image>
+                <TextBlock x:Name="txtHelp" Padding="3" Text="Help, Tips and News"></TextBlock>
+            </StackPanel>
+            <StackPanel x:Name="InfoStack" Orientation="Vertical">
+            </StackPanel>
+        </TreeView>
+    </Grid>
+</UserControl>

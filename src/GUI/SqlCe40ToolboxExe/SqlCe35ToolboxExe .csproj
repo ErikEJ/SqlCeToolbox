@@ -1,0 +1,482 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{396DBEC5-DD7B-4220-8E32-F5699026E908}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ErikEJ.SqlCeToolbox</RootNamespace>
+    <AssemblyName>SqlCe35Toolbox</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;V35</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;V35</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\data_out.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EQATEC.Analytics.Monitor">
+      <HintPath>..\lib\EQATEC.Analytics.Monitor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FabTab">
+      <HintPath>..\lib\FabTab.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\lib\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ISqlCeScripting">
+      <HintPath>..\lib\ISqlCeScripting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Kent.Boogaart.HelperTrinity">
+      <HintPath>..\lib\Kent.Boogaart.HelperTrinity.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Kent.Boogaart.KBCsv">
+      <HintPath>..\lib\Kent.Boogaart.KBCsv.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.ConnectionUI, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.Data.ConnectionUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.ConnectionUI.Dialog, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.Data.ConnectionUI.Dialog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph">
+      <HintPath>..\lib\QuickGraph.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="QuickGraph.Data">
+      <HintPath>..\lib\QuickGraph.Data.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SqlCeScripting, Version=3.5.2.15, Culture=neutral, PublicKeyToken=3681435cabd17ad2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\SqlCeScripting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\lib\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Commands\ColumnMenuCommands.cs" />
+    <Compile Include="Commands\ColumnMenuCommandsHandler.cs" />
+    <Compile Include="Commands\SubscriptionsMenuCommands.cs" />
+    <Compile Include="Commands\SubscriptionsMenuCommandsHandler.cs" />
+    <Compile Include="ContextMenues\ColumnContextMenu.cs" />
+    <Compile Include="ContextMenues\SubscriptionsContextMenu.cs" />
+    <Compile Include="DbDoc\SqlCeDbDoc.cs" />
+    <Compile Include="Dialogs\Connection35Dialog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DataContextDialog.xaml.cs">
+      <DependentUpon>DataContextDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PasswordDialog.xaml.cs">
+      <DependentUpon>PasswordDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DescriptionDialog.xaml.cs">
+      <DependentUpon>DescriptionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ImportDialog.xaml.cs">
+      <DependentUpon>ImportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\OptionsDialog.xaml.cs">
+      <DependentUpon>OptionsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PickTablesDialog.xaml.cs">
+      <DependentUpon>PickTablesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\RenameDialog.xaml.cs">
+      <DependentUpon>RenameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TableBuilderDialog.xaml.cs">
+      <DependentUpon>TableBuilderDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\CheckListItem.cs" />
+    <Compile Include="Helpers\DatabaseTreeViewItem.cs" />
+    <Compile Include="Helpers\DescriptionHelper.cs" />
+    <Compile Include="Helpers\RepoHelper.cs" />
+    <Compile Include="Helpers\UserOptions.cs" />
+    <Compile Include="Properties\Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Resources1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\CompareDialog.xaml.cs">
+      <DependentUpon>CompareDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DataGridViewSearch.cs" />
+    <Compile Include="ToolWindows\ExplorerControl.xaml.cs">
+      <DependentUpon>ExplorerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\PanelQuickSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\PanelQuickSearch.designer.cs">
+      <DependentUpon>PanelQuickSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ReportGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ReportGrid.Designer.cs">
+      <DependentUpon>ReportGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ResultsetGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ResultsetGrid.designer.cs">
+      <DependentUpon>ResultsetGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SqlEditorControl.xaml.cs">
+      <DependentUpon>SqlEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SubscriptionControl.xaml.cs">
+      <DependentUpon>SubscriptionControl.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Dialogs\AboutDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\Connection35Dialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\DataContextDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PasswordDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DescriptionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DialogHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ImportDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\OptionsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PickTablesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\RenameDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\RoundedPasswordBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\RoundedTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\TableBuilderDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands\BaseCommandHandler.cs" />
+    <Compile Include="Commands\BaseCommandParameters.cs" />
+    <Compile Include="Commands\DatabaseMenuCommandParameters.cs" />
+    <Compile Include="Commands\DatabaseMenuCommands.cs" />
+    <Compile Include="Commands\DatabaseMenuCommandsHandler.cs" />
+    <Compile Include="Commands\DatabasesMenuCommandParameters.cs" />
+    <Compile Include="Commands\IndexMenuCommands.cs" />
+    <Compile Include="Commands\IndexMenuCommandsHandler.cs" />
+    <Compile Include="Commands\MenuCommandParameters.cs" />
+    <Compile Include="Commands\MenuCommands.cs" />
+    <Compile Include="Commands\TableMenuCommandsHandler.cs" />
+    <Compile Include="ContextMenues\DatabaseContextMenu.cs" />
+    <Compile Include="ContextMenues\DatabasesContextMenu.cs" />
+    <Compile Include="ContextMenues\IndexContextMenu.cs" />
+    <Compile Include="ContextMenues\TableContextMenu.cs" />
+    <Compile Include="ContextMenues\TablesContextMenu.cs" />
+    <Compile Include="Dialogs\AboutDialog.xaml.cs">
+      <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DialogHeader.xaml.cs">
+      <DependentUpon>DialogHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\RoundedPasswordBox.xaml.cs">
+      <DependentUpon>RoundedPasswordBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\RoundedTextBox.xaml.cs">
+      <DependentUpon>RoundedTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\DataConnectionHelper.cs" />
+    <Compile Include="Helpers\TreeViewHelper.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="ToolWindows\CompareDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\ExplorerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\SqlEditorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\SubscriptionControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\PanelQuickSearch.resx">
+      <DependentUpon>PanelQuickSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\ReportGrid.resx">
+      <DependentUpon>ReportGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\ResultsetGrid.resx">
+      <DependentUpon>ResultsetGrid.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <AppDesigner Include="Properties\" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+    </None>
+    <Resource Include="Resources\SqlCeSyntax.xshd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\column.png" />
+    <Resource Include="Resources\database.png" />
+    <Resource Include="Resources\databases.png" />
+    <Resource Include="Resources\data_out.ico" />
+    <Resource Include="Resources\data_out.png" />
+    <Resource Include="Resources\debug_play.png" />
+    <Resource Include="Resources\delete.png" />
+    <Resource Include="Resources\error.png" />
+    <Resource Include="Resources\fk.png" />
+    <Resource Include="Resources\folder.png" />
+    <Resource Include="Resources\format.png" />
+    <Resource Include="Resources\help_about.png" />
+    <Resource Include="Resources\Images_24bit.bmp" />
+    <Resource Include="Resources\Images_32bit.bmp" />
+    <Resource Include="Resources\index.png" />
+    <Resource Include="Resources\key.png" />
+    <Resource Include="Resources\license.txt" />
+    <Resource Include="Resources\openHS.png" />
+    <Resource Include="Resources\parse.png" />
+    <Resource Include="Resources\propes.PNG" />
+    <Resource Include="Resources\refresh.png" />
+    <Resource Include="Resources\RelationshipsHS.png" />
+    <Resource Include="Resources\run.png" />
+    <Resource Include="Resources\show_table_data.png" />
+    <Resource Include="Resources\sp.png" />
+    <Resource Include="Resources\sqlEditor.png" />
+    <Resource Include="Resources\subs.png" />
+    <Resource Include="Resources\table.png" />
+    <Resource Include="Resources\toolbox2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\AddTableHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ZoomHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\lib\FabTab.dll">
+      <Link>FabTab.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\lib\ISqlCeScripting.dll">
+      <Link>ISqlCeScripting.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\lib\Kent.Boogaart.HelperTrinity.dll">
+      <Link>Kent.Boogaart.HelperTrinity.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\lib\Kent.Boogaart.KBCsv.dll">
+      <Link>Kent.Boogaart.KBCsv.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\lib\Microsoft.Data.ConnectionUI.Dialog.dll">
+      <Link>Microsoft.Data.ConnectionUI.Dialog.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\lib\Microsoft.Data.ConnectionUI.dll">
+      <Link>Microsoft.Data.ConnectionUI.dll</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Save.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\saveHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SplitSubdocumentHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\search_glyph.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Templates\Html.xslt" />
+    <Resource Include="Resources\Templates\WikiPlex.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\lib\QuickGraph.Data.dll">
+      <Link>QuickGraph.Data.dll</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\lib\QuickGraph.dll">
+      <Link>QuickGraph.dll</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\lib\SqlCeScripting.dll">
+      <Link>SqlCeScripting.dll</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\lib\ICSharpCode.AvalonEdit.dll">
+      <Link>ICSharpCode.AvalonEdit.dll</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\phone.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Templates\report.xsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
+      <Project>{C6031278-5612-429F-A485-5169392DB51C}</Project>
+      <Name>SqlCeToolbox.Common</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\lib\SqlCeToolbox.Common.dll">
+      <Link>SqlCeToolbox.Common.dll</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\lib\EQATEC.Analytics.Monitor.dll">
+      <Link>EQATEC.Analytics.Monitor.dll</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Xceed.Wpf.Toolkit.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

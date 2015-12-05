@@ -1,0 +1,30 @@
+﻿<Window x:Class="ErikEJ.SqlCeToolbox.Dialogs.DataContextDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Create LINQ to SQL DataContext class" 
+        ShowInTaskbar="False" Height="496" Width="418" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="63*" />
+            <RowDefinition Height="63*" />
+            <RowDefinition Height="63*" />
+            <RowDefinition Height="35*" />
+            <RowDefinition Height="35*" />
+            <RowDefinition Height="35*" />
+            <RowDefinition Height="35*" />
+            <RowDefinition Height="47*" />
+            <RowDefinition Height="35*" />
+        </Grid.RowDefinitions>
+        <Label Content="Context name" HorizontalAlignment="Left" Margin="12,0,0,0" Name="label1" Width="112" Height="28" VerticalAlignment="Top" />
+        <TextBox Height="23" Margin="13,47,0,0" Name="textBox1" VerticalAlignment="Top" TabIndex="1" HorizontalAlignment="Left" Width="371" />
+        <CheckBox Content="Pluralize or singularize class and member names"  Grid.Row="3" Height="23" HorizontalAlignment="Left" Margin="13,9,0,0" Name="chkPlural" VerticalAlignment="Top" TabIndex="4" Width="328" />
+        <CheckBox Content="Add Schema Version table to database" ToolTip="For use with the DbSchemaUpdater class on the device" Grid.Row="6" Height="23" HorizontalAlignment="Left" Margin="40,0,0,0" Name="chkAddVersion" VerticalAlignment="Top" TabIndex="6" Width="290" />
+        <Button Content="OK" IsDefault="True" Grid.Row="8" Height="23" Margin="0,0,94,12" Name="button1" VerticalAlignment="Bottom" TabIndex="9" Click="button1_Click" HorizontalAlignment="Right" Width="75" />
+        <Button Content="Cancel" IsCancel="True" Grid.Row="8" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="button2" VerticalAlignment="Bottom" Width="75" TabIndex="10" SnapsToDevicePixels="False" Click="button2_Click" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="13,25,0,0" Name="txtNameSpace" TabIndex="2" VerticalAlignment="Top" Width="371" Grid.Row="1" />
+        <Label Content="Namespace (optional)" HorizontalAlignment="Left" Margin="12,0,0,0" Name="label2" Width="150" Grid.Row="1" Height="28" VerticalAlignment="Top" />
+        <ComboBox Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="13,26,0,0" Name="cmbLanguage" VerticalAlignment="Top" Width="150" ItemsSource="{Binding}" IsEditable="False" SelectionChanged="cmbLanguage_SelectionChanged" TabIndex="3" />
+        <Label Content="Language" Grid.Row="2" Height="28" HorizontalAlignment="Left" Margin="12,0,0,0" Name="label3" VerticalAlignment="Top" Width="197" />
+        <Label Name="lblAdv" Content="Advanced options:" Grid.Row="5" Height="26" HorizontalAlignment="Left" Margin="12,1,0,0"  VerticalAlignment="Top" Width="224" Grid.RowSpan="2" />
+        <CheckBox Content="Add rowversion column to all tables" ToolTip="To improve UPDATE performance" Height="23" HorizontalAlignment="Left" Margin="40,25,0,0" Name="chkAddRowVersion" TabIndex="7" VerticalAlignment="Top" Width="290" Grid.Row="6" Grid.RowSpan="2" />
+    </Grid>
+</Window>

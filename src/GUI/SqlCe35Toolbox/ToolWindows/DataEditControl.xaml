@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="ErikEJ.SqlCeToolbox.ToolWindows.DataEditControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:MyApp="clr-namespace:ErikEJ.SqlCeToolbox.ToolWindows"
+             mc:Ignorable="d" 
+             d:DesignHeight="309" d:DesignWidth="533"
+             Name="DataEditWindow" >
+
+    <DockPanel>
+        <WindowsFormsHost x:Name="winFormHost" >
+        </WindowsFormsHost>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox", "SqlCe35Toolbox\SqlCeToolbox.csproj", "{A633A9DF-98DB-42A5-91E4-853258C47854}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB948C59-C1E1-4CE3-8EC0-B88949C79A56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox.Common", "SqlCeToolbox.Common\SqlCeToolbox.Common.csproj", "{C6031278-5612-429F-A485-5169392DB51C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox.DDEX4", "SqlCeToolbox.DDEX4\SqlCeToolbox.DDEX4.csproj", "{42939E33-FC72-459C-9403-B62AB074635E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox.DDEX35", "SqlCeToolbox.DDEX35\SqlCeToolbox.DDEX35.csproj", "{3D2F4C65-6423-450C-8398-A00B9AF50ED6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A633A9DF-98DB-42A5-91E4-853258C47854}.Debug|x86.ActiveCfg = Debug|x86
+		{A633A9DF-98DB-42A5-91E4-853258C47854}.Debug|x86.Build.0 = Debug|x86
+		{A633A9DF-98DB-42A5-91E4-853258C47854}.Release|x86.ActiveCfg = Release|x86
+		{A633A9DF-98DB-42A5-91E4-853258C47854}.Release|x86.Build.0 = Release|x86
+		{C6031278-5612-429F-A485-5169392DB51C}.Debug|x86.ActiveCfg = Debug|x86
+		{C6031278-5612-429F-A485-5169392DB51C}.Debug|x86.Build.0 = Debug|x86
+		{C6031278-5612-429F-A485-5169392DB51C}.Release|x86.ActiveCfg = Release|x86
+		{C6031278-5612-429F-A485-5169392DB51C}.Release|x86.Build.0 = Release|x86
+		{42939E33-FC72-459C-9403-B62AB074635E}.Debug|x86.ActiveCfg = Debug|x86
+		{42939E33-FC72-459C-9403-B62AB074635E}.Debug|x86.Build.0 = Debug|x86
+		{42939E33-FC72-459C-9403-B62AB074635E}.Release|x86.ActiveCfg = Release|x86
+		{42939E33-FC72-459C-9403-B62AB074635E}.Release|x86.Build.0 = Release|x86
+		{3D2F4C65-6423-450C-8398-A00B9AF50ED6}.Debug|x86.ActiveCfg = Debug|x86
+		{3D2F4C65-6423-450C-8398-A00B9AF50ED6}.Debug|x86.Build.0 = Debug|x86
+		{3D2F4C65-6423-450C-8398-A00B9AF50ED6}.Release|x86.ActiveCfg = Release|x86
+		{3D2F4C65-6423-450C-8398-A00B9AF50ED6}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs07
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = SqlCe35Toolbox\\SqlCeToolbox.csproj
+		SccProjectName1 = SqlCe35Toolbox
+		SccLocalPath1 = SqlCe35Toolbox
+		SccProjectUniqueName2 = SqlCeToolbox.Common\\SqlCeToolbox.Common.csproj
+		SccProjectName2 = SqlCeToolbox.Common
+		SccLocalPath2 = SqlCeToolbox.Common
+		SccProjectUniqueName3 = SqlCeToolbox.DDEX4\\SqlCeToolbox.DDEX4.csproj
+		SccProjectName3 = SqlCeToolbox.DDEX4
+		SccLocalPath3 = SqlCeToolbox.DDEX4
+		SccProjectUniqueName4 = SqlCeToolbox.DDEX35\\SqlCeToolbox.DDEX35.csproj
+		SccProjectName4 = SqlCeToolbox.DDEX35
+		SccLocalPath4 = SqlCeToolbox.DDEX35
+	EndGlobalSection
+EndGlobal
