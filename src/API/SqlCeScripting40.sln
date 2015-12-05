@@ -12,25 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeScripting", "SqlCeScripting.csproj", "{09B046AF-A861-4D57-B8B4-40D9371EADB6}"
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs02
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = SqlCeScripting40\\SqlCeScripting40.csproj
-		SccProjectName1 = SqlCeScripting40
-		SccLocalPath1 = SqlCeScripting40
-		SccProjectUniqueName2 = ISqlCeScripting.csproj
-		SccLocalPath2 = .
-		SccProjectUniqueName3 = SQLiteScripting\\SQLiteScripting.csproj
-		SccProjectName3 = SQLiteScripting
-		SccLocalPath3 = SQLiteScripting
-		SccProjectUniqueName4 = SqlCeScripting40\\Tests\\Tests.csproj
-		SccProjectName4 = SqlCeScripting40/Tests
-		SccLocalPath4 = SqlCeScripting40\\Tests
-		SccProjectUniqueName5 = SqlCeScripting.csproj
-		SccLocalPath5 = .
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
