@@ -1,5 +1,12 @@
 # SqlCeToolbox
-SQL Server Compact Toolbox extension for Visual Studio and associated API and command line tools.
+SQL Server Compact & SQLite Toolbox is a Visual Studio add-in and standalone app , for managing all aspects of your SQL Server Compact/SQLite database files.
+
+This repository also contains the ExportSqlCe command line tools and scripting API
+
+Download the latest version of the Visual Studio add-in (for both 3.5, 4.0 and SQLite) from  [Visual Studio Gallery]
+(https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/)
+
+Follow me on Twitter: [@ErikEJ](http://twitter.com/ErikEJ)
 
 In order to open, you can use Visual Studio 2015
 
