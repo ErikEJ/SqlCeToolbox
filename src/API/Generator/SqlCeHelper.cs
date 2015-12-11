@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Data.SqlServerCe;
 using System.Data.SqlClient;
 
@@ -88,14 +89,23 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        public void ChangeDatabasePassword(string connectionString, string password)
+        public string ChangeDatabasePassword(string connectionString, string password)
         {
-            if (string.IsNullOrEmpty(password))
-                throw new NullReferenceException("Password missing");
+            if (password == null)
+            {
+                password = string.Empty;
+            }
             using (SqlCeEngine engine = new SqlCeEngine(connectionString))
             {
                 engine.Compact(string.Format("Data Source=;Password={0}", password));
-            }            
+            }
+#if V40
+            var builder = new SqlCeConnectionStringBuilder(connectionString);
+            builder.Password = password;
+            return builder.ConnectionString;
+#else
+            return string.Empty;
+#endif
         }
 
         public void SaveDataConnection(string repositoryConnectionString, string connectionString, string filePath, int dbType)
@@ -305,3 +315,4 @@ namespace ErikEJ.SqlCeScripting
 
     }
 }
+

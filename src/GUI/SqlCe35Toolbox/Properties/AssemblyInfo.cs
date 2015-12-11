@@ -18,6 +18,6 @@ using System.Windows;
     // app, or any theme specific resource dictionaries)
 )]
 
-[assembly: AssemblyVersion("4.4.0.9")]
-[assembly: AssemblyFileVersion("4.4.0.9")]
+[assembly: AssemblyVersion("4.4.0.10")]
+[assembly: AssemblyFileVersion("4.4.0.10")]
 
