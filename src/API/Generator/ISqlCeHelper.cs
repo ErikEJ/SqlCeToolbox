@@ -20,7 +20,7 @@ namespace ErikEJ.SqlCeScripting
         void CompactDatabase(string connectionString);
         void CreateDatabase(string connectionString);
         void VerifyDatabase(string connectionString);
-        void ChangeDatabasePassword(string connectionString, string password);
+        string ChangeDatabasePassword(string connectionString, string password);
         void RepairDatabaseRecoverAllPossibleRows(string connectionString);
         void RepairDatabaseRecoverAllOrFail(string connectionString);
         void RepairDatabaseDeleteCorruptedRows(string connectionString);

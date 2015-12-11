@@ -120,7 +120,7 @@ namespace ErikEJ.SQLiteScripting
             throw new NotImplementedException();
         }
 
-        public void ChangeDatabasePassword(string connectionString, string password)
+        public string ChangeDatabasePassword(string connectionString, string password)
         {
             throw new NotImplementedException();
         }

@@ -114,28 +114,27 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 var dbInfo = databaseInfo.DatabaseInfo;
-                PasswordDialog pwd = new PasswordDialog();
+                var pwd = new PasswordDialog();
                 pwd.ShowModal();
-                if (pwd.DialogResult.HasValue && pwd.DialogResult.Value == true && !string.IsNullOrWhiteSpace(pwd.Password))
+                if (pwd.DialogResult.HasValue && pwd.DialogResult.Value)
                 {
-                    ISqlCeHelper helper = Helpers.DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
-                    helper.ChangeDatabasePassword(databaseInfo.DatabaseInfo.ConnectionString, pwd.Password);
+                    var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                    var newConnectionString = helper.ChangeDatabasePassword(databaseInfo.DatabaseInfo.ConnectionString, pwd.Password);
                     if (dbInfo.FromServerExplorer)
                     {
                         var providerId = Resources.SqlCompact35Provider;
                         if (dbInfo.DatabaseType == DatabaseType.SQLCE40)
                             providerId = Resources.SqlCompact40Provider;
-                        Helpers.DataConnectionHelper.RemoveDataConnection(package, dbInfo.ConnectionString, new Guid(providerId));
+                        DataConnectionHelper.RemoveDataConnection(package, dbInfo.ConnectionString, new Guid(providerId));
                     }
                     else
                     {
-                        Helpers.DataConnectionHelper.RemoveDataConnection(databaseInfo.DatabaseInfo.ConnectionString);
+                        DataConnectionHelper.RemoveDataConnection(databaseInfo.DatabaseInfo.ConnectionString);
                     }
 
-                    if (!dbInfo.ConnectionString.ToLowerInvariant().Contains("password"))
+                    if (!string.IsNullOrEmpty(newConnectionString))
                     {
-                        dbInfo.ConnectionString = dbInfo.ConnectionString + ";Password=" + pwd.Password;
-                        Helpers.DataConnectionHelper.SaveDataConnection(dbInfo.ConnectionString, dbInfo.DatabaseType, package);
+                        DataConnectionHelper.SaveDataConnection(newConnectionString, dbInfo.DatabaseType, package);
                         EnvDTEHelper.ShowMessage("Password was set, and connection updated");
                     }
                     else
@@ -143,14 +142,14 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         EnvDTEHelper.ShowMessage("Password was set, but could not update connection, please reconnect the database");
                     }
 
-                    ExplorerControl control = _parentWindow.Content as ExplorerControl;
-                    control.BuildDatabaseTree();
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseMaintainSetPassword");                    
+                    var control = _parentWindow.Content as ExplorerControl;
+                    if (control != null) control.BuildDatabaseTree();
+                    DataConnectionHelper.LogUsage("DatabaseMaintainSetPassword");                    
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 

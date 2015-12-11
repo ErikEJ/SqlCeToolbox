@@ -10,7 +10,5 @@ devenv ExportSQLCE40.sln /rebuild "Release"
 
 devenv SqlCeScripting40.sln /rebuild "Release"
 
-rem devenv SqlCeScripter.sln /rebuild "Release"
-
 pause
 
