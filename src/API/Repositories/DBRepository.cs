@@ -206,6 +206,7 @@ namespace ErikEJ.SqlCeScripting
             { 
                 System.IO.FileInfo fi = new System.IO.FileInfo(cn.Database);
                 valueList.Add(new KeyValuePair<string, string>("DatabaseSize",  RepositoryHelper.GetSizeReadable(fi.Length)));
+                valueList.Add(new KeyValuePair<string, string>("SpaceAvailable", RepositoryHelper.GetSizeReadable(4294967296 - fi.Length)));
                 valueList.Add(new KeyValuePair<string, string>("Created", fi.CreationTime.ToShortDateString() + " " + fi.CreationTime.ToShortTimeString()));
             }
             return valueList;
