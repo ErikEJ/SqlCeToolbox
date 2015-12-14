@@ -132,7 +132,8 @@ namespace ErikEJ.SqlCeToolbox
                 col.AutoIncrementBy = item.Identity ? 1 : 0;
                 col.AutoIncrementSeed = item.Identity ? 1 : 0;
                 col.CharacterMaxLength = item.Length;
-                col.ColumnHasDefault = !string.IsNullOrEmpty(item.DefaultValue);
+                col.ColumnHasDefault = item.DefaultValue != null && !item.Identity;
+                col.ColumnDefault = item.DefaultValue;
                 col.ColumnName = item.Name;
                 col.DataType = item.DataType;
                 col.DateFormat = DateFormat.DateTime;

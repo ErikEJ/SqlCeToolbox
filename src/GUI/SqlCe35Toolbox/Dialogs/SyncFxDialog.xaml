@@ -21,7 +21,7 @@
                     </ListView.ItemTemplate>
                 </ListView>-->
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="12,4">Scope Name</TextBlock>
+                    <TextBlock Margin="12,4" Width="96">Scope Name</TextBlock>
                     <TextBox Name="txtModel" Margin="12,4" Width="290"></TextBox>
                 </StackPanel>
                 <CheckBox x:Name="chkAdvanced" Content="Advanced" Margin="12,12" Visibility="Collapsed"></CheckBox>

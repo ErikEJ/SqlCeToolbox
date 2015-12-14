@@ -21,7 +21,7 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-        <Grid Height="800" Width="640">
+    <Grid Height="800" Width="640">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -43,9 +43,9 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="146" />
         </Grid.ColumnDefinitions>
-        <Label Content="Internet URL *" Height="28" HorizontalAlignment="Left" Margin="12,10,0,0" Name="label1" VerticalAlignment="Top" />
+        <Label Content="Internet URL *" Height="28" HorizontalAlignment="Left" Margin="12,10,0,0" Name="label1" VerticalAlignment="Top" Width="110" />
         <TextBox Style="{StaticResource requiredFieldValidationStyle}" Height="26" Margin="7,10,0,0" Name="txtUrl" VerticalAlignment="Top" Grid.Column="1" TabIndex="1" ToolTip="The URL used to connect to the SQL Server Compact 3.5 Server Agent. http://&lt;hostname&gt;/&lt;virtualdir&gt;/sqlcesa35.dll" />
-        <Label Content="Publisher *" Height="28" HorizontalAlignment="Left" Margin="12,11,0,0" Name="label2" VerticalAlignment="Top" Grid.Row="1" />
+        <Label Content="Publisher *" Height="28" HorizontalAlignment="Left" Margin="12,10.6,0,0" Name="label2" VerticalAlignment="Top" Grid.Row="1" Width="110" />
         <TextBox Style="{StaticResource requiredFieldValidationStyle}" Height="26" Margin="7,10,0,0" Name="txtPublisher" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" TabIndex="2" ToolTip="The Publisher is the computer that is running SQL Server and that contains the publication."/>
         <StackPanel Grid.Column="2" Margin="0,4,0,0" Grid.RowSpan="8" >
             <Button Content="Sync" Height="Auto" HorizontalAlignment="Stretch" Margin="6" Name="btnSync" VerticalAlignment="Stretch" Width="Auto" Padding="7,3" TabIndex="12" Click="btnSync_Click" ToolTip="Invokes merge replication between the SQL Server Compact 3.5 subscription and the SQL Server Publisher."/>
@@ -53,29 +53,29 @@
             <Button Content="Reinitialize no upload" x:Name="btnReinitNoUpload" Click="btnReinitNoUpload_Click" Grid.Column="1" Height="Auto" HorizontalAlignment="Stretch" Margin="6"  VerticalAlignment="Stretch" Width="Auto" Padding="7,3" TabIndex="14" ToolTip="Reinitialize the subscription, do not upload subscriber changes first." />
             <Button Content="Code sample" Height="Auto" HorizontalAlignment="Stretch" Margin="6" Name="btnSample" VerticalAlignment="Stretch" Width="Auto" Padding="7,3" TabIndex="15" ToolTip="Creates C# / VB.NET sample code for the current subscription." Click="btnSample_Click" />
             <Label Content="Last sync: N/A" Name="lblLastSync" Margin="4,4"  />
-        </StackPanel>        
+        </StackPanel>
 
         <Label Content="Publication Database *" Grid.Row="3" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label3" VerticalAlignment="Top" />
         <TextBox Style="{StaticResource requiredFieldValidationStyle}" Height="26" Margin="7,10,0,0" Name="txtPublisherDatabase" VerticalAlignment="Top" Grid.Column="1" Grid.Row="3" TabIndex="3" ToolTip="The name of the publication database." />
-        <Label Content="Publication *" Grid.Row="4" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label4" VerticalAlignment="Top" ClipToBounds="False" />
-        <Label Content="Subscriber *" Grid.Row="6" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label5" VerticalAlignment="Top" Grid.RowSpan="2" ClipToBounds="False" />
-        <Label Content="Internet Username" Grid.Row="8" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label6" VerticalAlignment="Top" />
+        <Label Content="Publication *" Grid.Row="4" Height="28" HorizontalAlignment="Left" Margin="12,8.4,0,0" Name="label4" VerticalAlignment="Top" ClipToBounds="False" Width="110" />
+        <Label Content="Subscriber *" Grid.Row="6" Height="28" HorizontalAlignment="Left" Margin="12,8.4,0,0" Name="label5" VerticalAlignment="Top" Grid.RowSpan="2" ClipToBounds="False" Width="118" />
+        <Label Content="Internet Username" Grid.Row="8" Height="28" HorizontalAlignment="Left" Margin="12,8.4,0,0" Name="label6" VerticalAlignment="Top" Grid.RowSpan="2" Width="118" />
         <TextBox Style="{StaticResource requiredFieldValidationStyle}" Height="26" Margin="7,10,0,0" Name="txtSubscriber" VerticalAlignment="Top" Grid.Column="1" Grid.Row="6" TabIndex="5" ToolTip="The name of the Subscriber." />
         <TextBox Style="{StaticResource requiredFieldValidationStyle}"  Height="26" Margin="7,10,0,0" Name="txtPublication" VerticalAlignment="Top" Grid.Column="1" Grid.Row="4" TabIndex="4" ToolTip="The SQL Server publication name that has been enabled for SQL Server Compact 3.5 subscribers."/>
         <TextBox Height="26" Margin="7,10,0,0" Name="txtInternetUsername" VerticalAlignment="Top" Grid.Column="1" Grid.Row="8" TabIndex="7" ToolTip="The login name used when connecting to the SQL Server Compact 3.5 Server Agent." />
-        <Label Content="Filter (HostName)" Grid.Row="7" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label8" VerticalAlignment="Top" />
+        <Label Content="Filter (HostName)" Grid.Row="7" Height="28" HorizontalAlignment="Left" Margin="12,8.4,0,0" Name="label8" VerticalAlignment="Top" Grid.RowSpan="2" Width="118" />
         <TextBox Height="26" Margin="7,10,0,0" Name="txtHostname" VerticalAlignment="Top" Grid.Column="1" Grid.Row="7" TabIndex="6" ToolTip="The host name (filter) used when connecting to the Publisher."/>
         <Label Content="Internet Password" Grid.Row="9" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label9" VerticalAlignment="Top" Width="129" />
         <Label Content="Publisher Username" Grid.Row="11" Height="26" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label10" VerticalAlignment="Top" Width="129" ClipToBounds="False" />
-        <Label Content="Publisher Password" Grid.Row="12" Height="28" HorizontalAlignment="Left" Margin="12,8,0,0" Name="label11" VerticalAlignment="Top" />
+        <Label Content="Publisher Password" Grid.Row="12" Height="28" HorizontalAlignment="Left" Margin="12,8.2,0,0" Name="label11" VerticalAlignment="Top" Grid.RowSpan="2" Width="118" />
         <PasswordBox PasswordChar="*" Height="26" Margin="7,10,0,0" Name="txtInternetPassword" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="9" TabIndex="8" ToolTip="The password used when connecting to the SQL Server Compact 3.5 Server Agent."/>
         <TextBox Height="26" HorizontalAlignment="Left" Margin="7,10,0,0" Name="txtPublisherUsername" VerticalAlignment="Bottom" Width="357" Grid.Column="1" Grid.Row="11" TabIndex="10" ToolTip="The login name used when connecting to the Publisher."/>
         <PasswordBox PasswordChar="*" Height="26" Margin="7,10,0,0" Name="txtPublisherPassword" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="12" TabIndex="11" ToolTip="The password used when connecting to the Publisher." />
         <ComboBox Grid.Column="1" Grid.Row="10" Height="23" Margin="7,8,0,0" Name="comboBox1" VerticalAlignment="Top"  SelectedIndex="0" ToolTip="The SQL Server security mode used when connecting to the Publisher.">
             <ComboBoxItem Content="SQL Server Authentication" />
             <ComboBoxItem Content="Integrated Windows Authentication" />
-        </ComboBox>        
+        </ComboBox>
         <TextBox Margin="4,4" Grid.ColumnSpan="3" Grid.Row="13" VerticalAlignment="Stretch" MinHeight="200" HorizontalAlignment="Stretch" Name="txtStatus" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" />
-        
+
     </Grid>
 </UserControl>
