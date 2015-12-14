@@ -18,7 +18,7 @@
             <RowDefinition Height="44" />
             <RowDefinition Height="123*" />
         </Grid.RowDefinitions>
-        <Label Margin="12,10,0,0" HorizontalAlignment="Left" Width="72" Height="23" VerticalAlignment="Top">New Name:</Label>
+        <Label Margin="12,10,0,0" HorizontalAlignment="Left" Width="89" Height="25" VerticalAlignment="Top">New Name:</Label>
         
         <TextBox Name="ServerName" Margin="0,12,12,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="248" MaxLength="512" />
         <StackPanel Margin="0,65,2,3" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1"></StackPanel>

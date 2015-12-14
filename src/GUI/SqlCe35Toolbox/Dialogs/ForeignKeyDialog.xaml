@@ -24,7 +24,7 @@
             <RowDefinition Height="60" />
             <RowDefinition Height="43*" />
         </Grid.RowDefinitions>
-        <Label Margin="12,0,0,0" Content="Foreign key name:" HorizontalAlignment="Left" Width="121" Height="28" VerticalAlignment="Top"></Label>
+        <Label Margin="12,0,0,0" Content="Foreign key name:" HorizontalAlignment="Left" Width="173" Height="28" VerticalAlignment="Top"></Label>
         <TextBox Name="dataSourceTextBox" Margin="16,0,35,6" TabIndex="0" Height="24" VerticalAlignment="Bottom" />
         <dw:DialogButton Name="CancelButton" IsCancel="True"  Click="CancelButton_Click" Grid.Row="5" TabIndex="6" Margin="0,0,35,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75">Cancel</dw:DialogButton>
         <dw:DialogButton Name="SaveButton" IsDefault="True"  Click="SaveButton_Click" Grid.Row="5" TabIndex="5" Margin="0,0,116,0" Height="23" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75">Script!</dw:DialogButton>

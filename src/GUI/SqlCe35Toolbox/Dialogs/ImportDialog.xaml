@@ -16,7 +16,7 @@
         d:DesignHeight="286" 
         d:DesignWidth="405" 
         SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
-       <Grid Height="246" Width="384">
+    <Grid Height="246" Width="384">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="90" />
@@ -29,8 +29,8 @@
             <RowDefinition Height="76" />
             <RowDefinition Height="71*" />
         </Grid.RowDefinitions>
-        <Label Margin="4,7,14,0" Content="Filename:" Height="28" VerticalAlignment="Top"></Label>
-        <Label Margin="4,5,10,0" Grid.Row="1" Content="Separator:" Height="26" VerticalAlignment="Top"></Label>
+        <Label Margin="4,7,4.6,0" Content="Filename:" Height="28" VerticalAlignment="Top"></Label>
+        <Label Margin="4,4.8,294,0" Grid.Row="1" Content="Separator:" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="2"></Label>
         <Label Margin="4,6,235,0" Grid.Row="2" Content="Sample CSV format:" Grid.ColumnSpan="2" Height="28" VerticalAlignment="Top"></Label>
         <TextBox Margin="12,0" IsReadOnly="True" Name="txtSample" Grid.Row="3" Grid.ColumnSpan="2" Background="Transparent" BorderBrush="Transparent" Text="test" Height="76" VerticalAlignment="Top" />
         <TextBox Name="FileName" Grid.Column="1" TextChanged="FileName_TextChanged" Margin="0,7,12,0" TabIndex="0" Height="23" VerticalAlignment="Top" />
