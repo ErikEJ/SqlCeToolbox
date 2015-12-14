@@ -394,6 +394,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableContent(menuInfo.Name, false, Properties.Settings.Default.IgnoreIdentityInInsertScript);
+                    if (!Properties.Settings.Default.IgnoreIdentityInInsertScript)
+                    {
+                        generator.GenerateIdentityReset(menuInfo.Name, false);
+                    }
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     Helpers.DataConnectionHelper.LogUsage("TableScriptAsData");
                 }
