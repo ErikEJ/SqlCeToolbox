@@ -694,10 +694,20 @@ namespace ErikEJ.SqlCeScripting
 
                 columns.ForEach(delegate(Column col)
                 {
-                    _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
-                        "[{0}]{1}      ,"
+                    if (_sqlite && col.DataType == "datetime")
+                    {
+                        _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                        "datetime([{0}]) AS [{0}]{1}      ,"
                         , col.ColumnName
                         , Environment.NewLine);
+                    }
+                    else
+                    {
+                        _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                            "[{0}]{1}      ,"
+                            , col.ColumnName
+                            , Environment.NewLine);
+                    }
                 });
 
                 // Remove the last comma and spaces
