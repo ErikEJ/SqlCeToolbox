@@ -470,9 +470,14 @@ namespace ErikEJ.SqlCeScripting
                                 }
                             }
                         }
-                        else if (fieldType == typeof(double) || fieldType == typeof(float))
+                        else if (fieldType == typeof(double))
                         {
                             string intString = rdr.GetDouble(iColumn).ToString("R", CultureInfo.InvariantCulture);
+                            _sbScript.Append(intString);
+                        }
+                        else if (fieldType == typeof(float))
+                        {
+                            string intString = rdr.GetFloat(iColumn).ToString("R", CultureInfo.InvariantCulture);
                             _sbScript.Append(intString);
                         }
                         else if (fieldType == typeof(byte) || fieldType == typeof(short) || fieldType == typeof(int) ||
