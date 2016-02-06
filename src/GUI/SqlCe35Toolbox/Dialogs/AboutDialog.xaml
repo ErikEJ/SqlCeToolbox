@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
         <TextBlock VerticalAlignment="Center" Margin="5,20,5,396" TextWrapping="Wrap" Height="35">                
             <Bold> SQL Server Compact/SQLite Toolbox </Bold> for Visual Studio</TextBlock>
-        <TextBlock Margin="5,0,5,281" Height="79" VerticalAlignment="Bottom">
+        <TextBlock Margin="5,0,5,280" Height="86" VerticalAlignment="Bottom">
                 For support, feedback and full source code, go to:<LineBreak/>
                 <Bold>
                     <Hyperlink TextDecorations="" Click="CodeplexLink_Click" x:Name="CodeplexLink">
@@ -30,9 +30,9 @@
                 </Bold>
         </TextBlock>
         <TextBlock Name="Version" VerticalAlignment="Center" Margin="5,69,5,366" Height="16">Version:</TextBlock>
-        
+
         <dw:DialogButton IsCancel="True" IsDefault="True" Name="OKButton" Click="OKButton_Click" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,12">OK</dw:DialogButton>
         <dw:DialogButton Name="DDEXButton" Click="DDEXButton_Click"  Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,5,12">Register DDEX Providers</dw:DialogButton>
-        <TextBlock Height="356" Margin="5,176,5,28" Name="txtStatus" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.RowSpan="2"></TextBlock>
+        <TextBlock Height="351" Margin="5,186,5,33" Name="txtStatus" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.RowSpan="2"></TextBlock>
     </Grid>
 </dw:DialogWindow>
