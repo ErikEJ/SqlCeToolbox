@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace ErikEJ.SqlCeToolbox
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "4.5.0", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "4.6.0", IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(ExplorerToolWindow), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Left)]
     [ProvideToolWindow(typeof(SqlEditorWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]

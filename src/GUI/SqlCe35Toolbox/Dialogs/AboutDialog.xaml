@@ -33,6 +33,6 @@
 
         <dw:DialogButton IsCancel="True" IsDefault="True" Name="OKButton" Click="OKButton_Click" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,12">OK</dw:DialogButton>
         <dw:DialogButton Name="DDEXButton" Click="DDEXButton_Click"  Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,5,12">Register DDEX Providers</dw:DialogButton>
-        <TextBlock Height="351" Margin="5,186,5,33" Name="txtStatus" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.RowSpan="2"></TextBlock>
+        <TextBlock Height="374" Margin="5,186,5,10" Name="txtStatus" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.RowSpan="2"></TextBlock>
     </Grid>
 </dw:DialogWindow>

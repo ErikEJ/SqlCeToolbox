@@ -13,7 +13,6 @@ using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using ErikEJ.SQLiteScripting;
 using Microsoft.VisualStudio.Data.Services;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 
 namespace ErikEJ.SqlCeToolbox.Commands
@@ -51,7 +50,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     dialog.InitialPath = path;                
                 }
                 dialog.DbType = dbType;
-                dialog.ShowDDEXInfo = package.VSSupportsSimpleDDEX4Provider() || package.VSSupportsSimpleDDEX35Provider();
+                dialog.ShowDdexInfo = package.VSSupportsSimpleDDEX4Provider() || package.VSSupportsSimpleDDEX35Provider();
                 dialog.CouldSupportPrivateProvider =
                     (dbType == DatabaseType.SQLCE40 && (SqlCeToolboxPackage.VisualStudioVersion == new Version(12, 0) || SqlCeToolboxPackage.VisualStudioVersion == new Version(14, 0)) )
                     || (dbType == DatabaseType.SQLCE35 && package.VSSupportsEF6());
@@ -688,10 +687,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 return menuItem.CommandParameter as DatabaseMenuCommandParameters;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

@@ -1,32 +1,26 @@
 ﻿using System;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows;
 using Microsoft.Win32;
-using System.Windows.Input;
-using Microsoft.VisualStudio.PlatformUI;
 using System.Windows.Media;
 using ErikEJ.SqlCeToolbox.Helpers;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
-    /// <summary>
-    /// Interaction logic for ImportDialog.xaml
-    /// </summary>
-    public partial class ConnectionDialog : DialogWindow
+    public partial class ConnectionDialog 
     {
-        private bool _loading;
-
-        private bool createDb;
+        private readonly bool _loading;
+        private bool _createDb;
+        private string _connectionString;
+        private string _filter;
 
         public ConnectionDialog()
         {
             Telemetry.TrackPageView(nameof(ConnectionDialog));
             _loading = true;
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
-            this.SaveButton.IsEnabled = false;
-            this.TestButton.IsEnabled = false;
+            Background = VSThemes.GetWindowBackground();
+            SaveButton.IsEnabled = false;
+            TestButton.IsEnabled = false;
             _loading = false;
         }
 
@@ -43,42 +37,39 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         public bool CouldSupportPrivateProvider { get; set; }
 
-        public bool ShowDDEXInfo { get; set; }
+        public bool ShowDdexInfo { get; set; }
 
         public string InitialPath { get; set; }
-
-        private string _connectionString;
-        private string filter;
         #endregion
 
         #region Event Handlers
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            TestConnection(false);
-            Close();
+            if (TestConnection(false))
+            {
+                Close();
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
+            DialogResult = false;
             Close();
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = filter;
+            var sfd = new SaveFileDialog();
+            sfd.Filter = _filter;
             sfd.ValidateNames = true;
             sfd.Title = "Create new Database File";
             if (!string.IsNullOrEmpty(InitialPath))
             {
                 sfd.InitialDirectory = InitialPath;
             }
-            if (sfd.ShowDialog() == true)
-            {
-                createDb = true;
-                this.dataSourceTextBox.Text = sfd.FileName;
-            }
+            if (sfd.ShowDialog() != true) return;
+            _createDb = true;
+            dataSourceTextBox.Text = sfd.FileName;
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
@@ -88,8 +79,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = filter;
+            var ofd = new OpenFileDialog();
+            ofd.Filter = _filter;
             ofd.CheckFileExists = true;
             ofd.Multiselect = false;
             ofd.ValidateNames = true;
@@ -98,11 +89,9 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             {
                 ofd.InitialDirectory = InitialPath;
             }
-            if (ofd.ShowDialog() == true)
-            {
-                createDb = false;
-                this.dataSourceTextBox.Text = ofd.FileName;
-            }
+            if (ofd.ShowDialog() != true) return;
+            _createDb = false;
+            dataSourceTextBox.Text = ofd.FileName;
         }
 
         private void maxSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -122,30 +111,27 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void txtConnection_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtConnection.Text))
-            {
-                _connectionString = txtConnection.Text;
-                SaveButton.IsEnabled = true;
-                TestButton.IsEnabled = true;
-            }
+            if (string.IsNullOrWhiteSpace(txtConnection.Text)) return;
+            _connectionString = txtConnection.Text;
+            SaveButton.IsEnabled = true;
+            TestButton.IsEnabled = true;
         }
 
         #endregion
 
-        private void TestConnection(bool showMessage)
+        private bool TestConnection(bool showMessage)
         {
             try
             {
-                if (createDb)
+                if (_createDb)
                 {
                     if (!System.IO.File.Exists(dataSourceTextBox.Text))
                     {
-                        var engineHelper = Helpers.DataConnectionHelper.CreateEngineHelper(DbType);
+                        var engineHelper = DataConnectionHelper.CreateEngineHelper(DbType);
                         engineHelper.CreateDatabase(_connectionString);
                     }
                 }
-
-                using (Helpers.DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = _connectionString, DatabaseType = DbType }))
+                using (DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = _connectionString, DatabaseType = DbType }))
                 {
                     if (showMessage)
                     {
@@ -153,9 +139,10 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                     }
                     else
                     {
-                        this.DialogResult = true;
+                        DialogResult = true;
                     }
                 }
+                return true;
             }
             catch (Exception ex)
             {
@@ -166,8 +153,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND
                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING) == System.Windows.Forms.DialogResult.Yes)
                     {
-                        string bakFile = dataSourceTextBox.Text + ".bak";
-                        bool go = true; 
+                        var bakFile = dataSourceTextBox.Text + ".bak";
+                        var go = true; 
                         try
                         {
                             if (System.IO.File.Exists(bakFile))
@@ -178,7 +165,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING) == System.Windows.Forms.DialogResult.Yes)
                                 {
                                     System.IO.File.Delete(bakFile);
-                                    go = true;
                                 }
                                 else
                                 {
@@ -188,23 +174,25 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                             if (go)
                             {
                                 System.IO.File.Copy(dataSourceTextBox.Text, dataSourceTextBox.Text + ".bak");
-                                SqlCeScripting.SqlCeHelper4 helper = new SqlCeScripting.SqlCeHelper4();
+                                var helper = new SqlCeScripting.SqlCeHelper4();
                                 helper.UpgradeTo40(_connectionString);
-                                this.DialogResult = true;
+                                DialogResult = true;
                             }
                         }
                         catch (Exception ex2)
                         {
-                            Helpers.DataConnectionHelper.SendError(ex2, DbType, false);
+                            DataConnectionHelper.SendError(ex2, DbType, false);
+                            return false;
                         }
-
                     }
                 }
                 else
                 {
-                    Helpers.DataConnectionHelper.SendError(ex, DbType, false);
+                    DataConnectionHelper.SendError(ex, DbType, false);
+                    return false;
                 }
             }
+            return true;
         }
 
         private void UpdateBuilder()
@@ -225,19 +213,18 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (ShowDDEXInfo)
+            if (ShowDdexInfo)
             {
-                txtDDEX.Visibility = System.Windows.Visibility.Visible;
+                txtDDEX.Visibility = Visibility.Visible;
             }
-            if (CouldSupportPrivateProvider && !ShowDDEXInfo)
+            if (CouldSupportPrivateProvider && !ShowDdexInfo)
             {
-                txtDDEX.Visibility = System.Windows.Visibility.Visible;
+                txtDDEX.Visibility = Visibility.Visible;
                 txtDDEX.Text = "Cannot save this connection for use with EF6 Tools, make sure the SQL Server Compact DbProvider is installed, and possibly restart Visual Studio";
                 txtDDEX.Foreground = new SolidColorBrush(Colors.Red);
             }
-            filter = DataConnectionHelper.GetSqlCeFileFilter();
-            this.dataSourceTextBox.Focus();
+            _filter = DataConnectionHelper.GetSqlCeFileFilter();
+            dataSourceTextBox.Focus();
         }
-
     }
 }
