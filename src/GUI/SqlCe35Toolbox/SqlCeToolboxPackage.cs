@@ -188,13 +188,17 @@ namespace ErikEJ.SqlCeToolbox
                 {
                     return new Version(14, 0);
                 }
+                else if (root.Contains("\\15.0"))
+                {
+                    return new Version(15, 0);
+                }
                 else
                 {
                     // Newer than 14...
-                    return new Version(14, 0);
+                    return new Version(15, 0);
                 }
             }
-            set
+            private set
             {
                 VisualStudioVersion = value;
             }
@@ -212,7 +216,7 @@ namespace ErikEJ.SqlCeToolbox
 
         public bool VSSupportsEF6()
         {
-            return VisualStudioVersion == new Version(11, 0) || VisualStudioVersion == new Version(12, 0) || VisualStudioVersion == new Version(14, 0);
+            return VisualStudioVersion >= new Version(11, 0);
         }
 
         public bool VSSupportsSqlPlan()
@@ -222,7 +226,7 @@ namespace ErikEJ.SqlCeToolbox
 
         public bool VSSupportsSimpleDDEX4Provider()
         {
-            return ( VisualStudioVersion == new Version(12, 0) || VisualStudioVersion == new Version(14,0) )
+            return ( VisualStudioVersion >= new Version(12, 0))
                 && (Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(Resources.SqlCompact40PrivateProvider)))
                 && (Helpers.DataConnectionHelper.IsV40Installed())
                 && (Helpers.DataConnectionHelper.IsV40DbProviderInstalled());

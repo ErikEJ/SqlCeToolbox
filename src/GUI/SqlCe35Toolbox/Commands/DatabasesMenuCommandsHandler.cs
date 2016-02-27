@@ -52,7 +52,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 dialog.DbType = dbType;
                 dialog.ShowDdexInfo = package.VSSupportsSimpleDDEX4Provider() || package.VSSupportsSimpleDDEX35Provider();
                 dialog.CouldSupportPrivateProvider =
-                    (dbType == DatabaseType.SQLCE40 && (SqlCeToolboxPackage.VisualStudioVersion == new Version(12, 0) || SqlCeToolboxPackage.VisualStudioVersion == new Version(14, 0)) )
+                    (dbType == DatabaseType.SQLCE40 && (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0)) )
                     || (dbType == DatabaseType.SQLCE35 && package.VSSupportsEF6());
                 bool? result = dialog.ShowModal();
                 if (result.HasValue && result.Value == true)

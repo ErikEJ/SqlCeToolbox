@@ -549,7 +549,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public static void RegisterDDEXProviders(bool force)
         {
-            if (SqlCeToolboxPackage.VisualStudioVersion == new Version(12, 0) || SqlCeToolboxPackage.VisualStudioVersion == new Version(14, 0))
+            if (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0))
             {
                 RegisterDDEX4Provider(force);
                 RegisterDDEX35Provider(force);
