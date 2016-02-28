@@ -169,38 +169,8 @@ namespace ErikEJ.SqlCeToolbox
         {
             get
             {
-                var dte = SqlCeToolboxPackage.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-                string root = dte.RegistryRoot;
-
-                if (root.Contains("\\10.0"))
-                {
-                    return new Version(10, 0);
-                }
-                else if (root.Contains("\\11.0"))
-                {
-                    return new Version(11, 0);
-                }
-                else if (root.Contains("\\12.0"))
-                {
-                    return new Version(12, 0);
-                }
-                else if (root.Contains("\\14.0"))
-                {
-                    return new Version(14, 0);
-                }
-                else if (root.Contains("\\15.0"))
-                {
-                    return new Version(15, 0);
-                }
-                else
-                {
-                    // Newer than 14...
-                    return new Version(15, 0);
-                }
-            }
-            private set
-            {
-                VisualStudioVersion = value;
+                var dte = GetGlobalService(typeof(DTE)) as DTE;
+                return new Version(int.Parse(dte.Version.Split('.')[0], CultureInfo.InvariantCulture), 0);
             }
         }
 
