@@ -20,6 +20,7 @@ namespace ErikEJ.SqlCeToolbox
             PreserveSqlDates = Properties.Settings.Default.PreserveSqlDates;
             TruncateSQLiteStrings = Properties.Settings.Default.TruncateSQLiteStrings;
             ParticipateInTelemetry = Properties.Settings.Default.ParticipateInTelemetry;
+            MakeSQLiteDatetimeReadOnly = Properties.Settings.Default.MakeSQLiteDatetimeReadOnly;
             base.OnActivate(e);
         }
 
@@ -52,6 +53,12 @@ namespace ErikEJ.SqlCeToolbox
         Description("Sets the desired column width in pixels"),
         DefaultValue(0)]
         public int MaxColumnWidth { get; set; }
+
+        [Category("Edit Table Data"),
+        DisplayName("Make SQLite datetime read-only"),
+        Description("Work around the inability to edit SQLite datetime columns"),
+        DefaultValue(false)]
+        public bool MakeSQLiteDatetimeReadOnly { get; set; }
 
         [Category("Documentation"),
         DisplayName("Include system tables"),
@@ -95,6 +102,7 @@ namespace ErikEJ.SqlCeToolbox
             Properties.Settings.Default.PreserveSqlDates = PreserveSqlDates;
             Properties.Settings.Default.TruncateSQLiteStrings = TruncateSQLiteStrings;
             Properties.Settings.Default.ParticipateInTelemetry = ParticipateInTelemetry;
+            Properties.Settings.Default.MakeSQLiteDatetimeReadOnly = MakeSQLiteDatetimeReadOnly;
             Properties.Settings.Default.Save();
             base.OnApply(e);
         }

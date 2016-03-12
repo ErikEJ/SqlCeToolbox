@@ -286,5 +286,17 @@ namespace ErikEJ.SqlCeToolbox.Properties {
                 this["UseClassicGrid"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MakeSQLiteDatetimeReadOnly {
+            get {
+                return ((bool)(this["MakeSQLiteDatetimeReadOnly"]));
+            }
+            set {
+                this["MakeSQLiteDatetimeReadOnly"] = value;
+            }
+        }
     }
 }

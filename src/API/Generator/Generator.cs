@@ -686,11 +686,16 @@ namespace ErikEJ.SqlCeScripting
             return sb.ToString();
         }
 
+        public void GenerateTableSelect(string tableName)
+        {
+            GenerateTableSelect(tableName, false);
+        }
+
         /// <summary>
         /// Generates the table select statement.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
-        public void GenerateTableSelect(string tableName)
+        public void GenerateTableSelect(string tableName, bool editableInSqlite = false)
         {
             List<Column> columns = _allColumns.Where(c => c.TableName == tableName).ToList();
             if (columns.Count > 0)
@@ -699,7 +704,7 @@ namespace ErikEJ.SqlCeScripting
 
                 columns.ForEach(delegate(Column col)
                 {
-                    if (_sqlite && col.DataType == "datetime")
+                    if (_sqlite && col.DataType == "datetime" && editableInSqlite)
                     {
                         _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
                         "datetime([{0}]) AS [{0}]{1}      ,"

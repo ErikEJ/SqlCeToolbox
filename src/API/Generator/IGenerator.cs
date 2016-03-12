@@ -14,8 +14,9 @@ namespace ErikEJ.SqlCeScripting
         string GenerateTableData(string tableName, bool saveImageFiles);
         void GenerateTableContent(string tableName, bool saveImageFiles, bool ignoreIdentity = false, string whereClause = null);
         string GeneratedScript { get; }
-        IList<string> GeneratedFiles { get; } 
+        IList<string> GeneratedFiles { get; }
         void GenerateTableSelect(string tableName);
+        void GenerateTableSelect(string tableName, bool editableInSqlite);
         void GenerateTableInsert(string tableName);
         void GenerateTableUpdate(string tableName);
         void GenerateTableDelete(string tableName);

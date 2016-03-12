@@ -23,32 +23,37 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void ReportTableData(object sender, ExecutedRoutedEventArgs e)
         {
-            string sqlText = null;
             var menuInfo = ValidateMenuInfo(sender);
             var ds = new DataSet();
             if (menuInfo == null) return;
 
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    sqlText = string.Format(Environment.NewLine + "SELECT * FROM [{0}]", menuInfo.Name)
-                        + Environment.NewLine + "GO";
+                    var sqlText = string.Format(Environment.NewLine + "SELECT * FROM [{0}]", menuInfo.Name)
+                                     + Environment.NewLine + "GO";
                     ds = repository.ExecuteSql(sqlText);
                 }
                 var pkg = ParentWindow.Package as SqlCeToolboxPackage;
                 Debug.Assert(pkg != null, "Package property of the Explorere Tool Window should never be null, have you tried to create it manually and not through FindToolWindow()?");
 
-                string dbName = System.IO.Path.GetFileNameWithoutExtension(menuInfo.DatabaseInfo.Caption);
-                var window = pkg.CreateWindow<ReportWindow>(Math.Abs(menuInfo.Name.GetHashCode() - dbName.GetHashCode()));
-                window.Caption = menuInfo.Name + " (" + dbName + ")";
-                pkg.ShowWindow(window);
+                var dbName = System.IO.Path.GetFileNameWithoutExtension(menuInfo.DatabaseInfo.Caption);
+                if (dbName != null)
+                {
+                    var window = pkg.CreateWindow<ReportWindow>(Math.Abs(menuInfo.Name.GetHashCode() - dbName.GetHashCode()));
+                    window.Caption = menuInfo.Name + " (" + dbName + ")";
+                    pkg.ShowWindow(window);
 
-                var control = window.Content as ReportControl;
-                control.DatabaseInfo = menuInfo.DatabaseInfo;
-                control.TableName = menuInfo.Name;
-                control.DataSet = ds;
-                control.ShowReport();
+                    var control = window.Content as ReportControl;
+                    if (control != null)
+                    {
+                        control.DatabaseInfo = menuInfo.DatabaseInfo;
+                        control.TableName = menuInfo.Name;
+                        control.DataSet = ds;
+                        control.ShowReport();
+                    }
+                }
                 DataConnectionHelper.LogUsage("TableReport");
             }
             catch (System.IO.FileNotFoundException)
@@ -65,19 +70,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void EditTableData(object sender, ExecutedRoutedEventArgs e)
         {
-            string sqlText = null;
-
             var menuInfo = ValidateMenuInfo(sender);
             if (menuInfo == null) return;
-            bool dbProviderPresent = menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 && Helpers.DataConnectionHelper.IsV35DbProviderInstalled();
-            if (menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40 && Helpers.DataConnectionHelper.IsV40DbProviderInstalled())
-            {
-                dbProviderPresent = true;
-            }
-            if (menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
-            {
-                dbProviderPresent = true;
-            }
+            var dbProviderPresent = menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 && DataConnectionHelper.IsV35DbProviderInstalled() 
+                                    || menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40 && DataConnectionHelper.IsV40DbProviderInstalled() 
+                                    || menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite;
             if (!dbProviderPresent)
             {
                 EnvDTEHelper.ShowError("The required DbProvider registration is not present, please re-install/repair the SQL Server Compact runtime");
@@ -86,21 +83,25 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                bool readOnly = false;
-                List<int> readOnlyColumns = new List<int>();
+                var readOnly = false;
+                var readOnlyColumns = new List<int>();
 
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                string sqlText;
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    List<PrimaryKey> pks = repository.GetAllPrimaryKeys();
-                    var tpks = repository.GetAllPrimaryKeys().Where(pk => pk.TableName == menuInfo.Name).ToList();
+                    var tpks = repository.GetAllPrimaryKeys()
+                        .Where(pk => pk.TableName == menuInfo.Name)
+                        .ToList();
                     if (tpks.Count == 0)
                     {
                         readOnly = true;
                     }
-                    List<Column> cols = repository.GetAllColumns();
-                    cols = cols.Where(c => c.TableName == menuInfo.Name).ToList();
-                    int x = 0;
-                    foreach (Column col in cols)
+                    var cols = repository.GetAllColumns();
+                    cols = cols
+                        .Where(c => c.TableName == menuInfo.Name)
+                        .ToList();
+                    var x = 0;
+                    foreach (var col in cols)
                     {
                         if (col.AutoIncrementBy > 0 || col.RowGuidCol)
                         {
@@ -108,8 +109,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         }
                         x++;
                     }
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
-                    generator.GenerateTableSelect(menuInfo.Name);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    generator.GenerateTableSelect(menuInfo.Name, Properties.Settings.Default.MakeSQLiteDatetimeReadOnly);
                     sqlText = generator.GeneratedScript.Replace(";" + Environment.NewLine + "GO", "");
                     sqlText = sqlText.Replace(";" + Environment.NewLine, "");
                     if (menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
@@ -125,18 +126,24 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var pkg = ParentWindow.Package as SqlCeToolboxPackage;
                 Debug.Assert(pkg != null, "Package property of the Explorere Tool Window should never be null, have you tried to create it manually and not through FindToolWindow()?");
 
-                string dbName = System.IO.Path.GetFileNameWithoutExtension(menuInfo.DatabaseInfo.Caption);
-                var window = pkg.CreateWindow<DataGridViewWindow>(Math.Abs(menuInfo.Name.GetHashCode() - dbName.GetHashCode()));
-                window.Caption = menuInfo.Name + " (" + dbName + ")";
-                pkg.ShowWindow(window);
+                var dbName = System.IO.Path.GetFileNameWithoutExtension(menuInfo.DatabaseInfo.Caption);
+                if (dbName != null)
+                {
+                    var window = pkg.CreateWindow<DataGridViewWindow>(Math.Abs(menuInfo.Name.GetHashCode() - dbName.GetHashCode()));
+                    window.Caption = menuInfo.Name + " (" + dbName + ")";
+                    pkg.ShowWindow(window);
 
-                var control = window.Content as DataEditControl;
-                control.DatabaseInfo = menuInfo.DatabaseInfo;
-                control.TableName = menuInfo.Name;
-                control.ReadOnly = readOnly;
-                control.ReadOnlyColumns = readOnlyColumns;
-                control.SqlText = sqlText;
-                control.ShowGrid();
+                    var control = window.Content as DataEditControl;
+                    if (control != null)
+                    {
+                        control.DatabaseInfo = menuInfo.DatabaseInfo;
+                        control.TableName = menuInfo.Name;
+                        control.ReadOnly = readOnly;
+                        control.ReadOnlyColumns = readOnlyColumns;
+                        control.SqlText = sqlText;
+                        control.ShowGrid();
+                    }
+                }
                 DataConnectionHelper.LogUsage("TableEdit");
             }
             catch (Exception ex)
@@ -151,23 +158,21 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    TableBuilderDialog tbd = new TableBuilderDialog(menuInfo.Name, menuInfo.DatabaseInfo.DatabaseType);
+                    var tbd = new TableBuilderDialog(menuInfo.Name, menuInfo.DatabaseInfo.DatabaseType);
                     tbd.Mode = 1;
-                    if (tbd.ShowModal() == true && tbd.TableColumns.Count == 1)
-                    {
-                        var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
-                        generator.GenerateColumnAddScript(tbd.TableColumns[0]);
-                        var script = generator.GeneratedScript.ToString();
-                        OpenSqlEditorToolWindow(menuInfo, script);
-                        Helpers.DataConnectionHelper.LogUsage("TableBuildColumnAdd");
-                    }
+                    if (tbd.ShowModal() != true || tbd.TableColumns.Count != 1) return;
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    generator.GenerateColumnAddScript(tbd.TableColumns[0]);
+                    var script = generator.GeneratedScript;
+                    OpenSqlEditorToolWindow(menuInfo, script);
+                    DataConnectionHelper.LogUsage("TableBuildColumnAdd");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -177,7 +182,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     IndexDialog idxDlg = new IndexDialog(menuInfo.Name);
                     idxDlg.Columns = repository.GetAllColumns().Where(c => c.TableName == menuInfo.Name).ToList();
@@ -185,14 +190,14 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     {
                         //var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                         Index idx = idxDlg.NewIndex;
-                        StringBuilder _sbScript = new StringBuilder();
+                        StringBuilder sbScript = new StringBuilder();
                         
-                        _sbScript.Append("CREATE ");
+                        sbScript.Append("CREATE ");
                         if (idx.Unique)
-                            _sbScript.Append("UNIQUE ");
-                        _sbScript.AppendFormat("INDEX [{0}] ON [{1}] (", idx.IndexName, idx.TableName);
-                        _sbScript.AppendFormat("[{0}] {1}", idx.ColumnName, idx.SortOrder.ToString());
-                        _sbScript.AppendLine(");");
+                            sbScript.Append("UNIQUE ");
+                        sbScript.AppendFormat("INDEX [{0}] ON [{1}] (", idx.IndexName, idx.TableName);
+                        sbScript.AppendFormat("[{0}] {1}", idx.ColumnName, idx.SortOrder.ToString());
+                        sbScript.AppendLine(");");
 
                         //foreach (Index col in indexes)
                         //{
@@ -202,16 +207,16 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         //_sbScript.Remove(_sbScript.Length - 1, 1);
                         //_sbScript.AppendLine(");");
 
-                        _sbScript.Append("GO" + Environment.NewLine);
+                        sbScript.Append("GO" + Environment.NewLine);
 
-                        OpenSqlEditorToolWindow(menuInfo, _sbScript.ToString());
-                        Helpers.DataConnectionHelper.LogUsage("TableIndexAdd");
+                        OpenSqlEditorToolWindow(menuInfo, sbScript.ToString());
+                        DataConnectionHelper.LogUsage("TableIndexAdd");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -221,23 +226,21 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    ForeignKeyDialog fkDlg = new ForeignKeyDialog(menuInfo.Name);
+                    var fkDlg = new ForeignKeyDialog(menuInfo.Name);
                     fkDlg.AllColumns = repository.GetAllColumns().ToList();
                     fkDlg.AllPrimaryKeys = repository.GetAllPrimaryKeys();
-                    if (fkDlg.ShowModal() == true)
-                    {
-                        var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
-                        generator.GenerateForeignKey(fkDlg.NewKey);
-                        OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                        Helpers.DataConnectionHelper.LogUsage("TableKeyAdd");
-                    }
+                    if (fkDlg.ShowModal() != true) return;
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    generator.GenerateForeignKey(fkDlg.NewKey);
+                    OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
+                    DataConnectionHelper.LogUsage("TableKeyAdd");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -247,17 +250,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableScript(menuInfo.Name);
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("TableScriptAsCreate");
+                    DataConnectionHelper.LogUsage("TableScriptAsCreate");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -267,17 +270,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableDrop(menuInfo.Name);
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("TableScriptAsDrop");
+                    DataConnectionHelper.LogUsage("TableScriptAsDrop");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -287,18 +290,18 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableDrop(menuInfo.Name);
                     generator.GenerateTableScript(menuInfo.Name);
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("TableScriptAsDropAndCreate");
+                    DataConnectionHelper.LogUsage("TableScriptAsDropAndCreate");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -308,19 +311,19 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableSelect(menuInfo.Name);
                     //TODO Something like this for intellisense (maybe a single object)
                     //OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript, false, repository.GetAllTableNames(), repository.GetAllColumns());
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("TableScriptAsSelect");
+                    DataConnectionHelper.LogUsage("TableScriptAsSelect");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -330,17 +333,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableInsert(menuInfo.Name);
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("TableScriptAsInsert");
+                    DataConnectionHelper.LogUsage("TableScriptAsInsert");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -350,17 +353,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableUpdate(menuInfo.Name);
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("TableScriptAsUpdate");
+                    DataConnectionHelper.LogUsage("TableScriptAsUpdate");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -370,17 +373,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableDelete(menuInfo.Name);
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("TableScriptAsDelete");
+                    DataConnectionHelper.LogUsage("TableScriptAsDelete");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -390,21 +393,21 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableContent(menuInfo.Name, false, Properties.Settings.Default.IgnoreIdentityInInsertScript);
                     if (!Properties.Settings.Default.IgnoreIdentityInInsertScript)
                     {
                         generator.GenerateIdentityReset(menuInfo.Name, false);
                     }
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("TableScriptAsData");
+                    DataConnectionHelper.LogUsage("TableScriptAsData");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -417,8 +420,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 if (menuInfo == null) return;
 
-                Dictionary<string, DatabaseInfo> databaseList = Helpers.DataConnectionHelper.GetDataConnections(package, true, false);
-                foreach (KeyValuePair<string, DatabaseInfo> info in Helpers.DataConnectionHelper.GetOwnDataConnections())
+                Dictionary<string, DatabaseInfo> databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
+                foreach (KeyValuePair<string, DatabaseInfo> info in DataConnectionHelper.GetOwnDataConnections())
                 {
                     if (!databaseList.ContainsKey(info.Key))
                         databaseList.Add(info.Key, info.Value);
@@ -441,42 +444,45 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     info.Value.Caption = string.Format("{0} ({1})", info.Value.Caption, sourceType);
                 }
 
-                CompareDialog cd = new CompareDialog(menuInfo.DatabaseInfo.Caption, databaseList, menuInfo.Name);
+                var cd = new CompareDialog(menuInfo.DatabaseInfo.Caption, databaseList, menuInfo.Name);
 
-                bool? result = cd.ShowModal();
-                if (result.HasValue && result.Value == true && (cd.TargetDatabase.Key != null))
+                var result = cd.ShowModal();
+                if (!result.HasValue || !result.Value || (cd.TargetDatabase.Key == null)) return;
+                var target = cd.TargetDatabase;
+                var source = new KeyValuePair<string, DatabaseInfo>(menuInfo.DatabaseInfo.ConnectionString, menuInfo.DatabaseInfo);
+                var editorTarget = target;
+                if (editorTarget.Value.DatabaseType == DatabaseType.SQLServer)
                 {
-                    var target = cd.TargetDatabase;
-                    var source = new KeyValuePair<string, DatabaseInfo>(menuInfo.DatabaseInfo.ConnectionString, menuInfo.DatabaseInfo);
-                    var editorTarget = target;
-                    if (editorTarget.Value.DatabaseType == DatabaseType.SQLServer)
-                    {
-                        editorTarget = source;
-                    }
+                    editorTarget = source;
+                }
 
-                    using (IRepository sourceRepository = Helpers.DataConnectionHelper.CreateRepository(source.Value))
+                using (var sourceRepository = DataConnectionHelper.CreateRepository(source.Value))
+                {
+                    using (var targetRepository = DataConnectionHelper.CreateRepository(target.Value))
                     {
-                        using (IRepository targetRepository = Helpers.DataConnectionHelper.CreateRepository(target.Value))
+                        var generator = DataConnectionHelper.CreateGenerator(targetRepository, target.Value.DatabaseType);
+                        try
                         {
-                            var generator = Helpers.DataConnectionHelper.CreateGenerator(targetRepository, target.Value.DatabaseType);
-                            try
-                            {
-                                var script = SqlCeDiff.CreateDataDiffScript(sourceRepository, menuInfo.Name, targetRepository, menuInfo.Name, generator);
+                            var script = SqlCeDiff.CreateDataDiffScript(sourceRepository, menuInfo.Name, targetRepository, menuInfo.Name, generator);
 
+                            if (package != null)
+                            {
                                 var sqlEditorWindow = package.CreateWindow<SqlEditorWindow>();
                                 var editorControl = sqlEditorWindow.Content as SqlEditorControl;
-                                editorControl.ExplorerControl = ParentWindow.Content as ExplorerControl;
-                                Debug.Assert(editorControl != null);
-                                editorControl.DatabaseInfo = editorTarget.Value;
-                                editorControl.SqlText = script;
-                                Helpers.DataConnectionHelper.LogUsage("TableScriptDataDiff");
+                                if (editorControl != null)
+                                {
+                                    editorControl.ExplorerControl = ParentWindow.Content as ExplorerControl;
+                                    editorControl.DatabaseInfo = editorTarget.Value;
+                                    editorControl.SqlText = script;
+                                }
                             }
-                            catch (Exception ex)
-                            {
-                                Helpers.DataConnectionHelper.SendError(ex, source.Value.DatabaseType, false);
-                            }
-
+                            DataConnectionHelper.LogUsage("TableScriptDataDiff");
                         }
+                        catch (Exception ex)
+                        {
+                            DataConnectionHelper.SendError(ex, source.Value.DatabaseType, false);
+                        }
+
                     }
                 }
             }
@@ -486,7 +492,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
             }
         }
 
@@ -496,37 +502,35 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
 
-                    ImportDialog imo = new ImportDialog();
-
-                    imo.SampleHeader = generator.GenerateTableColumns(menuInfo.Name);
-                    imo.Separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator.ToCharArray()[0];
-
-                    if (imo.ShowModal() == true)
+                    var imo = new ImportDialog
                     {
-                        if (!string.IsNullOrWhiteSpace(imo.File) && System.IO.File.Exists(imo.File))
+                        SampleHeader = generator.GenerateTableColumns(menuInfo.Name),
+                        Separator =
+                            System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator.ToCharArray()[0]
+                    };
+
+                    if (imo.ShowModal() != true) return;
+                    if (string.IsNullOrWhiteSpace(imo.File) || !System.IO.File.Exists(imo.File)) return;
+                    using (var reader = new CsvReader(imo.File, Encoding.UTF8))
+                    {
+                        reader.ValueSeparator = imo.Separator;
+                        var hr = reader.ReadHeaderRecord();
+                        if (generator.ValidColumns(menuInfo.Name, hr.Values))
                         {
-                            using (var reader = new CsvReader(imo.File, System.Text.Encoding.UTF8))
+                            var i = 1;
+                            foreach (var record in reader.DataRecords)
                             {
-                                reader.ValueSeparator = imo.Separator;
-                                HeaderRecord hr = reader.ReadHeaderRecord();
-                                if (generator.ValidColumns(menuInfo.Name, hr.Values))
-                                {
-                                    int i = 1;
-                                    foreach (DataRecord record in reader.DataRecords)
-                                    {
-                                        generator.GenerateTableInsert(menuInfo.Name, hr.Values, record.Values, i);
-                                        i++;
-                                    }
-                                }
+                                generator.GenerateTableInsert(menuInfo.Name, hr.Values, record.Values, i);
+                                i++;
                             }
-                            OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                            Helpers.DataConnectionHelper.LogUsage("TableImport");
                         }
                     }
+                    OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
+                    DataConnectionHelper.LogUsage("TableImport");
                 }
             }
             catch (System.IO.IOException iox)
@@ -535,7 +539,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -545,26 +549,25 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     
-                    RenameDialog ro = new RenameDialog(menuInfo.Name);
+                    var ro = new RenameDialog(menuInfo.Name);
                     ro.ShowModal();
-                    if (ro.DialogResult.HasValue && ro.DialogResult.Value == true && !string.IsNullOrWhiteSpace(ro.NewName) && !menuInfo.Name.Equals(ro.NewName))
+                    if (!ro.DialogResult.HasValue || ro.DialogResult.Value != true ||
+                        string.IsNullOrWhiteSpace(ro.NewName) || menuInfo.Name.Equals(ro.NewName)) return;
+                    repository.RenameTable(menuInfo.Name, ro.NewName);
+                    if (ParentWindow != null && ParentWindow.Content != null)
                     {
-                        repository.RenameTable(menuInfo.Name, ro.NewName);
-                        if (ParentWindow != null && ParentWindow.Content != null)
-                        {
-                            ExplorerControl control = ParentWindow.Content as ExplorerControl;
-                            control.RefreshTables(menuInfo.DatabaseInfo);
-                        }
-                        Helpers.DataConnectionHelper.LogUsage("TableRename");
+                        var control = ParentWindow.Content as ExplorerControl;
+                        if (control != null) control.RefreshTables(menuInfo.DatabaseInfo);
                     }
+                    DataConnectionHelper.LogUsage("TableRename");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -587,30 +590,27 @@ namespace ErikEJ.SqlCeToolbox.Commands
         {
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var tableDesc = ExplorerControl.DescriptionCache.Where(d => d.Object == name && d.Parent == null).Select(d => d.Description).SingleOrDefault();
-                    DescriptionDialog ro = new DescriptionDialog(tableDesc);
-                    ro.ColumnsInfo = GetSiblingColumnInfo(repository, name);
+                    var ro = new DescriptionDialog(tableDesc) {ColumnsInfo = GetSiblingColumnInfo(repository, name)};
                     ro.ShowModal();
-                    if (ro.DialogResult.HasValue && ro.DialogResult.Value == true)
+                    if (!ro.DialogResult.HasValue || ro.DialogResult.Value != true) return;
+                    //save table description
+                    new Helpers.DescriptionHelper().SaveDescription(menuInfo.DatabaseInfo, ExplorerControl.DescriptionCache, ro.TableDescription, null, menuInfo.Name);
+                    //save all columns
+                    foreach (var item in ro.ColumnsInfo)
                     {
-                        //save table description
-                        new Helpers.DescriptionHelper().SaveDescription(menuInfo.DatabaseInfo, ExplorerControl.DescriptionCache, ro.TableDescription, null, menuInfo.Name);
-                        //save all columns
-                        foreach (var item in ro.ColumnsInfo)
-                        {
-                            new Helpers.DescriptionHelper().SaveDescription(menuInfo.DatabaseInfo, ExplorerControl.DescriptionCache, item.Description, name, item.Name);
-                        }
-                        ExplorerControl.DescriptionCache = new Helpers.DescriptionHelper().GetDescriptions(menuInfo.DatabaseInfo);
-                        ((ExplorerControl)ParentWindow.Content).RefreshTables(menuInfo.DatabaseInfo);
-                        Helpers.DataConnectionHelper.LogUsage("TableUpdateDescriptions");
+                        new Helpers.DescriptionHelper().SaveDescription(menuInfo.DatabaseInfo, ExplorerControl.DescriptionCache, item.Description, name, item.Name);
                     }
+                    ExplorerControl.DescriptionCache = new Helpers.DescriptionHelper().GetDescriptions(menuInfo.DatabaseInfo);
+                    ((ExplorerControl)ParentWindow.Content).RefreshTables(menuInfo.DatabaseInfo);
+                    DataConnectionHelper.LogUsage("TableUpdateDescriptions");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
         
@@ -619,19 +619,19 @@ namespace ErikEJ.SqlCeToolbox.Commands
         /// </summary>
         internal static IList<TableColumnInfo> GetSiblingColumnInfo(IRepository repo, string parentTable)
         {
-            List<TableColumnInfo> lst = new List<TableColumnInfo>();
-            var desc_cols = ExplorerControl.DescriptionCache.Where(d => d.Parent == parentTable).ToList();
+            var lst = new List<TableColumnInfo>();
+            var descCols = ExplorerControl.DescriptionCache.Where(d => d.Parent == parentTable).ToList();
             var cols = repo.GetAllColumns().Where(c => c.TableName == parentTable);
-            var pkList = repo.GetAllPrimaryKeys().Where(p => p.TableName == parentTable).Select(p => p.ColumnName);
-            var fkList = repo.GetAllForeignKeys().Where(f => f.ConstraintTableName == parentTable).Select(f => f.ColumnName);
-            string isNull = "not null", fk = "", pk = "", type = "";
+            var pkList = repo.GetAllPrimaryKeys().Where(p => p.TableName == parentTable).Select(p => p.ColumnName).ToList();
+            var fkList = repo.GetAllForeignKeys().Where(f => f.ConstraintTableName == parentTable).Select(f => f.ColumnName).ToList();
+            string isNull = "not null", fk = "", pk = "";
             foreach (var item in cols)
             {
                 if (pkList.Contains(item.ColumnName)) { pk = "PK, "; }
                 if (fkList.Contains(item.ColumnName)) { fk = "FK, "; }
                 if (item.IsNullable == YesNoOption.YES) { isNull = "null"; }
-                type = item.ShortType;
-                string desc = desc_cols.Where(d => d.Object == item.ColumnName).Select(s => s.Description).SingleOrDefault();
+                var type = item.ShortType;
+                var desc = descCols.Where(d => d.Object == item.ColumnName).Select(s => s.Description).SingleOrDefault();
                 lst.Add(new TableColumnInfo()
                 {
                     Name = item.ColumnName,
