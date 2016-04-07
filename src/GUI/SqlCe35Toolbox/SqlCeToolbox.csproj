@@ -553,6 +553,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QueryPlanVisualizer\QueryPlanVisualizer.csproj">
+      <Project>{df42bbc7-9733-4fd3-9758-13a1f657cfbb}</Project>
+      <Name>QueryPlanVisualizer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
       <Project>{C6031278-5612-429F-A485-5169392DB51C}</Project>
       <Name>SqlCeToolbox.Common</Name>

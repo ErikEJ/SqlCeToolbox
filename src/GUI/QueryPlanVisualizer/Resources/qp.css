@@ -1,0 +1,178 @@
+﻿div.qp-node
+{
+	background-color: #FFFFCC;
+	margin: 2px;
+	padding: 2px;
+	border: 1px solid black;
+	font-size: 11px;
+	line-height: normal;
+}
+.qp-node > div
+{
+	font-family: Monospace;
+	text-align: center;
+}
+div[class|='qp-icon']
+{
+	height: 32px;
+	width: 32px;
+	margin-left: auto;
+	margin-right: auto;
+	background-repeat: no-repeat;
+}
+.qp-tt
+{
+	top: 4em; 
+	left: 2em;
+	border: 1px solid black;
+	background-color: #FFFFEE;
+	padding: 2px;
+}
+.qp-tt div, .qp-tt table
+{
+	font-family: Sans-Serif;
+	text-align: left;
+}
+.qp-tt table
+{
+	border-width: 0px;
+	border-spacing: 0px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 100%;
+}
+.qp-tt td, .qp-tt th
+{
+	font-size: 11px;
+	border-bottom: solid 1px Black;
+	padding: 1px;
+}
+.qp-tt td
+{
+	text-align: right;
+	padding-left: 10px;
+}
+.qp-tt th
+{
+	text-align: left;
+}
+.qp-bold, .qp-tt-header
+{
+	font-weight: bold;
+}
+.qp-tt-header
+{
+	text-align: center;
+}
+
+/* Icons */
+.qp-icon-Catchall{background-image:url('images/bitmap.gif')}
+.qp-icon-ArithmeticExpression{background-image:url('images/arithmetic_expression.gif')}
+.qp-icon-Assert{background-image:url('images/assert.gif')}
+.qp-icon-Assign{background-image:url('images/assign.gif')}
+.qp-icon-Bitmap{background-image:url('images/bitmap.gif')}
+.qp-icon-BookmarkLookup{background-image:url('images/bookmark_lookup.gif')}
+.qp-icon-ClusteredIndexDelete{background-image:url('images/clustered_index_delete.gif')}
+.qp-icon-ClusteredIndexInsert{background-image:url('images/clustered_index_insert.gif')}
+.qp-icon-ClusteredIndexScan{background-image:url('images/clustered_index_scan.gif')}
+.qp-icon-ClusteredIndexSeek{background-image:url('images/clustered_index_seek.gif')}
+.qp-icon-ClusteredIndexUpdate{background-image:url('images/clustered_index_update.gif')}
+.qp-icon-Collapse{background-image:url('images/collapse.gif')}
+.qp-icon-ComputeScalar{background-image:url('images/compute_scalar.gif')}
+.qp-icon-Concatenation{background-image:url('images/concatenation.gif')}
+.qp-icon-ConstantScan{background-image:url('images/constant_scan.gif')}
+.qp-icon-Convert{background-image:url('images/convert.gif')}
+.qp-icon-CursorCatchall{background-image:url('images/bitmap.gif')}
+.qp-icon-Declare{background-image:url('images/declare.gif')}
+.qp-icon-Delete{background-image:url('images/table_delete.gif')}
+.qp-icon-DistributeStreams{background-image:url('images/distribute_streams.gif')}
+.qp-icon-Dynamic{background-image:url('images/dynamic.gif')}
+.qp-icon-EagerSpool{background-image:url('images/spool.gif')}
+.qp-icon-FetchQuery{background-image:url('images/fetch_query.gif')}
+.qp-icon-Filter{background-image:url('images/filter.gif')}
+.qp-icon-GatherStreams{background-image:url('images/gather_streams.gif')}
+.qp-icon-HashMatch{background-image:url('images/hash_match.gif')}
+.qp-icon-HashMatchRoot{background-image:url('images/hash_match.gif')}
+.qp-icon-HashMatchTeam{background-image:url('images/hash_match.gif')}
+.qp-icon-If{background-image:url('images/if.gif')}
+.qp-icon-Insert{background-image:url('images/table_insert.gif')}
+.qp-icon-InsertedScan{background-image:url('images/inserted_scan.gif')}
+.qp-icon-Intrinsic{background-image:url('images/intrinsic.gif')}
+.qp-icon-IteratorCatchall{background-image:url('images/bitmap.gif')}
+.qp-icon-Keyset{background-image:url('images/keyset.gif')}
+.qp-icon-LanguageElementCatchall{background-image:url('images/bitmap.gif')}
+.qp-icon-LazySpool{background-image:url('images/spool.gif')}
+.qp-icon-LogRowScan{background-image:url('images/log_row_scan.gif')}
+.qp-icon-MergeInterval{background-image:url('images/merge_interval.gif')}
+.qp-icon-MergeJoin{background-image:url('images/merge_join.gif')}
+.qp-icon-NestedLoops{background-image:url('images/nested_loops.gif')}
+.qp-icon-NonclusteredIndexDelete{background-image:url('images/nonclustered_index_delete.gif')}
+.qp-icon-NonclusteredIndexInsert{background-image:url('images/nonclustered_index_insert.gif')}
+.qp-icon-NonclusteredIndexScan{background-image:url('images/nonclustered_index_scan.gif')}
+.qp-icon-IndexSeek{background-image:url('images/nonclustered_index_seek.gif')}
+.qp-icon-NonclusteredIndexSpool{background-image:url('images/nonclustered_index_spool.gif')}
+.qp-icon-NonclusteredIndexUpdate{background-image:url('images/nonclustered_index_update.gif')}
+.qp-icon-OnlineIndexInsert{background-image:url('images/online_index_insert.gif')}
+.qp-icon-ParameterTableScan{background-image:url('images/parameter_table_scan.gif')}
+.qp-icon-PopulationQuery{background-image:url('images/population_query.gif')}
+.qp-icon-RdiLookup{background-image:url('images/rdi_lookup.gif')}
+.qp-icon-RefreshQuery{background-image:url('images/refresh_query.gif')}
+.qp-icon-RemoteDelete{background-image:url('images/remote_delete.gif')}
+.qp-icon-RemoteInsert{background-image:url('images/remote_insert.gif')}
+.qp-icon-RemoteQuery{background-image:url('images/remote_query.gif')}
+.qp-icon-RemoteScan{background-image:url('images/remote_scan.gif')}
+.qp-icon-RemoteUpdate{background-image:url('images/remote_update.gif')}
+.qp-icon-RepartitionStreams{background-image:url('images/repartition_streams.gif')}
+.qp-icon-Result{background-image:url('images/result.gif')}
+.qp-icon-RowCountSpool{background-image:url('images/row_count_spool.gif')}
+.qp-icon-Segment{background-image:url('images/segment.gif')}
+.qp-icon-Sequence{background-image:url('images/sequence.gif')}
+.qp-icon-Sequenceproject{background-image:url('images/sequenceproject.gif')}
+.qp-icon-Snapshot{background-image:url('images/snapshot.gif')}
+.qp-icon-Sort{background-image:url('images/sort.gif')}
+.qp-icon-Split{background-image:url('images/split.gif')}
+.qp-icon-Spool{background-image:url('images/spool.gif')}
+.qp-icon-Statement{background-image:url('images/result.gif')}
+.qp-icon-StreamAggregate{background-image:url('images/stream_aggregate.gif')}
+.qp-icon-Switch{background-image:url('images/switch.gif')}
+.qp-icon-TableDelete{background-image:url('images/table_delete.gif')}
+.qp-icon-TableInsert{background-image:url('images/table_insert.gif')}
+.qp-icon-TableScan{background-image:url('images/table_scan.gif')}
+.qp-icon-TableSpool{background-image:url('images/table_spool.gif')}
+.qp-icon-TableUpdate{background-image:url('images/table_update.gif')}
+.qp-icon-TableValuedFunction{background-image:url('images/table_valued_function.gif')}
+.qp-icon-Top{background-image:url('images/top.gif')}
+.qp-icon-Udx{background-image:url('images/udx.gif')}
+.qp-icon-Update{background-image:url('images/table_update.gif.gif')}
+.qp-icon-While{background-image:url('images/while.gif')}
+
+/* Layout - can't touch this */
+.qp-tt
+{
+	position: absolute;
+	display: none;
+	z-index: 1;
+	white-space: normal;
+}
+div.qp-node:hover .qp-tt
+{
+	display: block;
+}
+.qp-tt table
+{
+	white-space: nowrap;
+}
+.qp-node
+{
+	position: relative;
+	white-space: nowrap;
+}
+.qp-tr
+{
+	display: table;
+}
+.qp-tr > div
+{
+	display: table-cell;
+	padding-left: 15px;
+}

@@ -7,11 +7,14 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
+using EnvDTE;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
+using ExecutionPlanVisualizer;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Search;
@@ -40,17 +43,17 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         } 
         //This property must be set by parent window
-        private SqlEditorWindow _parentWindow;
+        private readonly SqlEditorWindow _parentWindow;
         private DatabaseInfo _dbInfo;
         private string _savedFileName;
-        private FontFamily fontFamiliy = new System.Windows.Media.FontFamily("Consolas");
+        private FontFamily fontFamiliy = new FontFamily("Consolas");
         private double fontSize = 14;
-        private EnvDTE.DTE dte = null;
-        private bool ignoreDdlErrors;
-        private bool showResultInGrid;
-        private bool showBinaryValuesInResult;
-        private bool showNullValuesAsNULL;
-        private bool useClassicGrid;
+        public DTE Dte { get; private set; }
+        private bool _ignoreDdlErrors;
+        private bool _showResultInGrid;
+        private bool _showBinaryValuesInResult;
+        private bool _showNullValuesAsNull;
+        private bool _useClassicGrid;
 
         public SqlEditorControl(SqlEditorWindow parentWindow)
         {
@@ -77,10 +80,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     if (value.Length > 10000)
                         SqlTextBox.SyntaxHighlighting = null;
                     SqlTextBox.Text = value;
-                    isDirty = false;
+                    _isDirty = false;
                     if (value.Length <= 10000 && SqlTextBox.SyntaxHighlighting == null)
                         LoadHighlighter();                    
-                    this.Resultspanel.Children.Clear();
+                    Resultspanel.Children.Clear();
                 }
                 else
                 {
@@ -89,18 +92,18 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        private bool isDirty;
+        private bool _isDirty;
 
         public bool IsDirty
         {
             get
             {
-                return isDirty;
+                return _isDirty;
             }
             set
             {
-                isDirty = value;
-                if (value == true)
+                _isDirty = value;
+                if (_isDirty)
                 {
                     _parentWindow.Caption = _dbInfo.Caption + "*";
                 }
@@ -126,18 +129,20 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 }
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
                 if (package == null) return;
-                dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                Dte = package.GetServiceHelper(typeof(DTE)) as DTE;
 
-                toolBar1.Background = toolTray.Background = Helpers.VSThemes.GetCommandBackground();
-                dock1.Background = Helpers.VSThemes.GetWindowBackground();
-                sep4.Background = Helpers.VSThemes.GetToolbarSeparatorBackground();
-                txtSaveAs.Foreground = Helpers.VSThemes.GetWindowText();
-                if (this.DatabaseInfo != null)
-                    this.txtVersion.Text = this.DatabaseInfo.ServerVersion;
+                toolBar1.Background = toolTray.Background = VSThemes.GetCommandBackground();
+                dock1.Background = VSThemes.GetWindowBackground();
+                sep4.Background = VSThemes.GetToolbarSeparatorBackground();
+                txtSaveAs.Foreground = VSThemes.GetWindowText();
+                if (DatabaseInfo != null)
+                    txtVersion.Text = DatabaseInfo.ServerVersion;
                 LoadDefaultOptions();
                 ConfigureOptions();
                 LoadHighlighter();
-                SqlTextBox.TextChanged += new EventHandler(SqlTextBox_TextChanged);
+                //TODO
+                //formsHost.Visibility = Visibility.Collapsed;
+                SqlTextBox.TextChanged += SqlTextBox_TextChanged;
                 //TODO Entry point for Intellisense
                 //SqlTextBox.TextArea.TextEntering += SqlTextBox_TextArea_TextEntering;
                 //SqlTextBox.TextArea.TextEntered += SqlTextBox_TextArea_TextEntered;
@@ -146,16 +151,16 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, true);
+                DataConnectionHelper.SendError(ex, DatabaseInfo != null ? DatabaseInfo.DatabaseType : DatabaseType.SQLServer);
             }
         }
 
         private void LoadDefaultOptions()
         {
-            showResultInGrid = Properties.Settings.Default.ShowResultInGrid;
-            showBinaryValuesInResult = Properties.Settings.Default.ShowBinaryValuesInResult;
-            showNullValuesAsNULL = Properties.Settings.Default.ShowNullValuesAsNULL;
-            useClassicGrid = Properties.Settings.Default.UseClassicGrid;
+            _showResultInGrid = Properties.Settings.Default.ShowResultInGrid;
+            _showBinaryValuesInResult = Properties.Settings.Default.ShowBinaryValuesInResult;
+            _showNullValuesAsNull = Properties.Settings.Default.ShowNullValuesAsNULL;
+            _useClassicGrid = Properties.Settings.Default.UseClassicGrid;
         }
 
         private List<CheckListItem> items = new List<CheckListItem>();
@@ -166,34 +171,34 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
             items.Add(new CheckListItem
                 {
-                    IsChecked = showResultInGrid,
+                    IsChecked = _showResultInGrid,
                     Label = "Show Result in Grid",
                     Tag = "ShowResultInGrid"
                 });            
             items.Add(new CheckListItem
                 {
-                    IsChecked = showBinaryValuesInResult,
+                    IsChecked = _showBinaryValuesInResult,
                     Label = "Show Binary Values in Result",
                     Tag = "ShowBinaryValuesInResult"
                 });
 
             items.Add(new CheckListItem
             {
-                IsChecked = showNullValuesAsNULL,
+                IsChecked = _showNullValuesAsNull,
                 Label = "Show null Values as NULL",
                 Tag = "ShowNullValuesAsNULL"
             });
             items.Add(new CheckListItem
             {
-                IsChecked = ignoreDdlErrors,
+                IsChecked = _ignoreDdlErrors,
                 Label = "Ignore DDL Errors",
-                Tag = "ignoreDdlErrors"
+                Tag = "_ignoreDdlErrors"
             });
             items.Add(new CheckListItem
             {
-                IsChecked = useClassicGrid,
+                IsChecked = _useClassicGrid,
                 Label = "Use classic (plain) grid",
-                Tag = "useClassicGrid"
+                Tag = "_useClassicGrid"
             });
             chkOptions.ItemsSource = null;
             chkOptions.ItemsSource = items;
@@ -206,20 +211,20 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 switch (item.Tag)
                 {
-                    case "ignoreDdlErrors":
-                        ignoreDdlErrors = item.IsChecked;
+                    case "_ignoreDdlErrors":
+                        _ignoreDdlErrors = item.IsChecked;
                         break;
                     case "ShowResultInGrid":
-                        showResultInGrid = item.IsChecked;
+                        _showResultInGrid = item.IsChecked;
                         break;
                     case "ShowBinaryValuesInResult":
-                        showBinaryValuesInResult = item.IsChecked;
+                        _showBinaryValuesInResult = item.IsChecked;
                         break;
                     case "ShowNullValuesAsNULL":
-                        showNullValuesAsNULL = item.IsChecked;
+                        _showNullValuesAsNull = item.IsChecked;
                         break;
-                    case "useClassicGrid":
-                        useClassicGrid = item.IsChecked;
+                    case "_useClassicGrid":
+                        _useClassicGrid = item.IsChecked;
                         break;
                 }
             }
@@ -251,111 +256,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        //CompletionWindow completionWindow;
-        //void SqlTextBox_TextArea_TextEntered(object sender, TextCompositionEventArgs e)
-        //{
-        //    var line = SqlTextBox.Document.GetLineByOffset(SqlTextBox.CaretOffset);
-        //    if (line == null)
-        //        return;
-        //    var segment = new TextSegment { StartOffset = line.Offset, EndOffset = SqlTextBox.CaretOffset };
-        //    if (segment == null)
-        //        return;
-        //    string text = SqlTextBox.Document.GetText(segment);
-        //    if (string.IsNullOrWhiteSpace(text))
-        //        return;
-        //    //if (e.Text.Length > 0 && char.IsLetterOrDigit(e.Text[0]))
-        //    if (e.Text.Length > 0)
-        //    {
-        //        if (text.ToLowerInvariant().EndsWith("from " + e.Text.ToLowerInvariant()))
-        //        {
-        //            // Open code completion after the user has pressed dot:
-        //            completionWindow = new CompletionWindow(SqlTextBox.TextArea);
-        //            completionWindow.StartOffset = SqlTextBox.CaretOffset - 1;
-        //            IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
-        //            //foreach (var item in TableNames)
-        //            //{
-        //            //    data.Add(new MyCompletionData(item));    
-        //            //}
-        //            completionWindow.Show();
-        //            completionWindow.Closed += delegate
-        //            {
-        //                completionWindow = null;
-        //            };
-        //        }
-        //        else if (e.Text == ".")
-        //        {
-        //            // Open code completion after the user has pressed dot:
-        //            completionWindow = new CompletionWindow(SqlTextBox.TextArea);                    
-        //            IList<ICompletionData> data = completionWindow.CompletionList.CompletionData;
-        //            //foreach (var item in TableNames)
-        //            //{
-        //            //    data.Add(new MyCompletionData(item));
-        //            //}
-        //            completionWindow.Show();
-        //            completionWindow.Closed += delegate
-        //            {
-        //                completionWindow = null;
-        //            };
-        //        }
-
-        //    }
-        //}
-
-        //void SqlTextBox_TextArea_TextEntering(object sender, TextCompositionEventArgs e)
-        //{
-        //    if (e.Text.Length > 0 && completionWindow != null)
-        //    {
-        //        if (!char.IsLetterOrDigit(e.Text[0]))
-        //        {
-        //            // Whenever a non-letter is typed while the completion window is open,
-        //            // insert the currently selected element.
-        //            completionWindow.CompletionList.RequestInsertion(e);
-        //        }
-        //    }
-        //    // Do not set e.Handled=true.
-        //    // We still want to insert the character that was typed.
-        //}
-
-
-        ///// Implements AvalonEdit ICompletionData interface to provide the entries in the
-        ///// completion drop down.
-        //private class MyCompletionData : ICompletionData
-        //{
-        //    public MyCompletionData(string text)
-        //    {
-        //        this.Text = text;
-        //    }
-
-        //    public System.Windows.Media.ImageSource Image
-        //    {
-        //        get { return null; }
-        //    }
-
-        //    public string Text { get; private set; }
-
-        //    // Use this property if you want to show a fancy UIElement in the list.
-        //    public object Content
-        //    {
-        //        get { return this.Text; }
-        //    }
-
-        //    public object Description
-        //    {
-        //        get { return "Description for " + this.Text; }
-        //    }
-
-        //    public void Complete(TextArea textArea, ISegment completionSegment,
-        //        EventArgs insertionRequestEventArgs)
-        //    {
-        //        textArea.Document.Replace(completionSegment, "[" + this.Text + "]");
-        //    }
-
-        //    public double Priority
-        //    {
-        //        get { return 0; }
-        //    }
-        //}
-
         private void SqlEditorControl_OnGotFocus(object sender, RoutedEventArgs e)
         {
             if (DatabaseInfo != null && DatabaseInfo.DatabaseType == DatabaseType.SQLite)
@@ -369,25 +269,25 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
-            Helpers.DataConnectionHelper.LogUsage("EditorNew");
+            DataConnectionHelper.LogUsage("EditorNew");
             OpenSqlEditorToolWindow();
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
-            Helpers.DataConnectionHelper.LogUsage("EditorOpen");
+            DataConnectionHelper.LogUsage("EditorOpen");
             OpenScript();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            Helpers.DataConnectionHelper.LogUsage("EditorSave");
+            DataConnectionHelper.LogUsage("EditorSave");
             SaveScript(false);
         }
 
         private void SaveAsButton_Click(object sender, RoutedEventArgs e)
         {
-            Helpers.DataConnectionHelper.LogUsage("EditorSave");
+            DataConnectionHelper.LogUsage("EditorSave");
             SaveScript(true);
         }
 
@@ -400,7 +300,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             if (string.IsNullOrWhiteSpace(SqlText))
                 return;
-            Helpers.DataConnectionHelper.LogUsage("EditorExecute");
+            DataConnectionHelper.LogUsage("EditorExecute");
             ExecuteSqlScriptInEditor();
         }
 
@@ -412,18 +312,15 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void ExecuteWithPlanButton_Click(object sender, RoutedEventArgs e)
         {
-            Helpers.DataConnectionHelper.LogUsage("EditorExecuteWithPlan");
+            DataConnectionHelper.LogUsage("EditorExecuteWithPlan");
             if (string.IsNullOrWhiteSpace(SqlText))
                 return;
             try
             {
-                using (var repository = Helpers.DataConnectionHelper.CreateRepository(DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
-                    var textBox = new TextBox();
-                    textBox.FontFamily = fontFamiliy;
-                    textBox.FontSize = fontSize;
-                    string sql = GetSqlFromSqlEditorTextBox();
-                    string showPlan = string.Empty;
+                    var sql = GetSqlFromSqlEditorTextBox();
+                    string showPlan;
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     var dataset = repository.ExecuteSql(sql, out showPlan);
@@ -437,20 +334,20 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     {
                         TryLaunchSqlplan(showPlan);
                     }
-                    catch (System.ComponentModel.Win32Exception)
+                    catch (Win32Exception)
                     {
                         EnvDTEHelper.ShowError("This feature requires Visual Studio 2010 Premium / SQL Server Management Studio to be installed");
                     }
                     catch (Exception ex)
                     {
-                        Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
+                        DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
                     }
 
                 }
             }
             catch (Exception ex)
             {
-                ParseSqlErrorToResultsBox(Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
+                ParseSqlErrorToResultsBox(DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
             }
         }
 
@@ -460,43 +357,57 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 if (DatabaseInfo.DatabaseType == DatabaseType.SQLite)
                 {
-                    var textBox = new TextBox();
-                    textBox.FontFamily = fontFamiliy;
-                    textBox.FontSize = fontSize;
-                    textBox.Text = showPlan;
+                    var textBox = new TextBox
+                    {
+                        FontFamily = fontFamiliy,
+                        FontSize = fontSize,
+                        Text = showPlan
+                    };
                     ClearResults();
-                    this.Resultspanel.Children.Add(textBox);
-                    this.tab1.Visibility = System.Windows.Visibility.Collapsed;
+                    Resultspanel.Children.Add(textBox);
+                    tab1.Visibility = Visibility.Collapsed;
                     resultsTabControl.SelectedIndex = 1;
                 }
                 else
                 {
-                    var fileName = System.IO.Path.GetTempFileName();
-                    fileName = fileName + ".sqlplan";
-                    System.IO.File.WriteAllText(fileName, showPlan);
-                    // If Data Dude is available
-                    var pkg = _parentWindow.Package as SqlCeToolboxPackage;
-                    if (pkg.VSSupportsSqlPlan())
+                    PlanPanel.Children.Clear();
+                    var formsHost = new WindowsFormsHost();
+                    formsHost.Child = new QueryPlanUserControl();
+                    PlanPanel.Children.Add(formsHost);
+
+                    var qpControl = (QueryPlanUserControl) formsHost.Child;
+                    if (qpControl != null)
                     {
-                        dte.ItemOperations.OpenFile(fileName);
-                        dte.ActiveDocument.Activate();
+                        var planHtml = QueryPlanVisualizer.BuildPlanHtmml(showPlan);
+                        qpControl.DisplayExecutionPlanDetails(showPlan, planHtml);
                     }
-                    else
-                    {
-                        // Just try to start SSMS
-                        using (RegistryKey rkRoot = Registry.ClassesRoot)
-                        {
-                            RegistryKey rkFileType = rkRoot.OpenSubKey(".sqlplan");
-                            if (rkFileType != null)
-                            {
-                                System.Diagnostics.Process.Start(fileName);
-                            }
-                            else
-                            {
-                                EnvDTEHelper.ShowError("No application that can open .sqlplan files is installed, you could install SSMS 2012 SP1 Express");
-                            }
-                        }
-                    }
+
+                    //var fileName = System.IO.Path.GetTempFileName();
+                    //fileName = fileName + ".sqlplan";
+                    //System.IO.File.WriteAllText(fileName, showPlan);
+                    //// If Data Dude is available
+                    //var pkg = _parentWindow.Package as SqlCeToolboxPackage;
+                    //if (pkg.VSSupportsSqlPlan())
+                    //{
+                    //    _dte.ItemOperations.OpenFile(fileName);
+                    //    _dte.ActiveDocument.Activate();
+                    //}
+                    //else
+                    //{
+                    //    // Just try to start SSMS
+                    //    using (RegistryKey rkRoot = Registry.ClassesRoot)
+                    //    {
+                    //        RegistryKey rkFileType = rkRoot.OpenSubKey(".sqlplan");
+                    //        if (rkFileType != null)
+                    //        {
+                    //            System.Diagnostics.Process.Start(fileName);
+                    //        }
+                    //        else
+                    //        {
+                    //            EnvDTEHelper.ShowError("No application that can open .sqlplan files is installed, you could install SSMS 2012 SP1 Express");
+                    //        }
+                    //    }
+                    //}
                 }
             }
         }
@@ -505,10 +416,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             if (string.IsNullOrWhiteSpace(SqlText))
                 return;
-            Helpers.DataConnectionHelper.LogUsage("EditorParse");
+            DataConnectionHelper.LogUsage("EditorParse");
             try
             {
-                using (var repository = Helpers.DataConnectionHelper.CreateRepository(DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var textBox = new TextBox();
                     textBox.FontFamily = fontFamiliy;
@@ -517,61 +428,62 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     repository.ParseSql(sql);
                     textBox.Text = "Statement(s) in script parsed and seems OK!";
                     ClearResults();
-                    this.Resultspanel.Children.Add(textBox);
+                    Resultspanel.Children.Add(textBox);
+                    tab2.Focus();
                 }
             }
             catch (Exception ex)
             {
-                ParseSqlErrorToResultsBox(Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
+                ParseSqlErrorToResultsBox(DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
             }
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
+#pragma warning disable 618
             SearchPanel sPanel = new SearchPanel();
-            sPanel.Attach(SqlTextBox.TextArea);
+            if (SqlTextBox != null) sPanel.Attach(SqlTextBox.TextArea);
+#pragma warning restore 618
         }
 
         private void ClearResults()
         {
-            tab1.Visibility = System.Windows.Visibility.Visible;
-            tab2.Visibility = System.Windows.Visibility.Visible;
+            tab1.Visibility = Visibility.Visible;
+            tab2.Visibility = Visibility.Visible;
             tab2.Header = "Messages";
-            this.GridPanel.Children.Clear();
-            this.Resultspanel.Children.Clear();
+            GridPanel.Children.Clear();
+            Resultspanel.Children.Clear();
+            PlanPanel.Children.Clear();
         }
 
         private void ShowPlanButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(SqlText))
                 return;
-            Helpers.DataConnectionHelper.LogUsage("EditorShowPlan");
+            DataConnectionHelper.LogUsage("EditorShowPlan");
             try
             {
-                using (var repository = Helpers.DataConnectionHelper.CreateRepository(DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
-                    var textBox = new TextBox();
-                    textBox.FontFamily = fontFamiliy;
-                    textBox.FontSize = fontSize;
                     string sql = GetSqlFromSqlEditorTextBox();
                     string showPlan = repository.ParseSql(sql);
                     try
                     {
                         TryLaunchSqlplan(showPlan);
                     }
-                    catch (System.ComponentModel.Win32Exception)
+                    catch (Win32Exception)
                     {
                         EnvDTEHelper.ShowError("This feature requires Visual Studio 2010 Premium / SQL Server Management Studio to be installed");
                     }
                     catch (Exception ex)
                     {
-                        Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
+                        DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
                     }
                 }
             }
             catch (Exception sqlException)
             {
-                ParseSqlErrorToResultsBox(Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
+                ParseSqlErrorToResultsBox(DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
             }
         }
 
@@ -580,27 +492,26 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private void FormatTime(Stopwatch sw)
         {
             var ts = new TimeSpan(sw.ElapsedTicks);
-            this.txtTime.Text = string.Format("Duration: {0:00}:{1:00}.{2:000}", ts.Minutes, ts.Seconds, ts.Milliseconds);
+            txtTime.Text = string.Format("Duration: {0:00}:{1:00}.{2:000}", ts.Minutes, ts.Seconds, ts.Milliseconds);
         }
 
         public void OpenScript()
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "SQL Server Compact Script (*.sqlce;*.sql)|*.sqlce;*.sql|All Files(*.*)|*.*";
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Filter = "SQL Server Compact Script (*.sqlce;*.sql)|*.sqlce;*.sql|All Files(*.*)|*.*",
+                CheckFileExists = true,
+                Multiselect = false,
+                Title = "Select Script to Open"
+            };
             if (DatabaseInfo.DatabaseType == DatabaseType.SQLite)
             {
                 ofd.Filter = "SQLite Script (*.sql)|*.sql|All Files(*.*)|*.*";
             }
-            ofd.CheckFileExists = true;
-            ofd.Multiselect = false;
-            ofd.ValidateNames = true;
-            ofd.Title = "Select Script to Open";
-            if (ofd.ShowDialog() == true)
-            {
-                this.SqlText = System.IO.File.ReadAllText(ofd.FileName);
-                _savedFileName = ofd.FileName;
-                IsDirty = false;
-            }
+            if (ofd.ShowDialog() != true) return;
+            SqlText = File.ReadAllText(ofd.FileName);
+            _savedFileName = ofd.FileName;
+            IsDirty = false;
         }
 
         public void SaveScript(bool promptForName)
@@ -617,14 +528,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 sfd.Title = "Save script as";
                 if (sfd.ShowDialog() == true)
                 {
-                    System.IO.File.WriteAllText(sfd.FileName, this.SqlText);
+                    File.WriteAllText(sfd.FileName, SqlText, Encoding.UTF8);
                     _savedFileName = sfd.FileName;
                     IsDirty = false;
                 }
             }
             else
             {
-                System.IO.File.WriteAllText(_savedFileName, this.SqlText);
+                File.WriteAllText(_savedFileName, SqlText, Encoding.UTF8);
                 IsDirty = false;
             }
         }
@@ -633,36 +544,31 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             try
             {
-
-                using (var repository = Helpers.DataConnectionHelper.CreateRepository(DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
-                    bool schemaChanged = false;
+                    bool schemaChanged;
                     if (sql.Length == 0) return;
                     sql = sql.Replace("\r", " \r");
                     sql = sql.Replace("GO  \r", "GO\r");
                     sql = sql.Replace("GO \r", "GO\r");
-                    Stopwatch sw = new Stopwatch();
+                    var sw = new Stopwatch();
                     sw.Start();
-                    var dataset = repository.ExecuteSql(sql, out schemaChanged, ignoreDdlErrors);
+                    var dataset = repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors);
                     sw.Stop();
                     FormatTime(sw);
-                    if (dataset != null)
+                    if (dataset == null) return;
+                    ParseDataSetResultsToResultsBox(dataset);
+                    if (!schemaChanged) return;
+                    if (ExplorerControl != null)
                     {
-                        ParseDataSetResultsToResultsBox(dataset);
-                        if (schemaChanged)
-                        {
-                            if (ExplorerControl != null)
-                            {
-                                ExplorerControl.RefreshTables(DatabaseInfo);
-                            }
-                        }
+                        ExplorerControl.RefreshTables(DatabaseInfo);
                     }
                 }
             }
             catch (Exception sqlException)
             {
-                ParseSqlErrorToResultsBox(Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
+                ParseSqlErrorToResultsBox(DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
             }
         }
 
@@ -687,8 +593,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             textBox.FontFamily = fontFamiliy;
             textBox.FontSize = fontSize;
             textBox.Text = sqlException;
-            this.Resultspanel.Children.Add(textBox);
-            this.tab1.Visibility = System.Windows.Visibility.Collapsed;
+            Resultspanel.Children.Add(textBox);
+            tab1.Visibility = Visibility.Collapsed;
             resultsTabControl.SelectedIndex = 1;
         }
 
@@ -698,7 +604,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
             foreach (DataTable table in dataset.Tables)
             {
-                this.txtTime.Text = this.txtTime.Text + " / " + table.Rows.Count.ToString() + " rows ";
+                txtTime.Text = txtTime.Text + " / " + table.Rows.Count + " rows ";
                 var textBox = new TextBox();
                 textBox.FontFamily = fontFamiliy;
                 textBox.FontSize = fontSize;
@@ -707,33 +613,33 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 if (table.Rows.Count == 0)
                 {
                     textBox.Text = string.Format("{0} rows affected", table.MinimumCapacity);
-                    this.Resultspanel.Children.Add(textBox);
+                    Resultspanel.Children.Add(textBox);
                     resultsTabControl.SelectedIndex = 1;
                 }
                 else
                 {
-                    if (showResultInGrid)
+                    if (_showResultInGrid)
                     {
-                        if (useClassicGrid)
+                        if (_useClassicGrid)
                         {
                             var grid = BuildPlainGrid(table);
                             DockPanel.SetDock(grid, Dock.Top);
-                            this.GridPanel.Children.Add(grid);
+                            GridPanel.Children.Add(grid);
                         }
                         else
                         {
                             var grid = new ExtEditControl();
                             grid.SourceTable = table;
                             DockPanel.SetDock(grid, Dock.Top);
-                            this.GridPanel.Children.Add(grid);
+                            GridPanel.Children.Add(grid);
                         }
                         resultsTabControl.SelectedIndex = 0;
                     }
                     else
                     {
-                        this.tab1.Visibility = System.Windows.Visibility.Collapsed;
-                        this.tab2.Header = "Results";
-                        this.resultsTabControl.SelectedIndex = 1;
+                        tab1.Visibility = Visibility.Collapsed;
+                        tab2.Header = "Results";
+                        resultsTabControl.SelectedIndex = 1;
                         var results = new StringBuilder();
                         foreach (var column in table.Columns)
                         {
@@ -748,7 +654,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                             {
                                 if (item == DBNull.Value)
                                 {
-                                    if (showNullValuesAsNULL)
+                                    if (_showNullValuesAsNull)
                                     {
                                         results.Append("NULL\t");
                                     }
@@ -758,11 +664,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                                     }
                                 }
                                 //This formatting is optional (causes perf degradation)
-                                else if (item.GetType() == typeof(byte[]) && showBinaryValuesInResult)
+                                else if (item.GetType() == typeof(byte[]) && _showBinaryValuesInResult)
                                 {
                                     var buffer = (byte[])item;
                                     results.Append("0x");
-                                    for (int i = 0; i < buffer.Length; i++)
+                                    for (var i = 0; i < buffer.Length; i++)
                                     {
                                         results.Append(buffer[i].ToString("X2", System.Globalization.CultureInfo.InvariantCulture));
                                     }
@@ -786,12 +692,12 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                             results.Append(Environment.NewLine);
                         }
                         textBox.Text = results.ToString();
-                        this.Resultspanel.Children.Add(textBox);
+                        Resultspanel.Children.Add(textBox);
                     }
                 }
             }
 
-            if (showResultInGrid && this.GridPanel.Children.Count > 0)
+            if (_showResultInGrid && GridPanel.Children.Count > 0)
             {
                 resultsTabControl.SelectedIndex = 0;
             }
@@ -799,14 +705,16 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private DataGrid BuildPlainGrid(DataTable table)
         {
-            var grid = new DataGrid();
-            grid.AutoGenerateColumns = true;
+            var grid = new DataGrid
+            {
+                AutoGenerateColumns = true,
+                IsReadOnly = true,
+                FontSize = fontSize,
+                FontFamily = fontFamiliy,
+                ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader,
+                ItemsSource = ((IListSource) table).GetList()
+            };
             grid.AutoGeneratingColumn += grid_AutoGeneratingColumn;
-            grid.IsReadOnly = true;
-            grid.FontSize = fontSize;
-            grid.FontFamily = fontFamiliy;
-            grid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-            grid.ItemsSource = ((IListSource)table).GetList();
             return grid;
         }
 
@@ -817,7 +725,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {   
                 e.Column.Header = e.Column.Header.ToString().Replace("_", "__");   
             }   
-            if (showNullValuesAsNULL)   
+            if (_showNullValuesAsNull)   
             {   
                 ((DataGridBoundColumn)e.Column).Binding.TargetNullValue = "NULL";   
             }   
@@ -827,11 +735,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             try
             {
-                if (this.GridPanel.Children.Count > 0)
+                if (GridPanel.Children.Count > 0)
                 {
-                    DataGrid dataGrid = FindDataGrid();
+                    var dataGrid = FindDataGrid();
                     if (dataGrid == null) return;
-                    SaveFileDialog sfd = new SaveFileDialog();
+                    var sfd = new SaveFileDialog();
                     sfd.Filter = "CSV file (*.csv)|*.csv|All Files(*.*)|*.*";
                     sfd.ValidateNames = true;
                     sfd.Title = "Save result as CSV";
@@ -847,11 +755,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     }
                     return;
                 }
-                if (this.Resultspanel.Children.Count > 0)
+                if (Resultspanel.Children.Count > 0)
                 {
                     var textBox = Resultspanel.Children[0] as TextBox;
                     if (textBox == null) return;
-                    SaveFileDialog sfd = new SaveFileDialog();
+                    var sfd = new SaveFileDialog();
                     sfd.Filter = "CSV file (*.csv)|*.csv|All Files(*.*)|*.*";
                     sfd.ValidateNames = true;
                     sfd.Title = "Save result as CSV";
@@ -865,7 +773,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, true);
+                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType);
             }
         }
 
@@ -894,12 +802,15 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 Debug.Assert(pkg != null, "Package property of the Explorere Tool Window should never be null, have you tried to create it manually and not through FindToolWindow()?");
                 var sqlEditorWindow = pkg.CreateWindow<SqlEditorWindow>();
                 var control = sqlEditorWindow.Content as SqlEditorControl;
-                control.DatabaseInfo = DatabaseInfo;
-                control.ExplorerControl = ExplorerControl;
+                if (control != null)
+                {
+                    control.DatabaseInfo = DatabaseInfo;
+                    control.ExplorerControl = ExplorerControl;
+                }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType);
+                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType);
             }
         }
 
@@ -908,7 +819,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             var package = _parentWindow.Package as SqlCeToolboxPackage;
             if (package == null) return;
             package.ShowOptionPage(typeof(OptionsPageGeneral));
-            Helpers.DataConnectionHelper.LogUsage("ToolbarOptions");
+            DataConnectionHelper.LogUsage("ToolbarOptions");
         }
     }
 }

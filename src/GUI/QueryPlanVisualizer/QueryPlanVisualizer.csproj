@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DF42BBC7-9733-4FD3-9758-13A1F657CFBB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ExecutionPlanVisualizer</RootNamespace>
+    <AssemblyName>QueryPlanVisualizer</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="QueryPlanProcessor.cs" />
+    <Compile Include="QueryPlanUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="QueryPlanUserControl.Designer.cs">
+      <DependentUpon>QueryPlanUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QueryPlanVisualizer.cs" />
+    <Compile Include="XmlUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Key.snk" />
+    <None Include="Properties\DataSources\MissingIndexDetails.datasource" />
+    <None Include="Resources\showplanxml.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qp.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qp.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qp.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\template.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\jquery-1.12.1.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="QueryPlanUserControl.resx">
+      <DependentUpon>QueryPlanUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\images\arithmetic_expression.gif" />
+    <EmbeddedResource Include="Resources\images\assert.gif" />
+    <EmbeddedResource Include="Resources\images\assign.gif" />
+    <EmbeddedResource Include="Resources\images\bitmap.gif" />
+    <EmbeddedResource Include="Resources\images\bookmark_lookup.gif" />
+    <EmbeddedResource Include="Resources\images\clustered_index_delete.gif" />
+    <EmbeddedResource Include="Resources\images\clustered_index_insert.gif" />
+    <EmbeddedResource Include="Resources\images\clustered_index_scan.gif" />
+    <EmbeddedResource Include="Resources\images\clustered_index_seek.gif" />
+    <EmbeddedResource Include="Resources\images\clustered_index_update.gif" />
+    <EmbeddedResource Include="Resources\images\collapse.gif" />
+    <EmbeddedResource Include="Resources\images\compute_scalar.gif" />
+    <EmbeddedResource Include="Resources\images\concatenation.gif" />
+    <EmbeddedResource Include="Resources\images\constant_scan.gif" />
+    <EmbeddedResource Include="Resources\images\convert.gif" />
+    <EmbeddedResource Include="Resources\images\declare.gif" />
+    <EmbeddedResource Include="Resources\images\deleted_scan.gif" />
+    <EmbeddedResource Include="Resources\images\distribute_streams.gif" />
+    <EmbeddedResource Include="Resources\images\dynamic.gif" />
+    <EmbeddedResource Include="Resources\images\fetch_query.gif" />
+    <EmbeddedResource Include="Resources\images\filter.gif" />
+    <EmbeddedResource Include="Resources\images\gather_streams.gif" />
+    <EmbeddedResource Include="Resources\images\hash_match.gif" />
+    <EmbeddedResource Include="Resources\images\if.gif" />
+    <EmbeddedResource Include="Resources\images\inserted_scan.gif" />
+    <EmbeddedResource Include="Resources\images\intrinsic.gif" />
+    <EmbeddedResource Include="Resources\images\keyset.gif" />
+    <EmbeddedResource Include="Resources\images\log_row_scan.gif" />
+    <EmbeddedResource Include="Resources\images\merge_interval.gif" />
+    <EmbeddedResource Include="Resources\images\merge_join.gif" />
+    <EmbeddedResource Include="Resources\images\nested_loops.gif" />
+    <EmbeddedResource Include="Resources\images\nonclustered_index_delete.gif" />
+    <EmbeddedResource Include="Resources\images\nonclustered_index_insert.gif" />
+    <EmbeddedResource Include="Resources\images\nonclustered_index_scan.gif" />
+    <EmbeddedResource Include="Resources\images\nonclustered_index_seek.gif" />
+    <EmbeddedResource Include="Resources\images\nonclustered_index_spool.gif" />
+    <EmbeddedResource Include="Resources\images\nonclustered_index_update.gif" />
+    <EmbeddedResource Include="Resources\images\online_index_insert.gif" />
+    <EmbeddedResource Include="Resources\images\parameter_table_scan.gif" />
+    <EmbeddedResource Include="Resources\images\population_query.gif" />
+    <EmbeddedResource Include="Resources\images\rdi_lookup.gif" />
+    <EmbeddedResource Include="Resources\images\refresh_query.gif" />
+    <EmbeddedResource Include="Resources\images\remote_delete.gif" />
+    <EmbeddedResource Include="Resources\images\remote_insert.gif" />
+    <EmbeddedResource Include="Resources\images\remote_query.gif" />
+    <EmbeddedResource Include="Resources\images\remote_scan.gif" />
+    <EmbeddedResource Include="Resources\images\remote_update.gif" />
+    <EmbeddedResource Include="Resources\images\repartition_streams.gif" />
+    <EmbeddedResource Include="Resources\images\result.gif" />
+    <EmbeddedResource Include="Resources\images\row_count_spool.gif" />
+    <EmbeddedResource Include="Resources\images\segment.gif" />
+    <EmbeddedResource Include="Resources\images\sequence.gif" />
+    <EmbeddedResource Include="Resources\images\sequenceproject.gif" />
+    <EmbeddedResource Include="Resources\images\snapshot.gif" />
+    <EmbeddedResource Include="Resources\images\sort.gif" />
+    <EmbeddedResource Include="Resources\images\split.gif" />
+    <EmbeddedResource Include="Resources\images\spool.gif" />
+    <EmbeddedResource Include="Resources\images\stream_aggregate.gif" />
+    <EmbeddedResource Include="Resources\images\switch.gif" />
+    <EmbeddedResource Include="Resources\images\table_delete.gif" />
+    <EmbeddedResource Include="Resources\images\table_insert.gif" />
+    <EmbeddedResource Include="Resources\images\table_scan.gif" />
+    <EmbeddedResource Include="Resources\images\table_spool.gif" />
+    <EmbeddedResource Include="Resources\images\table_update.gif" />
+    <EmbeddedResource Include="Resources\images\table_valued_function.gif" />
+    <EmbeddedResource Include="Resources\images\top.gif" />
+    <EmbeddedResource Include="Resources\images\udx.gif" />
+    <EmbeddedResource Include="Resources\images\while.gif" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
