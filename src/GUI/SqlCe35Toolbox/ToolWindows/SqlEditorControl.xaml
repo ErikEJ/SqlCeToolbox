@@ -108,6 +108,10 @@
                             <DockPanel x:Name="Resultspanel" LastChildFill="False" />
                         </ScrollViewer>
                     </TabItem>
+                    <TabItem x:Name="tab3" Header="Execution Plan">
+                        <DockPanel x:Name="PlanPanel"/>
+                    </TabItem>
+
                 </TabControl>
                 
                 <!--<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
