@@ -63,11 +63,11 @@ namespace ExecutionPlanVisualizer
         }
 
 
-        public void DisplayExecutionPlanDetails(string planXml, string planHtml)
+        public void DisplayExecutionPlanDetails(string planXml, string planHtml, string caption)
         {
             _planXml = planXml;
-
             webBrowser.DocumentText = planHtml;
+            planTabPage.Text = caption;
         }
     }
 }

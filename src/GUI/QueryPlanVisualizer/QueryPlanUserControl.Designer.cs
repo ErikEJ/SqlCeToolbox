@@ -48,7 +48,6 @@
             // 
             // webBrowser
             // 
-            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webBrowser.Location = new System.Drawing.Point(3, 3);
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
@@ -85,7 +84,7 @@
             // planSavedLabel
             // 
             this.planSavedLabel.AutoSize = true;
-            this.planSavedLabel.Location = new System.Drawing.Point(365, 0);
+            this.planSavedLabel.Location = new System.Drawing.Point(364, 5);
             this.planSavedLabel.Name = "planSavedLabel";
             this.planSavedLabel.Size = new System.Drawing.Size(80, 13);
             this.planSavedLabel.TabIndex = 3;
@@ -95,7 +94,7 @@
             // planLocationLinkLabel
             // 
             this.planLocationLinkLabel.AutoSize = true;
-            this.planLocationLinkLabel.Location = new System.Drawing.Point(441, 0);
+            this.planLocationLinkLabel.Location = new System.Drawing.Point(450, 5);
             this.planLocationLinkLabel.Name = "planLocationLinkLabel";
             this.planLocationLinkLabel.Size = new System.Drawing.Size(117, 13);
             this.planLocationLinkLabel.TabIndex = 4;

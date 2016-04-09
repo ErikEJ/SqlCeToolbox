@@ -332,11 +332,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     }
                     try
                     {
-                        TryLaunchSqlplan(showPlan);
-                    }
-                    catch (Win32Exception)
-                    {
-                        EnvDTEHelper.ShowError("This feature requires Visual Studio 2010 Premium / SQL Server Management Studio to be installed");
+                        TryLaunchSqlplan(showPlan, false);
                     }
                     catch (Exception ex)
                     {
@@ -351,7 +347,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        private void TryLaunchSqlplan(string showPlan)
+        private void TryLaunchSqlplan(string showPlan, bool isEstimatedPlan)
         {
             if (!string.IsNullOrWhiteSpace(showPlan))
             {
@@ -378,36 +374,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var qpControl = (QueryPlanUserControl) formsHost.Child;
                     if (qpControl != null)
                     {
+                        var caption = isEstimatedPlan ? "Estimated Plan" : "Actual Plan";
                         var planHtml = QueryPlanVisualizer.BuildPlanHtmml(showPlan);
-                        qpControl.DisplayExecutionPlanDetails(showPlan, planHtml);
+                        qpControl.DisplayExecutionPlanDetails(showPlan, planHtml, caption);
                     }
-
-                    //var fileName = System.IO.Path.GetTempFileName();
-                    //fileName = fileName + ".sqlplan";
-                    //System.IO.File.WriteAllText(fileName, showPlan);
-                    //// If Data Dude is available
-                    //var pkg = _parentWindow.Package as SqlCeToolboxPackage;
-                    //if (pkg.VSSupportsSqlPlan())
-                    //{
-                    //    _dte.ItemOperations.OpenFile(fileName);
-                    //    _dte.ActiveDocument.Activate();
-                    //}
-                    //else
-                    //{
-                    //    // Just try to start SSMS
-                    //    using (RegistryKey rkRoot = Registry.ClassesRoot)
-                    //    {
-                    //        RegistryKey rkFileType = rkRoot.OpenSubKey(".sqlplan");
-                    //        if (rkFileType != null)
-                    //        {
-                    //            System.Diagnostics.Process.Start(fileName);
-                    //        }
-                    //        else
-                    //        {
-                    //            EnvDTEHelper.ShowError("No application that can open .sqlplan files is installed, you could install SSMS 2012 SP1 Express");
-                    //        }
-                    //    }
-                    //}
                 }
             }
         }
@@ -469,11 +439,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     string showPlan = repository.ParseSql(sql);
                     try
                     {
-                        TryLaunchSqlplan(showPlan);
-                    }
-                    catch (Win32Exception)
-                    {
-                        EnvDTEHelper.ShowError("This feature requires Visual Studio 2010 Premium / SQL Server Management Studio to be installed");
+                        TryLaunchSqlplan(showPlan, true);
                     }
                     catch (Exception ex)
                     {
