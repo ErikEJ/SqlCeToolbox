@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -38,12 +37,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var path = DataConnectionHelper.GetFilePath(databaseInfo.DatabaseInfo.ConnectionString, databaseInfo.DatabaseInfo.DatabaseType);
                 Clipboard.Clear();
-                Clipboard.SetData(DataFormats.FileDrop, new String[] { path });
-                Helpers.DataConnectionHelper.LogUsage("DatabaseCopy");
+                Clipboard.SetData(DataFormats.FileDrop, new[] { path });
+                DataConnectionHelper.LogUsage("DatabaseCopy");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
             }
         }
 
@@ -56,29 +55,29 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 if (databaseInfo.DatabaseInfo.FromServerExplorer)
                 {
-                    Guid provider = new Guid(Resources.SqlCompact40Provider);
+                    var provider = new Guid(Resources.SqlCompact40Provider);
                     if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35)
                     {
                         provider = new Guid(Resources.SqlCompact35Provider);
                     }
-                    if (!Helpers.DataConnectionHelper.DDEXProviderIsInstalled(provider))
+                    if (!DataConnectionHelper.DDEXProviderIsInstalled(provider))
                     {
                         EnvDTEHelper.ShowError("The DDEX provider is not installed, cannot remove connection");
                         return;
                     }            
-                    Helpers.DataConnectionHelper.RemoveDataConnection(package, databaseInfo.DatabaseInfo.ConnectionString, provider);
+                    DataConnectionHelper.RemoveDataConnection(package, databaseInfo.DatabaseInfo.ConnectionString, provider);
                 }
                 else
                 {
-                    Helpers.DataConnectionHelper.RemoveDataConnection(databaseInfo.DatabaseInfo.ConnectionString);
+                    DataConnectionHelper.RemoveDataConnection(databaseInfo.DatabaseInfo.ConnectionString);
                 }
-                ExplorerControl control = _parentWindow.Content as ExplorerControl;
-                control.BuildDatabaseTree();
-                Helpers.DataConnectionHelper.LogUsage("DatabaseRemoveCe");
+                var control = _parentWindow.Content as ExplorerControl;
+                if (control != null) control.BuildDatabaseTree();
+                DataConnectionHelper.LogUsage("DatabaseRemoveCe");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
             }
         }
 
@@ -89,19 +88,19 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo.DatabaseInfo.FromServerExplorer) return;
             try
             {
-                RenameDialog ro = new RenameDialog(databaseInfo.DatabaseInfo.Caption);
+                var ro = new RenameDialog(databaseInfo.DatabaseInfo.Caption);
                 ro.ShowModal();
-                if (ro.DialogResult.HasValue && ro.DialogResult.Value == true && !string.IsNullOrWhiteSpace(ro.NewName) && !databaseInfo.DatabaseInfo.Caption.Equals(ro.NewName))
+                if (ro.DialogResult.HasValue && ro.DialogResult.Value && !string.IsNullOrWhiteSpace(ro.NewName) && !databaseInfo.DatabaseInfo.Caption.Equals(ro.NewName))
                 {
-                    Helpers.DataConnectionHelper.RenameDataConnection(databaseInfo.DatabaseInfo.ConnectionString, ro.NewName);
-                    ExplorerControl control = _parentWindow.Content as ExplorerControl;
-                    control.BuildDatabaseTree();
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseRenameConnection");
+                    DataConnectionHelper.RenameDataConnection(databaseInfo.DatabaseInfo.ConnectionString, ro.NewName);
+                    var control = _parentWindow.Content as ExplorerControl;
+                    if (control != null) control.BuildDatabaseTree();
+                    DataConnectionHelper.LogUsage("DatabaseRenameConnection");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
             }
         }
 
@@ -116,36 +115,34 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var dbInfo = databaseInfo.DatabaseInfo;
                 var pwd = new PasswordDialog();
                 pwd.ShowModal();
-                if (pwd.DialogResult.HasValue && pwd.DialogResult.Value)
+                if (!pwd.DialogResult.HasValue || !pwd.DialogResult.Value) return;
+                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var newConnectionString = helper.ChangeDatabasePassword(databaseInfo.DatabaseInfo.ConnectionString, pwd.Password);
+                if (dbInfo.FromServerExplorer)
                 {
-                    var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
-                    var newConnectionString = helper.ChangeDatabasePassword(databaseInfo.DatabaseInfo.ConnectionString, pwd.Password);
-                    if (dbInfo.FromServerExplorer)
-                    {
-                        var providerId = Resources.SqlCompact35Provider;
-                        if (dbInfo.DatabaseType == DatabaseType.SQLCE40)
-                            providerId = Resources.SqlCompact40Provider;
-                        DataConnectionHelper.RemoveDataConnection(package, dbInfo.ConnectionString, new Guid(providerId));
-                    }
-                    else
-                    {
-                        DataConnectionHelper.RemoveDataConnection(databaseInfo.DatabaseInfo.ConnectionString);
-                    }
-
-                    if (!string.IsNullOrEmpty(newConnectionString))
-                    {
-                        DataConnectionHelper.SaveDataConnection(newConnectionString, dbInfo.DatabaseType, package);
-                        EnvDTEHelper.ShowMessage("Password was set, and connection updated");
-                    }
-                    else
-                    {
-                        EnvDTEHelper.ShowMessage("Password was set, but could not update connection, please reconnect the database");
-                    }
-
-                    var control = _parentWindow.Content as ExplorerControl;
-                    if (control != null) control.BuildDatabaseTree();
-                    DataConnectionHelper.LogUsage("DatabaseMaintainSetPassword");                    
+                    var providerId = Resources.SqlCompact35Provider;
+                    if (dbInfo.DatabaseType == DatabaseType.SQLCE40)
+                        providerId = Resources.SqlCompact40Provider;
+                    DataConnectionHelper.RemoveDataConnection(package, dbInfo.ConnectionString, new Guid(providerId));
                 }
+                else
+                {
+                    DataConnectionHelper.RemoveDataConnection(databaseInfo.DatabaseInfo.ConnectionString);
+                }
+
+                if (!string.IsNullOrEmpty(newConnectionString))
+                {
+                    DataConnectionHelper.SaveDataConnection(newConnectionString, dbInfo.DatabaseType, package);
+                    EnvDTEHelper.ShowMessage("Password was set, and connection updated");
+                }
+                else
+                {
+                    EnvDTEHelper.ShowMessage("Password was set, but could not update connection, please reconnect the database");
+                }
+
+                var control = _parentWindow.Content as ExplorerControl;
+                if (control != null) control.BuildDatabaseTree();
+                DataConnectionHelper.LogUsage("DatabaseMaintainSetPassword");
             }
             catch (Exception ex)
             {
@@ -159,13 +156,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                ISqlCeHelper helper = Helpers.DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.ShrinkDatabase(databaseInfo.DatabaseInfo.ConnectionString);
-                Helpers.DataConnectionHelper.LogUsage("DatabaseMaintainShrink");
+                DataConnectionHelper.LogUsage("DatabaseMaintainShrink");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -175,13 +172,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                ISqlCeHelper helper = Helpers.DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.CompactDatabase(databaseInfo.DatabaseInfo.ConnectionString);
-                Helpers.DataConnectionHelper.LogUsage("DatabaseMaintainCompact");
+                DataConnectionHelper.LogUsage("DatabaseMaintainCompact");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -191,13 +188,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                ISqlCeHelper helper = Helpers.DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.VerifyDatabase(databaseInfo.DatabaseInfo.ConnectionString);
-                Helpers.DataConnectionHelper.LogUsage("DatabaseMaintainVerify");
+                DataConnectionHelper.LogUsage("DatabaseMaintainVerify");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -207,13 +204,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                ISqlCeHelper helper = Helpers.DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseDeleteCorruptedRows(databaseInfo.DatabaseInfo.ConnectionString);
-                Helpers.DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
+                DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -223,13 +220,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                ISqlCeHelper helper = Helpers.DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseRecoverAllOrFail(databaseInfo.DatabaseInfo.ConnectionString);
-                Helpers.DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
+                DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -239,13 +236,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                ISqlCeHelper helper = Helpers.DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseRecoverAllPossibleRows(databaseInfo.DatabaseInfo.ConnectionString);
-                Helpers.DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
+                DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -255,14 +252,14 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
-                    TableBuilderDialog tbd = new TableBuilderDialog(null, databaseInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
+                    var tbd = new TableBuilderDialog(null, databaseInfo.DatabaseInfo.DatabaseType);
                     if (tbd.ShowModal() == true)
                     {
                         generator.GenerateTableCreate(tbd.TableName, tbd.TableColumns);
-                        var script = generator.GeneratedScript.ToString();
+                        var script = generator.GeneratedScript;
                         if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
                         {
                             script = script.Remove(script.Length - 6);
@@ -280,13 +277,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                             }
                         }
                         SpawnSqlEditorWindow(databaseInfo.DatabaseInfo, script);
-                        Helpers.DataConnectionHelper.LogUsage("TableBuild");
+                        DataConnectionHelper.LogUsage("TableBuild");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
             }
         }
 
@@ -306,12 +303,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 editorControl.DatabaseInfo = databaseInfo;
                 editorControl.ExplorerControl = _parentWindow.Content as ExplorerControl;
                 editorControl.SqlText = sqlScript;
-                Helpers.DataConnectionHelper.LogUsage("DatabaseOpenEditor");
+                DataConnectionHelper.LogUsage("DatabaseOpenEditor");
                 Debug.Assert(editorControl != null, "The SqlEditorWindow *should* have a editorControl with content.");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
             }
 
         }
@@ -331,12 +328,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 editorControl.DatabaseInfo = databaseInfo.DatabaseInfo;
                 editorControl.ExplorerControl = _parentWindow.Content as ExplorerControl;
                 editorControl.SqlText = null;
-                Helpers.DataConnectionHelper.LogUsage("DatabaseOpenEditor");
+                DataConnectionHelper.LogUsage("DatabaseOpenEditor");
                 Debug.Assert(editorControl != null, "The SqlEditorWindow *should* have a editorControl with content.");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
             }
         }
 
@@ -346,24 +343,20 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                string desc;
+                ExplorerControl.DescriptionCache = new Helpers.DescriptionHelper().GetDescriptions(databaseInfo.DatabaseInfo);
+                desc = ExplorerControl.DescriptionCache.Where(d => d.Object == null && d.Parent == null).Select(d => d.Description).SingleOrDefault();
+                var ro = new DescriptionDialog(desc) {IsDatabase = true};
+                ro.ShowModal();
+                if (ro.DialogResult.HasValue && ro.DialogResult.Value && !string.IsNullOrWhiteSpace(ro.TableDescription) && ro.TableDescription != desc)
                 {
-                    string desc = null;
-                    ExplorerControl.DescriptionCache = new Helpers.DescriptionHelper().GetDescriptions(databaseInfo.DatabaseInfo);
-                    desc = ExplorerControl.DescriptionCache.Where(d => d.Object == null && d.Parent == null).Select(d => d.Description).SingleOrDefault();
-                    DescriptionDialog ro = new DescriptionDialog(desc);
-                    ro.IsDatabase = true;
-                    ro.ShowModal();
-                    if (ro.DialogResult.HasValue && ro.DialogResult.Value == true && !string.IsNullOrWhiteSpace(ro.TableDescription) && ro.TableDescription != desc)
-                    {
-                        new Helpers.DescriptionHelper().SaveDescription(databaseInfo.DatabaseInfo, ExplorerControl.DescriptionCache, ro.TableDescription, null, null);
-                    }
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseAddDescription");
+                    new Helpers.DescriptionHelper().SaveDescription(databaseInfo.DatabaseInfo, ExplorerControl.DescriptionCache, ro.TableDescription, null, null);
                 }
+                DataConnectionHelper.LogUsage("DatabaseAddDescription");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -371,50 +364,50 @@ namespace ErikEJ.SqlCeToolbox.Commands
         {
             var menuItem = sender as MenuItem;
             if (menuItem == null) return;
-            Scope scope = (Scope)menuItem.Tag;
+            var scope = (Scope)menuItem.Tag;
 
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
 
             try
             {
-                int totalCount = 0;
-                PickTablesDialog ptd = new PickTablesDialog();
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                int totalCount;
+                var ptd = new PickTablesDialog();
+                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
                     totalCount = ptd.Tables.Count;
                 }
 
-                bool? res = ptd.ShowModal();
-                if (res.HasValue && res.Value == true && (ptd.Tables.Count < totalCount))
+                var res = ptd.ShowModal();
+                if (res == true && (ptd.Tables.Count < totalCount))
                 {
-                    SaveFileDialog fd = new SaveFileDialog();
-                    fd.Title = "Save generated database script as";
-                    fd.Filter = "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*";
+                    var fd = new SaveFileDialog
+                    {
+                        Title = "Save generated database script as",
+                        Filter =
+                            "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*"
+                    };
                     if (scope == Scope.SchemaDataSQLite || scope == Scope.SchemaSQLite || databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
                     {
                         fd.Filter = "SQLite Script (*.sql)|*.sql|All Files(*.*)|*.*";    
                     }
                     fd.OverwritePrompt = true;
                     fd.ValidateNames = true;
-                    bool? result = fd.ShowDialog();
-                    if (result.HasValue && result.Value == true)
+                    var result = fd.ShowDialog();
+                    if (!result.HasValue || result.Value != true) return;
+                    using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                     {
-                        var fileName = fd.FileName;
-                        using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
-                        {
-                            var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, fd.FileName, databaseInfo.DatabaseInfo.DatabaseType);
-                            generator.ExcludeTables(ptd.Tables);
-                            EnvDTEHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
-                            Helpers.DataConnectionHelper.LogUsage("DatabaseScriptCe");
-                        }
+                        var generator = DataConnectionHelper.CreateGenerator(repository, fd.FileName, databaseInfo.DatabaseInfo.DatabaseType);
+                        generator.ExcludeTables(ptd.Tables);
+                        EnvDTEHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
+                        DataConnectionHelper.LogUsage("DatabaseScriptCe");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
 
         }
@@ -426,15 +419,15 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var databaseInfo = ValidateMenuInfo(sender);
                 if (databaseInfo == null) return;
 
-                Dictionary<string, DatabaseInfo> databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
-                foreach (KeyValuePair<string, DatabaseInfo> info in DataConnectionHelper.GetOwnDataConnections())
+                var databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
+                foreach (var info in DataConnectionHelper.GetOwnDataConnections())
                 {
                     if (!databaseList.ContainsKey(info.Key))
                         databaseList.Add(info.Key, info.Value);
                 }
-                foreach (KeyValuePair<string, DatabaseInfo> info in databaseList)
+                foreach (var info in databaseList)
                 {
-                    string sourceType = string.Empty;
+                    var sourceType = string.Empty;
                     switch (info.Value.DatabaseType)
                     {
                         case DatabaseType.SQLCE35:
@@ -450,43 +443,44 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     info.Value.Caption = string.Format("{0} ({1})", info.Value.Caption, sourceType);
                 }
 
-                CompareDialog cd = new CompareDialog(databaseInfo.DatabaseInfo.Caption, databaseList);
+                var cd = new CompareDialog(databaseInfo.DatabaseInfo.Caption, databaseList);
 
-                bool? result = cd.ShowModal();
-                if (result.HasValue && result.Value == true && (cd.TargetDatabase.Key != null))
+                var result = cd.ShowModal();
+                if (!result.HasValue || !result.Value || (cd.TargetDatabase.Key == null)) return;
+                var target = cd.TargetDatabase;
+                var swap = cd.SwapTarget;
+
+                var source = new KeyValuePair<string, DatabaseInfo>(databaseInfo.DatabaseInfo.ConnectionString, databaseInfo.DatabaseInfo);
+                if (swap)
                 {
-                    var target = cd.TargetDatabase;
-                    var swap = cd.SwapTarget;
+                    source = target;
+                    target = new KeyValuePair<string, DatabaseInfo>(databaseInfo.DatabaseInfo.ConnectionString, databaseInfo.DatabaseInfo);
+                }
 
-                    var source = new KeyValuePair<string, DatabaseInfo>(databaseInfo.DatabaseInfo.ConnectionString, databaseInfo.DatabaseInfo);
-                    if (swap)
-                    {
-                        source = target;
-                        target = new KeyValuePair<string, DatabaseInfo>(databaseInfo.DatabaseInfo.ConnectionString, databaseInfo.DatabaseInfo);
-                    }
+                var editorTarget = target;
+                if (editorTarget.Value.DatabaseType == DatabaseType.SQLServer)
+                {
+                    editorTarget = source;
+                }
 
-                    var editorTarget = target;
-                    if (editorTarget.Value.DatabaseType == DatabaseType.SQLServer)
+                using (var sourceRepository = DataConnectionHelper.CreateRepository(source.Value))
+                {
+                    var generator = DataConnectionHelper.CreateGenerator(sourceRepository, databaseInfo.DatabaseInfo.DatabaseType);
+                    using (var targetRepository = DataConnectionHelper.CreateRepository(target.Value))
                     {
-                        editorTarget = source;
-                    }
-
-                    using (IRepository sourceRepository = Helpers.DataConnectionHelper.CreateRepository(source.Value))
-                    {
-                        var generator = Helpers.DataConnectionHelper.CreateGenerator(sourceRepository, databaseInfo.DatabaseInfo.DatabaseType);
-                        using (IRepository targetRepository = Helpers.DataConnectionHelper.CreateRepository(target.Value))
+                        try
                         {
-                            try
-                            {
-                                SqlCeDiff.CreateDiffScript(sourceRepository, targetRepository, generator, Properties.Settings.Default.DropTargetTables);
+                            SqlCeDiff.CreateDiffScript(sourceRepository, targetRepository, generator, Properties.Settings.Default.DropTargetTables);
 
-                                var sqlEditorWindow = package.CreateWindow<SqlEditorWindow>();
-                                var editorControl = sqlEditorWindow.Content as SqlEditorControl;
+                            var sqlEditorWindow = package.CreateWindow<SqlEditorWindow>();
+                            var editorControl = sqlEditorWindow.Content as SqlEditorControl;
+                            if (editorControl != null)
+                            {
                                 editorControl.ExplorerControl = _parentWindow.Content as ExplorerControl;
                                 Debug.Assert(editorControl != null);
                                 editorControl.DatabaseInfo = editorTarget.Value;
 
-                                string explain = @"-- This database diff script contains the following objects:
+                                var explain = @"-- This database diff script contains the following objects:
 -- - Tables:  Any that are not in the destination
 -- -          (tables that are only in the destination are NOT dropped, unless that option is set)
 -- - Columns: Any added, deleted, changed columns for existing tables
@@ -500,20 +494,20 @@ namespace ErikEJ.SqlCeToolbox.Commands
                                 }
 
                                 editorControl.SqlText = explain + generator.GeneratedScript;
-                                Helpers.DataConnectionHelper.LogUsage("DatabaseScriptDiff");
                             }
-                            catch (Exception ex)
-                            {
-                                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
-                            }
-
+                            DataConnectionHelper.LogUsage("DatabaseScriptDiff");
                         }
+                        catch (Exception ex)
+                        {
+                            DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
+                        }
+
                     }
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
             }
 
         }
@@ -525,62 +519,57 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var databaseInfo = ValidateMenuInfo(sender);
                 if (databaseInfo == null) return;
 
-                Dictionary<string, DatabaseInfo> databaseList = DataConnectionHelper.GetDataConnections(package, includeServerConnections: true, serverConnectionsOnly: true);
+                var databaseList = DataConnectionHelper.GetDataConnections(package, includeServerConnections: true, serverConnectionsOnly: true);
 
-                ExportDialog cd = new ExportDialog(databaseInfo.DatabaseInfo.Caption, databaseList);
+                var cd = new ExportDialog(databaseInfo.DatabaseInfo.Caption, databaseList);
 
-                bool? result = cd.ShowModal();
-                if (result.HasValue && result.Value == true && (cd.TargetDatabase.Key != null))
+                var result = cd.ShowModal();
+                if (!result.HasValue || result.Value != true || (cd.TargetDatabase.Key == null)) return;
+                var bw = new BackgroundWorker();
+                var parameters = new List<object> {databaseInfo.DatabaseInfo, cd.TargetDatabase.Value};
+
+                bw.DoWork += bw_DoWork;
+                bw.RunWorkerCompleted += (s, ea) =>
                 {
-                    BackgroundWorker bw = new BackgroundWorker();
-                    List<object> parameters = new List<object>();
-                    parameters.Add(databaseInfo.DatabaseInfo);
-                    parameters.Add(cd.TargetDatabase.Value);
-
-                    bw.DoWork += new DoWorkEventHandler(bw_DoWork);
-                    bw.RunWorkerCompleted += (s, ea) =>
+                    try
                     {
-                        try
+                        if (ea.Error != null)
                         {
-                            if (ea.Error != null)
-                            {
-                                Helpers.DataConnectionHelper.SendError(ea.Error, databaseInfo.DatabaseInfo.DatabaseType, false);
-                            }
-                            Helpers.DataConnectionHelper.LogUsage("DatabasesExportToServer");
+                            DataConnectionHelper.SendError(ea.Error, databaseInfo.DatabaseInfo.DatabaseType, false);
                         }
-                        finally
-                        {
-                            bw.Dispose();
-                        }
-                    };
-                    bw.RunWorkerAsync(parameters);
-                }
+                        DataConnectionHelper.LogUsage("DatabasesExportToServer");
+                    }
+                    finally
+                    {
+                        bw.Dispose();
+                    }
+                };
+                bw.RunWorkerAsync(parameters);
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
             }
-
         }
-
-        void bw_DoWork(object sender, DoWorkEventArgs e)
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var parameters = e.Argument as List<object>;
-            DatabaseInfo source = parameters[0] as DatabaseInfo;
-            DatabaseInfo target = parameters[1] as DatabaseInfo;
+            if (parameters == null) return;
+            var source = parameters[0] as DatabaseInfo;
+            var target = parameters[1] as DatabaseInfo;
             package.SetStatus("Starting export");
-            using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(source))
+            using (var repository = DataConnectionHelper.CreateRepository(source))
             {
-                string scriptRoot = System.IO.Path.GetTempFileName();
-                string tempScript = scriptRoot + ".sqltb";
-                var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, tempScript, DatabaseType.SQLCE40);
+                var scriptRoot = Path.GetTempFileName();
+                var tempScript = scriptRoot + ".sqltb";
+                var generator = DataConnectionHelper.CreateGenerator(repository, tempScript, DatabaseType.SQLCE40);
                 package.SetStatus("Scripting local database...");
-                if (source.DatabaseType == DatabaseType.SQLite && Properties.Settings.Default.TruncateSQLiteStrings)
+                if (source != null && (source.DatabaseType == DatabaseType.SQLite && Properties.Settings.Default.TruncateSQLiteStrings))
                 {
                     generator.TruncateSQLiteStrings = true;
                 }
                 generator.ScriptDatabaseToFile(Scope.SchemaData);
-                using (IRepository serverRepository = Helpers.DataConnectionHelper.CreateRepository(target))
+                using (var serverRepository = DataConnectionHelper.CreateRepository(target))
                 {
                     package.SetStatus("Exporting to server...");
                     //Handles large exports also... 
@@ -590,9 +579,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                     else // possibly multiple files - tmp2BB9.tmp_0.sqlce
                     {
-                        for (int i = 0; i < 400; i++)
+                        for (var i = 0; i < 400; i++)
                         {
-                            string testFile = string.Format("{0}_{1}{2}", scriptRoot, i.ToString("D4"), ".sqltb");
+                            var testFile = string.Format("{0}_{1}{2}", scriptRoot, i.ToString("D4"), ".sqltb");
                             if (File.Exists(testFile))
                             {
                                 serverRepository.ExecuteSqlFile(testFile);
@@ -611,62 +600,63 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.No)
                 return;
 
-            if (!Helpers.DataConnectionHelper.IsV40Installed())
+            if (!DataConnectionHelper.IsV40Installed())
             {
                 EnvDTEHelper.ShowError("The SQL Server Compact 4.0 runtime is not installed, cannot upgrade. Install the 4.0 runtime.");
                 return;
             }
-
             try
             {
                 var databaseInfo = ValidateMenuInfo(sender);
                 if (databaseInfo == null) return;
 
-                SqlCeScripting.SqlCeHelper4 helper = new SqlCeScripting.SqlCeHelper4();
-                    
-                string path = helper.PathFromConnectionString(databaseInfo.DatabaseInfo.ConnectionString);
+                var helper = new SqlCeHelper4();
+                var path = helper.PathFromConnectionString(databaseInfo.DatabaseInfo.ConnectionString);
 
                 if (!File.Exists(path))
                 {
                     EnvDTEHelper.ShowError(string.Format("Database file in path: {0} could not be found", path));
                     return;
                 }
-
-                string newFile = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_35" + Path.GetExtension(path));
-                if (System.IO.File.Exists(newFile))
+                var path1 = Path.GetDirectoryName(path);
+                if (path1 != null)
                 {
-                    for (int i = 0; i < 100; i++)
+                    var newFile = Path.Combine(path1, Path.GetFileNameWithoutExtension(path) + "_35" + Path.GetExtension(path));
+                    if (File.Exists(newFile))
                     {
-                        newFile = Path.Combine(Path.GetDirectoryName(newFile),  Path.GetFileNameWithoutExtension(newFile) + "_" + i.ToString() + "." + Path.GetExtension(newFile));
-                        if (!File.Exists(newFile))
-                            break;
+                        for (var i = 0; i < 100; i++)
+                        {
+                            newFile = Path.Combine(path1, Path.GetFileNameWithoutExtension(newFile) + "_" + i.ToString() + "." + Path.GetExtension(newFile));
+                            if (!File.Exists(newFile))
+                                break;
+                        }
                     }
-                }
 
-                if (System.IO.File.Exists(newFile))
-                {
-                    EnvDTEHelper.ShowError("Could not create unique file name...");
-                    return;
+                    if (File.Exists(newFile))
+                    {
+                        EnvDTEHelper.ShowError("Could not create unique file name...");
+                        return;
+                    }
+                    File.Copy(path, newFile);
+                    helper.UpgradeTo40(databaseInfo.DatabaseInfo.ConnectionString);
+                    EnvDTEHelper.ShowMessage(string.Format("Database upgraded, version 3.5 database backed up to: {0}", newFile));
                 }
-                System.IO.File.Copy(path, newFile);
-                helper.UpgradeTo40(databaseInfo.DatabaseInfo.ConnectionString);
-                EnvDTEHelper.ShowMessage(string.Format("Database upgraded, version 3.5 database backed up to: {0}", newFile));
                 if (databaseInfo.DatabaseInfo.FromServerExplorer)
                 {
-                    Helpers.DataConnectionHelper.RemoveDataConnection(package, databaseInfo.DatabaseInfo.ConnectionString, new Guid(Resources.SqlCompact35Provider));
+                    DataConnectionHelper.RemoveDataConnection(package, databaseInfo.DatabaseInfo.ConnectionString, new Guid(Resources.SqlCompact35Provider));
                 }
                 else
                 {
-                    Helpers.DataConnectionHelper.RemoveDataConnection(databaseInfo.DatabaseInfo.ConnectionString);
+                    DataConnectionHelper.RemoveDataConnection(databaseInfo.DatabaseInfo.ConnectionString);
                 }
-                Helpers.DataConnectionHelper.SaveDataConnection(databaseInfo.DatabaseInfo.ConnectionString, DatabaseType.SQLCE40, package);
-                ExplorerControl control = _parentWindow.Content as ExplorerControl;
-                control.BuildDatabaseTree();
-                Helpers.DataConnectionHelper.LogUsage("DatabaseUpgrade40");
+                DataConnectionHelper.SaveDataConnection(databaseInfo.DatabaseInfo.ConnectionString, DatabaseType.SQLCE40, package);
+                var control = _parentWindow.Content as ExplorerControl;
+                if (control != null) control.BuildDatabaseTree();
+                DataConnectionHelper.LogUsage("DatabaseUpgrade40");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
             }
 
         }
@@ -677,32 +667,35 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
 
-            SaveFileDialog fd = new SaveFileDialog();
-            fd.Title = "Save generated DGML file as";
-            fd.Filter = "DGML (*.dgml)|*.dgml";
-            fd.OverwritePrompt = true;
-            fd.ValidateNames = true;
-            bool? result = fd.ShowDialog();
-            if (result.HasValue && result.Value == true)
+            var fd = new SaveFileDialog
             {
-                var fileName = fd.FileName;
-                try
+                Title = "Save generated DGML file as",
+                Filter = "DGML (*.dgml)|*.dgml",
+                OverwritePrompt = true,
+                ValidateNames = true
+            };
+            var result = fd.ShowDialog();
+            if (!result.HasValue || result.Value != true) return;
+            var fileName = fd.FileName;
+            try
+            {
+                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
-                    using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                    var generator = DataConnectionHelper.CreateGenerator(repository, fileName, databaseInfo.DatabaseInfo.DatabaseType);
+                    generator.GenerateSchemaGraph(databaseInfo.DatabaseInfo.Caption, Properties.Settings.Default.IncludeSystemTablesInDocumentation, false);
+                    if (dte != null)
                     {
-                        var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, fileName, databaseInfo.DatabaseInfo.DatabaseType);
-                        generator.GenerateSchemaGraph(databaseInfo.DatabaseInfo.Caption, Properties.Settings.Default.IncludeSystemTablesInDocumentation, false);
                         dte.ItemOperations.OpenFile(fileName);
                         dte.ActiveDocument.Activate();
-                        Helpers.DataConnectionHelper.LogUsage("DatabaseScriptDGML");
                     }
+                    DataConnectionHelper.LogUsage("DatabaseScriptDGML");
                 }
-                catch (Exception ex)
-                {
-                    Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
-                }
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
             }
         }
 
@@ -715,17 +708,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateDatabaseInfo();
                     SpawnSqlEditorWindow(databaseInfo.DatabaseInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseScriptInfo");
+                    DataConnectionHelper.LogUsage("DatabaseScriptInfo");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -735,35 +728,31 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
 
-            if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-
-            SaveFileDialog fd = new SaveFileDialog();
-            fd.Title = "Save generated documentation as";
-            //fd.Filter = "HTML (*.html)|*.html|WikiPlex (*.wiki)|*.wiki|Raw XML (*.xml)|*.xml";
-            fd.Filter = "HTML (*.html)|*.html|Raw XML (*.xml)|*.xml";
-            fd.OverwritePrompt = true;
-            fd.ValidateNames = true;
-            bool? result = fd.ShowDialog();
-            if (result.HasValue && result.Value == true)
+            var fd = new SaveFileDialog
             {
-                var fileName = fd.FileName;
-                try
+                Title = "Save generated documentation as",
+                Filter = "HTML (*.html)|*.html|Raw XML (*.xml)|*.xml",
+                OverwritePrompt = true,
+                ValidateNames = true
+            };
+            //fd.Filter = "HTML (*.html)|*.html|WikiPlex (*.wiki)|*.wiki|Raw XML (*.xml)|*.xml";
+            var result = fd.ShowDialog();
+            if (!result.HasValue || result.Value != true) return;
+            var fileName = fd.FileName;
+            try
+            {
+                var sqlCeDoc = new SqlCeDbDoc();
+                sqlCeDoc.CreateDocumentation(databaseInfo.DatabaseInfo, fileName, true, null);
+                if (File.Exists(fileName))
                 {
-                    var sqlCeDoc = new SqlCeDbDoc();
-                    sqlCeDoc.CreateDocumentation(databaseInfo.DatabaseInfo, fileName, true, null);
-                    if (System.IO.File.Exists(fileName))
-                    {
-                        EnvDTEHelper.LaunchUrl(fileName);
-                    }
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseScriptDoc");
+                    EnvDTEHelper.LaunchUrl(fileName);
                 }
-                catch (Exception ex)
-                {
-                    Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
-                }
+                DataConnectionHelper.LogUsage("DatabaseScriptDoc");
             }
-
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
+            }
         }
 
         public void GenerateEdmxInProject(object sender, ExecutedRoutedEventArgs e)
@@ -771,8 +760,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
 
-            bool isEF6 = package.VSSupportsEF6();
-            if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite && !isEF6)
+            var isEf6 = package.VSSupportsEF6();
+            if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite && !isEf6)
             {
                 EnvDTEHelper.ShowError("Only Entity Framework 6.x is supported with SQLite");
                 return;                
@@ -780,14 +769,14 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 if (package == null) return;
-                var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-                if (dte.Mode == vsIDEMode.vsIDEModeDebug)
+                var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+                if (dte != null && dte.Mode == vsIDEMode.vsIDEModeDebug)
                 {
                     EnvDTEHelper.ShowError("Cannot generate code while debugging");
                     return;
                 }
 
-                var dteH = new Helpers.EnvDTEHelper();
+                var dteH = new EnvDTEHelper();
 
                 var project = dteH.GetProject(dte);
                 if (project == null)
@@ -795,12 +784,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     EnvDTEHelper.ShowError("Please select a project in Solution Explorer, where you want the EDM to be placed");
                     return;
                 }
-                if (dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateNotStarted)
+                if (dte != null && dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateNotStarted)
                 {
                     EnvDTEHelper.ShowError("Please build the project before proceeding");
                     return;
                 }
-                if (isEF6)
+                if (isEf6)
                 {
                     if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40 && !dteH.ContainsEFSqlCeReference(project))
                     {
@@ -836,157 +825,144 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
                 if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
                 {
-                    EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value.ToString());
+                    EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                     return;
                 }
 
-                string provider = Resources.SqlCompact40InvariantName;
-
+                var provider = Resources.SqlCompact40InvariantName;
                 if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35)
                     provider = Resources.SqlCompact35InvariantName;
-
                 if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
                     provider = Resources.SQLiteEF6InvariantName;
 
-                string model = Remove(Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption), new List<char> { '#', '.', '+', '-', ' ' });
-                EdmxDialog edmxDialog = new EdmxDialog();
-                edmxDialog.ModelName = model;
-                edmxDialog.ProjectName = project.Name;
-                if (isEF6)
+                var model = Remove(Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption), new List<char> { '#', '.', '+', '-', ' ' });
+                var edmxDialog = new EdmxDialog
+                {
+                    ModelName = model,
+                    ProjectName = project.Name
+                };
+                if (isEf6)
                     edmxDialog.HideAddPrivateConfig();
                 
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     var tables = repository.GetAllTableNames();
                     var pks = repository.GetAllPrimaryKeys();
-                    var checkedTables = new List<string>();
-                    foreach (string tableName in tables)
-                    {
-                        var pk = pks.Where(k => k.TableName == tableName).FirstOrDefault();
-                        if (pk.TableName != null)
-                        {
-                            checkedTables.Add(tableName);
-                        }
-                    }
+                    var checkedTables = (from tableName in tables let pk = pks.FirstOrDefault(k => k.TableName == tableName) where pk.TableName != null select tableName).ToList();
                     edmxDialog.Tables = checkedTables;
                 }
 
-                bool? result = edmxDialog.ShowModal();
-                if (result.HasValue && result.Value == true && (!string.IsNullOrWhiteSpace(edmxDialog.ModelName)))
+                var result = edmxDialog.ShowModal();
+                if (!result.HasValue || result.Value != true || (string.IsNullOrWhiteSpace(edmxDialog.ModelName)))
+                    return;
+                model = edmxDialog.ModelName;
+                var edmxPath = Path.Combine(Path.GetTempPath(), model + ".edmx");
+                var ver = new Version(2, 0, 0, 0);
+                if (isEf6)
                 {
-                    model = edmxDialog.ModelName;
-                    string edmxPath = Path.Combine(Path.GetTempPath(), model + ".edmx");
-                    Version ver = new Version(2, 0, 0, 0);
-                    if (isEF6)
+                    ver = new Version(3, 0, 0, 0);
+                }
+                EdmGen2.EdmGen2.ModelGen(databaseInfo.DatabaseInfo.ConnectionString, provider, model, Path.GetTempPath(), edmxDialog.ForeignKeys, edmxDialog.Pluralize, edmxDialog.Tables, ver);
+                if (EdmGen2.EdmGen2.Errors.Count > 0)
+                {
+                    var sb = new System.Text.StringBuilder();
+                    foreach (var item in EdmGen2.EdmGen2.Errors)
                     {
-                        ver = new Version(3, 0, 0, 0);
+                        sb.AppendLine(item);
                     }
-                    EdmGen2.EdmGen2.ModelGen(databaseInfo.DatabaseInfo.ConnectionString, provider, model, Path.GetTempPath(), edmxDialog.ForeignKeys, edmxDialog.Pluralize, edmxDialog.Tables, ver);
-                    if (EdmGen2.EdmGen2.Errors.Count > 0)
-                    {
-                        var sb = new System.Text.StringBuilder();
-                        foreach (var item in EdmGen2.EdmGen2.Errors)
-                        {
-                            sb.AppendLine(item);
-                        }
-                        EnvDTEHelper.ShowError("Errors encountered during edmx generation" + System.Environment.NewLine + sb.ToString());
-                    }
-                    if (!File.Exists(edmxPath))
-                    {
-                        return;
-                    }
+                    EnvDTEHelper.ShowError("Errors encountered during edmx generation" + Environment.NewLine + sb);
+                }
+                if (!File.Exists(edmxPath))
+                {
+                    return;
+                }
 
-                    bool proceed = true;
-                    ProjectItem edmxItem = dteH.GetProjectEdmx(project, model);
-                    if (edmxItem == null)
+                var proceed = true;
+                var edmxItem = dteH.GetProjectEdmx(project, model);
+                if (edmxItem == null)
+                {
+                    project.ProjectItems.AddFromFileCopy(edmxPath);
+                }
+                else
+                {
+                    if (EnvDTEHelper.ShowMessageBox("The Entity Data Model already exists in the project, do you wish to replace it?", OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.Yes) 
                     {
+                        edmxItem.Delete();
                         project.ProjectItems.AddFromFileCopy(edmxPath);
                     }
                     else
                     {
-                        if (EnvDTEHelper.ShowMessageBox("The Entity Data Model already exists in the project, do you wish to replace it?", OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.Yes) 
-                        {
-                            proceed = true;
-                            edmxItem.Delete();
-                            project.ProjectItems.AddFromFileCopy(edmxPath);
-
-                        }
-                        else
-                        {
-                            proceed = false;
-                        }
+                        proceed = false;
                     }
-                    if (isEF6)
-                    {
-                        ProjectItem addedItem = dteH.GetProjectEdmx(project, model);
-                        if (addedItem != null)
-                        {
-                            if (project.CodeModel.Language == CodeModelLanguageConstants.vsCMLanguageCSharp)
-                            {
-                                var template = File.ReadAllText(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Context.tt"));
-                                template = template.Replace("$edmxInputFile$", model + ".edmx");
-                                File.WriteAllText(Path.Combine(Path.GetTempPath(),  model + ".Context.tt"), template);
-                                addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(),  model + ".Context.tt"));
-
-                                template = File.ReadAllText(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Types.tt"));
-                                template = template.Replace("$edmxInputFile$", model + ".edmx");
-                                File.WriteAllText(Path.Combine(Path.GetTempPath(), model + ".tt"), template);
-                                addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(),  model + ".tt"));
-                            }
-                            if (project.CodeModel.Language == CodeModelLanguageConstants.vsCMLanguageVB)
-                            {
-                                var template = File.ReadAllText(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\VisualBasic\\Data\\1033\\DbCtxVBEF6\\VBDbContext.Context.tt"));
-                                template = template.Replace("$edmxInputFile$", model + ".edmx");
-                                File.WriteAllText(Path.Combine(Path.GetTempPath(), model + ".Context.tt"), template);
-                                addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(), model + ".Context.tt"));
-
-                                template = File.ReadAllText(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\VisualBasic\\Data\\1033\\DbCtxVBEF6\\VBDbContext.Types.tt"));
-                                template = template.Replace("$edmxInputFile$", model + ".edmx");
-                                File.WriteAllText(Path.Combine(Path.GetTempPath(), model + ".tt"), template);
-                                addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(), model + ".tt"));
-                            }
-                            string diagramPath = Path.Combine(Path.GetTempPath(), model + "edmx.diagram");
-                            File.WriteAllText(diagramPath, EdmGen2.EdmGen2.GetEDMXDiagram());
-                            addedItem.ProjectItems.AddFromFileCopy(diagramPath);
-                        }
-                        project.Save();
-                    }
-                    if (edmxDialog.SaveConfig && proceed)
-                    {
-                        string prefix = "App";
-                        string configPath = Path.Combine(Path.GetTempPath(), prefix + ".config");
-
-                        ProjectItem item = dteH.GetProjectConfig(project);
-                        if (item == null)
-                        {
-                            //Add app.config file to project
-                            var cfgSb = new System.Text.StringBuilder();
-                            cfgSb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
-                            cfgSb.AppendLine("<configuration>");
-                            cfgSb.AppendLine("</configuration>");
-                            File.WriteAllText(configPath, cfgSb.ToString());
-                            item = project.ProjectItems.AddFromFileCopy(configPath);
-                        }
-
-                        if (item != null)
-                        {
-                            Helpers.AppConfigHelper.BuildConfig(databaseInfo.DatabaseInfo.ConnectionString, project.FullName, provider, model, prefix, item.Name);
-                            if (edmxDialog.AddPrivateConfig)
-                            {
-                                Helpers.AppConfigHelper.WriteSettings(item.FileNames[0], databaseInfo.DatabaseInfo.DatabaseType);
-                            }
-                        }
-                    }
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseCreateEDMX");
                 }
+                if (isEf6)
+                {
+                    var addedItem = dteH.GetProjectEdmx(project, model);
+                    if (addedItem != null)
+                    {
+                        if (project.CodeModel.Language == CodeModelLanguageConstants.vsCMLanguageCSharp)
+                        {
+                            var template = File.ReadAllText(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Context.tt"));
+                            template = template.Replace("$edmxInputFile$", model + ".edmx");
+                            File.WriteAllText(Path.Combine(Path.GetTempPath(),  model + ".Context.tt"), template);
+                            addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(),  model + ".Context.tt"));
+
+                            template = File.ReadAllText(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Types.tt"));
+                            template = template.Replace("$edmxInputFile$", model + ".edmx");
+                            File.WriteAllText(Path.Combine(Path.GetTempPath(), model + ".tt"), template);
+                            addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(),  model + ".tt"));
+                        }
+                        if (project.CodeModel.Language == CodeModelLanguageConstants.vsCMLanguageVB)
+                        {
+                            var template = File.ReadAllText(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\VisualBasic\\Data\\1033\\DbCtxVBEF6\\VBDbContext.Context.tt"));
+                            template = template.Replace("$edmxInputFile$", model + ".edmx");
+                            File.WriteAllText(Path.Combine(Path.GetTempPath(), model + ".Context.tt"), template);
+                            addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(), model + ".Context.tt"));
+
+                            template = File.ReadAllText(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\VisualBasic\\Data\\1033\\DbCtxVBEF6\\VBDbContext.Types.tt"));
+                            template = template.Replace("$edmxInputFile$", model + ".edmx");
+                            File.WriteAllText(Path.Combine(Path.GetTempPath(), model + ".tt"), template);
+                            addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(), model + ".tt"));
+                        }
+                        var diagramPath = Path.Combine(Path.GetTempPath(), model + "edmx.diagram");
+                        File.WriteAllText(diagramPath, EdmGen2.EdmGen2.GetEDMXDiagram());
+                        addedItem.ProjectItems.AddFromFileCopy(diagramPath);
+                    }
+                    project.Save();
+                }
+                if (edmxDialog.SaveConfig && proceed)
+                {
+                    var prefix = "App";
+                    var configPath = Path.Combine(Path.GetTempPath(), prefix + ".config");
+
+                    var item = dteH.GetProjectConfig(project);
+                    if (item == null)
+                    {
+                        //Add app.config file to project
+                        var cfgSb = new System.Text.StringBuilder();
+                        cfgSb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+                        cfgSb.AppendLine("<configuration>");
+                        cfgSb.AppendLine("</configuration>");
+                        File.WriteAllText(configPath, cfgSb.ToString());
+                        item = project.ProjectItems.AddFromFileCopy(configPath);
+                    }
+                    if (item != null)
+                    {
+                        AppConfigHelper.BuildConfig(databaseInfo.DatabaseInfo.ConnectionString, project.FullName, provider, model, prefix, item.Name);
+                        if (edmxDialog.AddPrivateConfig)
+                        {
+                            AppConfigHelper.WriteSettings(item.FileNames[0], databaseInfo.DatabaseInfo.DatabaseType);
+                        }
+                    }
+                }
+                DataConnectionHelper.LogUsage("DatabaseCreateEDMX");
             }
             // EDM end
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
-
 
         public void GenerateDataContextInProject(object sender, ExecutedRoutedEventArgs e)
         {
@@ -996,7 +972,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var isDesktop = (bool)((MenuItem)sender).Tag;
 
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
             if (dte == null) return;
             if (dte.Mode == vsIDEMode.vsIDEModeDebug)
             {
@@ -1011,7 +987,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 return;                                
             }
 
-            var dteH = new Helpers.EnvDTEHelper();
+            var dteH = new EnvDTEHelper();
 
             var project = dteH.GetProject(dte);
             if (project == null)
@@ -1043,13 +1019,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 { }
                 else
                 {
-                    EnvDTEHelper.ShowError("The selected project type does not support Windows Phone 7.1/8.0 - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value.ToString());
+                    EnvDTEHelper.ShowError("The selected project type does not support Windows Phone 7.1/8.0 - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                     return;
                 }
             }
             if (isDesktop && !project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value.ToString());
+                EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                 return;
             }
             if (!isDesktop && databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
@@ -1058,7 +1034,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 return;
             }
 
-            string sqlMetalPath = string.Empty;
+            var sqlMetalPath = string.Empty;
             var sqlMetalPaths = ProbeSqlMetalRegPaths();
             if (sqlMetalPaths.Count == 0)
             {
@@ -1084,12 +1060,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     var tables = repository.GetAllTableNames();
                     var pks = repository.GetAllPrimaryKeys();
-                    string checkedTables = string.Empty;
-                    foreach (string tableName in tables)
+                    var checkedTables = string.Empty;
+                    foreach (var tableName in tables)
                     {
                         var pk = pks.Where(k => k.TableName == tableName).FirstOrDefault();
                         if (pk.TableName == null)
@@ -1099,10 +1075,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                     if (!string.IsNullOrEmpty(checkedTables))
                     {
-                        string message = string.Format("The tables below do not have Primary Keys defined,{0}and will not be generated properly:{1}{2}", Environment.NewLine, Environment.NewLine, checkedTables);
+                        var message = string.Format("The tables below do not have Primary Keys defined,{0}and will not be generated properly:{1}{2}", Environment.NewLine, Environment.NewLine, checkedTables);
                         EnvDTEHelper.ShowError(message);
                     }
-                    List<KeyValuePair<string, string>> dbInfo = repository.GetDatabaseInfo();
+                    var dbInfo = repository.GetDatabaseInfo();
                     foreach (var kvp in dbInfo)
                     {
                         if (kvp.Key == "Database")
@@ -1114,73 +1090,81 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     sdfFileName = Path.GetFileName(sdfFileName);
                 }
 
-                string model = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption).Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
-                model = model + "Context";
-                DataContextDialog dcDialog = new DataContextDialog();
-                dcDialog.ModelName = model;
-                dcDialog.IsDesktop = isDesktop;
-                dcDialog.ProjectName = project.Name;
-                dcDialog.NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString();
-                if (EnvDTEHelper.VBProject == new Guid(project.Kind))
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
+                if (fileNameWithoutExtension != null)
                 {
-                    dcDialog.CodeLanguage = "VB";
-                }
-                else
-                {
-                    dcDialog.CodeLanguage = "C#";
-                }
-                bool? result = dcDialog.ShowModal();
-                if (result.HasValue && result.Value == true && (!string.IsNullOrWhiteSpace(dcDialog.ModelName)))
-                {
+                    var model = fileNameWithoutExtension.Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
+                    model = model + "Context";
+                    var dcDialog = new DataContextDialog();
+                    dcDialog.ModelName = model;
+                    dcDialog.IsDesktop = isDesktop;
+                    dcDialog.ProjectName = project.Name;
+                    dcDialog.NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString();
+                    if (EnvDTEHelper.VBProject == new Guid(project.Kind))
+                    {
+                        dcDialog.CodeLanguage = "VB";
+                    }
+                    else
+                    {
+                        dcDialog.CodeLanguage = "C#";
+                    }
+                    var result = dcDialog.ShowModal();
+                    if (!result.HasValue || result.Value != true || string.IsNullOrWhiteSpace(dcDialog.ModelName))
+                        return;
                     if (dcDialog.AddRowversionColumns)
                     {
                         AddRowVersionColumns(databaseInfo);
                     }
 
-                    string sdfPath = databaseInfo.DatabaseInfo.ConnectionString;
+                    var sdfPath = databaseInfo.DatabaseInfo.ConnectionString;
 
                     //If version 4.0, create a 3.5 schema sdf, and use that as connection string
                     if (isDesktop && databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40)
                     {
                         var tempFile = Path.GetTempFileName();
-                        using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                        using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                         {
-                            var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, tempFile, databaseInfo.DatabaseInfo.DatabaseType);
+                            var generator = DataConnectionHelper.CreateGenerator(repository, tempFile, databaseInfo.DatabaseInfo.DatabaseType);
                             generator.ScriptDatabaseToFile(Scope.Schema);
                         }
-                        sdfPath = Path.Combine(Path.GetTempPath(), sdfFileName);
+                        if (sdfFileName != null)
+                        {
+                            sdfPath = Path.Combine(Path.GetTempPath(), sdfFileName);
+                        }
                         using (Stream stream = new MemoryStream(Resources.SqlCe35AddinStore))
                         {
                             // Create a FileStream object to write a stream to a file 
-                            using (FileStream fileStream = File.Create(sdfPath, (int)stream.Length))
+                            using (var fileStream = File.Create(sdfPath, (int)stream.Length))
                             {
                                 // Fill the bytes[] array with the stream data 
-                                byte[] bytesInStream = new byte[stream.Length];
-                                stream.Read(bytesInStream, 0, (int)bytesInStream.Length);
+                                var bytesInStream = new byte[stream.Length];
+                                stream.Read(bytesInStream, 0, bytesInStream.Length);
                                 // Use FileStream object to write to the specified file 
                                 fileStream.Write(bytesInStream, 0, bytesInStream.Length);
                             }
                         }
-                        DatabaseInfo info = new DatabaseInfo();
-                        info.ConnectionString = "Data Source=" + sdfPath;
-                        info.DatabaseType = DatabaseType.SQLCE35;
-                        using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(info))
+                        var info = new DatabaseInfo
                         {
-                            string script = File.ReadAllText(tempFile);
+                            ConnectionString = "Data Source=" + sdfPath,
+                            DatabaseType = DatabaseType.SQLCE35
+                        };
+                        using (var repository = DataConnectionHelper.CreateRepository(info))
+                        {
+                            var script = File.ReadAllText(tempFile);
                             repository.ExecuteSql(script);
                         }
                         sdfPath = info.ConnectionString;
                     }
 
-                    int versionNumber = GetVersionTableNumber(databaseInfo.DatabaseInfo, isDesktop);
+                    var versionNumber = GetVersionTableNumber(databaseInfo.DatabaseInfo, isDesktop);
 
                     model = dcDialog.ModelName;
-                    string dcPath = Path.Combine(Path.GetTempPath(), model + ".cs");
+                    var dcPath = Path.Combine(Path.GetTempPath(), model + ".cs");
                     if (dcDialog.CodeLanguage == "VB")
                     {
                         dcPath = Path.Combine(Path.GetTempPath(), model + ".vb");
                     }
-                    string parameters = " /provider:SQLCompact /code:\"" + dcPath + "\"";
+                    var parameters = " /provider:SQLCompact /code:\"" + dcPath + "\"";
                     parameters += " /conn:\"" + sdfPath + "\"";
                     parameters += " /context:" + model;
                     if (dcDialog.Pluralize)
@@ -1191,10 +1175,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     {
                         parameters += " /namespace:" + dcDialog.NameSpace;
                     }
-                    var dcH = new ErikEJ.SqlCeScripting.DataContextHelper();
+                    var dcH = new DataContextHelper();
 
-                    string sqlmetalResult = dcH.RunSqlMetal(sqlMetalPath, parameters);
-
+                    var sqlmetalResult = dcH.RunSqlMetal(sqlMetalPath, parameters);
                     if (!File.Exists(dcPath))
                     {
                         EnvDTEHelper.ShowError("Error during SQL Metal run: " + sqlmetalResult);
@@ -1203,7 +1186,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                     if (!isDesktop)
                     {
-                        using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                        using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                         {
                             if (dcDialog.CodeLanguage == "VB")
                             {
@@ -1217,18 +1200,18 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                     if (dcDialog.MultipleFiles)
                     {
-                        Dictionary<string, string> classes = DataContextHelper.SplitIntoMultipleFiles(dcPath, dcDialog.NameSpace, model);
-                        string projectPath = project.Properties.Item("FullPath").Value.ToString();
+                        var classes = DataContextHelper.SplitIntoMultipleFiles(dcPath, dcDialog.NameSpace, model);
+                        var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
                         foreach (var item in classes)
                         {
-                            string fileName = Path.Combine(projectPath, item.Key + ".cs");
+                            var fileName = Path.Combine(projectPath, item.Key + ".cs");
                             if (File.Exists(fileName))
                             {
                                 File.Delete(fileName);
                             }
                             File.WriteAllText(fileName, item.Value);
-                            ProjectItem classItem = dteH.GetProjectDataContextClass(project, fileName);
+                            var classItem = dteH.GetProjectDataContextClass(project, fileName);
                             if (classItem != null)
                             {
                                 classItem.Delete();
@@ -1239,10 +1222,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                     else
                     {
-                        string extension = ".cs";
+                        var extension = ".cs";
                         if (dcDialog.CodeLanguage == "VB")
                             extension = ".vb";
-                        ProjectItem dcItem = dteH.GetProjectDC(project, model, extension);
+                        var dcItem = dteH.GetProjectDC(project, model, extension);
                         if (dcItem == null)
                         {
                             project.ProjectItems.AddFromFileCopy(dcPath);
@@ -1259,11 +1242,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     EnvDTEHelper.AddReference(project, "System.Data.Linq");
                     if (dcDialog.AddConnectionStringBuilder)
                     {
-                        string projectPath = project.Properties.Item("FullPath").Value.ToString();
+                        var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
-                        string fileName = "LocalDatabaseConnectionStringBuilder.cs";
+                        var fileName = "LocalDatabaseConnectionStringBuilder.cs";
 
-                        string filePath = Path.Combine(projectPath, fileName);
+                        var filePath = Path.Combine(projectPath, fileName);
                         if (File.Exists(filePath))
                         {
                             File.Delete(filePath);
@@ -1271,11 +1254,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         using (Stream stream = new MemoryStream(Resources.LocalDatabaseConnectionStringBuilder))
                         {
                             // Create a FileStream object to write a stream to a file 
-                            using (FileStream fileStream = File.Create(filePath, (int)stream.Length))
+                            using (var fileStream = File.Create(filePath, (int)stream.Length))
                             {
                                 // Fill the bytes[] array with the stream data 
-                                byte[] bytesInStream = new byte[stream.Length];
-                                stream.Read(bytesInStream, 0, (int)bytesInStream.Length);
+                                var bytesInStream = new byte[stream.Length];
+                                stream.Read(bytesInStream, 0, bytesInStream.Length);
                                 // Use FileStream object to write to the specified file 
                                 fileStream.Write(bytesInStream, 0, bytesInStream.Length);
                             }
@@ -1286,7 +1269,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     // Creates __Version table and adds one row if desired
                     if (dcDialog.AddVersionTable)
                     {
-                        using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                        using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                         {
                             var list = repository.GetAllTableNames();
                             if (!list.Contains("__VERSION"))
@@ -1305,13 +1288,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         }
 
                     }
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseCreateDC");
+                    DataConnectionHelper.LogUsage("DatabaseCreateDC");
                 }
-
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -1352,9 +1334,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
 
-            var dteH = new Helpers.EnvDTEHelper();
+            var dteH = new EnvDTEHelper();
 
             var project = dteH.GetProject(dte);
             if (project == null)
@@ -1385,17 +1367,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     defaultNamespace = project.Properties.Item("DefaultNamespace").Value.ToString();
                 }
                 var projectPath = project.Properties.Item("FullPath").Value.ToString();
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateSqliteNetModel(defaultNamespace);
                     
-                    string fileName = Path.Combine(projectPath, "DataAccess.cs");
+                    var fileName = Path.Combine(projectPath, "DataAccess.cs");
                     if (File.Exists(fileName))
                     {
                         File.Delete(fileName);
                     }
-                    string warning = @"//This code was generated by a tool.
+                    var warning = @"//This code was generated by a tool.
 //Changes to this file will be lost if the code is regenerated."
 + Environment.NewLine +
 "// See the blog post here for help on using the generated code: http://erikej.blogspot.dk/2014/10/database-first-with-sqlite-in-universal.html"
@@ -1404,12 +1386,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     File.WriteAllText(fileName, warning + generator.GeneratedScript);
                     project.ProjectItems.AddFromFile(fileName);
                     EnvDTEHelper.ShowMessage("DataAccess.cs generated.");
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseSqliteNetCodegen");
+                    DataConnectionHelper.LogUsage("DatabaseSqliteNetCodegen");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
             }
         }
 
@@ -1418,13 +1400,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (isDesktop)
                 return 0;
 
-            int version = 0;
-            using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo))
+            var version = 0;
+            using (var repository = DataConnectionHelper.CreateRepository(databaseInfo))
             {
                 var list = repository.GetAllTableNames();
                 if (list.Contains("__VERSION"))
                 {
-                    System.Data.DataSet ds = repository.ExecuteSql(@"
+                    var ds = repository.ExecuteSql(@"
                                 SELECT MAX([SchemaVersion]) FROM __VERSION;
                                 GO");
                     if (ds != null && ds.Tables.Count > 0)
@@ -1453,7 +1435,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 EnvDTEHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
                 return;
             }
-            if (!Helpers.SyncFxHelper.IsProvisioned(databaseInfo.DatabaseInfo))
+            if (!SyncFxHelper.IsProvisioned(databaseInfo.DatabaseInfo))
             {
                 EnvDTEHelper.ShowError("The database is not provisioned, cannot deprovision");
                 return;                
@@ -1463,11 +1445,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 new SyncFxHelper().DeprovisionDatabase(databaseInfo.DatabaseInfo.ConnectionString);
                 databaseInfo.ExplorerControl.RefreshTables(databaseInfo.DatabaseInfo);
                 EnvDTEHelper.ShowMessage("Database deprovisioned");
-                Helpers.DataConnectionHelper.LogUsage("DatabaseSyncDeprovision");
+                DataConnectionHelper.LogUsage("DatabaseSyncDeprovision");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
 
         }
@@ -1481,31 +1463,31 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 EnvDTEHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
                 return;
             }
-            if (!Helpers.SyncFxHelper.IsProvisioned(databaseInfo.DatabaseInfo))
+            if (!SyncFxHelper.IsProvisioned(databaseInfo.DatabaseInfo))
             {
                 EnvDTEHelper.ShowError("The database is not provisioned, cannot generate snapshots");
                 return;
             }
 
-            var fd = new SaveFileDialog();
-            fd.Title = "Save generated snapshot database file as";
-            fd.Filter = DataConnectionHelper.GetSqlCeFileFilter();
-            fd.OverwritePrompt = true;
-            fd.ValidateNames = true;
-            bool? result = fd.ShowDialog();
-            if (result.HasValue && result.Value == true)
+            var fd = new SaveFileDialog
             {
-                var fileName = fd.FileName;
-                try
-                {
-                    SyncFxHelper.GenerateSnapshot(databaseInfo.DatabaseInfo.ConnectionString, fileName);
-                    EnvDTEHelper.ShowMessage("Database snapshot generated.");
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseSyncSnapshot");
-                }
-                catch (Exception ex)
-                {
-                    Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
-                }
+                Title = "Save generated snapshot database file as",
+                Filter = DataConnectionHelper.GetSqlCeFileFilter(),
+                OverwritePrompt = true,
+                ValidateNames = true
+            };
+            var result = fd.ShowDialog();
+            if (!result.HasValue || !result.Value) return;
+            var fileName = fd.FileName;
+            try
+            {
+                SyncFxHelper.GenerateSnapshot(databaseInfo.DatabaseInfo.ConnectionString, fileName);
+                EnvDTEHelper.ShowMessage("Database snapshot generated.");
+                DataConnectionHelper.LogUsage("DatabaseSyncSnapshot");
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
             }
         }
 
@@ -1522,31 +1504,28 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                string model = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption).Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
-                SyncFxDialog sfd = new SyncFxDialog();
-                int totalCount = 0;
-                totalCount = SyncFxGetObjectsForSync(sfd, databaseInfo);
-                sfd.ModelName = model;
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
+                if (fileNameWithoutExtension == null) return;
+                var model = fileNameWithoutExtension.Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
+                var sfd = new SyncFxDialog {ModelName = model};
 
-                bool? res = sfd.ShowModal();
+                var res = sfd.ShowModal();
 
-                if (res.HasValue && res.Value == true && (sfd.Tables.Count > 0))
+                if (!res.HasValue || res.Value != true || (sfd.Tables.Count <= 0)) return;
+                if (SyncFxHelper.SqlCeScopeExists(databaseInfo.DatabaseInfo.ConnectionString, model))
                 {
-                    if (SyncFxHelper.SqlCeScopeExists(databaseInfo.DatabaseInfo.ConnectionString, model))
-                    {
-                        EnvDTEHelper.ShowError("Scope name is already in use. Please enter a different scope name.");
-                        return;
-                    }
-
-                    model = sfd.ModelName;
-                    new SyncFxHelper().ProvisionScope(databaseInfo.DatabaseInfo.ConnectionString, model, sfd.Columns.Where(c => sfd.Tables.Contains(c.TableName)).ToList());
-                    EnvDTEHelper.ShowMessage("Scope: " + model + " has been provisioned.");
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseSyncProvision");
+                    EnvDTEHelper.ShowError("Scope name is already in use. Please enter a different scope name.");
+                    return;
                 }
+
+                model = sfd.ModelName;
+                new SyncFxHelper().ProvisionScope(databaseInfo.DatabaseInfo.ConnectionString, model, sfd.Columns.Where(c => sfd.Tables.Contains(c.TableName)).ToList());
+                EnvDTEHelper.ShowMessage("Scope: " + model + " has been provisioned.");
+                DataConnectionHelper.LogUsage("DatabaseSyncProvision");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -1556,9 +1535,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
 
-            var dteH = new Helpers.EnvDTEHelper();
+            var dteH = new EnvDTEHelper();
 
             var project = dteH.GetProject(dte);
             if (project == null)
@@ -1583,7 +1562,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value.ToString());
+                EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                 return;
             }
             if (databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
@@ -1594,26 +1573,23 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                string model = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption).Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
-                SyncFxDialog sfd = new SyncFxDialog();
-                int totalCount = 0;
-                totalCount = SyncFxGetObjectsForSync(sfd, databaseInfo);
-                sfd.ModelName = model;
-
-                bool? res = sfd.ShowModal();
-                if (res.HasValue && res.Value == true && (sfd.Tables.Count > 0))
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
+                if (fileNameWithoutExtension != null)
                 {
+                    var model = fileNameWithoutExtension.Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
+                    var sfd = new SyncFxDialog {ModelName = model};
+
+                    var res = sfd.ShowModal();
+                    if (!res.HasValue || res.Value != true || (sfd.Tables.Count <= 0)) return;
                     model = sfd.ModelName;
                     var defaultNamespace = project.Properties.Item("DefaultNamespace").Value.ToString();
 
-                    var classes = new Dictionary<string, string>();
-
-                    classes = new SyncFxHelper().GenerateCodeForScope(string.Empty, databaseInfo.DatabaseInfo.ConnectionString, "SQLCE", model, sfd.Columns.Where(c => sfd.Tables.Contains(c.TableName)).ToList(), defaultNamespace);
+                    var classes = new SyncFxHelper().GenerateCodeForScope(string.Empty, databaseInfo.DatabaseInfo.ConnectionString, "SQLCE", model, sfd.Columns.Where(c => sfd.Tables.Contains(c.TableName)).ToList(), defaultNamespace);
                     var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
                     foreach (var item in classes)
                     {
-                        string fileName = Path.Combine(projectPath, item.Key + ".cs");
+                        var fileName = Path.Combine(projectPath, item.Key + ".cs");
                         if (File.Exists(fileName))
                         {
                             File.Delete(fileName);
@@ -1629,36 +1605,32 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     EnvDTEHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
                     EnvDTEHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
                     EnvDTEHelper.ShowMessage("Scope: " + model + " code generated.");
-                    Helpers.DataConnectionHelper.LogUsage("DatabaseSyncCodegen");
+                    DataConnectionHelper.LogUsage("DatabaseSyncCodegen");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
-
         private static void AddRowVersionColumns(DatabaseMenuCommandParameters databaseInfo)
         {
-            using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+            using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
             {
                 var list = repository.GetAllTableNames();
                 var allColumns = repository.GetAllColumns();
                 foreach (var table in list)
                 {
-                    if (!table.StartsWith("__"))
+                    if (table.StartsWith("__")) continue;
+                    var rowVersionCol = allColumns.SingleOrDefault(c => c.TableName == table && c.DataType == "rowversion");
+                    if (rowVersionCol == null)
                     {
-                        var rowVersionCol = allColumns.SingleOrDefault(c => c.TableName == table && c.DataType == "rowversion");
-                        if (rowVersionCol == null)
-                        {
-                            repository.ExecuteSql(string.Format("ALTER TABLE {0} ADD COLUMN VersionColumn rowversion NOT NULL;{1}GO", table, Environment.NewLine));
-                        }
+                        repository.ExecuteSql(string.Format("ALTER TABLE {0} ADD COLUMN VersionColumn rowversion NOT NULL;{1}GO", table, Environment.NewLine));
                     }
                 }
             }
         }
-
 
         public void RefreshTables(object sender, ExecutedRoutedEventArgs e)
         {
@@ -1667,40 +1639,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 databaseInfo.ExplorerControl.RefreshTables(databaseInfo.DatabaseInfo);
-                Helpers.DataConnectionHelper.LogUsage("DatabaseRefreshTables");
+                DataConnectionHelper.LogUsage("DatabaseRefreshTables");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
         #endregion
 
-        private static int SyncFxGetObjectsForSync(SyncFxDialog sfd, DatabaseMenuCommandParameters databaseInfo)
-        {
-            int totalCount;
-            using (var repository = Helpers.DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
-            {
-                sfd.Tables =
-                    repository.GetAllTableNames().Where(
-                        t => !t.EndsWith("scope_info") && !t.EndsWith("scope_config") && !t.EndsWith("schema_info") && !t.EndsWith("_tracking")).ToList();
-                sfd.Columns =
-                    repository.GetAllColumns().Where(
-                        t =>
-                        !t.TableName.EndsWith("scope_info") && !t.TableName.EndsWith("scope_config") && !t.TableName.EndsWith("schema_info") &&
-                        !t.TableName.EndsWith("_tracking")).ToList();
-                sfd.PrimaryKeyColumns =
-                    repository.GetAllPrimaryKeys().Where(
-                        t =>
-                        !t.TableName.EndsWith("scope_info") && !t.TableName.EndsWith("scope_config") && !t.TableName.EndsWith("schema_info") &&
-                        !t.TableName.EndsWith("_tracking")).ToList();
-                totalCount = sfd.Tables.Count;
-            }
-            return totalCount;
-        }
-
-        private string Remove(string s, IEnumerable<char> chars)
+        private static string Remove(string s, IEnumerable<char> chars)
         {
             return new string(s.Where(c => !chars.Contains(c)).ToArray());
         }

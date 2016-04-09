@@ -68,7 +68,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             // Add SQLite database menu
             var addSQLiteDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                                        dcmd.AddSQLiteDatabase);
+                                        dcmd.AddSqLiteDatabase);
             var addSQLiteDatabaseMenuItem = new MenuItem
             {
                 Header = "Add SQLite Connection...",
