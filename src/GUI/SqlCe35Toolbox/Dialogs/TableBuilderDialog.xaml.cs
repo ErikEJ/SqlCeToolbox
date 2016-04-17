@@ -6,11 +6,10 @@ using System.Windows;
 using System.Windows.Controls;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.VisualStudio.PlatformUI;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
-    public partial class TableBuilderDialog : DialogWindow
+    public partial class TableBuilderDialog
     {
         public string TableName { get; set; }
         public List<Column> TableColumns { get; set; }
@@ -18,18 +17,18 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         public int Mode { get; set; } // 1 = add, 2 = edit
 
-        private ObservableCollection<TableColumn> columns;
-        private DatabaseType _dbType; 
+        private ObservableCollection<TableColumn> _columns;
+        private readonly DatabaseType _dbType; 
 
         public TableBuilderDialog(string tableDescription, DatabaseType dbType)
         {
             Telemetry.TrackPageView(nameof(TableBuilderDialog));
             InitializeComponent();
             _dbType = dbType;
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            Background = VSThemes.GetWindowBackground();
             if (!string.IsNullOrWhiteSpace(tableDescription))
             {
-                this.txtTableDesc.Text = tableDescription;
+                txtTableDesc.Text = tableDescription;
             }
         }
 
@@ -37,12 +36,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             if (SaveSettings())
             {
-                this.DialogResult = true;
+                DialogResult = true;
                 Close();
-            }
-            else
-            {
-                return;
             }
         }
 
@@ -50,51 +45,40 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             try
             {
-                TableName = this.txtTableDesc.Text;
+                TableName = txtTableDesc.Text;
                 if (string.IsNullOrEmpty(TableName))
                 {
                     EnvDTEHelper.ShowError("Table name is required");
                     return false;
                 }
 
-                var validation = TableColumn.ValidateColumns(columns.ToList());
+                var validation = TableColumn.ValidateColumns(_columns.ToList());
                 if (!string.IsNullOrEmpty(validation))
                 {
                     EnvDTEHelper.ShowError(validation);
                     return false;
                 }
-                TableColumns = TableColumn.BuildColumns(columns.ToList(), TableName);
-                PkScript = TableColumn.BuildPkScript(columns.ToList(), TableName);
-                if (_dbType == DatabaseType.SQLite)
-                {
-                    PkScript = BuildSQLitePkScript(columns.ToList(), TableName);
-                }
-                else
-                {
-                    PkScript = TableColumn.BuildPkScript(columns.ToList(), TableName);
-                }
+                TableColumns = TableColumn.BuildColumns(_columns.ToList(), TableName);
+                PkScript = TableColumn.BuildPkScript(_columns.ToList(), TableName);
+                PkScript = _dbType == DatabaseType.SQLite ? BuildSqLitePkScript(_columns.ToList(), TableName) : TableColumn.BuildPkScript(_columns.ToList(), TableName);
                 return true;
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
             }
             return false;
         }
 
-        private static string BuildSQLitePkScript(List<TableColumn> columns, string TableName)
+        private static string BuildSqLitePkScript(List<TableColumn> columns, string tableName)
         {
             var script = string.Empty;
             var pkCols = columns.Where(x => x.PrimaryKey).ToList();
             if (pkCols.Count > 0)
             {
-                string cols = string.Empty;
-                foreach (var col in pkCols)
-                {
-                    cols += string.Format("[{0}],", col.Name);
-                }
+                string cols = pkCols.Aggregate(string.Empty, (current, col) => current + string.Format("[{0}],", col.Name));
                 cols = cols.Substring(0, cols.Length - 1);
-                script = string.Format("{0}, CONSTRAINT [PK_{1}] PRIMARY KEY ({2})", Environment.NewLine, TableName, cols);
+                script = string.Format("{0}, CONSTRAINT [PK_{1}] PRIMARY KEY ({2})", Environment.NewLine, tableName, cols);
             }
             return script;
         }
@@ -107,26 +91,27 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.txtTableDesc.Focus();
+            txtTableDesc.Focus();
             if (TableColumns != null)
             {
-                columns = new ObservableCollection<TableColumn>(TableColumn.BuildTableColumns(TableColumns, TableName));
+                _columns = new ObservableCollection<TableColumn>(TableColumn.BuildTableColumns(TableColumns, TableName));
             }
             else
             {
                 if (Mode == 1)
                 {
-                    columns = TableColumn.GetNew;
+                    _columns = _dbType == DatabaseType.SQLite ? TableColumn.GetNewSqlite : TableColumn.GetNew;
+                    
                 }
                 else
                 {
-                    columns = TableColumn.GetAll;
+                    _columns = _dbType == DatabaseType.SQLite ? TableColumn.GetAllSqlite : TableColumn.GetAll;
                 }
             }
             if (Mode == 1 || Mode == 2)
             {
-                AddButton.Visibility = System.Windows.Visibility.Collapsed;
-                DeleteButton.Visibility = System.Windows.Visibility.Collapsed;
+                AddButton.Visibility = Visibility.Collapsed;
+                DeleteButton.Visibility = Visibility.Collapsed;
                 dgridCols.CanUserAddRows = false;
                 dgridCols.CanUserDeleteRows = false;
                 lblTable.Content = "Table Name";
@@ -134,19 +119,22 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             }
             if (Mode == 1)
             {
-                this.Title = "Add column";
+                Title = "Add column";
             }
             if (Mode == 2)
             {
-                colPrimary.Visibility = System.Windows.Visibility.Collapsed;
+                colPrimary.Visibility = Visibility.Collapsed;
                 colName.IsReadOnly = true;
-                this.Title = "Edit column";
+                Title = "Edit column";
             }
-            this.dgridCols.ItemsSource = columns;
-            this.colDataType.ItemsSource = TableDataType.GetAll;
+            dgridCols.ItemsSource = _columns;
+            var items = TableDataType.GetAll.Where(i => !"REAL.INTEGER.TEXT.BLOB.NUMERIC".Contains(i.Key)).ToDictionary(i => i.Key, i => i.Value);
+            if (_dbType == DatabaseType.SQLite)
+                items = TableDataType.GetAll.Where(i => "REAL.INTEGER.TEXT.BLOB.NUMERIC".Contains(i.Key)).ToDictionary(i => i.Key, i => i.Value);
+            colDataType.ItemsSource = items;
         }
 
-        private void DataTypeFieldChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void DataTypeFieldChanged(object sender, SelectionChangedEventArgs e)
         {
             var item = dgridCols.SelectedItem as TableColumn;
             if (item != null)
@@ -161,9 +149,9 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             //var item = dgridCols.SelectedItem as TableColumn;
             //if (item != null)
             //{
-            //    int from = columns.IndexOf(item);
-            //    if (from < columns.Count - 1)
-            //        columns.Move(from, from + 1);
+            //    int from = _columns.IndexOf(item);
+            //    if (from < _columns.Count - 1)
+            //        _columns.Move(from, from + 1);
             //}
         }
 
@@ -173,45 +161,47 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             //var item = dgridCols.SelectedItem as TableColumn;
             //if (item != null)
             //{
-            //    int from = columns.IndexOf(item);
+            //    int from = _columns.IndexOf(item);
             //    if (from > 0)
-            //        columns.Move(from, from - 1);
+            //        _columns.Move(from, from - 1);
             //}
         }
 
-        void PreparingCellForEdit(object sender, DataGridPreparingCellForEditEventArgs e)
+        private void PreparingCellForEdit(object sender, DataGridPreparingCellForEditEventArgs e)
         {
-            TableColumn c = e.Row.DataContext as TableColumn;
+            var c = e.Row.DataContext as TableColumn;
             if (e.Column.DisplayIndex == 2)
             {
-                if (TableDataType.IsLengthFixed(c.DataType))
+                if (c != null && TableDataType.IsLengthFixed(c.DataType))
                 {
-                    TextBox textBox = (e.EditingElement as TextBox);
-                    textBox.IsReadOnly = true;
+                    var textBox = (e.EditingElement as TextBox);
+                    if (textBox != null) textBox.IsReadOnly = true;
                 }
                 else
                 {
-                    TextBox textBox = (e.EditingElement as TextBox);
-                    textBox.IsReadOnly = false;
+                    var textBox = (e.EditingElement as TextBox);
+                    if (textBox != null) textBox.IsReadOnly = false;
                 }
             }
-            if (e.Column.DisplayIndex == 3)
+            if (e.Column.DisplayIndex != 3) return;
+            if (c != null && TableDataType.IsNullFixed(c.DataType))
             {
-                if (TableDataType.IsNullFixed(c.DataType))
+                var checkBox = (e.EditingElement as CheckBox);
+                if (checkBox != null)
                 {
-                    CheckBox checkBox = (e.EditingElement as CheckBox);
                     checkBox.IsEnabled = false;
                     checkBox.IsChecked = false;
                 }
-                else
+            }
+            else
+            {
+                var checkBox = (e.EditingElement as CheckBox);
+                if (checkBox != null)
                 {
-                    CheckBox checkBox = (e.EditingElement as CheckBox);
                     checkBox.IsEnabled = true;
                     checkBox.IsChecked = false;
                 }
             }
         }
-
-
     }
 }
