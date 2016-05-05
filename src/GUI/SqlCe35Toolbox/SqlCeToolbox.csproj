@@ -20,10 +20,11 @@
     <StartAction>Program</StartAction>
     <StartProgram>$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
+    <ReferencePath>$(ReferencePath);$(MSBuildThisFileDirectory)..\References\2010</ReferencePath>
     <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' != ''">$(VisualStudioVersion)</MinimumVisualStudioVersion>
-    <VsSDKInstall>C:\Program Files (x86)\Microsoft Visual Studio 2010 SDK SP1</VsSDKInstall>
+    <!--<VsSDKInstall>C:\Program Files (x86)\Microsoft Visual Studio 2010 SDK SP1</VsSDKInstall>
     <VsSDKIncludes>C:\Program Files (x86)\Microsoft Visual Studio 2010 SDK SP1\VisualStudioIntegration\Common\Inc</VsSDKIncludes>
-    <VsSDKToolsPath>C:\Program Files (x86)\Microsoft Visual Studio 2010 SDK SP1\VisualStudioIntegration\Tools\Bin</VsSDKToolsPath>
+    <VsSDKToolsPath>C:\Program Files (x86)\Microsoft Visual Studio 2010 SDK SP1\VisualStudioIntegration\Tools\Bin</VsSDKToolsPath>-->
   </PropertyGroup>
   <!-- Look for the SDK specific to the current version of Visual Studio -->
   <PropertyGroup>
