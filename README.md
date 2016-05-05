@@ -8,9 +8,7 @@ Download the latest version of the Visual Studio add-in (for both 3.5, 4.0 and S
 
 Follow me on Twitter: [@ErikEJ](http://twitter.com/ErikEJ)
 
-In order to open, you can use Visual Studio 2015
-
-In order to build, currently Visual Studio 2010 Pro SP1 + VS 2010 SDK SP1 must be installed on the developer PC.
+In order to open the source code and build, you can use Visual Studio 2015
 
 # Downloads
 
