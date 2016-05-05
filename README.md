@@ -19,7 +19,7 @@ Download the latest version of the Visual Studio add-in (for both 3.5, 4.0 and S
 
 (Or just install from Tools, Extensions and Updates in Visual Studio)
 
-You can download a .zip file with the [latest build of the master branch from AppVeyor](https://ci.appveyor.com/api/projects/ErikEJ/SqlCeToolbox/artifacts/src/GUI/SqlCe35Toolbox/bin/x86/Release/SqlCeToolbox.vsix?branch=master)
+You can download a .zip file with the [latest build of the master branch from AppVeyor](https://ci.appveyor.com/api/projects/ErikEJ/SqlCeToolbox/artifacts/src/GUI/SqlCe35Toolbox/bin/x86/Release/SqlCeToolbox.vsix?branch=master) - rename to .vsix when downloaded.
 
 Other downloads: [Standalone .exe for SQL Compact 4.0](http://sqlcetoolbox.codeplex.com/releases/view/104096) and [Standalone .exe for SQL Compact 3.5](http://sqlcetoolbox.codeplex.com/releases/view/104781)
 
