@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-namespace ErikEJ.SqlCeToolbox
+namespace ErikEJ.SqlCeToolbox.Helpers
 {
     class SqlCeSyntaxProvider
     {
-        static List<string> tags = new List<string>();
-        static List<char> specials = new List<char>();
+        static List<string> tags;
+        static List<char> specials;
         #region ctor
         static SqlCeSyntaxProvider()
         {

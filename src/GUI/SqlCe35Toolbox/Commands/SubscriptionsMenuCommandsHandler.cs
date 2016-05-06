@@ -29,7 +29,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void DropSubscription(object sender, ExecutedRoutedEventArgs e)
         {
-            if (EnvDTEHelper.ShowMessageBox("Do you really want to remove replication metadata from the SQL Server Compact database?", Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO, Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING) == System.Windows.Forms.DialogResult.No)
+            if (EnvDteHelper.ShowMessageBox("Do you really want to remove replication metadata from the SQL Server Compact database?", Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO, Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING) == System.Windows.Forms.DialogResult.No)
             {
                 return;
             }

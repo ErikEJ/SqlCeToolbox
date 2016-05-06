@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.VisualStudio.PlatformUI;
 using ErikEJ.SqlCeScripting;
+using ErikEJ.SqlCeToolbox.Helpers;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
@@ -21,7 +22,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(SyncFxDialog));
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
         }
 
         private List<CheckListItem> items = new List<CheckListItem>();

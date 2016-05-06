@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
+using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;

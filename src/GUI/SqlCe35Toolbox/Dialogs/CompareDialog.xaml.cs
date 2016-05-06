@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Collections.Generic;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
@@ -23,7 +24,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(CompareDialog));
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
             this.lblCompare.Text = string.Format("Choose the target database to compare {0} (source) with:", caption);
             if (!string.IsNullOrEmpty(tableName))
             {

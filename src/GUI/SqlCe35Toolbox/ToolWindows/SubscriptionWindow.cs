@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Windows;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.VisualStudio.Shell;
 
 namespace ErikEJ.SqlCeToolbox.ToolWindows

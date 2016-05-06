@@ -18,12 +18,17 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             string connName = string.Format("{0}Entities", model);
 
             //http://social.msdn.microsoft.com/forums/en-US/winforms/thread/3943ec30-8be5-4f12-9667-3b812f711fc9/
-            File.WriteAllText(Path.Combine(System.IO.Path.GetDirectoryName(projectPath), prefix), string.Empty);
+            if (projectPath == null) return;
+            var projectDir = Path.GetDirectoryName(projectPath);
+            var itemWithoutExtension = Path.GetFileNameWithoutExtension(itemName);
+            if (string.IsNullOrEmpty(itemWithoutExtension)) return;
+            if (string.IsNullOrEmpty(projectDir)) return;
 
-            System.Configuration.Configuration config = System.Configuration.ConfigurationManager.OpenExeConfiguration(Path.Combine(System.IO.Path.GetDirectoryName(projectPath), Path.GetFileNameWithoutExtension(itemName)));
+            File.WriteAllText(Path.Combine(projectDir, prefix), string.Empty);
+            var config = ConfigurationManager.OpenExeConfiguration(Path.Combine(projectDir, itemWithoutExtension));
             try
             {
-                File.Delete(Path.Combine(System.IO.Path.GetDirectoryName(projectPath), "App"));
+                File.Delete(Path.Combine(projectDir, "App"));
             }
             catch (IOException)
             { }
@@ -52,7 +57,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             if (!File.Exists(configPath))
                 return;
-            XmlDocument doc = null;
+            XmlDocument doc;
             doc = new XmlDocument();
             doc.Load(configPath);
 
@@ -137,16 +142,17 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 }
             }
 
+            XmlNode nodeAB;
+            nodeAB = doc.SelectSingleNode("//assemblyBinding");
             if (dbType == DatabaseType.SQLCE35)
             {
-                XmlNode nodeAIExists = doc.SelectSingleNode(string.Format("//runtime/assemblyBinding/dependentAssembly/assemblyIdentity[@name = '{0}']", "System.Data.SqlServerCe"));
-                XmlNode nodeBRExists = doc.SelectSingleNode(string.Format("//runtime/assemblyBinding/dependentAssembly/bindingRedirect[@oldVersion = '{0}']", "3.5.1.0-3.5.1.50"));
+                XmlNode nodeAiExists = doc.SelectSingleNode(string.Format("//runtime/assemblyBinding/dependentAssembly/assemblyIdentity[@name = '{0}']", "System.Data.SqlServerCe"));
+                XmlNode nodeBrExists = doc.SelectSingleNode(string.Format("//runtime/assemblyBinding/dependentAssembly/bindingRedirect[@oldVersion = '{0}']", "3.5.1.0-3.5.1.50"));
 
-                if (nodeAIExists == null && nodeBRExists == null)
+                if (nodeAiExists == null && nodeBrExists == null)
                 {
-
                     bool addRtNode = false;
-                    bool addABNode = false;
+                    bool addAbNode = false;
 
                     XmlNode nodeRuntime = doc.SelectSingleNode("//runtime");
                     if (nodeRuntime == null)
@@ -155,32 +161,28 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         nodeRuntime = doc.CreateNode(XmlNodeType.Element, "runtime", null);
                     }
 
-                    XmlNode nodeAB = doc.SelectSingleNode("//assemblyBinding");
                     if (nodeAB == null)
                     {
-                        addABNode = true;
+                        addAbNode = true;
                         nodeAB = doc.CreateNode(XmlNodeType.Element, "assemblyBinding", "urn:schemas-microsoft-com:asm.v1");
                     }
 
-                    XmlNode nodeDA = doc.SelectSingleNode("//dependentAssembly");
-                    if (nodeDA == null)
-                    {
-                        nodeDA = doc.CreateNode(XmlNodeType.Element, "dependentAssembly", null);
-                    }
+                    XmlNode nodeDa = doc.SelectSingleNode("//dependentAssembly") ??
+                                     doc.CreateNode(XmlNodeType.Element, "dependentAssembly", null);
 
                     XmlElement elemId = doc.CreateElement("assemblyIdentity");
                     elemId.SetAttribute("name", "System.Data.SqlServerCe");
                     elemId.SetAttribute("publicKeyToken", "89845dcd8080cc91");
                     elemId.SetAttribute("culture", "neutral");
 
-                    XmlElement elemBR = doc.CreateElement("bindingRedirect");
-                    elemBR.SetAttribute("oldVersion", "3.5.1.0-3.5.1.50");
-                    elemBR.SetAttribute("newVersion", "3.5.1.50");
+                    XmlElement elemBr = doc.CreateElement("bindingRedirect");
+                    elemBr.SetAttribute("oldVersion", "3.5.1.0-3.5.1.50");
+                    elemBr.SetAttribute("newVersion", "3.5.1.50");
 
-                    nodeDA.AppendChild(elemId);
-                    nodeDA.AppendChild(elemBR);
+                    nodeDa.AppendChild(elemId);
+                    nodeDa.AppendChild(elemBr);
 
-                    nodeAB.AppendChild(nodeDA);
+                    nodeAB.AppendChild(nodeDa);
 
                     nodeRuntime.AppendChild(nodeAB);
 
@@ -190,11 +192,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         if (nodeRunTime != null)
                             nodeRunTime.AppendChild(nodeAB);
                     }
-                    else if (!addABNode)
+                    else if (!addAbNode)
                     {
                         XmlNode nodeAb = doc.SelectSingleNode("//assemblyBinding");
                         if (nodeAb != null)
-                            nodeAb.AppendChild(nodeDA);
+                            nodeAb.AppendChild(nodeDa);
                     }
                     else
                     {
@@ -205,7 +207,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 }
                 
             }
-
             //<runtime>
             //  <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
             //    <dependentAssembly>
@@ -214,10 +215,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             //    </dependentAssembly>
             //  </assemblyBinding>
             //</runtime>
-
             doc.Save(configPath);
         }
-
-
     }
 }

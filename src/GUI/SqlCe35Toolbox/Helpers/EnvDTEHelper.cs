@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
-    internal class EnvDTEHelper
+    internal class EnvDteHelper
     {
         public Project GetProject(DTE dte)
         {
@@ -43,7 +43,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return null;
         }
 
-        public ProjectItem GetProjectDC(Project project, string model, string extension)
+        public ProjectItem GetProjectDc(Project project, string model, string extension)
         {
             foreach (ProjectItem item in project.ProjectItems)
             {
@@ -73,7 +73,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             vsProject.References.Add(reference);
         }
 
-        public bool ContainsEFSqlCeReference(Project project)
+        public bool ContainsEfSqlCeReference(Project project)
         {
             VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
             for (int i = 1; i < vsProject.References.Count + 1; i++)
@@ -159,7 +159,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return list;
         }
 
-        public bool ContainsEFSqlCeLegacyReference(Project project)
+        public bool ContainsEfSqlCeLegacyReference(Project project)
         {
             VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
             for (int i = 1; i < vsProject.References.Count + 1; i++)
@@ -171,7 +171,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
-        internal bool ContainsEFSQLiteReference(Project project)
+        internal bool ContainsEfsqLiteReference(Project project)
         {
             VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
             for (int i = 1; i < vsProject.References.Count + 1; i++)
@@ -183,7 +183,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
-        public List<Guid> AllowedWPProjectKinds
+        public List<Guid> AllowedWpProjectKinds
         {
             get
             {
@@ -195,14 +195,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
-        public static Guid VBProject = new Guid("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}");
+        public static Guid VbProject = new Guid("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}");
 
         public static void LaunchUrl(string url)
         {
-            var dte = SqlCeToolboxPackage.GetGlobalService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            var dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE)) as DTE;
             if (dte != null)
             {
-                dte.ItemOperations.Navigate(url, vsNavigateOptions.vsNavigateOptionsDefault);
+                dte.ItemOperations.Navigate(url);
             }
         }
 
@@ -258,8 +258,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
             using (RegistryKey localMachineKey = Registry.LocalMachine.OpenSubKey(registryKeyString))
             {
-                return localMachineKey.GetValue("InstallDir") as string;
+                if (localMachineKey != null) return localMachineKey.GetValue("InstallDir") as string;
             }
+            return null;
         }
 
         // <summary>
@@ -308,7 +309,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             OLEMSGDEFBUTTON defaultButton, OLEMSGICON messageIcon)
         {
             var result = 0;
-            var uiShell = (IVsUIShell)SqlCeToolboxPackage.GetGlobalService(typeof(SVsUIShell));
+            var uiShell = (IVsUIShell)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsUIShell));
 
             if (uiShell != null)
             {
@@ -319,6 +320,5 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
             return (DialogResult)result;
         }
-
     }
 }

@@ -274,7 +274,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
             var helper = CreateEngineHelper(DatabaseType.SQLCE40);
-            EnvDTEHelper dteHelper = new EnvDTEHelper();
+            EnvDteHelper dteHelper = new EnvDteHelper();
             var list = dteHelper.GetSqlCeFilesInActiveSolution(dte);
             foreach (var path in list)
             {
@@ -588,7 +588,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 if (force)
                 {
-                    DDEXRegistry.AddDDEX4Registrations(ver);
+                    DdexRegistry.AddDdex4Registrations(ver);
                 }
                 else
                 {
@@ -598,7 +598,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         var ddexKey = key.OpenSubKey(string.Format(@"SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}", ver));
                         if (ddexKey == null)
                         {
-                            DDEXRegistry.AddDDEX4Registrations(ver);
+                            DdexRegistry.AddDdex4Registrations(ver);
                         }
                     }
                 }
@@ -629,7 +629,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 if (force)
                 {
-                    DDEXRegistry.AddDDEX35Registrations(ver);
+                    DdexRegistry.AddDdex35Registrations(ver);
                 }
                 else
                 {
@@ -639,7 +639,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         var ddexKey = key.OpenSubKey(string.Format(@"SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver));
                         if (ddexKey == null)
                         {
-                            DDEXRegistry.AddDDEX35Registrations(ver);
+                            DdexRegistry.AddDdex35Registrations(ver);
                         }
                     }
                 }
@@ -664,7 +664,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             try
             {
-                DDEXRegistry.AddDDEX35VS10DebugRegistrations();
+                DdexRegistry.AddDdex35Vs10DebugRegistrations();
                 var path = Assembly.GetExecutingAssembly().Location;
                 if (string.IsNullOrEmpty(path)) return;
                 var ddexDllPath = Path.Combine(path, "SqlCeToolbox.DDEX35.dll");
@@ -758,7 +758,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 {
                     Telemetry.TrackException(ex);
                 }
-                EnvDTEHelper.ShowError(CreateEngineHelper(dbType).FormatError(ex));
+                EnvDteHelper.ShowError(CreateEngineHelper(dbType).FormatError(ex));
             }
             return string.Empty; 
         }

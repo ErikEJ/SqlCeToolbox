@@ -8,9 +8,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class DescriptionHelper
     {
-        private const string tableName = "__ExtendedProperties";
+        private const string TableName = "__ExtendedProperties";
 
-        private const string createScript =
+        private const string CreateScript =
 @"CREATE TABLE __ExtendedProperties
 (
 [Id] [int] NOT NULL IDENTITY,
@@ -23,7 +23,7 @@ GO
 CREATE INDEX [__ExtendedProperties_ObjectName_ParentName] ON [__ExtendedProperties] ([ObjectName], [ParentName]);
 GO
 ";
-        private const string insertScript =
+        private const string InsertScript =
 @"INSERT INTO [__ExtendedProperties]
            ([Type]
            ,[ParentName]
@@ -37,26 +37,18 @@ GO
 GO
 ";
 
-        private const string updateScript =
+        private const string UpdateScript =
 @"UPDATE [__ExtendedProperties]
     SET [Value] = '{0}'
     WHERE {1};
 GO
 ";
 
-        private const string selectScript =
+        private const string SelectScript =
 @"SELECT [ObjectName],
          [ParentName],
          [Value]
   FROM [__ExtendedProperties];
-GO
-";
-
-
-        private const string selectSingleScript =
-@"SELECT [Value]
-  FROM [__ExtendedProperties]
-  WHERE {0};
 GO
 ";
 
@@ -65,10 +57,10 @@ GO
             if (string.IsNullOrWhiteSpace(description))
                 return;
 
-            using (IRepository repo = Helpers.DataConnectionHelper.CreateRepository(databaseInfo))
+            using (IRepository repo = DataConnectionHelper.CreateRepository(databaseInfo))
             {
                 CreateExtPropsTable(repo);
-                string sql = string.Format(insertScript, 
+                string sql = string.Format(InsertScript, 
                     (parentName == null ? "NULL" : "'" + parentName + "'"),
                     (objectName == null ? "NULL" : "'" + objectName + "'"),
                     description.Replace("'", "''"));
@@ -83,35 +75,14 @@ GO
                 return;
 
             description = description.Replace("'", "''");
-            using (IRepository repo = Helpers.DataConnectionHelper.CreateRepository(databaseInfo))
+            using (IRepository repo = DataConnectionHelper.CreateRepository(databaseInfo))
             {
                 string where = (objectName == null ? "[ObjectName] IS NULL AND " : "[ObjectName] = '" + objectName + "' AND");
                 where += (parentName == null ? "[ParentName] IS NULL AND [Type] = 0" : "[ParentName] = '" + parentName + "' AND [Type] = 0");
-                var ds = repo.ExecuteSql(string.Format(updateScript, description, where));
+                repo.ExecuteSql(string.Format(UpdateScript, description, where));
             }
 
-        }
-    
-        /// <summary>
-        /// This will only be called if the caller (the tree list) knows that the table exists
-        /// </summary>
-        /// <param name="databaseInfo"></param>
-        /// <returns></returns>
-        private string GetDescription(string parentName, string objectName, DatabaseInfo databaseInfo)
-        {
-            string res = string.Empty;
-            using (IRepository repo = Helpers.DataConnectionHelper.CreateRepository(databaseInfo))
-            {
-                string where = (objectName == null ? "[ObjectName] IS NULL" : "[ObjectName] = '" + objectName + "' AND");
-                where += (parentName == null ? "[ParentName] IS NULL" : "[ParentName] = '" + parentName + "' AND [Type] = 0");
-                var ds = repo.ExecuteSql(string.Format(selectSingleScript, where));
-                if (ds.Tables.Count > 0)
-                {
-                    return ds.Tables[0].Rows[0][0].ToString();
-                }
-            }
-            return res;
-        }
+        }    
 
         public void SaveDescription(DatabaseInfo databaseInfo,List<DbDescription> cache, string description, string parentName, string objectName)
         {
@@ -126,19 +97,18 @@ GO
             {
                 AddDescription(description, parentName, objectName, databaseInfo);
             }
-            cache = GetDescriptions(databaseInfo);
+            GetDescriptions(databaseInfo);
         }
 
         public List<DbDescription> GetDescriptions(DatabaseInfo databaseInfo)
         {
             var list = new List<DbDescription>();
-            string res = string.Empty;
-            using (IRepository repo = Helpers.DataConnectionHelper.CreateRepository(databaseInfo))
+            using (IRepository repo = DataConnectionHelper.CreateRepository(databaseInfo))
             {
                 var tlist = repo.GetAllTableNames();
-                if (tlist.Contains(tableName))
+                if (tlist.Contains(TableName))
                 {
-                    var ds = repo.ExecuteSql(selectScript);
+                    var ds = repo.ExecuteSql(SelectScript);
                     if (ds.Tables.Count > 0)
                     {
                         foreach (DataRow row in ds.Tables[0].Rows)
@@ -159,8 +129,8 @@ GO
         private static void CreateExtPropsTable(IRepository repo)
         {
             var list = repo.GetAllTableNames();
-            if (!list.Contains(tableName))
-                repo.ExecuteSql(createScript);
+            if (!list.Contains(TableName))
+                repo.ExecuteSql(CreateScript);
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Collections.Generic;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
@@ -12,7 +13,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(PickServerDatabaseDialog));
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
             this.lblCompare.Text = "Choose a database connection already connected in Server Explorer/Data Connections";
             comboBox1.DisplayMemberPath = "Value.Caption";
             comboBox1.ItemsSource = serverConnections;

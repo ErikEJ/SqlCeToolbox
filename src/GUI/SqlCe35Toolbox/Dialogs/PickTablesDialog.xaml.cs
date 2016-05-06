@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
@@ -10,7 +11,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(PickTablesDialog));
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
         }
 
         private List<CheckListItem> items = new List<CheckListItem>();

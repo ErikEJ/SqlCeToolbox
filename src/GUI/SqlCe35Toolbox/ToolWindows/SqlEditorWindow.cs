@@ -117,7 +117,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             if (window != null && window.IsDirty && !mustClose)
             {
                 // Prompt a dialog
-                DialogResult res = EnvDTEHelper.ShowMessageBox("This script has been modified. Do you want to save the changes ?", OLEMSGBUTTON.OLEMSGBUTTON_YESNOCANCEL, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST, OLEMSGICON.OLEMSGICON_QUERY);
+                DialogResult res = EnvDteHelper.ShowMessageBox("This script has been modified. Do you want to save the changes ?", OLEMSGBUTTON.OLEMSGBUTTON_YESNOCANCEL, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST, OLEMSGICON.OLEMSGICON_QUERY);
                 // If the users wants to save
                 if (res == DialogResult.Yes)
                 {

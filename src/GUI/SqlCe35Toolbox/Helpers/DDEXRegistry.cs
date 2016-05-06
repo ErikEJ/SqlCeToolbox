@@ -2,9 +2,9 @@
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
-    internal class DDEXRegistry
+    internal class DdexRegistry
     {
-        public static void AddDDEX4Registrations(string ver)
+        public static void AddDdex4Registrations(string ver)
         {
             Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}", ver),"", "SQL Server Compact 4.0 Provider (Simple by ErikEJ)");
             Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}", ver), "AssociatedSource", "{2A7AD6AD-5D61-4817-B45F-681F8D29ECF7}");
@@ -50,7 +50,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{2A7AD6AD-5D61-4817-B45F-681F8D29ECF7}}\SupportingProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}", ver), "DisplayName", "Provider_DisplayName, ErikEJ.SqlCeToolbox.DDEX4.Properties.Resources");
         }
        
-        public static void AddDDEX35Registrations(string ver)
+        public static void AddDdex35Registrations(string ver)
         {
             Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "", "SQL Server Compact 3.5 Provider (Simple by ErikEJ)");
             Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "AssociatedSource", "{F0905790-4262-4019-910D-CF4F06F58F6E}");
@@ -81,7 +81,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{F0905790-4262-4019-910D-CF4F06F58F6E}}\SupportingProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "DisplayName", "Provider_DisplayName, ErikEJ.SqlCeToolbox.DDEX35.Properties.Resources");
         }
 
-        public static void AddDDEX35VS10DebugRegistrations()
+        public static void AddDdex35Vs10DebugRegistrations()
         {
             Registry.SetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\10.0Exp_Config\DataProviders\{303D8BB1-D62A-4560-9742-79C93E828222}", "", "SQL Server Compact 3.5 Provider (Simple by ErikEJ)");
             Registry.SetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\10.0Exp_Config\DataProviders\{303D8BB1-D62A-4560-9742-79C93E828222}", "AssociatedSource", "{F0905790-4262-4019-910D-CF4F06F58F6E}");

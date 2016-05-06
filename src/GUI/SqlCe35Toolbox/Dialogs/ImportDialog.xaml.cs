@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.Win32;
 using Microsoft.VisualStudio.PlatformUI;
 namespace ErikEJ.SqlCeToolbox.Dialogs
@@ -17,7 +18,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(ImportDialog));
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
             this.SaveButton.IsEnabled = false;
         }
 

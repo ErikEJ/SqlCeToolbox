@@ -62,7 +62,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                     if (!DataConnectionHelper.DdexProviderIsInstalled(provider))
                     {
-                        EnvDTEHelper.ShowError("The DDEX provider is not installed, cannot remove connection");
+                        EnvDteHelper.ShowError("The DDEX provider is not installed, cannot remove connection");
                         return;
                     }            
                     DataConnectionHelper.RemoveDataConnection(package, databaseInfo.DatabaseInfo.ConnectionString, provider);
@@ -133,11 +133,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (!string.IsNullOrEmpty(newConnectionString))
                 {
                     DataConnectionHelper.SaveDataConnection(newConnectionString, dbInfo.DatabaseType, package);
-                    EnvDTEHelper.ShowMessage("Password was set, and connection updated");
+                    EnvDteHelper.ShowMessage("Password was set, and connection updated");
                 }
                 else
                 {
-                    EnvDTEHelper.ShowMessage("Password was set, but could not update connection, please reconnect the database");
+                    EnvDteHelper.ShowMessage("Password was set, but could not update connection, please reconnect the database");
                 }
 
                 var control = _parentWindow.Content as ExplorerControl;
@@ -400,7 +400,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     {
                         var generator = DataConnectionHelper.CreateGenerator(repository, fd.FileName, databaseInfo.DatabaseInfo.DatabaseType);
                         generator.ExcludeTables(ptd.Tables);
-                        EnvDTEHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
+                        EnvDteHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
                         DataConnectionHelper.LogUsage("DatabaseScriptCe");
                     }
                 }
@@ -596,13 +596,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void UpgradeTo40(object sender, ExecutedRoutedEventArgs e)
         {
-            if (EnvDTEHelper.ShowMessageBox("This will upgrade the 3.5 database to 4.0 format, and leave a renamed backup of the 3.5 database. Do you wish to proceed?",
+            if (EnvDteHelper.ShowMessageBox("This will upgrade the 3.5 database to 4.0 format, and leave a renamed backup of the 3.5 database. Do you wish to proceed?",
                 OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.No)
                 return;
 
             if (!DataConnectionHelper.IsV40Installed())
             {
-                EnvDTEHelper.ShowError("The SQL Server Compact 4.0 runtime is not installed, cannot upgrade. Install the 4.0 runtime.");
+                EnvDteHelper.ShowError("The SQL Server Compact 4.0 runtime is not installed, cannot upgrade. Install the 4.0 runtime.");
                 return;
             }
             try
@@ -615,7 +615,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 if (!File.Exists(path))
                 {
-                    EnvDTEHelper.ShowError(string.Format("Database file in path: {0} could not be found", path));
+                    EnvDteHelper.ShowError(string.Format("Database file in path: {0} could not be found", path));
                     return;
                 }
                 var path1 = Path.GetDirectoryName(path);
@@ -634,12 +634,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                     if (File.Exists(newFile))
                     {
-                        EnvDTEHelper.ShowError("Could not create unique file name...");
+                        EnvDteHelper.ShowError("Could not create unique file name...");
                         return;
                     }
                     File.Copy(path, newFile);
                     helper.UpgradeTo40(databaseInfo.DatabaseInfo.ConnectionString);
-                    EnvDTEHelper.ShowMessage(string.Format("Database upgraded, version 3.5 database backed up to: {0}", newFile));
+                    EnvDteHelper.ShowMessage(string.Format("Database upgraded, version 3.5 database backed up to: {0}", newFile));
                 }
                 if (databaseInfo.DatabaseInfo.FromServerExplorer)
                 {
@@ -745,7 +745,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 sqlCeDoc.CreateDocumentation(databaseInfo.DatabaseInfo, fileName, true, null);
                 if (File.Exists(fileName))
                 {
-                    EnvDTEHelper.LaunchUrl(fileName);
+                    EnvDteHelper.LaunchUrl(fileName);
                 }
                 DataConnectionHelper.LogUsage("DatabaseScriptDoc");
             }
@@ -763,7 +763,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var isEf6 = package.VSSupportsEF6();
             if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite && !isEf6)
             {
-                EnvDTEHelper.ShowError("Only Entity Framework 6.x is supported with SQLite");
+                EnvDteHelper.ShowError("Only Entity Framework 6.x is supported with SQLite");
                 return;                
             }
             try
@@ -772,60 +772,60 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
                 if (dte != null && dte.Mode == vsIDEMode.vsIDEModeDebug)
                 {
-                    EnvDTEHelper.ShowError("Cannot generate code while debugging");
+                    EnvDteHelper.ShowError("Cannot generate code while debugging");
                     return;
                 }
 
-                var dteH = new EnvDTEHelper();
+                var dteH = new EnvDteHelper();
 
                 var project = dteH.GetProject(dte);
                 if (project == null)
                 {
-                    EnvDTEHelper.ShowError("Please select a project in Solution Explorer, where you want the EDM to be placed");
+                    EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the EDM to be placed");
                     return;
                 }
                 if (dte != null && dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateNotStarted)
                 {
-                    EnvDTEHelper.ShowError("Please build the project before proceeding");
+                    EnvDteHelper.ShowError("Please build the project before proceeding");
                     return;
                 }
                 if (isEf6)
                 {
-                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40 && !dteH.ContainsEFSqlCeReference(project))
+                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40 && !dteH.ContainsEfSqlCeReference(project))
                     {
-                        EnvDTEHelper.ShowError("Please add the EntityFramework.SqlServerCompact NuGet package to the project");
+                        EnvDteHelper.ShowError("Please add the EntityFramework.SqlServerCompact NuGet package to the project");
                         return;
                     }
-                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 && !dteH.ContainsEFSqlCeLegacyReference(project))
+                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 && !dteH.ContainsEfSqlCeLegacyReference(project))
                     {
-                        EnvDTEHelper.ShowError("Please add the EntityFramework.SqlServerCompact.Legacy NuGet package to the project");
+                        EnvDteHelper.ShowError("Please add the EntityFramework.SqlServerCompact.Legacy NuGet package to the project");
                         return;
                     }
-                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite && !dteH.ContainsEFSQLiteReference(project))
+                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite && !dteH.ContainsEfsqLiteReference(project))
                     {
-                        EnvDTEHelper.ShowError("Please add the System.Data.SQLite.EF6 NuGet package to the project");
+                        EnvDteHelper.ShowError("Please add the System.Data.SQLite.EF6 NuGet package to the project");
                         return;
                     }
                     if (!File.Exists(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Context.tt")))
                     {
-                        EnvDTEHelper.ShowError("Please install the Entity Framework 6 Tools in order to proceed");
+                        EnvDteHelper.ShowError("Please install the Entity Framework 6 Tools in order to proceed");
                         return;
                     }
                 }
                 if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
                 {
-                    EnvDTEHelper.ShowError("The selected project type does not support Entity Framework (please let me know if I am wrong)");
+                    EnvDteHelper.ShowError("The selected project type does not support Entity Framework (please let me know if I am wrong)");
                     return;
                 }
 
                 if (project.Properties.Item("TargetFrameworkMoniker") == null)
                 {
-                    EnvDTEHelper.ShowError("The selected project type does not have a TargetFrameworkMoniker");
+                    EnvDteHelper.ShowError("The selected project type does not have a TargetFrameworkMoniker");
                     return;
                 }
                 if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
                 {
-                    EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                    EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                     return;
                 }
 
@@ -862,15 +862,15 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     ver = new Version(3, 0, 0, 0);
                 }
-                EdmGen2.EdmGen2.ModelGen(databaseInfo.DatabaseInfo.ConnectionString, provider, model, Path.GetTempPath(), edmxDialog.ForeignKeys, edmxDialog.Pluralize, edmxDialog.Tables, ver);
-                if (EdmGen2.EdmGen2.Errors.Count > 0)
+                EdmGen2.ModelGen(databaseInfo.DatabaseInfo.ConnectionString, provider, model, Path.GetTempPath(), edmxDialog.ForeignKeys, edmxDialog.Pluralize, edmxDialog.Tables, ver);
+                if (EdmGen2.Errors.Count > 0)
                 {
                     var sb = new System.Text.StringBuilder();
-                    foreach (var item in EdmGen2.EdmGen2.Errors)
+                    foreach (var item in EdmGen2.Errors)
                     {
                         sb.AppendLine(item);
                     }
-                    EnvDTEHelper.ShowError("Errors encountered during edmx generation" + Environment.NewLine + sb);
+                    EnvDteHelper.ShowError("Errors encountered during edmx generation" + Environment.NewLine + sb);
                 }
                 if (!File.Exists(edmxPath))
                 {
@@ -885,7 +885,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
                 else
                 {
-                    if (EnvDTEHelper.ShowMessageBox("The Entity Data Model already exists in the project, do you wish to replace it?", OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.Yes) 
+                    if (EnvDteHelper.ShowMessageBox("The Entity Data Model already exists in the project, do you wish to replace it?", OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.Yes) 
                     {
                         edmxItem.Delete();
                         project.ProjectItems.AddFromFileCopy(edmxPath);
@@ -925,7 +925,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                             addedItem.ProjectItems.AddFromFileCopy(Path.Combine(Path.GetTempPath(), model + ".tt"));
                         }
                         var diagramPath = Path.Combine(Path.GetTempPath(), model + "edmx.diagram");
-                        File.WriteAllText(diagramPath, EdmGen2.EdmGen2.GetEDMXDiagram());
+                        File.WriteAllText(diagramPath, EdmGen2.GetEdmxDiagram());
                         addedItem.ProjectItems.AddFromFileCopy(diagramPath);
                     }
                     project.Save();
@@ -976,38 +976,38 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (dte == null) return;
             if (dte.Mode == vsIDEMode.vsIDEModeDebug)
             {
-                EnvDTEHelper.ShowError("Cannot generate code while debugging");
+                EnvDteHelper.ShowError("Cannot generate code while debugging");
                 return;                
             }
 
             var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
             if (!helper.IsV35DbProviderInstalled())
             {
-                EnvDTEHelper.ShowError("This feature requires the SQL Server Compact 3.5 SP2 DbProvider to be properly installed");
+                EnvDteHelper.ShowError("This feature requires the SQL Server Compact 3.5 SP2 DbProvider to be properly installed");
                 return;                                
             }
 
-            var dteH = new EnvDTEHelper();
+            var dteH = new EnvDteHelper();
 
             var project = dteH.GetProject(dte);
             if (project == null)
             {
-                EnvDTEHelper.ShowError("Please select a project in Solution Explorer, where you want the DataContext to be placed");
+                EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the DataContext to be placed");
                 return;
             }
-            if (!isDesktop && !dteH.AllowedWPProjectKinds.Contains(new Guid(project.Kind)))
+            if (!isDesktop && !dteH.AllowedWpProjectKinds.Contains(new Guid(project.Kind)))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support Windows Phone (please let me know if I am wrong)");
+                EnvDteHelper.ShowError("The selected project type does not support Windows Phone (please let me know if I am wrong)");
                 return;
             }
             if (isDesktop && !dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support LINQ to SQL (please let me know if I am wrong)");
+                EnvDteHelper.ShowError("The selected project type does not support LINQ to SQL (please let me know if I am wrong)");
                 return;
             }
             if (project.Properties.Item("TargetFrameworkMoniker") == null)
             {
-                EnvDTEHelper.ShowError("The selected project type does not support Windows Phone - missing TargetFrameworkMoniker");
+                EnvDteHelper.ShowError("The selected project type does not support Windows Phone - missing TargetFrameworkMoniker");
                 return;
             }
             if (!isDesktop)
@@ -1019,18 +1019,18 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 { }
                 else
                 {
-                    EnvDTEHelper.ShowError("The selected project type does not support Windows Phone 7.1/8.0 - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                    EnvDteHelper.ShowError("The selected project type does not support Windows Phone 7.1/8.0 - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                     return;
                 }
             }
             if (isDesktop && !project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                 return;
             }
             if (!isDesktop && databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
             {
-                EnvDTEHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
+                EnvDteHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
                 return;
             }
 
@@ -1038,7 +1038,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var sqlMetalPaths = ProbeSqlMetalRegPaths();
             if (sqlMetalPaths.Count == 0)
             {
-                EnvDTEHelper.ShowError("Could not find SQLMetal location in registry");
+                EnvDteHelper.ShowError("Could not find SQLMetal location in registry");
                 return;
             }
 
@@ -1052,7 +1052,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             if (string.IsNullOrEmpty(sqlMetalPath))
             {
-                EnvDTEHelper.ShowError("Could not find SQLMetal file location");
+                EnvDteHelper.ShowError("Could not find SQLMetal file location");
                 return;                
             }
 
@@ -1076,7 +1076,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     if (!string.IsNullOrEmpty(checkedTables))
                     {
                         var message = string.Format("The tables below do not have Primary Keys defined,{0}and will not be generated properly:{1}{2}", Environment.NewLine, Environment.NewLine, checkedTables);
-                        EnvDTEHelper.ShowError(message);
+                        EnvDteHelper.ShowError(message);
                     }
                     var dbInfo = repository.GetDatabaseInfo();
                     foreach (var kvp in dbInfo)
@@ -1100,7 +1100,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     dcDialog.IsDesktop = isDesktop;
                     dcDialog.ProjectName = project.Name;
                     dcDialog.NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString();
-                    if (EnvDTEHelper.VBProject == new Guid(project.Kind))
+                    if (EnvDteHelper.VbProject == new Guid(project.Kind))
                     {
                         dcDialog.CodeLanguage = "VB";
                     }
@@ -1180,7 +1180,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     var sqlmetalResult = dcH.RunSqlMetal(sqlMetalPath, parameters);
                     if (!File.Exists(dcPath))
                     {
-                        EnvDTEHelper.ShowError("Error during SQL Metal run: " + sqlmetalResult);
+                        EnvDteHelper.ShowError("Error during SQL Metal run: " + sqlmetalResult);
                         return;
                     }
 
@@ -1225,21 +1225,21 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         var extension = ".cs";
                         if (dcDialog.CodeLanguage == "VB")
                             extension = ".vb";
-                        var dcItem = dteH.GetProjectDC(project, model, extension);
+                        var dcItem = dteH.GetProjectDc(project, model, extension);
                         if (dcItem == null)
                         {
                             project.ProjectItems.AddFromFileCopy(dcPath);
                         }
                         else
                         {
-                            if (EnvDTEHelper.ShowMessageBox("The Data Context class already exists in the project, do you wish to replace it?", OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.Yes) 
+                            if (EnvDteHelper.ShowMessageBox("The Data Context class already exists in the project, do you wish to replace it?", OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.Yes) 
                             {
                                 dcItem.Delete();
                                 project.ProjectItems.AddFromFileCopy(dcPath);
                             }
                         }
                     }
-                    EnvDTEHelper.AddReference(project, "System.Data.Linq");
+                    EnvDteHelper.AddReference(project, "System.Data.Linq");
                     if (dcDialog.AddConnectionStringBuilder)
                     {
                         var projectPath = project.Properties.Item("FullPath").Value.ToString();
@@ -1336,27 +1336,27 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (package == null) return;
             var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
 
-            var dteH = new EnvDTEHelper();
+            var dteH = new EnvDteHelper();
 
             var project = dteH.GetProject(dte);
             if (project == null)
             {
-                EnvDTEHelper.ShowError("Please select a project in Solution Explorer, where you want the DataAccess.cs to be placed");
+                EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the DataAccess.cs to be placed");
                 return;
             }
             if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
             {
-                EnvDTEHelper.ShowError(string.Format("The selected project type {0} does not support sqlite-net (please let me know if I am wrong)", project.Kind));
+                EnvDteHelper.ShowError(string.Format("The selected project type {0} does not support sqlite-net (please let me know if I am wrong)", project.Kind));
                 return;
             }
             if (project.CodeModel != null && project.CodeModel.Language != CodeModelLanguageConstants.vsCMLanguageCSharp)
             {
-                EnvDTEHelper.ShowError("Unsupported code language, only C# is currently supported");
+                EnvDteHelper.ShowError("Unsupported code language, only C# is currently supported");
                 return;
             }
             if (databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLite)
             {
-                EnvDTEHelper.ShowError("Sorry, only SQLite databases are supported");
+                EnvDteHelper.ShowError("Sorry, only SQLite databases are supported");
                 return;
             }
             try
@@ -1385,7 +1385,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                     File.WriteAllText(fileName, warning + generator.GeneratedScript);
                     project.ProjectItems.AddFromFile(fileName);
-                    EnvDTEHelper.ShowMessage("DataAccess.cs generated.");
+                    EnvDteHelper.ShowMessage("DataAccess.cs generated.");
                     DataConnectionHelper.LogUsage("DatabaseSqliteNetCodegen");
                 }
             }
@@ -1432,19 +1432,19 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             if (databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
             {
-                EnvDTEHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
+                EnvDteHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
                 return;
             }
             if (!SyncFxHelper.IsProvisioned(databaseInfo.DatabaseInfo))
             {
-                EnvDTEHelper.ShowError("The database is not provisioned, cannot deprovision");
+                EnvDteHelper.ShowError("The database is not provisioned, cannot deprovision");
                 return;                
             }
             try
             {
                 new SyncFxHelper().DeprovisionDatabase(databaseInfo.DatabaseInfo.ConnectionString);
                 databaseInfo.ExplorerControl.RefreshTables(databaseInfo.DatabaseInfo);
-                EnvDTEHelper.ShowMessage("Database deprovisioned");
+                EnvDteHelper.ShowMessage("Database deprovisioned");
                 DataConnectionHelper.LogUsage("DatabaseSyncDeprovision");
             }
             catch (Exception ex)
@@ -1460,12 +1460,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             if (databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
             {
-                EnvDTEHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
+                EnvDteHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
                 return;
             }
             if (!SyncFxHelper.IsProvisioned(databaseInfo.DatabaseInfo))
             {
-                EnvDTEHelper.ShowError("The database is not provisioned, cannot generate snapshots");
+                EnvDteHelper.ShowError("The database is not provisioned, cannot generate snapshots");
                 return;
             }
 
@@ -1482,7 +1482,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 SyncFxHelper.GenerateSnapshot(databaseInfo.DatabaseInfo.ConnectionString, fileName);
-                EnvDTEHelper.ShowMessage("Database snapshot generated.");
+                EnvDteHelper.ShowMessage("Database snapshot generated.");
                 DataConnectionHelper.LogUsage("DatabaseSyncSnapshot");
             }
             catch (Exception ex)
@@ -1498,7 +1498,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             if (databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
             {
-                EnvDTEHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
+                EnvDteHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
                 return;
             }
 
@@ -1514,13 +1514,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (!res.HasValue || res.Value != true || (sfd.Tables.Count <= 0)) return;
                 if (SyncFxHelper.SqlCeScopeExists(databaseInfo.DatabaseInfo.ConnectionString, model))
                 {
-                    EnvDTEHelper.ShowError("Scope name is already in use. Please enter a different scope name.");
+                    EnvDteHelper.ShowError("Scope name is already in use. Please enter a different scope name.");
                     return;
                 }
 
                 model = sfd.ModelName;
                 new SyncFxHelper().ProvisionScope(databaseInfo.DatabaseInfo.ConnectionString, model, sfd.Columns.Where(c => sfd.Tables.Contains(c.TableName)).ToList());
-                EnvDTEHelper.ShowMessage("Scope: " + model + " has been provisioned.");
+                EnvDteHelper.ShowMessage("Scope: " + model + " has been provisioned.");
                 DataConnectionHelper.LogUsage("DatabaseSyncProvision");
             }
             catch (Exception ex)
@@ -1537,37 +1537,37 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (package == null) return;
             var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
 
-            var dteH = new EnvDTEHelper();
+            var dteH = new EnvDteHelper();
 
             var project = dteH.GetProject(dte);
             if (project == null)
             {
-                EnvDTEHelper.ShowError("Please select a project in Solution Explorer, where you want the SyncFx classes to be placed");
+                EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the SyncFx classes to be placed");
                 return;
             }
             if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support Sync Framework (please let me know if I am wrong)");
+                EnvDteHelper.ShowError("The selected project type does not support Sync Framework (please let me know if I am wrong)");
                 return;
             }
             if (project.CodeModel.Language != CodeModelLanguageConstants.vsCMLanguageCSharp)
             {
-                EnvDTEHelper.ShowError("Unsupported code language, only C# is currently supported");
+                EnvDteHelper.ShowError("Unsupported code language, only C# is currently supported");
                 return;
             }
             if (project.Properties.Item("TargetFrameworkMoniker") == null)
             {
-                EnvDTEHelper.ShowError("The selected project type does not support Sync Framework - missing TargetFrameworkMoniker");
+                EnvDteHelper.ShowError("The selected project type does not support Sync Framework - missing TargetFrameworkMoniker");
                 return;
             }
             if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                 return;
             }
             if (databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
             {
-                EnvDTEHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
+                EnvDteHelper.ShowError("Sorry, only version 3.5 databases are supported for now");
                 return;
             }
 
@@ -1598,13 +1598,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         project.ProjectItems.AddFromFile(fileName);
                     }
                     //Adding references - http://blogs.msdn.com/b/murat/archive/2008/07/30/envdte-adding-a-refernce-to-a-project.aspx
-                    EnvDTEHelper.AddReference(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.AddReference(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
 
-                    EnvDTEHelper.AddReference(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDTEHelper.AddReference(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDTEHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDTEHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDTEHelper.ShowMessage("Scope: " + model + " code generated.");
+                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.ShowMessage("Scope: " + model + " code generated.");
                     DataConnectionHelper.LogUsage("DatabaseSyncCodegen");
                 }
             }
