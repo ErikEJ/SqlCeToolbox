@@ -13,6 +13,7 @@ using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using Microsoft.VisualStudio.Shell;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
@@ -51,10 +52,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
             Guid provider35 = new Guid(Resources.SqlCompact35Provider);
             Guid provider40 = new Guid(Resources.SqlCompact40Provider);
-            Guid providerSQLite = new Guid(Resources.SQLiteProvider);
+            Guid providerSqLite = new Guid(Resources.SQLiteProvider);
 
-            bool isV35Installed = IsV35Installed() && DDEXProviderIsInstalled(provider35);
-            bool isV40Installed = IsV40Installed() && DDEXProviderIsInstalled(provider40);
+            bool isV35Installed = IsV35Installed() && DdexProviderIsInstalled(provider35);
+            bool isV40Installed = IsV40Installed() && DdexProviderIsInstalled(provider40);
             if (dataExplorerConnectionManager != null)
             {
                 foreach (var connection in dataExplorerConnectionManager.Connections.Values)
@@ -73,7 +74,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                 if (dbType == DatabaseType.SQLCE35)
                                     serverVersion = "3.5";
 
-                                var sConnectionString = Microsoft.VisualStudio.Data.Services.DataProtection.DecryptString(connection.EncryptedConnectionString);
+                                var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
                                 if (!sConnectionString.Contains("Mobile Device"))
                                 {
                                     DatabaseInfo info = new DatabaseInfo();
@@ -88,11 +89,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                 }
                             }
 
-                            if (objProviderGuid == providerSQLite)
+                            if (objProviderGuid == providerSqLite)
                             {
                                 DatabaseType dbType = DatabaseType.SQLite;
 
-                                var sConnectionString = Microsoft.VisualStudio.Data.Services.DataProtection.DecryptString(connection.EncryptedConnectionString);
+                                var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
                                 DatabaseInfo info = new DatabaseInfo();
                                 info.Caption = connection.DisplayName;
                                 info.FromServerExplorer = true;
@@ -106,7 +107,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         }
                         if (includeServerConnections && objProviderGuid == new Guid(Resources.SqlServerDotNetProvider))
                         {
-                            var sConnectionString = Microsoft.VisualStudio.Data.Services.DataProtection.DecryptString(connection.EncryptedConnectionString);
+                            var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
                             var info = new DatabaseInfo();
                             info.Caption = connection.DisplayName;
                             info.FromServerExplorer = true;
@@ -119,11 +120,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                     catch (KeyNotFoundException)
                     {
-                        continue;
                     }
                     catch (NullReferenceException)
                     {
-                        continue;
                     }
                 }
             }
@@ -153,7 +152,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Dictionary<string, DatabaseInfo> databaseList = new Dictionary<string, DatabaseInfo>();
             DatabaseType dbType = GetPreferredDatabaseType();
             DatabaseInfo dbInfo = new DatabaseInfo { ConnectionString = CreateStore(dbType), DatabaseType = dbType };
-            using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(dbInfo))
+            using (IRepository repository = CreateRepository(dbInfo))
             {
                 string script = "SELECT FileName, Source, CeVersion FROM Databases" + separator;
                 var dataset = repository.ExecuteSql(script);
@@ -164,7 +163,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     var info = new DatabaseInfo();
                     try
                     {
-                        info.Caption = System.IO.Path.GetFileName(row[0].ToString());
+                        info.Caption = Path.GetFileName(row[0].ToString());
                     }
                     catch (ArgumentException)
                     {
@@ -188,11 +187,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return databaseList;
         }
 
-        internal static bool DDEXProviderIsInstalled(Guid id)
+        internal static bool DdexProviderIsInstalled(Guid id)
         {
-            IVsDataProvider provider = null;
-            var objIVsDataProviderManager = SqlCeToolboxPackage.GetGlobalService(typeof(IVsDataProviderManager)) as IVsDataProviderManager;
-            return objIVsDataProviderManager.Providers.TryGetValue(id, out provider);
+            IVsDataProvider provider;
+            var objIVsDataProviderManager = Package.GetGlobalService(typeof(IVsDataProviderManager)) as IVsDataProviderManager;
+            return objIVsDataProviderManager != null && objIVsDataProviderManager.Providers.TryGetValue(id, out provider);
         }
 
         internal void ValidateConnections(SqlCeToolboxPackage package)
@@ -200,49 +199,52 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             var dataExplorerConnectionManager = package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) as IVsDataExplorerConnectionManager;
             var removals = new List<IVsDataExplorerConnection>();
 
-            foreach (var connection in dataExplorerConnectionManager.Connections.Values)
+            if (dataExplorerConnectionManager != null)
             {
-                try
+                foreach (var connection in dataExplorerConnectionManager.Connections.Values)
                 {
-                    var objProviderGuid = connection.Provider;
-                    if ((objProviderGuid == new Guid (Resources.SqlCompact35Provider) && IsV35Installed()) || (objProviderGuid == new Guid (Resources.SqlCompact40Provider) && IsV40Installed()))
+                    try
                     {
-                        connection.Connection.Open();
-                        connection.Connection.Close();
+                        var objProviderGuid = connection.Provider;
+                        if ((objProviderGuid == new Guid (Resources.SqlCompact35Provider) && IsV35Installed()) || (objProviderGuid == new Guid (Resources.SqlCompact40Provider) && IsV40Installed()))
+                        {
+                            connection.Connection.Open();
+                            connection.Connection.Close();
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    if (ex.GetType().Name == "SqlCeException")
+                    catch (Exception ex)
                     {
-                        removals.Add(connection);
+                        if (ex.GetType().Name == "SqlCeException")
+                        {
+                            removals.Add(connection);
+                        }
+                        if (ex.GetType() == typeof(ArgumentException))
+                        {
+                            removals.Add(connection);
+                        }
+                        if (ex.GetType() == typeof(KeyNotFoundException))
+                        {
+                            removals.Add(connection);
+                        }
+                        throw;
                     }
-                    if (ex.GetType() == typeof(ArgumentException))
-                    {
-                        removals.Add(connection);
-                    }
-                    if (ex.GetType() == typeof(KeyNotFoundException))
-                    {
-                        removals.Add(connection);
-                    }
-                    throw;
-                }
 
-            }
-            for (int i = removals.Count - 1; i >= 0; i--)
-            {
-                try
-                {
-                    dataExplorerConnectionManager.RemoveConnection(removals[i]);
                 }
-                catch (ArgumentException)
+                for (int i = removals.Count - 1; i >= 0; i--)
                 {
-                }
-                catch (IndexOutOfRangeException)
-                {
-                }
-                catch (KeyNotFoundException)
-                {
+                    try
+                    {
+                        dataExplorerConnectionManager.RemoveConnection(removals[i]);
+                    }
+                    catch (ArgumentException)
+                    {
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                    }
                 }
             }
 
@@ -251,14 +253,16 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 try
                 {
-                    using (var test = CreateRepository(item.Value))
+                    using (CreateRepository(item.Value))
                     { }
                 }
                 catch (Exception ex)
                 {
                     if (ex.GetType().Name == "SqlCeException")
                     {
+#if DEBUG
                         System.Diagnostics.Debug.WriteLine(ex.Message);
+#endif
                         RemoveDataConnection(item.Value.ConnectionString);
                     }
                     throw;
@@ -269,7 +273,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         internal void ScanConnections(SqlCeToolboxPackage package)
         {
             var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-            var helper = Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLCE40);
+            var helper = CreateEngineHelper(DatabaseType.SQLCE40);
             EnvDTEHelper dteHelper = new EnvDTEHelper();
             var list = dteHelper.GetSqlCeFilesInActiveSolution(dte);
             foreach (var path in list)
@@ -283,7 +287,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         version = helper.DetermineVersion(path);
                         versionFound = true;
                     }
-                    catch {}
+                    catch
+                    {
+                        // ignored
+                    }
                     string connectionString = string.Format("Data Source={0}", path);
                     if (versionFound)
                     {                        
@@ -309,7 +316,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                             }
                             SaveDataConnection(connectionString, DatabaseType.SQLite, package);
                         }
-                        catch { }
+                        catch
+                        {
+                            // ignored
+                        }
                     }
                 }
             }
@@ -334,7 +344,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         private static string GetFileName(string connectionString, DatabaseType dbType)
         {
             var filePath = GetFilePath(connectionString, dbType);
-            return Path.GetFileName(filePath);;
+            return Path.GetFileName(filePath);
         }
 
         internal static void SaveDataConnection(string connectionString, DatabaseType dbType, SqlCeToolboxPackage package)
@@ -372,39 +382,42 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             var removals = new List<IVsDataExplorerConnection>();
             var dataExplorerConnectionManager = package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) as IVsDataExplorerConnectionManager;
-            foreach  (var connection in dataExplorerConnectionManager.Connections.Values)
+            if (dataExplorerConnectionManager != null)
             {
-                var objProviderGuid = connection.Provider;
-                if ((objProviderGuid == new Guid(Resources.SqlCompact35Provider)) || (objProviderGuid == new Guid(Resources.SqlCompact40Provider)))
+                foreach  (var connection in dataExplorerConnectionManager.Connections.Values)
                 {
-                    if (Microsoft.VisualStudio.Data.Services.DataProtection.DecryptString(connection.EncryptedConnectionString) == connectionString)
+                    var objProviderGuid = connection.Provider;
+                    if ((objProviderGuid == new Guid(Resources.SqlCompact35Provider)) || (objProviderGuid == new Guid(Resources.SqlCompact40Provider)))
                     {
-                        removals.Add(connection);
+                        if (DataProtection.DecryptString(connection.EncryptedConnectionString) == connectionString)
+                        {
+                            removals.Add(connection);
+                        }
                     }
                 }
-            }
 
-            for (int i = removals.Count - 1; i >= 0; i--)
-            {
-                try
+                for (int i = removals.Count - 1; i >= 0; i--)
                 {
-                    dataExplorerConnectionManager.RemoveConnection(removals[i]);
-                }
-                catch (ArgumentException)
-                {
-                }
-                catch (IndexOutOfRangeException)
-                {
+                    try
+                    {
+                        dataExplorerConnectionManager.RemoveConnection(removals[i]);
+                    }
+                    catch (ArgumentException)
+                    {
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                    }
                 }
             }
         }
 
         public static string PromptForConnectionString(SqlCeToolboxPackage package)
         {
-            var databaseList = DataConnectionHelper.GetDataConnections(package, true, true);
+            var databaseList = GetDataConnections(package, true, true);
             PickServerDatabaseDialog psd = new PickServerDatabaseDialog(databaseList);
             bool? res = psd.ShowModal();
-            if (res.HasValue && res.Value == true && (psd.SelectedDatabase.Value != null))
+            if (res.HasValue && res.Value && (psd.SelectedDatabase.Value != null))
             {
                 return psd.SelectedDatabase.Value.ConnectionString;
             }
@@ -434,7 +447,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         {
                             // Fill the bytes[] array with the stream data 
                             byte[] bytesInStream = new byte[stream.Length];
-                            stream.Read(bytesInStream, 0, (int)bytesInStream.Length);
+                            stream.Read(bytesInStream, 0, bytesInStream.Length);
                             // Use FileStream object to write to the specified file 
                             fileStream.Write(bytesInStream, 0, bytesInStream.Length);
                         }
@@ -443,7 +456,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
 
             var dbInfo = new DatabaseInfo { DatabaseType = storeDbType, ConnectionString = connString };
-            using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(dbInfo))
+            using (IRepository repository = CreateRepository(dbInfo))
             {
                 var tables = repository.GetAllTableNames();
                 if (!tables.Contains("Databases"))
@@ -466,7 +479,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 file = "SQLiteAddinStore.db";
             }
-            string fileName = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), file);
+            string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), file);
             return fileName;
         }
 
@@ -547,28 +560,28 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
-        public static void RegisterDDEXProviders(bool force)
+        public static void RegisterDdexProviders(bool force)
         {
             if (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0))
             {
-                RegisterDDEX4Provider(force);
-                RegisterDDEX35Provider(force);
+                RegisterDdex4Provider(force);
+                RegisterDdex35Provider(force);
             }
 #if DEBUG
             //if (VisualStudioVersion == new Version(10, 0))
             //{
-            //    Helpers.DataConnectionHelper.RegisterDDEX35Provider("12");
-            //    Helpers.DataConnectionHelper.RegisterDDEX35Provider("14");
-            //    Helpers.DataConnectionHelper.RegisterDDEX35VS10DebugProvider();
+            //    Helpers.DataConnectionHelper.RegisterDdex35Provider("12");
+            //    Helpers.DataConnectionHelper.RegisterDdex35Provider("14");
+            //    Helpers.DataConnectionHelper.RegisterDdex35Vs10DebugProvider();
             //}
 #endif
             if (SqlCeToolboxPackage.VisualStudioVersion == new Version(11, 0))
             {
-                RegisterDDEX35Provider(force);
+                RegisterDdex35Provider(force);
             }
         }
 
-        private static void RegisterDDEX4Provider(bool force)
+        private static void RegisterDdex4Provider(bool force)
         {
             string ver = SqlCeToolboxPackage.VisualStudioVersion.ToString(1);
             try
@@ -589,10 +602,15 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         }
                     }
                 }
-                string ddexDllPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SqlCeToolbox.DDEX4.dll");
+                var path = Assembly.GetExecutingAssembly().Location;
+                if (string.IsNullOrEmpty(path)) return;
+                var ddexDllPath = Path.Combine(path, "SqlCeToolbox.DDEX4.dll");
                 if (File.Exists(ddexDllPath))
                 {
-                    Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}", ver),
+                    Registry.SetValue(
+                        string.Format(
+                            @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}",
+                            ver),
                         "Codebase",
                         ddexDllPath,
                         RegistryValueKind.String);
@@ -600,18 +618,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
             catch (Exception ex)
             {
-                SendError(ex, DatabaseType.SQLServer, true);
+                SendError(ex, DatabaseType.SQLServer);
             }
         }
 
-        private static void RegisterDDEX35Provider(bool force)
+        private static void RegisterDdex35Provider(bool force)
         {
             string ver = SqlCeToolboxPackage.VisualStudioVersion.ToString(1);
             try
             {
                 if (force)
                 {
-                    DDEXRegistry.AddDDEX4Registrations(ver);
+                    DDEXRegistry.AddDDEX35Registrations(ver);
                 }
                 else
                 {
@@ -625,7 +643,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         }
                     }
                 }
-                string ddexDllPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SqlCeToolbox.DDEX35.dll");
+                var path = Assembly.GetExecutingAssembly().Location;
+                if (string.IsNullOrEmpty(path)) return;
+                var ddexDllPath = Path.Combine(path, "SqlCeToolbox.DDEX35.dll");
                 if (File.Exists(ddexDllPath))
                 {
                     Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver),
@@ -636,16 +656,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
             catch (Exception ex)
             {
-                SendError(ex, DatabaseType.SQLServer, true);
+                SendError(ex, DatabaseType.SQLServer);
             }
         }
 
-        public static void RegisterDDEX35VS10DebugProvider()
+        public static void RegisterDdex35Vs10DebugProvider()
         {
             try
             {
                 DDEXRegistry.AddDDEX35VS10DebugRegistrations();
-                string ddexDllPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SqlCeToolbox.DDEX35.dll");
+                var path = Assembly.GetExecutingAssembly().Location;
+                if (string.IsNullOrEmpty(path)) return;
+                var ddexDllPath = Path.Combine(path, "SqlCeToolbox.DDEX35.dll");
                 if (File.Exists(ddexDllPath))
                 {
                     Registry.SetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\10.0Exp_Config\DataProviders\{303D8BB1-D62A-4560-9742-79C93E828222}",
@@ -656,7 +678,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
             catch (Exception ex)
             {
-                SendError(ex, DatabaseType.SQLServer, true);
+                SendError(ex, DatabaseType.SQLServer);
             }
         }
 
@@ -667,21 +689,26 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 using (var wc = new System.Net.WebClient())
                 {
                     wc.Proxy = System.Net.WebRequest.GetSystemWebProxy();
-                    var xDoc = new System.Xml.XmlDocument();
-                    string s = wc.DownloadString(@"http://www.sqlcompact.dk/SqlCeToolboxVersions.xml");
+                    var xDoc = new XmlDocument();
+                    var s = wc.DownloadString(@"http://www.sqlcompact.dk/SqlCeToolboxVersions.xml");
                     xDoc.LoadXml(s);
 
-                    string newVersion = xDoc.DocumentElement.Attributes[lookingFor].Value;
-                    
-                    Version vN = new Version(newVersion );
-                    if (vN > Assembly.GetExecutingAssembly().GetName().Version)
+                    if (xDoc.DocumentElement != null)
                     {
-                        return true;
+                        var newVersion = xDoc.DocumentElement.Attributes[lookingFor].Value;
+                    
+                        var vN = new Version(newVersion );
+                        if (vN > Assembly.GetExecutingAssembly().GetName().Version)
+                        {
+                            return true;
+                        }
                     }
-
                 }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
             return false;
         }
 
@@ -689,15 +716,19 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             try
             {
-                XmlReader reader = XmlReader.Create("http://sqlcompact.dk/vsgallerycounter/downloadfeed.axd?extensionId=0e313dfd-be80-4afb-b5e9-6e74d369f7a1");
-                SyndicationFeed feed = SyndicationFeed.Load(reader);
-                foreach (var item in feed.Items)
-                {
-                    return string.Format("- {0:0,0} downloads", double.Parse(item.Summary.Text));
-                }
+                var reader = XmlReader.Create("http://sqlcompact.dk/vsgallerycounter/downloadfeed.axd?extensionId=0e313dfd-be80-4afb-b5e9-6e74d369f7a1");
+                var feed = SyndicationFeed.Load(reader);
+                if (feed != null)
+                    foreach (var item in feed.Items)
+                    {
+                        return string.Format("- {0:0,0} downloads", double.Parse(item.Summary.Text));
+                    }
             }
-            catch { }
-            return string.Format("- more than {0:0,0} downloads", 340000d);
+            catch
+            {
+                // ignored
+            }
+            return string.Format("- more than {0:0,0} downloads", 520000d);
         }
 
         public static string GetSqlCeFileFilter()
@@ -760,7 +791,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return new SqlCeHelper4().IsV40DbProviderInstalled();
         }
 
-        internal static bool IsSQLiteDbProviderInstalled()
+        internal static bool IsSqLiteDbProviderInstalled()
         {
             try
             {
@@ -786,7 +817,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             try
             {
-                System.Reflection.Assembly.Load("Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                Assembly.Load("Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
             }
             catch
             {
