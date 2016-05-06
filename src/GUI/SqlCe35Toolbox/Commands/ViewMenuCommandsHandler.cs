@@ -91,7 +91,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (System.IO.FileNotFoundException)
             {
-                EnvDTEHelper.ShowError("Microsoft Report Viewer 2010 not installed, please download and install to use this feature  http://www.microsoft.com/en-us/download/details.aspx?id=6442");
+                EnvDteHelper.ShowError("Microsoft Report Viewer 2010 not installed, please download and install to use this feature  http://www.microsoft.com/en-us/download/details.aspx?id=6442");
                 return;
             }
             catch (Exception ex)

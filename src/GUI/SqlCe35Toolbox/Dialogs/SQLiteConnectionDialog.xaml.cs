@@ -58,7 +58,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                     this.ConnectionString = builder.ConnectionString;
                     if (showMessage)
                     {
-                        EnvDTEHelper.ShowMessage("Test succeeded!");
+                        EnvDteHelper.ShowMessage("Test succeeded!");
                     }
                     else
                     {

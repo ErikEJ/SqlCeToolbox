@@ -14,7 +14,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             Telemetry.TrackPageView(nameof(IndexDialog));
             InitializeComponent();
             _tableName = tableName;
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
         }
 
         #region Properties
@@ -36,12 +36,12 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             if (cmbColumns.SelectedIndex == -1)
             {
-                EnvDTEHelper.ShowError("Please select a column");
+                EnvDteHelper.ShowError("Please select a column");
                 return;
             }
             if (string.IsNullOrEmpty(dataSourceTextBox.Text))
             {
-                EnvDTEHelper.ShowError("Please enter an index name");
+                EnvDteHelper.ShowError("Please enter an index name");
                 return;
             }
             newIndex.IndexName = dataSourceTextBox.Text;

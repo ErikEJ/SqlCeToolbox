@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
-    public static class VSThemes
+    public static class VsThemes
     {
         public static SolidColorBrush GetCommandBackground()
         {
@@ -55,7 +55,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         private static uint GetWin32Color(int color)
         {
             uint win32Color;
-            var shell = SqlCeToolboxPackage.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;
+            var shell = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;
+            // ReSharper disable once PossibleNullReferenceException
             shell.GetVSSysColorEx(color, out win32Color);
             return win32Color;
         }

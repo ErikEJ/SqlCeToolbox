@@ -35,7 +35,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             };
             bw.RunWorkerAsync();
 
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
             Version.Text = "Version " + Assembly.GetExecutingAssembly().GetName().Version;
 
             txtStatus.Text = "SQL Server Compact 4.0 in GAC - ";
@@ -252,13 +252,13 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void CodeplexLink_Click(object sender, RoutedEventArgs e)
         {
-            Helpers.EnvDTEHelper.LaunchUrl("http://sqlcetoolbox.codeplex.com");
+            Helpers.EnvDteHelper.LaunchUrl("http://sqlcetoolbox.codeplex.com");
         }
 
         private void DDEXButton_Click(object sender, RoutedEventArgs e)
         {
             Helpers.DataConnectionHelper.RegisterDdexProviders(true);
-            EnvDTEHelper.ShowMessage("Providers registered, you may have to restart Visual Studio");
+            EnvDteHelper.ShowMessage("Providers registered, you may have to restart Visual Studio");
         }
 
         private void GalleryLink_Click(object sender, RoutedEventArgs e)

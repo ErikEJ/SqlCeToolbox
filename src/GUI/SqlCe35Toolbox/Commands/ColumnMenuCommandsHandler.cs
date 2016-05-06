@@ -32,7 +32,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     var col = columns.SingleOrDefault(c => c.TableName == menuInfo.Description && c.ColumnName == menuInfo.Name);
                     if (col == null)
                     {
-                        EnvDTEHelper.ShowError("Could not find the column in the table, has it been dropped?");
+                        EnvDteHelper.ShowError("Could not find the column in the table, has it been dropped?");
                         return;
                     }
                     TableBuilderDialog tbd = new TableBuilderDialog(menuInfo.Description, menuInfo.DatabaseInfo.DatabaseType);
@@ -68,7 +68,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     var col = columns.SingleOrDefault(c => c.TableName == menuInfo.Description && c.ColumnName == menuInfo.Name);
                     if (col == null)
                     {
-                        EnvDTEHelper.ShowError("Could not find the column in the table, has it been dropped?");
+                        EnvDteHelper.ShowError("Could not find the column in the table, has it been dropped?");
                         return;
                     }
                     else
@@ -100,7 +100,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     var col = columns.SingleOrDefault(c => c.TableName == menuInfo.Description && c.ColumnName == menuInfo.Name);
                     if (col == null)
                     {
-                        EnvDTEHelper.ShowError("Could not find the column in the table, has it been dropped?");
+                        EnvDteHelper.ShowError("Could not find the column in the table, has it been dropped?");
                         return;
                     }
                     else
@@ -132,7 +132,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     var col = columns.SingleOrDefault(c => c.TableName == menuInfo.Description && c.ColumnName == menuInfo.Name);
                     if (col == null)
                     {
-                        EnvDTEHelper.ShowError("Could not find the column in the table, has it been dropped?");
+                        EnvDteHelper.ShowError("Could not find the column in the table, has it been dropped?");
                         return;
                     }
                     else

@@ -15,7 +15,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             Telemetry.TrackPageView(nameof(ForeignKeyDialog));
             InitializeComponent();
             _tableName = tableName;
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
         }
 
         #region Properties
@@ -39,17 +39,17 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             if (string.IsNullOrEmpty(dataSourceTextBox.Text))
             {
-                EnvDTEHelper.ShowError("Please enter a foreign key name");
+                EnvDteHelper.ShowError("Please enter a foreign key name");
                 return;
             }
             if (cmbFkColumn.SelectedIndex == -1)
             {
-                EnvDTEHelper.ShowError("Please select a foreign key column");
+                EnvDteHelper.ShowError("Please select a foreign key column");
                 return;
             }
             if (cmbPrimaryKeyTableAndColumn.SelectedIndex == -1)
             {
-                EnvDTEHelper.ShowError("Please select a primary key");
+                EnvDteHelper.ShowError("Please select a primary key");
                 return;                
             }
             newKey.ColumnName = cmbFkColumn.SelectedItem.ToString();

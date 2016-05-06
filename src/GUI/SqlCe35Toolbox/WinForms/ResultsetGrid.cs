@@ -87,7 +87,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 if (ReadOnly)
                 {
                     this.dataGridView1.DefaultCellStyle.ForeColor = SystemColors.GrayText;
-                    EnvDTEHelper.ShowError("No primary keys on table, data is read-only");
+                    EnvDteHelper.ShowError("No primary keys on table, data is read-only");
                 }
             }
             catch (Exception ex)

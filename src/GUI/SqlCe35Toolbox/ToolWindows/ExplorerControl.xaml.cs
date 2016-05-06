@@ -52,11 +52,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 overflowGrid.Visibility = Visibility.Collapsed;
             }
-            //explorerToolbar.Foreground = Helpers.VSThemes.GetWindowText();
-            //explorerToolbar.Background = Helpers.VSThemes.GetCommandBackground();
+            //explorerToolbar.Foreground = Helpers.VsThemes.GetWindowText();
+            //explorerToolbar.Background = Helpers.VsThemes.GetCommandBackground();
             //toolTray.Background = explorerToolbar.Background;
-            //sep2.Background = sep1.Background = Helpers.VSThemes.GetToolbarSeparatorBackground();
-            TreeView1.Background = grid1.Background = Helpers.VSThemes.GetToolWindowBackground();
+            //sep2.Background = sep1.Background = Helpers.VsThemes.GetToolbarSeparatorBackground();
+            TreeView1.Background = grid1.Background = Helpers.VsThemes.GetToolWindowBackground();
             Updated.Visibility = System.Windows.Visibility.Collapsed;
 
             // Look for update async
@@ -118,13 +118,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 Refresh.IsEnabled = false;
                 _fatalError = string.Empty;
                 this.txtConnections.Text = "Data Connections";
-                this.txtHelp.Foreground = Helpers.VSThemes.GetWindowText();
+                this.txtHelp.Foreground = Helpers.VsThemes.GetWindowText();
                 txtConnections.Focus();
                 ItemDatabases.ContextMenu = new DatabasesContextMenu(new DatabaseMenuCommandParameters
                 {
                     ExplorerControl = this
                 }, _parentWindow);
-                ItemDatabases.Foreground = Helpers.VSThemes.GetWindowText();
+                ItemDatabases.Foreground = Helpers.VsThemes.GetWindowText();
                 ItemDatabases.ToolTip = "Right click to Manage Connections (and many other features)";
                 ItemDatabases.Items.Clear();
                 ItemDatabases.IsExpanded = true;
@@ -856,7 +856,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             if (!DataConnectionHelper.IsV35Installed() && !DataConnectionHelper.IsV40Installed())
             {
-                EnvDTEHelper.ShowMessage("The SQL Server Compact 3.5 SP2 and 4.0 runtimes are not properly installed,\r\nso many features are not available,\r\ninstall or repair SQL Server Compact 3.5 SP2 or 4.0 Desktop to remedy");
+                EnvDteHelper.ShowMessage("The SQL Server Compact 3.5 SP2 and 4.0 runtimes are not properly installed,\r\nso many features are not available,\r\ninstall or repair SQL Server Compact 3.5 SP2 or 4.0 Desktop to remedy");
             }
         }
 

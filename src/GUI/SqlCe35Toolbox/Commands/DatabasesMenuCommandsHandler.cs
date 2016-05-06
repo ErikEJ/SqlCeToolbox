@@ -73,7 +73,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
             if (!DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider)))
             {
-                EnvDTEHelper.ShowError("The version 3.5 Visual Studio DDEX provider is not installed, cannot add connection");
+                EnvDteHelper.ShowError("The version 3.5 Visual Studio DDEX provider is not installed, cannot add connection");
                 return;
             }
             try
@@ -105,7 +105,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
             if (!DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider)))
             {
-                EnvDTEHelper.ShowError("The version 4.0 Visual Studio DDEX provider is not installed, cannot add connection");
+                EnvDteHelper.ShowError("The version 4.0 Visual Studio DDEX provider is not installed, cannot add connection");
                 return;
             }
             try
@@ -137,7 +137,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
         private bool TryGetInitialPath(SqlCeToolboxPackage package, out string path)
         {
             var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
-            var dteHelper = new EnvDTEHelper();
+            var dteHelper = new EnvDteHelper();
             try
             {
                 path = dteHelper.GetInitialFolder(dte);
@@ -247,7 +247,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         {
                             var generator = DataConnectionHelper.CreateGenerator(repository, fd.FileName, DatabaseType.SQLServer);
                             generator.ExcludeTables(ptd.Tables);
-                            EnvDTEHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
+                            EnvDteHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
                             DataConnectionHelper.LogUsage("DatabasesScriptServer");
                         }
                         catch (Exception ex)
@@ -431,7 +431,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void DesignDatabase(object sender, ExecutedRoutedEventArgs e)
         {
-            EnvDTEHelper.LaunchUrl("http://sqlcompact.dk/sqldesigner/");
+            EnvDteHelper.LaunchUrl("http://sqlcompact.dk/sqldesigner/");
         }
 
         public void GenerateServerDgmlFiles(object sender, ExecutedRoutedEventArgs e)
@@ -508,31 +508,31 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var menuItem = sender as MenuItem;
             if (menuItem == null) return;
             var dte = _package.GetServiceHelper(typeof(DTE)) as DTE;
-            var dteH = new EnvDTEHelper();
+            var dteH = new EnvDteHelper();
             var project = dteH.GetProject(dte);
             if (project == null)
             {
-                EnvDTEHelper.ShowError("Please select a project in Solution Explorer, where you want the SyncFx classes to be placed");
+                EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the SyncFx classes to be placed");
                 return;
             }
             if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support Sync Framework (please let me know if I am wrong)");
+                EnvDteHelper.ShowError("The selected project type does not support Sync Framework (please let me know if I am wrong)");
                 return;
             }
             if (project.CodeModel.Language != CodeModelLanguageConstants.vsCMLanguageCSharp)
             {
-                EnvDTEHelper.ShowError("Unsupported code language, only C# is currently supported");
+                EnvDteHelper.ShowError("Unsupported code language, only C# is currently supported");
                 return;
             }
             if (project.Properties.Item("TargetFrameworkMoniker") == null)
             {
-                EnvDTEHelper.ShowError("The selected project type does not support Sync Framework - missing TargetFrameworkMoniker");
+                EnvDteHelper.ShowError("The selected project type does not support Sync Framework - missing TargetFrameworkMoniker");
                 return;
             }
             if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
             {
-                EnvDTEHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                 return;
             }
 
@@ -589,13 +589,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         project.ProjectItems.AddFromFile(fileName);
                     }
                     //Adding references - http://blogs.msdn.com/b/murat/archive/2008/07/30/envdte-adding-a-refernce-to-a-project.aspx
-                    EnvDTEHelper.AddReference(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.AddReference(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
 
-                    EnvDTEHelper.AddReference(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDTEHelper.AddReference(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDTEHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDTEHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDTEHelper.ShowMessage("Scope: " + model + " code generated.");
+                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    EnvDteHelper.ShowMessage("Scope: " + model + " code generated.");
                     DataConnectionHelper.LogUsage("DatabasesSyncAddLocalDBCache");
                 }
             }
@@ -636,12 +636,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-                    EnvDTEHelper.ShowMessage(string.Format("{0} is SQL Server Compact version {1}", Path.GetFileName(ofd.FileName), found));
+                    EnvDteHelper.ShowMessage(string.Format("{0} is SQL Server Compact version {1}", Path.GetFileName(ofd.FileName), found));
                     DataConnectionHelper.LogUsage("DatabaseVersionDetect");
                 }
                 catch (Exception ex)
                 {
-                    EnvDTEHelper.ShowError(ex.Message);
+                    EnvDteHelper.ShowError(ex.Message);
                 }
             }
         }

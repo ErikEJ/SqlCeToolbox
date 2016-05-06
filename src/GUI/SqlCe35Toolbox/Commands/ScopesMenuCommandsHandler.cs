@@ -17,7 +17,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void DropScope(object sender, ExecutedRoutedEventArgs e)
         {
-            if (EnvDTEHelper.ShowMessageBox("Do you really want to deprovision this scope?", Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO, Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING) == System.Windows.Forms.DialogResult.No)
+            if (EnvDteHelper.ShowMessageBox("Do you really want to deprovision this scope?", Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO, Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING) == System.Windows.Forms.DialogResult.No)
             {
                 return;
             }
@@ -29,7 +29,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 SyncFxHelper.DeprovisionSqlCeScope(menuInfo.DatabaseInfo.ConnectionString, menuInfo.Name);
-                EnvDTEHelper.ShowMessage("Scope deprovisioned");
+                EnvDteHelper.ShowMessage("Scope deprovisioned");
                 if (_parentWindow != null && _parentWindow.Content != null)
                 {
                     ExplorerControl control = _parentWindow.Content as ExplorerControl;

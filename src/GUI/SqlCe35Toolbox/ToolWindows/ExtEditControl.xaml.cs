@@ -31,7 +31,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             var fontFamiliy = new System.Windows.Media.FontFamily("Consolas");
             grid.FontFamily = fontFamiliy;
             grid.Theme = ExtendedGrid.ExtendedGridControl.ExtendedDataGrid.Themes.System;
-            grid.Background = Helpers.VSThemes.GetCommandBackground();
+            grid.Background = Helpers.VsThemes.GetCommandBackground();
             grid.IsReadOnly = true;
         }
  

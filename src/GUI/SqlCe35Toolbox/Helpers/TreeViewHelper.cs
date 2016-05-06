@@ -32,9 +32,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             button.HorizontalContentAlignment = HorizontalAlignment.Left;
             button.Content = new TextBlock { Text = " " + name, Foreground = new SolidColorBrush(Colors.SteelBlue) };
             button.BorderThickness = new Thickness(0);
-            button.Background = VSThemes.GetToolWindowBackground();
+            button.Background = VsThemes.GetToolWindowBackground();
             button.Tag = url;
-            button.Click += new RoutedEventHandler(button_Click);
+            button.Click += button_Click;
             return button;
         }
 
@@ -43,16 +43,16 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             var item = sender as Button;
             if (item != null)
             {
-                EnvDTEHelper.LaunchUrl(item.Tag as string);
+                EnvDteHelper.LaunchUrl(item.Tag as string);
             }
         }
 
         public static DatabaseTreeViewItem CreateTreeViewItemWithImageAndTooltip(string name, string imageName, bool showExpander, string toolTip)
         {
-            var stackpanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new System.Windows.Thickness(2) };
+            var stackpanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(2) };
             stackpanel.Children.Add(ImageHelper.GetImageFromResource(imageName));
             // 
-            stackpanel.Children.Add(new TextBlock { Text = " " + name, Foreground = Helpers.VSThemes.GetWindowText()});
+            stackpanel.Children.Add(new TextBlock { Text = " " + name, Foreground = VsThemes.GetWindowText()});
 
             var databaseTreeViewItem = new DatabaseTreeViewItem { Header = stackpanel, MetaData = name };
             databaseTreeViewItem.MouseRightButtonDown += DatabaseTreeViewItemMouseRightButtonDown;
@@ -79,12 +79,16 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 XmlReader reader = XmlReader.Create("http://sqlcompact.dk/VSAddinFeed.xml");
                 SyndicationFeed feed = SyndicationFeed.Load(reader);
-                foreach (var item in feed.Items)
-                {
-                    infoItem.Children.Add(CreateButtonWithHyperlink(item.Title.Text, item.Links[0].Uri.OriginalString));
-                }
+                if (feed != null)
+                    foreach (var item in feed.Items)
+                    {
+                        infoItem.Children.Add(CreateButtonWithHyperlink(item.Title.Text, item.Links[0].Uri.OriginalString));
+                    }
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
             infoItem.Children.Add(CreateButtonWithHyperlink("Everything SQL Server Compact blog", "http://erikej.blogspot.com/"));
         }
 
@@ -93,39 +97,39 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             var types = CreateTreeViewItemWithImage("SQL Server Compact Data Types", "../Resources/folder_Closed_16xLG.png", false);
 
             var numbersItem = CreateTreeViewItemWithImage("Exact Numerics", "../Resources/folder_Closed_16xLG.png", false);
-            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("bit", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.bit));
-            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("tinyint", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.tinyint));
-            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("smallint", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.smallint));
-            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("int", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.integer));
-            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("bigint", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.bigint));
-            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("numeric", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.numeric));
-            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("money", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.money));
+            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("bit", "../Resources/TypeDefinition_521.png", false, Resources.bit));
+            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("tinyint", "../Resources/TypeDefinition_521.png", false, Resources.tinyint));
+            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("smallint", "../Resources/TypeDefinition_521.png", false, Resources.smallint));
+            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("int", "../Resources/TypeDefinition_521.png", false, Resources.integer));
+            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("bigint", "../Resources/TypeDefinition_521.png", false, Resources.bigint));
+            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("numeric", "../Resources/TypeDefinition_521.png", false, Resources.numeric));
+            numbersItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("money", "../Resources/TypeDefinition_521.png", false, Resources.money));
             types.Items.Add(numbersItem);
 
             var floatItem = CreateTreeViewItemWithImage("Approximate Numerics", "../Resources/folder_Closed_16xLG.png", false);
-            floatItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("float", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.floating));
-            floatItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("real", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.real));
+            floatItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("float", "../Resources/TypeDefinition_521.png", false, Resources.floating));
+            floatItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("real", "../Resources/TypeDefinition_521.png", false, Resources.real));
             types.Items.Add(floatItem);
 
             var dateItem = CreateTreeViewItemWithImage("Date and Time", "../Resources/folder_Closed_16xLG.png", false);
-            dateItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("datetime", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.datetime));
+            dateItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("datetime", "../Resources/TypeDefinition_521.png", false, Resources.datetime));
             types.Items.Add(dateItem);
 
             var stringItem = CreateTreeViewItemWithImage("Unicode Character Strings", "../Resources/folder_Closed_16xLG.png", false);
-            stringItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("nchar", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.nchar));
-            stringItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("nvarchar", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.nvarchar));
-            stringItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("ntext", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.ntext));
+            stringItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("nchar", "../Resources/TypeDefinition_521.png", false, Resources.nchar));
+            stringItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("nvarchar", "../Resources/TypeDefinition_521.png", false, Resources.nvarchar));
+            stringItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("ntext", "../Resources/TypeDefinition_521.png", false, Resources.ntext));
             types.Items.Add(stringItem);
 
             var binaryItem = CreateTreeViewItemWithImage("Binary Values", "../Resources/folder_Closed_16xLG.png", false);
-            binaryItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("binary", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.binary));
-            binaryItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("varbinary", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.varbinary));
-            binaryItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("image", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.image));
+            binaryItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("binary", "../Resources/TypeDefinition_521.png", false, Resources.binary));
+            binaryItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("varbinary", "../Resources/TypeDefinition_521.png", false, Resources.varbinary));
+            binaryItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("image", "../Resources/TypeDefinition_521.png", false, Resources.image));
             types.Items.Add(binaryItem);
 
             var otherItem = CreateTreeViewItemWithImage("Other Data Types", "../Resources/folder_Closed_16xLG.png", false);
-            otherItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("rowversion", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.rowversion));
-            otherItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("uniqueidentifier", "../Resources/TypeDefinition_521.png", false, SqlCeToolbox.Resources.uniqueidentifier));
+            otherItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("rowversion", "../Resources/TypeDefinition_521.png", false, Resources.rowversion));
+            otherItem.Items.Add(CreateTreeViewItemWithImageAndTooltip("uniqueidentifier", "../Resources/TypeDefinition_521.png", false, Resources.uniqueidentifier));
             types.Items.Add(otherItem);
 
             return types;

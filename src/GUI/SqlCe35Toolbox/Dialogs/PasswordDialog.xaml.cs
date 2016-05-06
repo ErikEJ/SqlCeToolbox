@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.VisualStudio.PlatformUI;
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
@@ -13,7 +14,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(PasswordDialog));
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)

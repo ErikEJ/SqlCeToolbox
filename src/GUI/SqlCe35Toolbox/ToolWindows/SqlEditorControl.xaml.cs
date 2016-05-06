@@ -131,10 +131,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 if (package == null) return;
                 Dte = package.GetServiceHelper(typeof(DTE)) as DTE;
 
-                toolBar1.Background = toolTray.Background = VSThemes.GetCommandBackground();
-                dock1.Background = VSThemes.GetWindowBackground();
-                sep4.Background = VSThemes.GetToolbarSeparatorBackground();
-                txtSaveAs.Foreground = VSThemes.GetWindowText();
+                toolBar1.Background = toolTray.Background = VsThemes.GetCommandBackground();
+                dock1.Background = VsThemes.GetWindowBackground();
+                sep4.Background = VsThemes.GetToolbarSeparatorBackground();
+                txtSaveAs.Foreground = VsThemes.GetWindowText();
                 if (DatabaseInfo != null)
                     txtVersion.Text = DatabaseInfo.ServerVersion;
                 LoadDefaultOptions();

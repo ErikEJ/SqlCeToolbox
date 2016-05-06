@@ -25,7 +25,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             Telemetry.TrackPageView(nameof(TableBuilderDialog));
             InitializeComponent();
             _dbType = dbType;
-            Background = VSThemes.GetWindowBackground();
+            Background = VsThemes.GetWindowBackground();
             if (!string.IsNullOrWhiteSpace(tableDescription))
             {
                 txtTableDesc.Text = tableDescription;
@@ -48,14 +48,14 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 TableName = txtTableDesc.Text;
                 if (string.IsNullOrEmpty(TableName))
                 {
-                    EnvDTEHelper.ShowError("Table name is required");
+                    EnvDteHelper.ShowError("Table name is required");
                     return false;
                 }
 
                 var validation = TableColumn.ValidateColumns(_columns.ToList());
                 if (!string.IsNullOrEmpty(validation))
                 {
-                    EnvDTEHelper.ShowError(validation);
+                    EnvDteHelper.ShowError(validation);
                     return false;
                 }
                 TableColumns = TableColumn.BuildColumns(_columns.ToList(), TableName);

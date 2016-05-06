@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using Microsoft.VisualStudio.PlatformUI;
 using System.Collections.Generic;
+using ErikEJ.SqlCeToolbox.Helpers;
+
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     /// <summary>
@@ -44,7 +46,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(DescriptionDialog));
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
             if (!string.IsNullOrWhiteSpace(tableDescription))
             {
                 this.txtTableDesc.Text = tableDescription;

@@ -18,7 +18,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             Telemetry.TrackPageView(nameof(ConnectionDialog));
             _loading = true;
             InitializeComponent();
-            Background = VSThemes.GetWindowBackground();
+            Background = VsThemes.GetWindowBackground();
             SaveButton.IsEnabled = false;
             TestButton.IsEnabled = false;
             _loading = false;
@@ -135,7 +135,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 {
                     if (showMessage)
                     {
-                        EnvDTEHelper.ShowMessage("Connection OK!");
+                        EnvDteHelper.ShowMessage("Connection OK!");
                     }
                     else
                     {
@@ -148,7 +148,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             {
                 if (ex.Message.Contains("Please upgrade using SqlCeEngine.Upgrade() method") && DbType == DatabaseType.SQLCE40)
                 {
-                    if (EnvDTEHelper.ShowMessageBox("This database file is from an earlier version,\n\rwould you like to Upgrade it?\n\r(A copy of the original file will be named .bak)"
+                    if (EnvDteHelper.ShowMessageBox("This database file is from an earlier version,\n\rwould you like to Upgrade it?\n\r(A copy of the original file will be named .bak)"
                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO
                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND
                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING) == System.Windows.Forms.DialogResult.Yes)
@@ -159,7 +159,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                         {
                             if (System.IO.File.Exists(bakFile))
                             {
-                                if (EnvDTEHelper.ShowMessageBox(string.Format("{0} already exists, do you wish to overwrite it?", bakFile)
+                                if (EnvDteHelper.ShowMessageBox(string.Format("{0} already exists, do you wish to overwrite it?", bakFile)
                                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_YESNO
                                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND
                                         , Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_WARNING) == System.Windows.Forms.DialogResult.Yes)

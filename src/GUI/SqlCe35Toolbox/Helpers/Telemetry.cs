@@ -3,7 +3,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.ApplicationInsights;
 
-namespace ErikEJ.SqlCeToolbox
+namespace ErikEJ.SqlCeToolbox.Helpers
 {
     /// <summary>
     /// Reports anonymous usage through ApplicationInsights

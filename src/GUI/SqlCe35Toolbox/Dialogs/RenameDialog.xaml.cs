@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.VisualStudio.PlatformUI;
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
@@ -15,7 +16,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(RenameDialog));
             InitializeComponent();
-            this.Background = Helpers.VSThemes.GetWindowBackground();
+            this.Background = Helpers.VsThemes.GetWindowBackground();
             this.Title = "Rename " + tableName;
             this.ServerName.Text = tableName;
         }

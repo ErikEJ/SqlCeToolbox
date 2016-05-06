@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 [DefaultProperty("Caption")]
+// ReSharper disable once CheckNamespace
 public class DatabaseInfo
 {
     [Category("MetaData")]
@@ -31,6 +33,7 @@ public class DatabaseInfo
     [Category("Connected")]
     [ReadOnly(true)]
     [Description("Locale ID")]
+    // ReSharper disable once InconsistentNaming
     public int LCID { get; set; }
 
     [Category("Connected")]
@@ -65,6 +68,7 @@ public class TableInfo
 }
 
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum DatabaseType
 {
     SQLCE35,

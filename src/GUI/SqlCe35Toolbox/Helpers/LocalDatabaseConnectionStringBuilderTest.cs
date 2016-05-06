@@ -7,6 +7,7 @@ using System.Text;
 /// A class for building a connection string for Local Database on Windows Phone
 /// </summary>
 [DescriptionAttribute("Connection string builder for Windows Phone Local Database")]
+// ReSharper disable once CheckNamespace
 public class LocalDatabaseConnectionStringBuilderTest
 {
     public LocalDatabaseConnectionStringBuilderTest()
@@ -19,7 +20,7 @@ public class LocalDatabaseConnectionStringBuilderTest
     /// <param name="dataSourceFile">Name or path to database file</param>
     public LocalDatabaseConnectionStringBuilderTest(string dataSourceFile)
     {
-        this._databaseName = dataSourceFile;
+        _databaseName = dataSourceFile;
     }
 
     /// <summary>
@@ -29,10 +30,10 @@ public class LocalDatabaseConnectionStringBuilderTest
     /// <param name="readOnly">If true, the connection string will be read-only in appdata:/</param>
     public LocalDatabaseConnectionStringBuilderTest(string dataSourceFile, bool readOnly)
     {
-        this._databaseName = dataSourceFile;
+        _databaseName = dataSourceFile;
         if (readOnly)
-            this._source = DataSourceRootType.AppData;
-            this._fileMode = FileMode.ReadOnly;
+            _source = DataSourceRootType.AppData;
+            _fileMode = FileMode.ReadOnly;
     }
 
     /// <summary>
@@ -87,7 +88,7 @@ public class LocalDatabaseConnectionStringBuilderTest
     FileMode _fileMode = FileMode.ReadWrite;
 
     string _cultureIdentifierString = string.Empty;
-    bool _isCaseSensitive = false;
+    bool _isCaseSensitive;
     string _databaseName;
 
     /// <summary>
