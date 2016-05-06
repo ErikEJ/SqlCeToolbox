@@ -43,7 +43,7 @@ namespace ErikEJ.SqlCeToolbox.DDEX4
 				}
 
 				// Create a command object
-				DbCommand comm = (DbCommand)conn.CreateCommand();
+				var comm = conn.CreateCommand();
 
 				// Choose and format SQL based on the type
 				if (typeName.Equals(SqlObjectTypes.Root,

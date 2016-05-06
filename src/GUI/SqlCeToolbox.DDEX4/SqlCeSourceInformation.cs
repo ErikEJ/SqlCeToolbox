@@ -1,5 +1,4 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
-using System;
+﻿using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Data.Services;
 using Microsoft.VisualStudio.Data.Framework.AdoDotNet;
@@ -41,7 +40,7 @@ namespace ErikEJ.SqlCeToolbox.DDEX4
 				{
 					Site.Open();
 				}
-				DbConnection conn = Connection as DbConnection;
+				var conn = Connection;
 				Debug.Assert(conn != null, "Invalid provider object.");
 				if (conn != null)
 				{
@@ -57,7 +56,6 @@ namespace ErikEJ.SqlCeToolbox.DDEX4
 			}
 			return base.RetrieveValue(propertyName);
 		}
-
 		#endregion
 	}
 }

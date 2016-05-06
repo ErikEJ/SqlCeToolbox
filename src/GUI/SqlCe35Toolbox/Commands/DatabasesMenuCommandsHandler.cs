@@ -71,7 +71,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
         public void AddCe35Database(object sender, ExecutedRoutedEventArgs e)
         {
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
-            if (!DataConnectionHelper.DDEXProviderIsInstalled(new Guid(Resources.SqlCompact35Provider)))
+            if (!DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider)))
             {
                 EnvDTEHelper.ShowError("The version 3.5 Visual Studio DDEX provider is not installed, cannot add connection");
                 return;
@@ -103,7 +103,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
         public void AddCe40Database(object sender, ExecutedRoutedEventArgs e)
         {
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
-            if (!DataConnectionHelper.DDEXProviderIsInstalled(new Guid(Resources.SqlCompact40Provider)))
+            if (!DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider)))
             {
                 EnvDTEHelper.ShowError("The version 4.0 Visual Studio DDEX provider is not installed, cannot add connection");
                 return;

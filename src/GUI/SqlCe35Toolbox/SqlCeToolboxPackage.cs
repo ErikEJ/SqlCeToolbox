@@ -176,12 +176,12 @@ namespace ErikEJ.SqlCeToolbox
 
         public bool VSSupportsDDEX40()
         {
-            return Properties.Settings.Default.PreferDDEX && Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
+            return Properties.Settings.Default.PreferDDEX && Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
         }
 
         public bool VSSupportsDDEX35()
         {
-            return Properties.Settings.Default.PreferDDEX && Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(Resources.SqlCompact35Provider)); ;
+            return Properties.Settings.Default.PreferDDEX && Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider)); ;
         }
 
         public bool VSSupportsEF6()
@@ -197,7 +197,7 @@ namespace ErikEJ.SqlCeToolbox
         public bool VSSupportsSimpleDDEX4Provider()
         {
             return ( VisualStudioVersion >= new Version(12, 0))
-                && (Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(Resources.SqlCompact40PrivateProvider)))
+                && (Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40PrivateProvider)))
                 && (Helpers.DataConnectionHelper.IsV40Installed())
                 && (Helpers.DataConnectionHelper.IsV40DbProviderInstalled());
         }
@@ -205,7 +205,7 @@ namespace ErikEJ.SqlCeToolbox
         public bool VSSupportsSimpleDDEX35Provider()
         {
             return VSSupportsEF6()
-                && (Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(Resources.SqlCompact35PrivateProvider)))
+                && (Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35PrivateProvider)))
                 && (Helpers.DataConnectionHelper.IsV35Installed())
                 && (Helpers.DataConnectionHelper.IsV35DbProviderInstalled());
         }
@@ -250,7 +250,7 @@ namespace ErikEJ.SqlCeToolbox
                 mcs.AddCommand(seItem);
                 Helpers.DataConnectionHelper.LogUsage("Platform: Visual Studio " + VisualStudioVersion.ToString(1));
             }
-            Helpers.DataConnectionHelper.RegisterDDEXProviders(false);
+            Helpers.DataConnectionHelper.RegisterDdexProviders(false);
             base.Initialize();
         }
         #endregion

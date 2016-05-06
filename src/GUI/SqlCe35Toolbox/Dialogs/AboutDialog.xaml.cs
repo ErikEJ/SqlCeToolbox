@@ -69,7 +69,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             txtStatus.Text += "\nSQL Server Compact 4.0 DDEX provider - ";
             try
             {
-                if (Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(ErikEJ.SqlCeToolbox.Resources.SqlCompact40Provider)))
+                if (Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(ErikEJ.SqlCeToolbox.Resources.SqlCompact40Provider)))
                 {
                     txtStatus.Text += "Yes\n";
                 }
@@ -86,7 +86,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             txtStatus.Text += "SQL Server Compact 4.0 Simple DDEX provider - ";
             try
             {
-                if (Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(ErikEJ.SqlCeToolbox.Resources.SqlCompact40PrivateProvider)))
+                if (Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(ErikEJ.SqlCeToolbox.Resources.SqlCompact40PrivateProvider)))
                 {
                     txtStatus.Text += "Yes\n";
                 }
@@ -145,7 +145,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             txtStatus.Text += "\nSQL Server Compact 3.5 DDEX provider - ";
             try
             {
-                if (Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(ErikEJ.SqlCeToolbox.Resources.SqlCompact35Provider)))
+                if (Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(ErikEJ.SqlCeToolbox.Resources.SqlCompact35Provider)))
                 {
                     txtStatus.Text += "Yes\n";
                 }
@@ -162,7 +162,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             txtStatus.Text += "SQL Server Compact 3.5 Simple DDEX provider - ";
             try
             {
-                if (Helpers.DataConnectionHelper.DDEXProviderIsInstalled(new Guid(ErikEJ.SqlCeToolbox.Resources.SqlCompact35PrivateProvider)))
+                if (Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(ErikEJ.SqlCeToolbox.Resources.SqlCompact35PrivateProvider)))
                 {
                     txtStatus.Text += "Yes\n";
                 }
@@ -211,7 +211,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             txtStatus.Text += "SQLite EF6 DbProvider in GAC - ";
             try
             {
-                if (Helpers.DataConnectionHelper.IsSQLiteDbProviderInstalled())
+                if (Helpers.DataConnectionHelper.IsSqLiteDbProviderInstalled())
                 {
                     txtStatus.Text += "Yes\n";
                 }
@@ -257,7 +257,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void DDEXButton_Click(object sender, RoutedEventArgs e)
         {
-            Helpers.DataConnectionHelper.RegisterDDEXProviders(true);
+            Helpers.DataConnectionHelper.RegisterDdexProviders(true);
             EnvDTEHelper.ShowMessage("Providers registered, you may have to restart Visual Studio");
         }
 

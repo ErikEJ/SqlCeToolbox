@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.Data.Framework;
+﻿using Microsoft.VisualStudio.Data.Framework;
 using System.ComponentModel;
 
 namespace ErikEJ.SqlCeToolbox.DDEX35
@@ -19,7 +15,7 @@ namespace ErikEJ.SqlCeToolbox.DDEX35
             }
             set
             {
-                this["Data Source"] = (object)value;
+                this["Data Source"] = value;
             }
         }
 
@@ -31,7 +27,7 @@ namespace ErikEJ.SqlCeToolbox.DDEX35
             }
             set
             {
-                this["Password"] = (object)value;
+                this["Password"] = value;
             }
         }
 
@@ -40,15 +36,14 @@ namespace ErikEJ.SqlCeToolbox.DDEX35
         {
             get
             {
-                object obj = this["Max Database Size"];
+                var obj = this["Max Database Size"];
                 if (obj is int)
                     return (int)obj;
-                else
-                    return 0;
+                return 0;
             }
             set
             {
-                this["Max Database Size"] = (object)value;
+                this["Max Database Size"] = value;
             }
         }
     }
