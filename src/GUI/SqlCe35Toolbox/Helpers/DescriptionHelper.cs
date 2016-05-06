@@ -1,14 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.IO;
-using System.Reflection;
 using ErikEJ.SqlCeScripting;
-using Microsoft.VisualStudio.Data;
-using Microsoft.VisualStudio.Data.AdoDotNet;
-using Microsoft.VisualStudio.Data.Interop;
-using Microsoft.Win32;
-using EnvDTE;
 using System.Data;
 using System.Linq;
 

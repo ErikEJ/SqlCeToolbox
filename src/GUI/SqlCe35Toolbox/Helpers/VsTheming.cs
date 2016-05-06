@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows.Media;
-using ErikEJ.SqlCeToolbox.ToolWindows;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {

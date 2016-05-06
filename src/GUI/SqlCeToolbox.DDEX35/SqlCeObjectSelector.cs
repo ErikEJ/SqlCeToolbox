@@ -43,7 +43,7 @@ namespace ErikEJ.SqlCeToolbox.DDEX35
 				}
 
 				// Create a command object
-				DbCommand comm = (DbCommand)conn.CreateCommand();
+				var comm = conn.CreateCommand();
 
 				// Choose and format SQL based on the type
 				if (typeName.Equals(SqlObjectTypes.Root,
@@ -63,8 +63,6 @@ namespace ErikEJ.SqlCeToolbox.DDEX35
 				Site.UnlockProviderObject();
 			}
 		}
-
 		#endregion
-
 	}
 }

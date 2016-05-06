@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
@@ -112,6 +111,5 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Registry.SetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\10.0Exp_Config\DataSources\{F0905790-4262-4019-910D-CF4F06F58F6E}\SupportingProviders\{303D8BB1-D62A-4560-9742-79C93E828222}", "Description", "Provider_Description, ErikEJ.SqlCeToolbox.DDEX35.Properties.Resources");
             Registry.SetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\10.0Exp_Config\DataSources\{F0905790-4262-4019-910D-CF4F06F58F6E}\SupportingProviders\{303D8BB1-D62A-4560-9742-79C93E828222}", "DisplayName", "Provider_DisplayName, ErikEJ.SqlCeToolbox.DDEX35.Properties.Resources");
         }
-
     }
 }

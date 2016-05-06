@@ -60,7 +60,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     {
                         provider = new Guid(Resources.SqlCompact35Provider);
                     }
-                    if (!DataConnectionHelper.DDEXProviderIsInstalled(provider))
+                    if (!DataConnectionHelper.DdexProviderIsInstalled(provider))
                     {
                         EnvDTEHelper.ShowError("The DDEX provider is not installed, cannot remove connection");
                         return;
