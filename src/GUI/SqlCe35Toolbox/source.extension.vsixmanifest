@@ -6,9 +6,9 @@
     <Version>4.5.0.6</Version>
     <Description xml:space="preserve">SQL Server Compact/SQLite Toolbox add-in for Visual Studio. This add-in adds several features to help your embedded database development efforts: Scripting of tables and data, import from SQL Server and CSV files and much, much more.</Description>
     <Locale>1033</Locale>
-    <MoreInfoUrl>http://sqlcetoolbox.codeplex.com/</MoreInfoUrl>
+    <MoreInfoUrl>https://github.com/ErikEJ/SqlCeToolbox</MoreInfoUrl>
     <License>Resources/license.txt</License>
-    <GettingStartedGuide>http://sqlcetoolbox.codeplex.com/documentation</GettingStartedGuide>
+    <GettingStartedGuide>https://github.com/ErikEJ/SqlCeToolbox/wiki</GettingStartedGuide>
     <Icon>Resources/data_out.png</Icon>
     <PreviewImage>Resources/toolbox2.png</PreviewImage>
     <InstalledByMsi>false</InstalledByMsi>
