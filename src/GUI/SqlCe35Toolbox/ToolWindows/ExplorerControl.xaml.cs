@@ -61,6 +61,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 try
                 {
+                    PrepareTreeView("Data Connections");
                     Refresh.IsEnabled = true;
                     if ((bool)ea.Result)
                     {
@@ -93,7 +94,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             Storyboard.SetTargetName(myDoubleAnimation, UpdatedText.Name);
             Storyboard.SetTargetProperty(myDoubleAnimation, new PropertyPath(OpacityProperty));
 
-            PrepareTreeView();
+            PrepareTreeView("Loading...");
             bw.RunWorkerAsync();
 
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
@@ -126,10 +127,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 _fatalError = string.Empty;
 
-                if (fromUiThread)
-                {
-                    PrepareTreeView();
-                }
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
                 if (package == null) return;
                 if (Properties.Settings.Default.ValidateConnectionsOnStart)
@@ -158,6 +155,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 if (fromUiThread)
                 {
+                    PrepareTreeView("Data Connections");
                     Refresh.IsEnabled = true;
                 }
                 var fillList = new FillDatabaseListHandler(FillDatabaseList);
@@ -165,20 +163,18 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        private void PrepareTreeView()
+        private void PrepareTreeView(string label)
         {
             Refresh.IsEnabled = false;
-            txtConnections.Text = "Data Connections";
             txtHelp.Foreground = VsThemes.GetWindowText();
+            RootItem.Foreground = VsThemes.GetWindowText();
+            txtConnections.Text = label;
             txtConnections.Focus();
-            ItemDatabases.ContextMenu = new DatabasesContextMenu(new DatabaseMenuCommandParameters
+            RootItem.ContextMenu = new DatabasesContextMenu(new DatabaseMenuCommandParameters
             {
                 ExplorerControl = this
             }, _parentWindow);
-            ItemDatabases.Foreground = VsThemes.GetWindowText();
-            ItemDatabases.ToolTip = "Right click to Manage Connections (and many other features)";
-            ItemDatabases.Items.Clear();
-            ItemDatabases.IsExpanded = true;
+            RootItem.Foreground = VsThemes.GetWindowText();
             if (!DataConnectionHelper.IsV35Installed() && !DataConnectionHelper.IsV40Installed())
             {
                 RuntimeMissing.Visibility = Visibility.Visible;
@@ -207,13 +203,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     }
                     sortedList.Add(key, databaseInfo);
                 }
-                ItemDatabases.Items.Clear();
+                RootItem.Items.Clear();
 
                 foreach (var databaseInfo in sortedList)
                 {
                     var databaseTreeViewItem = AddDatabaseToTreeView(databaseInfo.Value);
                     databaseTreeViewItem.Tag = databaseInfo.Value.Value;
-                    ItemDatabases.Items.Add(databaseTreeViewItem);
+                    RootItem.Items.Add(databaseTreeViewItem);
                 }
 
                 if (!string.IsNullOrWhiteSpace(_fatalError))
@@ -223,11 +219,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         Header = _fatalError,
                         Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red)
                     };
-                    ItemDatabases.Items.Add(errorItem);
+                    RootItem.Items.Add(errorItem);
                     return;
                 }
-                ItemDatabases.Items.Add(TreeViewHelper.GetTypesItem(ItemDatabases));
-                ItemDatabases.IsExpanded = true;
+                RootItem.Items.Add(TreeViewHelper.GetTypesItem(RootItem));
+                RootItem.IsExpanded = true;
                 //TreeViewHelper.GetInfoItems(InfoStack);
             }
             catch (Exception ex)
@@ -237,7 +233,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     Header = ex.Message,
                     Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red)
                 };
-                ItemDatabases.Items.Add(errorItem);
+                RootItem.Items.Add(errorItem);
             }
         }
 
@@ -799,9 +795,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private DatabaseTreeViewItem FindTablesItem(DatabaseInfo databaseInfo)
         {
-            if (ItemDatabases.HasItems)
+            if (RootItem.HasItems)
             {
-                foreach (var item in ItemDatabases.Items)
+                foreach (var item in RootItem.Items)
                 {
                     var dbItem = item as DatabaseTreeViewItem;
                     if (dbItem != null)

@@ -54,11 +54,11 @@
                     <Setter Property="Template" Value="{DynamicResource AppleStyleScrollBarStyle}"/>
                 </Style>
             </TreeView.Resources>
-            <TreeViewItem Name="ItemDatabases" >
+            <TreeViewItem Name="RootItem" IsExpanded="True" ToolTip="Right click to Manage Connections (and many other features)" >
                 <TreeViewItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="../Resources/Root.PNG" Height="16" Width="16"></Image>
-                        <TextBlock Name="txtConnections" Padding="3" Text="Data Connections"></TextBlock>
+                        <TextBlock Name="txtConnections" Padding="3" Text="Loading..."></TextBlock>
                     </StackPanel>
                 </TreeViewItem.Header>
             </TreeViewItem>
