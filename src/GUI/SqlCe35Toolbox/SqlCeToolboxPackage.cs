@@ -36,7 +36,7 @@ namespace ErikEJ.SqlCeToolbox
         /// </summary>
         public SqlCeToolboxPackage()
         {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
         }
 
         public void SetStatus(string message)

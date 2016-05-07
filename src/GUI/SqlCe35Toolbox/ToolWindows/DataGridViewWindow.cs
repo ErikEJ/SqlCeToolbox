@@ -17,11 +17,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         public DataGridViewWindow()
             : base(null)
         {
-            this.Caption = "Data Editor";
-            this.BitmapResourceID = 301;
-            this.BitmapIndex = 1;
+            Caption = "Data Editor";
+            BitmapResourceID = 301;
+            BitmapIndex = 1;
             Telemetry.TrackPageView(nameof(DataGridViewWindow));
-            control = new DataEditControl(this);
+            control = new DataEditControl();
         }
 
         /// <summary>
@@ -29,11 +29,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         /// It can be either a FrameworkElement (for easy creation of toolwindows hosting WPF content), 
         /// or it can be an object implementing one of the IVsUIWPFElement or IVsUIWin32Element interfaces.
         /// </summary>
-        override public object Content 
+        public override object Content 
         {
             get
             {
-                return this.control;
+                return control;
             }
         }
 

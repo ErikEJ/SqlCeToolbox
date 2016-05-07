@@ -97,7 +97,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             if (isSqlCe)
                 scriptDatabaseRootMenuItem.Items.Add(scriptSqliteSchemaDataMenuItem);
 
-            var scriptDatabaseSchemaDataBLOBMenuItem = new MenuItem
+            var scriptDatabaseSchemaDataBlobMenuItem = new MenuItem
             {
                 Header = "Script Database Schema and Data with BLOBs...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
@@ -105,9 +105,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.SchemaDataBlobs
             };
-            scriptDatabaseSchemaDataBLOBMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            scriptDatabaseSchemaDataBlobMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
             if (isSqlCe)
-                scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBLOBMenuItem);
+                scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBlobMenuItem);
 
             var scriptDatabaseDataMenuItem = new MenuItem
             {
@@ -282,7 +282,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptUpgradeMenuItem.ToolTip = "Create a copy of this database in 4.0 format";
 
             if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
-                && Helpers.DataConnectionHelper.IsV40Installed())
+                && DataConnectionHelper.IsV40Installed())
             {
                 Items.Add(scriptUpgradeMenuItem);
             }
@@ -336,10 +336,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptEdmxMenuItem.CommandBindings.Add(scriptEdmxCommandBinding);
             generateCodeRootMenuItem.Items.Add(scriptEdmxMenuItem);
 
-            var scriptDCCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+            var scriptDcCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                             dcmd.GenerateDataContextInProject);
 
-            var scriptDCMenuItem = new MenuItem
+            var scriptDcMenuItem = new MenuItem
             {
                 Header = "Add LINQ to SQL DataContext to current Project (needs 3.5)...",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
@@ -347,11 +347,11 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = true
             };
-            scriptDCMenuItem.CommandBindings.Add(scriptDCCommandBinding);
-            scriptDCMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() && DataConnectionHelper.IsV35DbProviderInstalled();
-            generateCodeRootMenuItem.Items.Add(scriptDCMenuItem);
+            scriptDcMenuItem.CommandBindings.Add(scriptDcCommandBinding);
+            scriptDcMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() && DataConnectionHelper.IsV35DbProviderInstalled();
+            generateCodeRootMenuItem.Items.Add(scriptDcMenuItem);
 
-            var scriptWPDCMenuItem = new MenuItem
+            var scriptWpdcMenuItem = new MenuItem
             {
                 Header = "Add Windows Phone DataContext to current Project (needs 3.5)...",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
@@ -359,20 +359,22 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = false
             };
-            scriptWPDCMenuItem.CommandBindings.Add(scriptDCCommandBinding);
-            scriptWPDCMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() && DataConnectionHelper.IsV35DbProviderInstalled();
+            scriptWpdcMenuItem.CommandBindings.Add(scriptDcCommandBinding);
+            scriptWpdcMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() && DataConnectionHelper.IsV35DbProviderInstalled();
             if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
             {
-                scriptWPDCMenuItem.IsEnabled = false;
+                scriptWpdcMenuItem.IsEnabled = false;
             }            
-            generateCodeRootMenuItem.Items.Add(scriptWPDCMenuItem);
+            generateCodeRootMenuItem.Items.Add(scriptWpdcMenuItem);
             generateCodeRootMenuItem.Items.Add(new Separator());
 
-            var syncFXRootMenuItem = new MenuItem
+            var syncFxRootMenuItem = new MenuItem
             {
                 Header = "Sync Framework Tools",
                 Icon = ImageHelper.GetImageFromResource("../resources/Synchronize_16xLG.png"),
             };
+
+            var isSyncFxInstalled = DataConnectionHelper.IsSyncFx21Installed();
 
             var syncFxProvisionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SyncFxProvisionScope);
@@ -386,9 +388,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             syncFxProvisionMenuItem.CommandBindings.Add(syncFxProvisionCommandBinding);
             syncFxProvisionMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
-                && Helpers.DataConnectionHelper.IsSyncFx21Installed();
+                && isSyncFxInstalled;
             
-            syncFXRootMenuItem.Items.Add(syncFxProvisionMenuItem);
+            syncFxRootMenuItem.Items.Add(syncFxProvisionMenuItem);
 
             var syncFxDeprovisionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SyncFxDeprovisionDatabase);
@@ -403,9 +405,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             syncFxDeprovisionMenuItem.CommandBindings.Add(syncFxDeprovisionCommandBinding);
 
             syncFxDeprovisionMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
-                && Helpers.DataConnectionHelper.IsSyncFx21Installed();
+                && isSyncFxInstalled;
 
-            syncFXRootMenuItem.Items.Add(syncFxDeprovisionMenuItem);
+            syncFxRootMenuItem.Items.Add(syncFxDeprovisionMenuItem);
 
             var syncFxGenerateSnapshotCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SyncFxGenerateSnapshot);
@@ -420,9 +422,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             syncFxGenerateSnapshotMenuItem.CommandBindings.Add(syncFxGenerateSnapshotCommandBinding);
 
             syncFxGenerateSnapshotMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35
-                && Helpers.DataConnectionHelper.IsSyncFx21Installed();
+                && isSyncFxInstalled;
 
-            syncFXRootMenuItem.Items.Add(syncFxGenerateSnapshotMenuItem);
+            syncFxRootMenuItem.Items.Add(syncFxGenerateSnapshotMenuItem);
 
             var syncFxCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SyncFxGenerateSyncCodeInProject);
@@ -437,10 +439,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             syncFxMenuItem.CommandBindings.Add(syncFxCommandBinding);
 
             syncFxMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
-                && Helpers.DataConnectionHelper.IsSyncFx21Installed();
+                && isSyncFxInstalled;
 
             generateCodeRootMenuItem.Items.Add(syncFxMenuItem);
-            generateCodeRootMenuItem.Items.Add(syncFXRootMenuItem);
+            generateCodeRootMenuItem.Items.Add(syncFxRootMenuItem);
 
             if (isSqlCe)
             {
