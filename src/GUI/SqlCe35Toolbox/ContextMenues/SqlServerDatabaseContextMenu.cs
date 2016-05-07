@@ -75,7 +75,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptDatabaseSchemaDataMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
             scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataMenuItem);
 
-            var scriptDatabaseSchemaDataSQLiteMenuItem = new MenuItem
+            var scriptDatabaseSchemaDataSqLiteMenuItem = new MenuItem
             {
                 Header = "Script SQL Server Database Schema and Data for SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
@@ -84,10 +84,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.SchemaDataSQLite
             };
-            scriptDatabaseSchemaDataSQLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataSQLiteMenuItem);
+            scriptDatabaseSchemaDataSqLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataSqLiteMenuItem);
 
-            var scriptDatabaseSchemaSQLiteMenuItem = new MenuItem
+            var scriptDatabaseSchemaSqLiteMenuItem = new MenuItem
             {
                 Header = "Script SQL Server Database Schema for SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
@@ -96,10 +96,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.SchemaSQLite
             };
-            scriptDatabaseSchemaSQLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaSQLiteMenuItem);
+            scriptDatabaseSchemaSqLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaSqLiteMenuItem);
 
-            var scriptDatabaseSchemaDataBLOBMenuItem = new MenuItem
+            var scriptDatabaseSchemaDataBlobMenuItem = new MenuItem
             {
                 Header = "Script SQL Server Database Schema and Data with BLOBs...",
                 ToolTip = toolTip,
@@ -108,8 +108,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.SchemaDataBlobs 
             };
-            scriptDatabaseSchemaDataBLOBMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBLOBMenuItem);
+            scriptDatabaseSchemaDataBlobMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBlobMenuItem);
             Items.Add(scriptDatabaseRootMenuItem);
             Items.Add(new Separator());
 

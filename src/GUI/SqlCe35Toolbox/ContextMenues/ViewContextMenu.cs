@@ -18,19 +18,19 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             CreateScriptAsDropMenuItem(tcmd, menuCommandParameters);
         }
 
-        private void ReportDataMenuItem(ViewMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
-        {
-            var scriptCommandBinding = new CommandBinding(TableMenuCommands.TableCommand, tcmd.ReportTableData);
-            var scriptMenuItem = new MenuItem
-            {
-                Header = "View Data as Report",
-                Icon = ImageHelper.GetImageFromResource("../resources/Tables_8928.png"),
-                Command = TableMenuCommands.TableCommand,
-                CommandParameter = menuCommandParameters
-            };
-            scriptMenuItem.CommandBindings.Add(scriptCommandBinding);
-            Items.Add(scriptMenuItem);
-        }
+        //private void ReportDataMenuItem(ViewMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
+        //{
+        //    var scriptCommandBinding = new CommandBinding(TableMenuCommands.TableCommand, tcmd.ReportTableData);
+        //    var scriptMenuItem = new MenuItem
+        //    {
+        //        Header = "View Data as Report",
+        //        Icon = ImageHelper.GetImageFromResource("../resources/Tables_8928.png"),
+        //        Command = TableMenuCommands.TableCommand,
+        //        CommandParameter = menuCommandParameters
+        //    };
+        //    scriptMenuItem.CommandBindings.Add(scriptCommandBinding);
+        //    Items.Add(scriptMenuItem);
+        //}
 
         private void CreateScriptAsCreateMenuItem(ViewMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
         {

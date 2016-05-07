@@ -14,20 +14,22 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         public List<int> ReadOnlyColumns { get; set; }
         public string SqlText { get; set; }
         
-        public DataEditControl(DataGridViewWindow parentWindow)
+        public DataEditControl()
         {
             InitializeComponent();
         }
 
         public void ShowGrid()
         {
-            ResultsetGrid = new ResultsetGrid();
-            ResultsetGrid.DatabaseInfo = this.DatabaseInfo;
-            ResultsetGrid.TableName = this.TableName;
-            ResultsetGrid.ReadOnly = this.ReadOnly;
-            ResultsetGrid.ReadOnlyColumns = this.ReadOnlyColumns;
-            ResultsetGrid.SqlText = this.SqlText;
-            this.winFormHost.Child = ResultsetGrid;
+            ResultsetGrid = new ResultsetGrid
+            {
+                DatabaseInfo = DatabaseInfo,
+                TableName = TableName,
+                ReadOnly = ReadOnly,
+                ReadOnlyColumns = ReadOnlyColumns,
+                SqlText = SqlText
+            };
+            winFormHost.Child = ResultsetGrid;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             var pkg = parent.Package as SqlCeToolboxPackage;
-            if (pkg.VSSupportsDDEX40())
+            if (pkg != null && pkg.VSSupportsDDEX40())
             {
                 var addCe40DatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                             dcmd.AddCe40Database);
@@ -51,7 +51,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
             };
-            if (pkg.VSSupportsDDEX35())
+            if (pkg != null && pkg.VSSupportsDDEX35())
             {
                 addCe35DatabaseMenuItem.CommandBindings.Add(addCe35DatabaseCommandBinding);
                 addCe35DatabaseMenuItem.IsEnabled = ver35IsInstalled;
@@ -67,17 +67,17 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             }
 
             // Add SQLite database menu
-            var addSQLiteDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+            var addSqLiteDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                                         dcmd.AddSqLiteDatabase);
-            var addSQLiteDatabaseMenuItem = new MenuItem
+            var addSqLiteDatabaseMenuItem = new MenuItem
             {
                 Header = "Add SQLite Connection...",
                 Icon = ImageHelper.GetImageFromResource("../resources/AddConnection_477.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
             };
-            addSQLiteDatabaseMenuItem.CommandBindings.Add(addSQLiteDatabaseCommandBinding);
-            Items.Add(addSQLiteDatabaseMenuItem);
+            addSqLiteDatabaseMenuItem.CommandBindings.Add(addSqLiteDatabaseCommandBinding);
+            Items.Add(addSqLiteDatabaseMenuItem);
             
             // Add from solution
             var addFromSolutionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
@@ -185,7 +185,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptDatabaseSchemaDataMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
             scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataMenuItem);
 
-            var scriptDatabaseSchemaDataSQLiteMenuItem = new MenuItem
+            var scriptDatabaseSchemaDataSqLiteMenuItem = new MenuItem
             {
                 Header = "Script SQL Server Database Schema and Data for SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
@@ -194,10 +194,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.SchemaDataSQLite
             };
-            scriptDatabaseSchemaDataSQLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataSQLiteMenuItem);
+            scriptDatabaseSchemaDataSqLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataSqLiteMenuItem);
 
-            var scriptDatabaseSchemaSQLiteMenuItem = new MenuItem
+            var scriptDatabaseSchemaSqLiteMenuItem = new MenuItem
             {
                 Header = "Script SQL Server Database Schema for SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
@@ -206,10 +206,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.SchemaSQLite
             };
-            scriptDatabaseSchemaSQLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaSQLiteMenuItem);
+            scriptDatabaseSchemaSqLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaSqLiteMenuItem);
 
-            var scriptDatabaseSchemaDataBLOBMenuItem = new MenuItem
+            var scriptDatabaseSchemaDataBlobMenuItem = new MenuItem
             {
                 Header = "Script SQL Server Database Schema and Data with BLOBs...",
                 ToolTip = toolTip,
@@ -218,8 +218,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.SchemaDataBlobs 
             };
-            scriptDatabaseSchemaDataBLOBMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBLOBMenuItem);
+            scriptDatabaseSchemaDataBlobMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBlobMenuItem);
 
 
 
