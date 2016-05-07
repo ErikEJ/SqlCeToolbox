@@ -13,13 +13,10 @@ In order to open the source code and build, you can use Visual Studio 2015
 # Downloads
 
 Download the latest version of the Visual Studio add-in (for both 3.5, 4.0 and SQLite) from  [Visual Studio Gallery]
-(https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/)
+(https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/) - Or just install from Tools, Extensions and Updates in Visual Studio!
 
-(Or just install from Tools, Extensions and Updates in Visual Studio)
-
-You can download a .zip file with the [latest build of the master branch from AppVeyor](https://ci.appveyor.com/api/projects/ErikEJ/SqlCeToolbox/artifacts/src/GUI/SqlCe35Toolbox/bin/x86/Release/SqlCeToolbox.vsix?branch=master) - rename to .vsix when downloaded.
+You can also subscribe to the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
 
 Other downloads: [Standalone .exe for SQL Compact 4.0](http://sqlcetoolbox.codeplex.com/releases/view/104096) and [Standalone .exe for SQL Compact 3.5](http://sqlcetoolbox.codeplex.com/releases/view/104781)
 
 ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/toolbox1.png)
-
