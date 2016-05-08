@@ -46,8 +46,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private readonly SqlEditorWindow _parentWindow;
         private DatabaseInfo _dbInfo;
         private string _savedFileName;
-        private FontFamily fontFamiliy = new FontFamily("Consolas");
-        private double fontSize = 14;
+        private readonly FontFamily _fontFamiliy = new FontFamily("Consolas");
+        private readonly double _fontSize = 12;
         public DTE Dte { get; private set; }
         private bool _ignoreDdlErrors;
         private bool _showResultInGrid;
@@ -163,45 +163,45 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             _useClassicGrid = Properties.Settings.Default.UseClassicGrid;
         }
 
-        private List<CheckListItem> items = new List<CheckListItem>();
+        private readonly List<CheckListItem> _items = new List<CheckListItem>();
 
         private void ConfigureOptions()
         {
-            items.Clear();
+            _items.Clear();
 
-            items.Add(new CheckListItem
+            _items.Add(new CheckListItem
                 {
                     IsChecked = _showResultInGrid,
                     Label = "Show Result in Grid",
                     Tag = "ShowResultInGrid"
                 });            
-            items.Add(new CheckListItem
+            _items.Add(new CheckListItem
                 {
                     IsChecked = _showBinaryValuesInResult,
                     Label = "Show Binary Values in Result",
                     Tag = "ShowBinaryValuesInResult"
                 });
 
-            items.Add(new CheckListItem
+            _items.Add(new CheckListItem
             {
                 IsChecked = _showNullValuesAsNull,
                 Label = "Show null Values as NULL",
                 Tag = "ShowNullValuesAsNULL"
             });
-            items.Add(new CheckListItem
+            _items.Add(new CheckListItem
             {
                 IsChecked = _ignoreDdlErrors,
                 Label = "Ignore DDL Errors",
                 Tag = "_ignoreDdlErrors"
             });
-            items.Add(new CheckListItem
+            _items.Add(new CheckListItem
             {
                 IsChecked = _useClassicGrid,
                 Label = "Use classic (plain) grid",
                 Tag = "_useClassicGrid"
             });
             chkOptions.ItemsSource = null;
-            chkOptions.ItemsSource = items;
+            chkOptions.ItemsSource = _items;
         }
 
         private void chkOptions_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
@@ -355,8 +355,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 {
                     var textBox = new TextBox
                     {
-                        FontFamily = fontFamiliy,
-                        FontSize = fontSize,
+                        FontFamily = _fontFamiliy,
+                        FontSize = _fontSize,
                         Text = showPlan
                     };
                     ClearResults();
@@ -392,8 +392,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var textBox = new TextBox();
-                    textBox.FontFamily = fontFamiliy;
-                    textBox.FontSize = fontSize;
+                    textBox.FontFamily = _fontFamiliy;
+                    textBox.FontSize = _fontSize;
                     string sql = GetSqlFromSqlEditorTextBox();
                     repository.ParseSql(sql);
                     textBox.Text = "Statement(s) in script parsed and seems OK!";
@@ -556,8 +556,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             ClearResults();
             var textBox = new TextBox();
             textBox.Foreground = Brushes.Red;
-            textBox.FontFamily = fontFamiliy;
-            textBox.FontSize = fontSize;
+            textBox.FontFamily = _fontFamiliy;
+            textBox.FontSize = _fontSize;
             textBox.Text = sqlException;
             Resultspanel.Children.Add(textBox);
             tab1.Visibility = Visibility.Collapsed;
@@ -572,8 +572,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 txtTime.Text = txtTime.Text + " / " + table.Rows.Count + " rows ";
                 var textBox = new TextBox();
-                textBox.FontFamily = fontFamiliy;
-                textBox.FontSize = fontSize;
+                textBox.FontFamily = _fontFamiliy;
+                textBox.FontSize = _fontSize;
                 textBox.Foreground = Brushes.Black;
                 DockPanel.SetDock(textBox, Dock.Top);
                 if (table.Rows.Count == 0)
@@ -675,8 +675,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 AutoGenerateColumns = true,
                 IsReadOnly = true,
-                FontSize = fontSize,
-                FontFamily = fontFamiliy,
+                FontSize = _fontSize,
+                FontFamily = _fontFamiliy,
                 ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader,
                 ItemsSource = ((IListSource) table).GetList()
             };
