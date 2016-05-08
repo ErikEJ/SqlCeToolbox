@@ -13,7 +13,9 @@ In order to open the source code and build, you can use Visual Studio 2015
 # Documentation
 
 [Getting started](https://github.com/ErikEJ/SqlCeToolbox/wiki)
+
 [Known issues](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
+
 [Release notes](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
 
 # Downloads
