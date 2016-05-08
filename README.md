@@ -10,6 +10,12 @@ Follow me on Twitter: [@ErikEJ](http://twitter.com/ErikEJ)
 
 In order to open the source code and build, you can use Visual Studio 2015
 
+# Documentation
+
+[Getting started](https://github.com/ErikEJ/SqlCeToolbox/wiki)
+[Known issues](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
+[Release notes](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
+
 # Downloads
 
 Download the latest version of the Visual Studio add-in (for both 3.5, 4.0 and SQLite) from  [Visual Studio Gallery]
