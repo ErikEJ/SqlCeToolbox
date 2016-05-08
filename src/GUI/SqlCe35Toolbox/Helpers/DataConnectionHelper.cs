@@ -560,6 +560,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
+        private const string Ddex35Dll = "SqlCeToolbox.DDEX35.dll";
+        private const string Ddex40Dll = "SqlCeToolbox.DDEX4.dll";
+
         public static void RegisterDdexProviders(bool force)
         {
             if (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0))
@@ -567,14 +570,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 RegisterDdex4Provider(force);
                 RegisterDdex35Provider(force);
             }
-#if DEBUG
-            //if (VisualStudioVersion == new Version(10, 0))
-            //{
-            //    Helpers.DataConnectionHelper.RegisterDdex35Provider("12");
-            //    Helpers.DataConnectionHelper.RegisterDdex35Provider("14");
-            //    Helpers.DataConnectionHelper.RegisterDdex35Vs10DebugProvider();
-            //}
-#endif
             if (SqlCeToolboxPackage.VisualStudioVersion == new Version(11, 0))
             {
                 RegisterDdex35Provider(force);
@@ -602,10 +597,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         }
                     }
                 }
-                var path = Assembly.GetExecutingAssembly().Location;
-                if (string.IsNullOrEmpty(path)) return;
-                var ddexDllPath = Path.Combine(path, "SqlCeToolbox.DDEX4.dll");
-                if (File.Exists(ddexDllPath))
+                var ddexDllPath = DdexDllPath(Ddex40Dll);
+                if (!string.IsNullOrEmpty(ddexDllPath))
                 {
                     Registry.SetValue(
                         string.Format(
@@ -643,10 +636,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         }
                     }
                 }
-                var path = Assembly.GetExecutingAssembly().Location;
-                if (string.IsNullOrEmpty(path)) return;
-                var ddexDllPath = Path.Combine(path, "SqlCeToolbox.DDEX35.dll");
-                if (File.Exists(ddexDllPath))
+                var ddexDllPath = DdexDllPath(Ddex35Dll);
+                if (!string.IsNullOrEmpty(ddexDllPath))
                 {
                     Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver),
                         "Codebase",
@@ -660,15 +651,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
-        public static void RegisterDdex35Vs10DebugProvider()
+        // ReSharper disable once UnusedMember.Local
+        private static void RegisterDdex35Vs10DebugProvider()
         {
             try
             {
                 DdexRegistry.AddDdex35Vs10DebugRegistrations();
-                var path = Assembly.GetExecutingAssembly().Location;
-                if (string.IsNullOrEmpty(path)) return;
-                var ddexDllPath = Path.Combine(path, "SqlCeToolbox.DDEX35.dll");
-                if (File.Exists(ddexDllPath))
+                var ddexDllPath = DdexDllPath(Ddex35Dll); 
+                if (!string.IsNullOrEmpty(ddexDllPath))
                 {
                     Registry.SetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\10.0Exp_Config\DataProviders\{303D8BB1-D62A-4560-9742-79C93E828222}",
                         "Codebase",
@@ -680,6 +670,15 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 SendError(ex, DatabaseType.SQLServer);
             }
+        }
+
+        private static string DdexDllPath(string ddexDllName)
+        {
+            var location = Assembly.GetExecutingAssembly().Location;
+            var path = Path.GetDirectoryName(location);
+            if (string.IsNullOrEmpty(path)) return null;
+            var ddexDllPath = Path.Combine(path, ddexDllName);
+            return !File.Exists(ddexDllPath) ? null : ddexDllPath;
         }
 
         public static bool CheckVersion(string lookingFor)
