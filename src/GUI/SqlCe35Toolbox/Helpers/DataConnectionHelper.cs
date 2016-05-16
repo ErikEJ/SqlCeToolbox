@@ -796,11 +796,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 System.Data.Common.DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
             }
-            catch (System.Configuration.ConfigurationException)
-            {
-                return false;
-            }
-            catch (ArgumentException)
+            catch 
             {
                 return false;
             }
