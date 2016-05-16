@@ -60,6 +60,5 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             return base.GetService(serviceType);
         }
-
     }
 }

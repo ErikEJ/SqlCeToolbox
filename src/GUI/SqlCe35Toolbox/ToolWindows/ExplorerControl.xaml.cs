@@ -123,10 +123,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private void BuildDatabaseTree(bool fromUiThread)
         {
             var databaseList = new Dictionary<string, DatabaseInfo>();
+            _fatalError = string.Empty;
             try
             {
-                _fatalError = string.Empty;
-
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
                 if (package == null) return;
                 if (Properties.Settings.Default.ValidateConnectionsOnStart)
@@ -185,6 +184,16 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void FillDatabaseList(Dictionary<string, DatabaseInfo> databaseList)
         {
+            if (!string.IsNullOrWhiteSpace(_fatalError))
+            {
+                var errorItem = new TreeViewItem
+                {
+                    Header = _fatalError,
+                    Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red)
+                };
+                RootItem.Items.Add(errorItem);
+                return;
+            }
             var sortedList = new SortedList<string, KeyValuePair<string, DatabaseInfo>>();
 
             try
@@ -212,16 +221,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     RootItem.Items.Add(databaseTreeViewItem);
                 }
 
-                if (!string.IsNullOrWhiteSpace(_fatalError))
-                {
-                    var errorItem = new TreeViewItem
-                    {
-                        Header = _fatalError,
-                        Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red)
-                    };
-                    RootItem.Items.Add(errorItem);
-                    return;
-                }
                 RootItem.Items.Add(TreeViewHelper.GetTypesItem(RootItem));
                 RootItem.IsExpanded = true;
                 //TreeViewHelper.GetInfoItems(InfoStack);
