@@ -3,6 +3,7 @@ using System;
 using System.Data.SqlServerCe;
 using System.Data.SqlClient;
 
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeScripting
 {
 #if V40 
@@ -13,15 +14,10 @@ namespace ErikEJ.SqlCeScripting
     {
         public string FormatError(Exception ex)
         {
-            if (ex.GetType() == typeof(SqlCeException))
-            {
-                return Helper.ShowErrors((SqlCeException)ex);
-            }
-            else if (ex.GetType() == typeof(SqlException))
-            {
-                return Helper.ShowErrors((SqlException)ex);
-            }
-            else return ex.ToString();
+            if (ex == null) return string.Empty;
+            if (ex.GetType() == typeof (SqlCeException)) return Helper.ShowErrors((SqlCeException) ex);
+            var exception = ex as SqlException;
+            return exception != null ? Helper.ShowErrors(exception) : ex.ToString();
         }
 
         public string GetFullConnectionString(string connectionString)
@@ -211,30 +207,20 @@ namespace ErikEJ.SqlCeScripting
             { 0x00357b9d, SQLCEVersion.SQLCE35},
             { 0x003d0900, SQLCEVersion.SQLCE40}
         };
-            int versionLONGWORD = 0;
-            try
+            int versionLongword;
+            using (var fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open))
             {
-                using (var fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open))
+                fs.Seek(16, System.IO.SeekOrigin.Begin);
+                using (System.IO.BinaryReader reader = new System.IO.BinaryReader(fs))
                 {
-                    fs.Seek(16, System.IO.SeekOrigin.Begin);
-                    using (System.IO.BinaryReader reader = new System.IO.BinaryReader(fs))
-                    {
-                        versionLONGWORD = reader.ReadInt32();
-                    }
+                    versionLongword = reader.ReadInt32();
                 }
             }
-            catch
+            if (versionDictionary.ContainsKey(versionLongword))
             {
-                throw;
+                return versionDictionary[versionLongword];
             }
-            if (versionDictionary.ContainsKey(versionLONGWORD))
-            {
-                return versionDictionary[versionLONGWORD];
-            }
-            else
-            {
-                throw new ApplicationException("Unable to determine database file version");
-            }
+            throw new ApplicationException("Unable to determine database file version");
         }
 
         public bool IsV40Installed()
@@ -247,11 +233,7 @@ namespace ErikEJ.SqlCeScripting
                 if (assembly.GetName().Version.ToString(2) != "4.0")
                     return false;
             }
-            catch (System.IO.FileNotFoundException)
-            {
-                return false;
-            }
-            catch (System.IO.FileLoadException)
+            catch 
             {
                 return false;
             }
@@ -262,13 +244,9 @@ namespace ErikEJ.SqlCeScripting
         {
             try
             {
-                var factory = System.Data.Common.DbProviderFactories.GetFactory("System.Data.SqlServerCe.4.0");
+                System.Data.Common.DbProviderFactories.GetFactory("System.Data.SqlServerCe.4.0");
             }
-            catch (System.Configuration.ConfigurationException)
-            {
-                return false;
-            }
-            catch (System.ArgumentException)
+            catch
             {
                 return false;
             }
@@ -285,11 +263,7 @@ namespace ErikEJ.SqlCeScripting
                 if (assembly.GetName().Version.ToString(2) != "3.5")
                     return false;
             }
-            catch (System.IO.FileNotFoundException)
-            {
-                return false;
-            }
-            catch (System.IO.FileLoadException)
+            catch
             {
                 return false;
             }
@@ -300,13 +274,9 @@ namespace ErikEJ.SqlCeScripting
         {
             try
             {
-                var factory = System.Data.Common.DbProviderFactories.GetFactory("System.Data.SqlServerCe.3.5");
+                System.Data.Common.DbProviderFactories.GetFactory("System.Data.SqlServerCe.3.5");
             }
-            catch (System.Configuration.ConfigurationException)
-            {
-                return false;
-            }
-            catch (System.ArgumentException)
+            catch
             {
                 return false;
             }
@@ -315,4 +285,3 @@ namespace ErikEJ.SqlCeScripting
 
     }
 }
-
