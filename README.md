@@ -8,8 +8,7 @@ Download the latest version of the Visual Studio add-in (for both 3.5, 4.0 and S
 
 Follow me on Twitter: [@ErikEJ](http://twitter.com/ErikEJ)
 
-In order to build the source code, you can use Visual Studio 2015. You will also need the SQL Server Compact 3.5 SP2 and 4.0 runtimes installed.
-
+In order to build the source code, you can use Visual Studio 2015. You will also need the SQL Server Compact 3.5 SP2 and 4.0 runtimes installed. To debug, make SqlCeToolbox the startup project, and ensure Debug, x86 (not AnyCPU)
 # Documentation
 
 [Getting started](https://github.com/ErikEJ/SqlCeToolbox/wiki)
