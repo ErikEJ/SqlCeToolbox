@@ -13,6 +13,7 @@ using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
@@ -782,7 +783,17 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal static bool IsV35Installed()
         {
-            return new SqlCeHelper4().IsV35Installed();
+            try
+            {
+                var asm35 = Assembly.Load("System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                var fvi = FileVersionInfo.GetVersionInfo(asm35.Location);
+                var version =  new Version(fvi.FileVersion);
+                return version >= new Version(3, 5, 8080);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                return false;
+            }
         }
 
         internal static bool IsV40DbProviderInstalled()

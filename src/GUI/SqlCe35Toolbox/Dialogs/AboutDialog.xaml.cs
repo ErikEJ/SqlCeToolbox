@@ -115,16 +115,21 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             }
 
             txtStatus.Text += "\n\nSQL Server Compact 3.5 in GAC - ";
+            var sqlce35Ver = new Version(0,0,0);
             try
             {
-                Assembly asm35 = System.Reflection.Assembly.Load("System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm35.Location);
-                string version = fvi.FileVersion;
-                txtStatus.Text += string.Format("Yes - {0}\n", version.ToString());
+                var asm35 = Assembly.Load("System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                var fvi = FileVersionInfo.GetVersionInfo(asm35.Location);
+                sqlce35Ver = new Version(fvi.FileVersion);
+                txtStatus.Text += string.Format("Yes - {0}\n", sqlce35Ver);
             }
-            catch (System.IO.FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 txtStatus.Text += "No\n";
+            }
+            if (sqlce35Ver > new Version(0,0,0) && sqlce35Ver < new Version(3, 5, 8080))
+            {
+                txtStatus.Text += "(Too old version installed, update to 3.5 SP2)\n";
             }
 
             txtStatus.Text += "SQL Server Compact 3.5 DbProvider - ";
