@@ -515,9 +515,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var sql = GetSqlFromSqlEditorTextBox();
                     bool schemaChanged;
                     if (sql.Length == 0) return;
-                    sql = sql.Replace("\r", " \r");
-                    sql = sql.Replace("GO  \r", "GO\r");
-                    sql = sql.Replace("GO \r", "GO\r");
+                    var sbSql = new StringBuilder(sql);
+                    sbSql = sbSql.Replace("\r", " \r");
+                    sbSql = sbSql.Replace("GO  \r", "GO\r");
+                    sql = sbSql.Replace("GO \r", "GO\r").ToString();
                     var sw = new Stopwatch();
                     sw.Start();
                     var dataset = repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors);
