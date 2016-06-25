@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ErikEJ.SqlCeToolbox.WinForms;
 
 namespace ErikEJ.SqlCeToolbox.ToolWindows
 {

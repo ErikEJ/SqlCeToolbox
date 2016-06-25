@@ -1,43 +1,41 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
 
-namespace ErikEJ.SqlCeToolbox.ToolWindows
+namespace ErikEJ.SqlCeToolbox.WinForms
 {
     // Thanks to http://www.codeproject.com/KB/grid/ExtendedDataGridView.aspx
     internal class DataGridViewSearch : IDisposable 
     {
-        PanelQuickSearch m_pnlQuickSearch;
+        PanelQuickSearch _mPnlQuickSearch;
 
-        DataGridView dgv;
+        readonly DataGridView _dgv;
 
-        int sortedColumn;
+        int _sortedColumn;
 
         internal DataGridViewSearch(DataGridView dgv)
         {
-            this.dgv = dgv;
+            _dgv = dgv;
         }
 
         internal void ShowSearch()
         {
-            if (dgv.SortedColumn != null)            
+            if (_dgv.SortedColumn != null)            
             {
-                sortedColumn = dgv.SortedColumn.Index;
+                _sortedColumn = _dgv.SortedColumn.Index;
                 AddControl();
 
-                if (dgv.SelectedRows.Count > 0)
-                    m_pnlQuickSearch.Search = dgv.SelectedRows[0].Cells[dgv.SortedColumn.Index].Value.ToString();
-                m_pnlQuickSearch.Column = dgv.SortedColumn.HeaderText;
+                if (_dgv.SelectedRows.Count > 0)
+                    _mPnlQuickSearch.Search = _dgv.SelectedRows[0].Cells[_dgv.SortedColumn.Index].Value.ToString();
+                _mPnlQuickSearch.Column = _dgv.SortedColumn.HeaderText;
 
                 ShowControl();
             }
-            else if (dgv.SelectedCells.Count > 0)
+            else if (_dgv.SelectedCells.Count > 0)
             {
-                sortedColumn = dgv.SelectedCells[0].ColumnIndex;
+                _sortedColumn = _dgv.SelectedCells[0].ColumnIndex;
                 AddControl();
-                m_pnlQuickSearch.Search = dgv.SelectedCells[0].Value.ToString();
-                m_pnlQuickSearch.Column = dgv.Columns[sortedColumn].HeaderText;
+                _mPnlQuickSearch.Search = _dgv.SelectedCells[0].Value.ToString();
+                _mPnlQuickSearch.Column = _dgv.Columns[_sortedColumn].HeaderText;
                 ShowControl();            
             }
 
@@ -45,17 +43,17 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void ShowControl()
         {
-            m_pnlQuickSearch.Show();
-            m_pnlQuickSearch.Focus();
+            _mPnlQuickSearch.Show();
+            _mPnlQuickSearch.Focus();
         }
 
         private void AddControl()
         {
-            if (m_pnlQuickSearch == null)
+            if (_mPnlQuickSearch == null)
             {
-                m_pnlQuickSearch = new PanelQuickSearch();
-                dgv.Controls.Add(m_pnlQuickSearch);
-                m_pnlQuickSearch.SearchChanged += m_pnlQuickSearch_SearchChanged;
+                _mPnlQuickSearch = new PanelQuickSearch();
+                _dgv.Controls.Add(_mPnlQuickSearch);
+                _mPnlQuickSearch.SearchChanged += m_pnlQuickSearch_SearchChanged;
             }
         }
 
@@ -63,21 +61,21 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             try
             {
-                foreach (DataGridViewRow row in dgv.SelectedRows)
+                foreach (DataGridViewRow row in _dgv.SelectedRows)
                     row.Selected = false;
 
-                if (dgv.SortedColumn != null)
+                if (_dgv.SortedColumn != null)
                 {
-                    if (dgv.SortOrder == SortOrder.Ascending)
-                        dgv.Rows[BinarySearchAsc(search)].Selected = true;
+                    if (_dgv.SortOrder == SortOrder.Ascending)
+                        _dgv.Rows[BinarySearchAsc(search)].Selected = true;
                     else
-                        dgv.Rows[BinarySearchDesc(search)].Selected = true;
+                        _dgv.Rows[BinarySearchDesc(search)].Selected = true;
                 }
                 else
                 {
-                    dgv.Rows[SequentialSearch(search)].Selected = true;
+                    _dgv.Rows[SequentialSearch(search)].Selected = true;
                 }
-                dgv.FirstDisplayedScrollingRowIndex = dgv.SelectedRows[0].Index;
+                _dgv.FirstDisplayedScrollingRowIndex = _dgv.SelectedRows[0].Index;
             }
             catch (Exception ex)
             {
@@ -87,13 +85,12 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private int SequentialSearch(string search)
         {
-
             int pos = 0;
-            foreach (DataGridViewRow row in dgv.Rows)
+            foreach (DataGridViewRow row in _dgv.Rows)
             {
                 foreach (DataGridViewCell cell in row.Cells)
                 {
-                    if (cell.ColumnIndex == sortedColumn)
+                    if (cell.ColumnIndex == _sortedColumn)
                     {
                         if (cell.Value != null)
                         {
@@ -110,7 +107,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         int BinarySearchAsc(string value)
         {
-            int max     = dgv.Rows.Count - 1,
+            int max     = _dgv.Rows.Count - 1,
                 min     = 0,
                 current,
                 compare;
@@ -119,7 +116,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 current = (max - min) / 2 + min;
 
-                compare = dgv[sortedColumn, current].Value.ToString().CompareTo(value);
+                compare = string.Compare(_dgv[_sortedColumn, current].Value.ToString(), value, StringComparison.Ordinal);
 
                 if (compare > 0)
                     max = current - 1;
@@ -129,15 +126,15 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     return current;
             }
 
-            if (min >= dgv.Rows.Count)
-                return dgv.Rows.Count - 1;
+            if (min >= _dgv.Rows.Count)
+                return _dgv.Rows.Count - 1;
 
             return min;
         }
 
         int BinarySearchDesc(string value)
         {
-            int max     = dgv.Rows.Count - 1,
+            int max     = _dgv.Rows.Count - 1,
                 min     = 0,
                 current,
                 compare;
@@ -146,7 +143,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 current = (max - min) / 2 + min;
 
-                compare = dgv[sortedColumn, current].Value.ToString().CompareTo(value);
+                compare = string.Compare(_dgv[_sortedColumn, current].Value.ToString(), value, StringComparison.Ordinal);
 
                 if (compare < 0)
                     max = current - 1;
@@ -166,9 +163,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         public void Dispose()
         {
-            if (this.m_pnlQuickSearch != null)
+            if (_mPnlQuickSearch != null)
             {
-                m_pnlQuickSearch.Dispose();
+                _mPnlQuickSearch.Dispose();
             }
         }
 

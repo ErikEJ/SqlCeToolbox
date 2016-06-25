@@ -1,4 +1,4 @@
-﻿namespace ErikEJ.SqlCeToolbox.ToolWindows
+﻿namespace ErikEJ.SqlCeToolbox.WinForms
 {
     partial class ResultsetGrid
     {
@@ -17,13 +17,13 @@
             {
                 components.Dispose();
             }
-            if (disposing && (dgs != null))
+            if (disposing && (_dgs != null))
             {
-                dgs.Dispose();
+                _dgs.Dispose();
             }
-            if (disposing && (dAdapter != null))
+            if (disposing && (_adapter != null))
             {
-                dAdapter.Dispose();
+                _adapter.Dispose();
             }
             base.Dispose(disposing);
         }

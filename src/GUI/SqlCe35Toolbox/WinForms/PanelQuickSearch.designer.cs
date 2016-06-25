@@ -1,4 +1,4 @@
-namespace ErikEJ.SqlCeToolbox.ToolWindows
+namespace ErikEJ.SqlCeToolbox.WinForms
 {
     partial class PanelQuickSearch
     {
