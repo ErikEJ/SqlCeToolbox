@@ -21,17 +21,26 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public static SolidColorBrush GetWindowText()
         {
-            int colorval = (int)__VSSYSCOLOREX3.VSCOLOR_WINDOWTEXT;
+            var colorval = (int)__VSSYSCOLOREX3.VSCOLOR_WINDOWTEXT;
+            var brush = SolidColorBrushFromWin32Color(GetWin32Color(colorval));
+            //For dark theme Inactive item
+            if (brush.Color.ToString() == "#FFF1F1F1")
+            {
+                return new SolidColorBrush(Colors.Silver);
+            }
+            return brush;
+        }
+
+        public static System.Drawing.Color GetWindowTextColor()
+        {
+            var colorval = (int)__VSSYSCOLOREX3.VSCOLOR_WINDOWTEXT;
             var color = SolidColorBrushFromWin32Color(GetWin32Color(colorval)).Color;
             //For dark theme Inactive item
             if (color.ToString() == "#FFF1F1F1")
             {
-                return new SolidColorBrush(Colors.Silver);
+                color = Colors.Silver;
             }
-            else
-            {
-                return SolidColorBrushFromWin32Color(GetWin32Color(colorval));
-            }
+            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
         //public static SolidColorBrush GetDialogBackground()

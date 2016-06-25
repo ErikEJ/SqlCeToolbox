@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Data;
-using System.Windows.Forms;
-using System.IO;
 using System.Data.Common;
-using ErikEJ.SqlCeToolbox.Helpers;
 using System.Data.SQLite;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using ErikEJ.SqlCeToolbox.Helpers;
+using ErikEJ.SqlCeToolbox.ToolWindows;
 
-namespace ErikEJ.SqlCeToolbox.ToolWindows
+namespace ErikEJ.SqlCeToolbox.WinForms
 {
-    public partial class ResultsetGrid : UserControl, IDisposable 
+    public partial class ResultsetGrid : UserControl 
     {
-        private DataGridViewSearch dgs;
-        private ContextMenuStrip imageContext = new ContextMenuStrip();
-        private DataGridViewCell selectedCell;
-        public DbDataAdapter dAdapter;
-        private DataTable dTable;
-        private string tableName;
-        private SqlPanel pnlSql;
+        private DataGridViewSearch _dgs;
+        private readonly ContextMenuStrip _imageContext = new ContextMenuStrip();
+        private DataGridViewCell _selectedCell;
+        private DbDataAdapter _adapter;
+        private DataTable _table;
+        private SqlPanel _pnlSql;
 
         public ResultsetGrid()
         {
@@ -31,31 +31,29 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         public List<int> ReadOnlyColumns { get; set; }
         public string SqlText { get; set; }
         // delegate declaration 
-        public delegate void LinkClickedHandler(object sender, ErikEJ.SqlCeToolbox.WinForms.LinkArgs e);
+        public delegate void LinkClickedHandler(object sender, LinkArgs e);
         // event declaration 
-        public event LinkClickedHandler LinkClick;
+        //public event LinkClickedHandler LinkClick;
 
         private void ResultsetGrid_Load(object sender, EventArgs e)
         {
-            this.tableName = TableName;
-
             try
             {
-                this.dataGridView1.AutoGenerateColumns = true;
-                this.dataGridView1.DataError += new DataGridViewDataErrorEventHandler(dataGridView1_DataError);
-                imageContext.Items.Add("Import Image", null, new EventHandler(ImportImage));
-                imageContext.Items.Add("Export Image", null, new EventHandler(ExportImage));
-                imageContext.Items.Add("Delete Image", null, new EventHandler(DeleteImage));
+                dataGridView1.AutoGenerateColumns = true;
+                dataGridView1.DataError += dataGridView1_DataError;
+                _imageContext.Items.Add("Import Image", null, ImportImage);
+                _imageContext.Items.Add("Export Image", null, ExportImage);
+                _imageContext.Items.Add("Delete Image", null, DeleteImage);
 
                 LoadData(SqlText);
                 
-                this.dataGridView1.ReadOnly = ReadOnly;
-                if (this.ReadOnlyColumns != null)
+                dataGridView1.ReadOnly = ReadOnly;
+                if (ReadOnlyColumns != null)
                 {
                     foreach (int x in ReadOnlyColumns)
                     {
-                        this.dataGridView1.Columns[x].ReadOnly = true;
-                        this.dataGridView1.Columns[x].DefaultCellStyle.ForeColor = SystemColors.GrayText;
+                        dataGridView1.Columns[x].ReadOnly = true;
+                        dataGridView1.Columns[x].DefaultCellStyle.ForeColor = SystemColors.GrayText;
                     }
                 }
                 if (Properties.Settings.Default.MultiLineTextEntry)
@@ -67,32 +65,32 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                             col.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                         }
                     }
-                    this.dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                    dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
                 }
 
-                this.bindingNavigatorAddNewItem.Enabled = !ReadOnly;
-                this.bindingNavigatorDeleteItem.Enabled = !ReadOnly;
-                this.toolStripButton1.Enabled = !ReadOnly;
+                bindingNavigatorAddNewItem.Enabled = !ReadOnly;
+                bindingNavigatorDeleteItem.Enabled = !ReadOnly;
+                toolStripButton1.Enabled = !ReadOnly;
 
-                this.dataGridView1.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
-                this.dataGridView1.AllowUserToOrderColumns = true;
-                this.dataGridView1.MultiSelect = false;
+                dataGridView1.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+                dataGridView1.AllowUserToOrderColumns = true;
+                dataGridView1.MultiSelect = false;
                 //if (Properties.Settings.Default.ShowNullValuesAsNULL)
                 //{
-                //    this.dataGridView1.DefaultCellStyle.NullValue = "NULL";
+                //    dataGridView1.DefaultCellStyle.NullValue = "NULL";
                 //}
-                this.dataGridView1.KeyDown += new KeyEventHandler(dataGridView1_KeyDown);
-                //this.dataGridView1.CellContentClick += new DataGridViewCellEventHandler(dataGridView1_CellContentClick);
-                dgs = new DataGridViewSearch(this.dataGridView1);
+                dataGridView1.KeyDown += dataGridView1_KeyDown;
+                //dataGridView1.CellContentClick += new DataGridViewCellEventHandler(dataGridView1_CellContentClick);
+                _dgs = new DataGridViewSearch(dataGridView1);
                 if (ReadOnly)
                 {
-                    this.dataGridView1.DefaultCellStyle.ForeColor = SystemColors.GrayText;
+                    dataGridView1.DefaultCellStyle.ForeColor = SystemColors.GrayText;
                     EnvDteHelper.ShowError("No primary keys on table, data is read-only");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -103,13 +101,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 if (string.IsNullOrEmpty(sqlText))
                     return;
 
-                dAdapter = BuildDbDataAdapter(sqlText);
-                dTable = new DataTable();
-                dAdapter.Fill(dTable);
-                this.bindingSource1.DataSource = dTable;
+                _adapter = BuildDbDataAdapter(sqlText);
+                _table = new DataTable();
+                _adapter.Fill(_table);
+                bindingSource1.DataSource = _table;
                 if (Properties.Settings.Default.MaxColumnWidth > 0)
                 {
-                    this.dataGridView1.AutoResizeColumns();
+                    dataGridView1.AutoResizeColumns();
                     for (int i = 0; i < dataGridView1.Columns.Count; i++)
                     {
                         if (dataGridView1.Columns[i].Width > Properties.Settings.Default.MaxColumnWidth)
@@ -120,20 +118,18 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 }
                 else
                 {
-                    this.dataGridView1.AutoResizeColumns();
+                    dataGridView1.AutoResizeColumns();
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
             }
         }
 
 
         private DbDataAdapter BuildDbDataAdapter(string sqlText)
         {
-            DbDataAdapter adapter;
-
             if (DatabaseInfo.DatabaseType == DatabaseType.SQLite)
             {
                 var conn = new SQLiteConnection();
@@ -145,7 +141,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 
                 var sqliteadapter = new SQLiteDataAdapter();
                 sqliteadapter.SelectCommand = command;
-                var cb = new SQLiteCommandBuilder(sqliteadapter);
                 return sqliteadapter;
             }
             else
@@ -154,46 +149,56 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 if (DatabaseInfo.DatabaseType == DatabaseType.SQLCE40)
                     invariantName = Resources.SqlCompact40InvariantName;
 
-                var factory = System.Data.Common.DbProviderFactories.GetFactory(invariantName);
+                var factory = DbProviderFactories.GetFactory(invariantName);
 
                 var conn = factory.CreateConnection();
-                conn.ConnectionString = DatabaseInfo.ConnectionString;
+                if (conn != null)
+                {
+                    conn.ConnectionString = DatabaseInfo.ConnectionString;
                 
-                DbCommand command = factory.CreateCommand();
-                command.CommandText = sqlText;
-                command.Connection = conn;
+                    DbCommand command = factory.CreateCommand();
+                    if (command != null)
+                    {
+                        command.CommandText = sqlText;
+                        command.Connection = conn;
 
-                adapter = factory.CreateDataAdapter();
-                adapter.SelectCommand = command;
-                var cb = factory.CreateCommandBuilder();
-                cb.DataAdapter = adapter;
-                return adapter;
+                        var adapter = factory.CreateDataAdapter();
+                        if (adapter != null)
+                        {
+                            adapter.SelectCommand = command;
+                            var cb = factory.CreateCommandBuilder();
+                            if (cb != null) cb.DataAdapter = adapter;
+                            return adapter;
+                        }
+                    }
+                }
             }
+            return null;
         }
         
-        void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (this.dataGridView1.Columns[e.ColumnIndex] is DataGridViewLinkColumn)
-            {
-                string id = this.dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString();
-                string table = this.dataGridView1.Columns[e.ColumnIndex].HeaderText;
-                string column = this.dataGridView1.Columns[e.ColumnIndex].DataPropertyName;
-                if (LinkClick != null)
-                    LinkClick(this, new ErikEJ.SqlCeToolbox.WinForms.LinkArgs(id, table, column));
-            }
-        }
+        //void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        //{
+        //    if (dataGridView1.Columns[e.ColumnIndex] is DataGridViewLinkColumn)
+        //    {
+        //        string id = dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString();
+        //        string table = dataGridView1.Columns[e.ColumnIndex].HeaderText;
+        //        string column = dataGridView1.Columns[e.ColumnIndex].DataPropertyName;
+        //        if (LinkClick != null)
+        //            LinkClick(this, new LinkArgs(id, table, column));
+        //    }
+        //}
 
         void dataGridView1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F3)
             {
-                this.dgs.ShowSearch();
+                _dgs.ShowSearch();
             }
         }
 
         private void dataGridView1_MouseUp(object sender, MouseEventArgs e)
         {
-            selectedCell = null;
+            _selectedCell = null;
             // Load context menu on right mouse click
             if (e.Button == MouseButtons.Right)
             {
@@ -202,11 +207,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 if (hitTestInfo.Type == DataGridViewHitTestType.Cell)
                 {
                     DataGridViewCell cell = dataGridView1[hitTestInfo.ColumnIndex, hitTestInfo.RowIndex];
-                    if (cell.FormattedValueType == typeof(System.Drawing.Image))
+                    if (cell.FormattedValueType == typeof(Image))
                     {
-                        selectedCell = cell;
-                        bindingSource1.Position = selectedCell.RowIndex;
-                        imageContext.Show(dataGridView1, new Point(e.X, e.Y));
+                        _selectedCell = cell;
+                        bindingSource1.Position = _selectedCell.RowIndex;
+                        _imageContext.Show(dataGridView1, new Point(e.X, e.Y));
                     }
                 }
             }
@@ -218,14 +223,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         void ImportImage(object sender, EventArgs e)
         {
-            if (selectedCell != null)
+            if (_selectedCell != null)
             {
                 using (OpenFileDialog fd = new OpenFileDialog())
                 {
                     fd.Multiselect = false;
                     if (fd.ShowDialog() == DialogResult.OK)
                     {
-                        selectedCell.Value = File.ReadAllBytes(fd.FileName);
+                        _selectedCell.Value = File.ReadAllBytes(fd.FileName);
                         if (bindingSource1.Position + 1 < bindingSource1.Count)
                             bindingSource1.MoveNext();
                         else
@@ -237,13 +242,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         void ExportImage(object sender, EventArgs e)
         {
-            if (selectedCell != null && selectedCell.Value != null)
+            if (_selectedCell != null && _selectedCell.Value != null)
             {
                 using (SaveFileDialog fd = new SaveFileDialog())
                 {
                     if (fd.ShowDialog() == DialogResult.OK)
                     {
-                        File.WriteAllBytes(fd.FileName, (byte[])selectedCell.Value);
+                        File.WriteAllBytes(fd.FileName, (byte[])_selectedCell.Value);
                     }
                 }
             }
@@ -251,9 +256,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         void DeleteImage(object sender, EventArgs e)
         {
-            if (selectedCell != null && selectedCell.Value != null)
+            if (_selectedCell != null && _selectedCell.Value != null)
             {
-                selectedCell.Value = null;
+                _selectedCell.Value = null;
                 if (bindingSource1.Position + 1 < bindingSource1.Count)
                     bindingSource1.MoveNext();
                 else
@@ -264,7 +269,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         // From http://www.codeproject.com/KB/database/DataGridView2Db.aspx
 
         //tracks for PositionChanged event last row
-        private DataRow LastDataRow;
+        private DataRow _lastDataRow;
 
         /// <SUMMARY>
         /// Checks if there is a row with changes and
@@ -274,21 +279,21 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             try
             {
-                if (LastDataRow != null)
+                if (_lastDataRow != null)
                 {
-                    if (LastDataRow.RowState == DataRowState.Modified 
-                     || LastDataRow.RowState == DataRowState.Added
-                     || LastDataRow.RowState == DataRowState.Deleted   )
+                    if (_lastDataRow.RowState == DataRowState.Modified 
+                     || _lastDataRow.RowState == DataRowState.Added
+                     || _lastDataRow.RowState == DataRowState.Deleted   )
                     {
                         DataRow[] rows = new DataRow[1];
-                        rows[0] = LastDataRow;
-                        dAdapter.Update(rows);
+                        rows[0] = _lastDataRow;
+                        _adapter.Update(rows);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -299,9 +304,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             BindingSource thisBindingSource =
               (BindingSource)sender;
 
-            DataRow ThisDataRow =
+            DataRow thisDataRow =
               ((DataRowView)thisBindingSource.Current).Row;
-            if (ThisDataRow == LastDataRow)
+            if (thisDataRow == _lastDataRow)
             {
                 // we need to avoid to write a datarow to the 
                 // database when it is still processed. Otherwise
@@ -315,7 +320,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             UpdateRowToDatabase();
             // track the current row for next 
             // PositionChanged event
-            LastDataRow = ThisDataRow;
+            _lastDataRow = thisDataRow;
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -327,11 +332,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             try
             {
-                dAdapter.Update(dTable);
+                _adapter.Update(_table);
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -343,13 +348,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
             }
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
-            this.dgs.ShowSearch();
+            _dgs.ShowSearch();
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)
@@ -359,15 +364,15 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void AddSqlPanel()
         {
-            if (pnlSql == null)
+            if (_pnlSql == null)
             {
-                pnlSql = new SqlPanel();
-                this.dataGridView1.Controls.Add(pnlSql);
-                pnlSql.SqlText = SqlText;
-                pnlSql.SqlChanged += new SqlPanel.SqlHandler(pnlSql_SqlChanged);
+                _pnlSql = new SqlPanel();
+                dataGridView1.Controls.Add(_pnlSql);
+                _pnlSql.SqlText = SqlText;
+                _pnlSql.SqlChanged += pnlSql_SqlChanged;
             }
-            pnlSql.Show();
-            pnlSql.Focus();
+            _pnlSql.Show();
+            _pnlSql.Focus();
         }
 
         void pnlSql_SqlChanged(string sqlText)

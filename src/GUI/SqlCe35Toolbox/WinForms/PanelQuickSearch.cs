@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Text;
 using System.Windows.Forms;
+using ErikEJ.SqlCeToolbox.Helpers;
 
-namespace ErikEJ.SqlCeToolbox.ToolWindows
+namespace ErikEJ.SqlCeToolbox.WinForms
 {
     // Thanks to http://www.codeproject.com/KB/grid/ExtendedDataGridView.aspx
 
@@ -15,12 +12,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         public PanelQuickSearch()
         {
             InitializeComponent();
-            Dock = DockStyle.Bottom;
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+
+            lblQuickFind.ForeColor = lblOn.ForeColor = lblCol.ForeColor = VsThemes.GetWindowTextColor();
 
             lblQuickFind.Location = new Point(btnClose    .Right, GetY(lblQuickFind));
             txtToFind   .Location = new Point(lblQuickFind.Right, GetY(txtToFind));
@@ -81,6 +79,5 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             Hide();
         }
-
     }
 }
