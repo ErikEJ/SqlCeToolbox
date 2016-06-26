@@ -323,9 +323,23 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
             };
 
+            var scriptEfPocoCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                            dcmd.GenerateEfPocoInProject);
+
+            var scriptEfPocoMenuItem = new MenuItem
+            {
+                Header = "Add Entity Data Model (Code First from Database) to current Project...",
+                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters,
+            };
+            scriptEfPocoMenuItem.CommandBindings.Add(scriptEfPocoCommandBinding);
+            if (isSqlCe && SqlCeToolboxPackage.VsSupportsEf6())
+                generateCodeRootMenuItem.Items.Add(scriptEfPocoMenuItem);
+
             var scriptEdmxCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                                         dcmd.GenerateEdmxInProject);
-
+        
             var scriptEdmxMenuItem = new MenuItem
             {
                 Header = "Add Entity Data Model (EDMX) to current Project...",

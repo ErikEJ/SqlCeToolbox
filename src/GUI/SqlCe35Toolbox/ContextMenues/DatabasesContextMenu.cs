@@ -26,7 +26,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             var pkg = parent.Package as SqlCeToolboxPackage;
-            if (pkg != null && pkg.VSSupportsDDEX40())
+            if (pkg != null && pkg.VsSupportsDdex40())
             {
                 var addCe40DatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                             dcmd.AddCe40Database);
@@ -51,7 +51,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
             };
-            if (pkg != null && pkg.VSSupportsDDEX35())
+            if (pkg != null && pkg.VsSupportsDdex35())
             {
                 addCe35DatabaseMenuItem.CommandBindings.Add(addCe35DatabaseCommandBinding);
                 addCe35DatabaseMenuItem.IsEnabled = ver35IsInstalled;

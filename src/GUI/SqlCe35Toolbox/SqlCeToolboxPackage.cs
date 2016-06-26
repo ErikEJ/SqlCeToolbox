@@ -42,40 +42,46 @@ namespace ErikEJ.SqlCeToolbox
         public void SetStatus(string message)
         {
             int frozen;
-            IVsStatusbar statusBar = base.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
-            statusBar.IsFrozen(out frozen);
-            if (!Convert.ToBoolean(frozen))
+            IVsStatusbar statusBar = GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+            if (statusBar != null)
             {
-                statusBar.SetText(message);
+                statusBar.IsFrozen(out frozen);
+                if (!Convert.ToBoolean(frozen))
+                {
+                    statusBar.SetText(message);
+                }
             }
             OutputStringInGeneralPane(message);
         }
 
         private void OutputStringInGeneralPane(string text)
         {
-            const int VISIBLE = 1;
-            const int DO_NOT_CLEAR_WITH_SOLUTION = 0;
+            const int visible = 1;
+            const int doNotClearWithSolution = 0;
 
             IVsOutputWindow outputWindow;
-            IVsOutputWindowPane outputWindowPane = null;
+            IVsOutputWindowPane outputWindowPane;
             int hr;
 
             // Get the output window
-            outputWindow = base.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+            outputWindow = GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
             // The General pane is not created by default. We must force its creation
-            hr = outputWindow.CreatePane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, "General", VISIBLE, DO_NOT_CLEAR_WITH_SOLUTION);
-            ErrorHandler.ThrowOnFailure(hr);
-
-            // Get the pane
-            hr = outputWindow.GetPane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, out outputWindowPane);
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
-
-            // Output the text
-            if (outputWindowPane != null)
+            if (outputWindow != null)
             {
-                outputWindowPane.Activate();
-                outputWindowPane.OutputString(text + Environment.NewLine);
+                hr = outputWindow.CreatePane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, "General", visible, doNotClearWithSolution);
+                ErrorHandler.ThrowOnFailure(hr);
+
+                // Get the pane
+                hr = outputWindow.GetPane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, out outputWindowPane);
+                ErrorHandler.ThrowOnFailure(hr);
+
+                // Output the text
+                if (outputWindowPane != null)
+                {
+                    outputWindowPane.Activate();
+                    outputWindowPane.OutputString(text + Environment.NewLine);
+                }
             }
         }
 
@@ -84,48 +90,48 @@ namespace ErikEJ.SqlCeToolbox
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = this.FindToolWindow(typeof(ExplorerToolWindow), 0, true);
+            ToolWindowPane window = FindToolWindow(typeof(ExplorerToolWindow), 0, true);
             if ((null == window) || (null == window.Frame))
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
             //DockWindowIfFloating(windowFrame);
         }
 
-        /// <summary>
-        /// Docks the specified frame window if it is currently floating.
-        /// </summary>
-        /// <param name="frame">The frame.</param>
-        private static void DockWindowIfFloating(IVsWindowFrame frame)
-        {
-            // Get the current tool window frame mode.
-            object currentFrameMode;
-            frame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out currentFrameMode);
+        ///// <summary>
+        ///// Docks the specified frame window if it is currently floating.
+        ///// </summary>
+        ///// <param name="frame">The frame.</param>
+        //private static void DockWindowIfFloating(IVsWindowFrame frame)
+        //{
+        //    // Get the current tool window frame mode.
+        //    object currentFrameMode;
+        //    frame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out currentFrameMode);
 
-            // If currently floating, switch to dock mode.
-            if ((VSFRAMEMODE)currentFrameMode == VSFRAMEMODE.VSFM_Float)
-            {
-                frame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_Dock);
-            }
-        }
+        //    // If currently floating, switch to dock mode.
+        //    if ((VSFRAMEMODE)currentFrameMode == VSFRAMEMODE.VSFM_Float)
+        //    {
+        //        frame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_Dock);
+        //    }
+        //}
 
         /// <summary>
-        /// Support method for finding an existing or creating a new tool window based on type and id.
+        /// Support method for finding an existing or creating a new tool window based on type and _id.
         /// </summary>
         /// <typeparam name="T">type of MDI tool window</typeparam>
-        /// <param name="id">id of tool window</param>
+        /// <param name="windowId"></param>
         /// <returns>the tool window pane</returns>
-        public ToolWindowPane CreateWindow<T>(int id)
+        public ToolWindowPane CreateWindow<T>(int windowId)
         {
-            //find existing tool window based on id
-            var window = FindToolWindow(typeof(T), id, false);
+            //find existing tool window based on _id
+            var window = FindToolWindow(typeof(T), windowId, false);
 
             if (window == null)
             {
-                //create a new window with explicit tool window id
-                window = FindToolWindow(typeof(T), id, true);
+                //create a new window with explicit tool window _id
+                window = FindToolWindow(typeof(T), windowId, true);
                 if ((null == window) || (null == window.Frame))
                 {
                     throw new NotSupportedException(Resources.CanNotCreateWindow);
@@ -136,7 +142,7 @@ namespace ErikEJ.SqlCeToolbox
 
         }
 
-        private int id = 0;
+        private int _id;
         /// <summary>
         /// Support method for creating a new tool window based on type.
         /// </summary>
@@ -144,9 +150,9 @@ namespace ErikEJ.SqlCeToolbox
         /// <returns>the tool window pane</returns>
         public ToolWindowPane CreateWindow<T>()
         {
-            id++;
-            //create a new window with explicit tool window id
-            var window = FindToolWindow(typeof(T), id, true);
+            _id++;
+            //create a new window with explicit tool window _id
+            var window = FindToolWindow(typeof(T), _id, true);
             if ((null == window) || (null == window.Frame))
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
@@ -171,44 +177,46 @@ namespace ErikEJ.SqlCeToolbox
             get
             {
                 var dte = GetGlobalService(typeof(DTE)) as DTE;
-                return new Version(int.Parse(dte.Version.Split('.')[0], CultureInfo.InvariantCulture), 0);
+                return dte != null 
+                    ? new Version(int.Parse(dte.Version.Split('.')[0], CultureInfo.InvariantCulture), 0) 
+                    : new Version(0,0,0,0);
             }
         }
 
-        public bool VSSupportsDDEX40()
+        public bool VsSupportsDdex40()
         {
-            return Properties.Settings.Default.PreferDDEX && Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
+            return Properties.Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
         }
 
-        public bool VSSupportsDDEX35()
+        public bool VsSupportsDdex35()
         {
-            return Properties.Settings.Default.PreferDDEX && Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider)); ;
+            return Properties.Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider));
         }
 
-        public bool VSSupportsEF6()
+        public static bool VsSupportsEf6()
         {
             return VisualStudioVersion >= new Version(11, 0);
         }
 
-        public bool VSSupportsSqlPlan()
+        public bool VsSupportsSqlPlan()
         {
-            return VisualStudioVersion == new Version(10, 0) && (Helpers.DataConnectionHelper.IsPremiumOrUltimate());
+            return VisualStudioVersion == new Version(10, 0) && (DataConnectionHelper.IsPremiumOrUltimate());
         }
 
-        public bool VSSupportsSimpleDDEX4Provider()
+        public bool VsSupportsSimpleDdex4Provider()
         {
             return ( VisualStudioVersion >= new Version(12, 0))
-                && (Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40PrivateProvider)))
-                && (Helpers.DataConnectionHelper.IsV40Installed())
-                && (Helpers.DataConnectionHelper.IsV40DbProviderInstalled());
+                && (DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40PrivateProvider)))
+                && (DataConnectionHelper.IsV40Installed())
+                && (DataConnectionHelper.IsV40DbProviderInstalled());
         }
 
-        public bool VSSupportsSimpleDDEX35Provider()
+        public bool VsSupportsSimpleDdex35Provider()
         {
-            return VSSupportsEF6()
-                && (Helpers.DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35PrivateProvider)))
-                && (Helpers.DataConnectionHelper.IsV35Installed())
-                && (Helpers.DataConnectionHelper.IsV35DbProviderInstalled());
+            return VsSupportsEf6()
+                && (DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35PrivateProvider)))
+                && (DataConnectionHelper.IsV35Installed())
+                && (DataConnectionHelper.IsV35DbProviderInstalled());
         }
         /////////////////////////////////////////////////////////////////////////////
         // Overriden Package Implementation
@@ -220,13 +228,13 @@ namespace ErikEJ.SqlCeToolbox
         /// </summary>
         protected override void Initialize()
         {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", ToString()));
 
-            var Dte = (DTE2)GetService(typeof(DTE));
+            var dte = (DTE2)GetService(typeof(DTE));
             Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
             if (Telemetry.Enabled)
             {
-                Telemetry.Initialize(Dte,
+                Telemetry.Initialize(dte,
                     Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                     VisualStudioVersion.ToString(),
                     "d4881a82-2247-42c9-9272-f7bc8aa29315");
@@ -237,21 +245,21 @@ namespace ErikEJ.SqlCeToolbox
             if (null != mcs)
             {
                 // Create the command for the menu item.
-                CommandID menuCommandID = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyCommand);
-                MenuCommand menuItem = new MenuCommand(ShowToolWindow, menuCommandID);
+                CommandID menuCommandId = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyCommand);
+                MenuCommand menuItem = new MenuCommand(ShowToolWindow, menuCommandId);
                 mcs.AddCommand(menuItem);
                 // Create the command for the tool window
-                CommandID toolwndCommandID = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyTool);
-                MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
+                CommandID toolwndCommandId = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyTool);
+                MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
 
                 // Server Explorer button 
-                CommandID seCommandID = new CommandID(GuidList.guidSEPlusCmdSet, (int)PkgCmdIDList.cmdidSEHello);
-                MenuCommand seItem = new MenuCommand(ShowToolWindow, seCommandID);
+                CommandID seCommandId = new CommandID(GuidList.guidSEPlusCmdSet, (int)PkgCmdIDList.cmdidSEHello);
+                MenuCommand seItem = new MenuCommand(ShowToolWindow, seCommandId);
                 mcs.AddCommand(seItem);
-                Helpers.DataConnectionHelper.LogUsage("Platform: Visual Studio " + VisualStudioVersion.ToString(1));
+                DataConnectionHelper.LogUsage("Platform: Visual Studio " + VisualStudioVersion.ToString(1));
             }
-            Helpers.DataConnectionHelper.RegisterDdexProviders(false);
+            DataConnectionHelper.RegisterDdexProviders(false);
             base.Initialize();
         }
         #endregion
