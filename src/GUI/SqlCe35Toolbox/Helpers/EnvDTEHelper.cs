@@ -78,7 +78,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
             for (int i = 1; i < vsProject.References.Count + 1; i++)
             {
-                if (vsProject.References.Item(i).Name == "EntityFramework.SqlServerCompact"
+                if (vsProject.References.Item(i).Name.StartsWith("EntityFramework.SqlServerCompact")
                     && new Version(vsProject.References.Item(i).Version) >= new Version(6, 0, 0, 0))
                     return true;
             }

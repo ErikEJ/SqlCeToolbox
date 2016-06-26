@@ -262,7 +262,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     if (ex.GetType().Name == "SqlCeException")
                     {
 #if DEBUG
-                        System.Diagnostics.Debug.WriteLine(ex.Message);
+                        Debug.WriteLine(ex.Message);
 #endif
                         RemoveDataConnection(item.Value.ConnectionString);
                     }
@@ -355,11 +355,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             string path = CreateEngineHelper(dbType).PathFromConnectionString(connectionString);
             helper.SaveDataConnection(CreateStore(storeDbType), connectionString, path, dbType.GetHashCode());
 
-            if (package.VSSupportsSimpleDDEX35Provider() && dbType == DatabaseType.SQLCE35)
+            if (package.VsSupportsSimpleDdex35Provider() && dbType == DatabaseType.SQLCE35)
             {
                 SaveDataConnection(package, connectionString, connectionString, dbType, new Guid(Resources.SqlCompact35PrivateProvider), false);
             }
-            if (package.VSSupportsSimpleDDEX4Provider() && dbType == DatabaseType.SQLCE40)
+            if (package.VsSupportsSimpleDdex4Provider() && dbType == DatabaseType.SQLCE40)
             {
                 SaveDataConnection(package, connectionString, connectionString, dbType, new Guid(Resources.SqlCompact40PrivateProvider), false);
             }
@@ -790,7 +790,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 var version =  new Version(fvi.FileVersion);
                 return version >= new Version(3, 5, 8080);
             }
-            catch (System.IO.FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 return false;
             }
