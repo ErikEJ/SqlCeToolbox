@@ -625,14 +625,14 @@ namespace ErikEJ.SqlCeScripting
             return ds;
         }
 
-        public DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDDLErrors)
+        public DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDdlErrors)
         {
             schemaHasChanged = false;
             DataSet ds = null;
             try
             {
                 ds = new DataSet();
-                RunCommands(ds, script, false, false, ignoreDDLErrors);
+                RunCommands(ds, script, false, false, ignoreDdlErrors);
                 schemaChanged = schemaHasChanged;
             }
             catch

@@ -583,7 +583,7 @@ namespace ErikEJ.SqlCeScripting
             return new DataSet();
         }
 
-        public DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDDLErrors)
+        public DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDdlErrors)
         {
             schemaChanged = false;
             return new DataSet();

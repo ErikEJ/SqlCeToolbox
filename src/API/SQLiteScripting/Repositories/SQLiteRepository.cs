@@ -14,32 +14,31 @@ namespace ErikEJ.SQLiteScripting
     //uses sqlite-netFx40-static-binary-bundle-Win32-2010-1.0.XXX.0.zip
     public class SQLiteRepository : IRepository
     {
-        private SQLiteConnection cn;
-        private SQLiteCommand cmd;
-        private delegate void AddToListDelegate<T>(ref List<T> list, SQLiteDataReader dr);
-        private string showPlan = string.Empty;
-        private bool schemaHasChanged = false;
+        private SQLiteConnection _cn;
+        private readonly SQLiteCommand _cmd;
+        private readonly string _showPlan = string.Empty;
+        private bool _schemaHasChanged;
 
         public SQLiteRepository(string connectionString)
         {
-            cn = new SQLiteConnection(connectionString);
-            cn.Open();
-            cmd = new SQLiteCommand();
-            cmd.Connection = cn;
+            _cn = new SQLiteConnection(connectionString);
+            _cn.Open();
+            _cmd = new SQLiteCommand();
+            _cmd.Connection = _cn;
         }
 
         #region IRepository Members
 
         public string GetRunTimeVersion()
         {
-            return cn.ServerVersion;
+            return _cn.ServerVersion;
         }
 
         public List<string> GetAllTableNames()
         {
             var list = new List<string>();
             //Also contains TABLE_DEFINITION!
-            var dt = cn.GetSchema("Tables");
+            var dt = _cn.GetSchema("Tables");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 if (dt.Rows[i]["TABLE_TYPE"].ToString() == "table")
@@ -59,7 +58,7 @@ namespace ErikEJ.SQLiteScripting
         public List<View> GetAllViews()
         {
             var list = new List<View>();
-            var dt = cn.GetSchema("Views");
+            var dt = _cn.GetSchema("Views");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 var view = new View();
@@ -78,7 +77,7 @@ namespace ErikEJ.SQLiteScripting
         public List<Trigger> GetAllTriggers()
         {
             var list = new List<Trigger>();
-            var dt = cn.GetSchema("Triggers");
+            var dt = _cn.GetSchema("Triggers");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 var trigger = new Trigger();
@@ -104,9 +103,9 @@ namespace ErikEJ.SQLiteScripting
         private List<Column> GetListOfColumns(string schemaView)
         {
             var result = new List<Column>();
-            var dt = cn.GetSchema(schemaView);
+            var dt = _cn.GetSchema(schemaView);
 
-            //var tables = cn.GetSchema("Tables");
+            //var tables = _cn.GetSchema("Tables");
             //for (int i = 0; i < dt.Columns.Count; i++)
             //{
             //    System.Diagnostics.Debug.WriteLine(dt.Columns[i].ColumnName);
@@ -118,7 +117,7 @@ namespace ErikEJ.SQLiteScripting
 
                 col.CharacterMaxLength = (int)dt.Rows[i]["CHARACTER_MAXIMUM_LENGTH"];
                 col.ColumnHasDefault = (bool)dt.Rows[i]["COLUMN_HASDEFAULT"];
-                col.ColumnDefault = dt.Rows[i]["COLUMN_DEFAULT"].GetType() != typeof(System.DBNull) ? null : dt.Rows[i]["COLUMN_DEFAULT"].ToString();
+                col.ColumnDefault = dt.Rows[i]["COLUMN_DEFAULT"].GetType() != typeof(DBNull) ? null : dt.Rows[i]["COLUMN_DEFAULT"].ToString();
                 if (col.ColumnDefault == null)
                 {
                     col.ColumnHasDefault = false;
@@ -149,11 +148,11 @@ namespace ErikEJ.SQLiteScripting
                 }
 
                 var isNullable = (bool)dt.Rows[i]["IS_NULLABLE"];
-                col.IsNullable = (bool)isNullable ? YesNoOption.YES : YesNoOption.NO;
-                if (dt.Rows[i]["NUMERIC_PRECISION"].GetType() != typeof(System.DBNull))
+                col.IsNullable = isNullable ? YesNoOption.YES : YesNoOption.NO;
+                if (dt.Rows[i]["NUMERIC_PRECISION"].GetType() != typeof(DBNull))
                 {
                     col.NumericPrecision = (int)dt.Rows[i]["NUMERIC_PRECISION"];
-                    if (dt.Rows[i]["NUMERIC_SCALE"].GetType() != typeof(System.DBNull))
+                    if (dt.Rows[i]["NUMERIC_SCALE"].GetType() != typeof(DBNull))
                     {
                         col.NumericScale = (int)dt.Rows[i]["NUMERIC_SCALE"];
                     }
@@ -172,47 +171,47 @@ namespace ErikEJ.SQLiteScripting
             return result;
         }
 
-        public System.Data.DataTable GetDataFromTable(string tableName, List<Column> columns)
+        public DataTable GetDataFromTable(string tableName, List<Column> columns)
         {
             return GetDataFromTable(tableName, columns, new List<PrimaryKey>());
         }
 
-        public System.Data.DataTable GetDataFromTable(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys)
+        public DataTable GetDataFromTable(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys)
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder(200);
+            StringBuilder sb = new StringBuilder(200);
             sb.Append("SELECT ");
             foreach (Column col in tableColumns)
             {
-                sb.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
             }
             sb.Remove(sb.Length - 2, 2);
 
-            sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, " From [{0}]", tableName);
+            sb.AppendFormat(CultureInfo.InvariantCulture, " From [{0}]", tableName);
 
             sb.Append(SortSelect(tablePrimaryKeys));
             return ExecuteDataTable(sb.ToString());
         }
 
-        public System.Data.IDataReader GetDataFromReader(string tableName, List<Column> tableColumns)
+        public IDataReader GetDataFromReader(string tableName, List<Column> tableColumns)
         {
             return GetDataFromReader(tableName, tableColumns, new List<PrimaryKey>());
         }
 
-        public System.Data.IDataReader GetDataFromReader(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys, string whereClause = null)
+        public IDataReader GetDataFromReader(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys, string whereClause = null)
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder(200);
+            StringBuilder sb = new StringBuilder(200);
             sb.Append("SELECT ");
             foreach (Column col in tableColumns)
             {
-                sb.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
             }
             sb.Remove(sb.Length - 2, 2);
 
-            sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, " FROM [{0}]", tableName);
+            sb.AppendFormat(CultureInfo.InvariantCulture, " FROM [{0}]", tableName);
 
             if (!string.IsNullOrEmpty(whereClause))
             {
-                sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, " WHERE {0}", whereClause);
+                sb.AppendFormat(CultureInfo.InvariantCulture, " WHERE {0}", whereClause);
             }
 
             sb.Append(SortSelect(tablePrimaryKeys));
@@ -238,7 +237,7 @@ namespace ErikEJ.SQLiteScripting
 
         private IDataReader ExecuteDataReader(string commandText, CommandType commandType)
         {
-            using (var cmd = new SQLiteCommand(commandText, cn))
+            using (var cmd = new SQLiteCommand(commandText, _cn))
             {
                 cmd.CommandType = commandType;
                 return cmd.ExecuteReader();
@@ -251,8 +250,8 @@ namespace ErikEJ.SQLiteScripting
             try
             {
                 dt = new DataTable();
-                dt.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                using (var cmd = new SQLiteCommand(commandText, cn))
+                dt.Locale = CultureInfo.InvariantCulture;
+                using (var cmd = new SQLiteCommand(commandText, _cn))
                 {
                     using (var da = new SQLiteDataAdapter(cmd))
                     {
@@ -273,14 +272,14 @@ namespace ErikEJ.SQLiteScripting
         {
             var result = new List<PrimaryKey>();
 
-            var indexes = cn.GetSchema("Indexes");
+            var indexes = _cn.GetSchema("Indexes");
             var rows = indexes.AsEnumerable()
-                    .Where(row => row.Field<Boolean>("PRIMARY_KEY") == true);
+                    .Where(row => row.Field<bool>("PRIMARY_KEY"));
             indexes = rows.Any() ? rows.CopyToDataTable() : indexes.Clone();
 
-            var dt = cn.GetSchema("Columns");
+            var dt = _cn.GetSchema("Columns");
             rows = dt.AsEnumerable()
-                .Where(row => row.Field<Boolean>("PRIMARY_KEY") == true)
+                .Where(row => row.Field<bool>("PRIMARY_KEY"))
                 .OrderBy(row => row.Field<String>("TABLE_NAME")).ThenBy(row => row.Field<int>("ORDINAL_POSITION"));
             dt = rows.Any() ? rows.CopyToDataTable() : indexes.Clone();
 
@@ -290,8 +289,8 @@ namespace ErikEJ.SQLiteScripting
                 pk.ColumnName = dt.Rows[i]["COLUMN_NAME"].ToString();
 
                 rows = indexes.AsEnumerable()
-                            .Where(row => row.Field<String>("TABLE_NAME") == dt.Rows[i]["TABLE_NAME"].ToString()
-                            && row.Field<bool>("PRIMARY_KEY") == true);
+                            .Where(row => row.Field<string>("TABLE_NAME") == dt.Rows[i]["TABLE_NAME"].ToString()
+                            && row.Field<bool>("PRIMARY_KEY"));
 
                 var pkNameDt = rows.Any() ? rows.CopyToDataTable() : null;
                 //SQLite "Indexes" contains PK names by Table (sometimes!)
@@ -309,20 +308,20 @@ namespace ErikEJ.SQLiteScripting
             return result;
         }
 
-        public List<ErikEJ.SqlCeScripting.Constraint> GetAllForeignKeys()
+        public List<SqlCeScripting.Constraint> GetAllForeignKeys()
         {
-            var result = new List<ErikEJ.SqlCeScripting.Constraint>();
-            var dt = cn.GetSchema("ForeignKeys");
+            var result = new List<SqlCeScripting.Constraint>();
+            var dt = _cn.GetSchema("ForeignKeys");
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                var fk = new ErikEJ.SqlCeScripting.Constraint();
+                var fk = new SqlCeScripting.Constraint();
                 fk.ColumnName = dt.Rows[i]["FKEY_FROM_COLUMN"].ToString();
                 fk.ConstraintName = dt.Rows[i]["CONSTRAINT_NAME"].ToString();
                 fk.ConstraintTableName = dt.Rows[i]["TABLE_NAME"].ToString();
                 fk.DeleteRule = dt.Rows[i]["FKEY_ON_DELETE"].ToString();
                 fk.UniqueColumnName = dt.Rows[i]["FKEY_TO_COLUMN"].ToString();
-                fk.UniqueConstraintName = "PK_" + dt.Rows[i]["FKEY_TO_TABLE"].ToString();
+                fk.UniqueConstraintName = "PK_" + dt.Rows[i]["FKEY_TO_TABLE"];
                 fk.UniqueConstraintTableName = dt.Rows[i]["FKEY_TO_TABLE"].ToString();
                 fk.UpdateRule = dt.Rows[i]["FKEY_ON_UPDATE"].ToString();
                 fk.Columns = new ColumnList();
@@ -345,9 +344,9 @@ namespace ErikEJ.SQLiteScripting
         private List<Index> GetIndexes(string tableName = null)
         {
             var result = new List<Index>();
-            var columns = cn.GetSchema("IndexColumns");
+            var columns = _cn.GetSchema("IndexColumns");
 
-            var indexes = cn.GetSchema("Indexes");
+            var indexes = _cn.GetSchema("Indexes");
             var rows = indexes.AsEnumerable()
                     .Where(row => row.Field<Boolean>("PRIMARY_KEY") == false);
             indexes = rows.Any() ? rows.CopyToDataTable() : indexes.Clone();
@@ -384,14 +383,14 @@ namespace ErikEJ.SQLiteScripting
         public List<KeyValuePair<string, string>> GetDatabaseInfo()
         {
             List<KeyValuePair<string, string>> valueList = new List<KeyValuePair<string, string>>();
-            SQLiteConnectionStringBuilder sb = new SQLiteConnectionStringBuilder(cn.ConnectionString);
+            SQLiteConnectionStringBuilder sb = new SQLiteConnectionStringBuilder(_cn.ConnectionString);
 
             valueList.Add(new KeyValuePair<string, string>("Database", sb.DataSource));
-            valueList.Add(new KeyValuePair<string, string>("ServerVersion", cn.ServerVersion));
+            valueList.Add(new KeyValuePair<string, string>("ServerVersion", _cn.ServerVersion));
             
-            if (System.IO.File.Exists(sb.DataSource))
+            if (File.Exists(sb.DataSource))
             {
-                System.IO.FileInfo fi = new System.IO.FileInfo(sb.DataSource);
+                FileInfo fi = new FileInfo(sb.DataSource);
                 valueList.Add(new KeyValuePair<string, string>("DatabaseSize", RepositoryHelper.GetSizeReadable(fi.Length)));
                 valueList.Add(new KeyValuePair<string, string>("Created", fi.CreationTime.ToShortDateString() + " " + fi.CreationTime.ToShortTimeString()));
             }
@@ -426,18 +425,18 @@ namespace ErikEJ.SQLiteScripting
 
         public void RenameTable(string oldName, string newName)
         {
-            ExecuteNonQuery(string.Format(System.Globalization.CultureInfo.InvariantCulture, "ALTER TABLE [{0}] RENAME TO [{1}];", oldName, newName));
+            ExecuteNonQuery(string.Format(CultureInfo.InvariantCulture, "ALTER TABLE [{0}] RENAME TO [{1}];", oldName, newName));
         }
 
         private void ExecuteNonQuery(string commandText)
         {
-            using (var cmd = new SQLiteCommand(commandText, cn))
+            using (var cmd = new SQLiteCommand(commandText, _cn))
             {
                 cmd.ExecuteNonQuery();
             }
         }
 
-        public System.Data.DataSet ExecuteSql(string script)
+        public DataSet ExecuteSql(string script)
         {
             DataSet ds = null;
             try
@@ -460,7 +459,7 @@ namespace ErikEJ.SQLiteScripting
 
         private void RunCommands(string scriptPath)
         {
-            if (!System.IO.File.Exists(scriptPath))
+            if (!File.Exists(scriptPath))
                 return;
 
             using (SqlCommandReaderStreamed sr = new SqlCommandReaderStreamed(scriptPath))
@@ -478,20 +477,20 @@ namespace ErikEJ.SQLiteScripting
         {
             using (SQLiteCommand cmd = new SQLiteCommand())
             {
-                cmd.Connection = cn;
+                cmd.Connection = _cn;
                 cmd.CommandText = sql;
                 cmd.ExecuteNonQuery();
             }
         }
 
-        public System.Data.DataSet ExecuteSql(string script, out string showPlanString)
+        public DataSet ExecuteSql(string script, out string showPlanString)
         {
             DataSet ds = null;
             try
             {
                 ds = new DataSet();
                 RunCommands(ds, script, false, true);
-                showPlanString = showPlan;
+                showPlanString = _showPlan;
             }
             catch
             {
@@ -502,15 +501,15 @@ namespace ErikEJ.SQLiteScripting
             return ds;
         }
 
-        public System.Data.DataSet ExecuteSql(string script, out bool schemaChanged)
+        public DataSet ExecuteSql(string script, out bool schemaChanged)
         {
-            schemaHasChanged = false;
+            _schemaHasChanged = false;
             DataSet ds = null;
             try
             {
                 ds = new DataSet();
                 RunCommands(ds, script, false, false);
-                schemaChanged = schemaHasChanged;
+                schemaChanged = _schemaHasChanged;
             }
             catch
             {
@@ -521,15 +520,15 @@ namespace ErikEJ.SQLiteScripting
             return ds;
         }
 
-        public System.Data.DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDDLErrors)
+        public DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDdlErrors)
         {
-            schemaHasChanged = false;
+            _schemaHasChanged = false;
             DataSet ds = null;
             try
             {
                 ds = new DataSet();
-                RunCommands(ds, script, false, false, ignoreDDLErrors);
-                schemaChanged = schemaHasChanged;
+                RunCommands(ds, script, false, false, ignoreDdlErrors);
+                schemaChanged = _schemaHasChanged;
             }
             catch
             {
@@ -540,12 +539,12 @@ namespace ErikEJ.SQLiteScripting
             return ds;
         }
 
-        internal void RunCommands(DataSet dataset, string script, bool checkSyntax, bool includePlan, bool ignoreDDLErrors = false)
+        internal void RunCommands(DataSet dataset, string script, bool checkSyntax, bool includePlan, bool ignoreDdlErrors = false)
         {
             dataset.EnforceConstraints = false;
             using (SQLiteCommand cmd = new SQLiteCommand())
             {
-                cmd.Connection = cn;
+                cmd.Connection = _cn;
                 using (SqlCommandReader reader = new SqlCommandReader(script))
                 {
                     var commandText = reader.ReadCommand();
@@ -555,19 +554,19 @@ namespace ErikEJ.SQLiteScripting
                         {
                             commandText = "EXPLAIN QUERY PLAN " + commandText;
                         }
-                        RunCommand(commandText, dataset, ignoreDDLErrors);
+                        RunCommand(commandText, dataset, ignoreDdlErrors);
                         commandText = reader.ReadCommand();
                     }
                 }
             }
         }
 
-        private void RunCommand(string commandText, DataSet dataSet, bool ignoreDDLErrors)
+        private void RunCommand(string commandText, DataSet dataSet, bool ignoreDdlErrors)
         {
             using (SQLiteCommand cmd = new SQLiteCommand())
             {
                 cmd.CommandText = commandText;
-                cmd.Connection = cn;
+                cmd.Connection = _cn;
 
                 CommandExecute execute = RepositoryHelper.FindExecuteType(commandText);
 
@@ -587,7 +586,7 @@ namespace ErikEJ.SQLiteScripting
                     if (execute == CommandExecute.NonQuery || execute == CommandExecute.NonQuerySchemaChanged)
                     {
                         if (execute == CommandExecute.NonQuerySchemaChanged)
-                            schemaHasChanged = true;
+                            _schemaHasChanged = true;
                         DataTable table = null;
                         try
                         {
@@ -600,7 +599,7 @@ namespace ErikEJ.SQLiteScripting
                         {
                             if (table != null)
                                 table.Dispose();
-                            if (ignoreDDLErrors && execute == CommandExecute.NonQuerySchemaChanged)
+                            if (ignoreDdlErrors && execute == CommandExecute.NonQuerySchemaChanged)
                             { }
                             else
                             {
@@ -639,7 +638,7 @@ namespace ErikEJ.SQLiteScripting
             return new List<string>();
         }
 
-        public System.Data.DataSet GetSchemaDataSet(List<string> tables)
+        public DataSet GetSchemaDataSet(List<string> tables)
         {
             DataSet schemaSet = null;
             try
@@ -649,19 +648,19 @@ namespace ErikEJ.SQLiteScripting
                 {
                     using (var cmd = new SQLiteCommand())
                     {
-                        cmd.Connection = cn;
+                        cmd.Connection = _cn;
                         foreach (var table in tables)
                         {
-                            string strSQL = "SELECT * FROM [" + table + "] WHERE 1 = 0";
+                            string strSql = "SELECT * FROM [" + table + "] WHERE 1 = 0";
 
-                            using (var cmdSet = new SQLiteCommand(strSQL, cn))
+                            using (var cmdSet = new SQLiteCommand(strSql, _cn))
                             {
                                 using (var adapter1 = new SQLiteDataAdapter(cmdSet))
                                 {
                                     adapter1.FillSchema(schemaSet, SchemaType.Source, table);
 
                                     //Fill the table in the dataset 
-                                    cmd.CommandText = strSQL;
+                                    cmd.CommandText = strSql;
                                     adapter.SelectCommand = cmd;
                                     adapter.Fill(schemaSet, table);
                                 }
@@ -685,20 +684,20 @@ namespace ErikEJ.SQLiteScripting
 
         public void Dispose()
         {
-            if (cmd != null)
+            if (_cmd != null)
             {
-                cmd.Dispose();
+                _cmd.Dispose();
             }
-            if (cn != null)
+            if (_cn != null)
             {
-                cn.Close();
-                cn = null;
+                _cn.Close();
+                _cn = null;
             }
         }
 
         #endregion
 
-        private static SqLiteDbTypeMap _typeNames = null;
+        private static SqLiteDbTypeMap _typeNames;
         internal const DbType FallbackDefaultDbType = DbType.Object;
 
         public Type GetClrTypeFromDataType(string typeName)
@@ -710,16 +709,14 @@ namespace ErikEJ.SQLiteScripting
         /// <summary>
         /// For a given type name, return a closest-match .NET type
         /// </summary>
-        /// <param name="connection">The connection context for custom type mappings, if any.</param>
         /// <param name="name">The name of the type to match</param>
-        /// <param name="flags">The flags associated with the parent connection object.</param>
         /// <returns>The .NET DBType the text evaluates to.</returns>
         internal DbType TypeNameToDbType(
             string name
             )
         {
             if (_typeNames == null)
-                _typeNames = GetSQLiteDbTypeMap();
+                _typeNames = GetSqLiteDbTypeMap();
 
             if (name != null)
             {
@@ -727,7 +724,7 @@ namespace ErikEJ.SQLiteScripting
 
                 if (_typeNames.TryGetValue(name, out value))
                 {
-                    return value.dataType;
+                    return value.DataType;
                 }
                 else
                 {
@@ -736,7 +733,7 @@ namespace ErikEJ.SQLiteScripting
                     if ((index > 0) &&
                         _typeNames.TryGetValue(name.Substring(0, index).TrimEnd(), out value))
                     {
-                        return value.dataType;
+                        return value.DataType;
                     }
                 }
             }
@@ -823,7 +820,7 @@ namespace ErikEJ.SQLiteScripting
                     reverse.Clear();
                 }
 
-                result += base.Count;
+                result += Count;
                 base.Clear();
 
                 return result;
@@ -851,13 +848,13 @@ namespace ErikEJ.SQLiteScripting
                 if (item == null)
                     throw new ArgumentNullException("item");
 
-                if (item.typeName == null)
+                if (item.TypeName == null)
                     throw new ArgumentException("item type name cannot be null");
 
-                base.Add(item.typeName, item);
+                base.Add(item.TypeName, item);
 
-                if (item.primary)
-                    reverse.Add(item.dataType, item);
+                if (item.Primary)
+                    reverse.Add(item.DataType, item);
             }
             #endregion
 
@@ -907,14 +904,14 @@ namespace ErikEJ.SQLiteScripting
                 bool newPrimary
                 )
             {
-                typeName = newTypeName;
-                dataType = newDataType;
-                primary = newPrimary;
+                TypeName = newTypeName;
+                DataType = newDataType;
+                Primary = newPrimary;
             }
 
-            internal string typeName;
-            internal DbType dataType;
-            internal bool primary;
+            internal string TypeName;
+            internal DbType DataType;
+            internal bool Primary;
         }
 
         internal sealed class TypeNameStringComparer : IEqualityComparer<string>
@@ -948,9 +945,9 @@ namespace ErikEJ.SQLiteScripting
             #endregion
         }
 
-        private static SqLiteDbTypeMap GetSQLiteDbTypeMap()
+        private static SqLiteDbTypeMap GetSqLiteDbTypeMap()
         {
-            return new SqLiteDbTypeMap(new SqLiteDbTypeMapping[] {
+            return new SqLiteDbTypeMap(new[] {
             new SqLiteDbTypeMapping("BIGINT", DbType.Int64, false),
             new SqLiteDbTypeMapping("BIGUINT", DbType.UInt64, false),
             new SqLiteDbTypeMapping("BINARY", DbType.Binary, false),
