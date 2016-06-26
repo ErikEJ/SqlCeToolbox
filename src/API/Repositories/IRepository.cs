@@ -65,7 +65,7 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="script"></param>
         /// <param name="schemaChanged"></param>
         /// <returns></returns>
-        DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDDLErrors);
+        DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDdlErrors);
 
         /// <summary>
         /// Get the Showplan XML from a SQL statement
