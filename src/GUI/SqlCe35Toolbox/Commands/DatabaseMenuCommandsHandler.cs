@@ -840,10 +840,16 @@ namespace ErikEJ.SqlCeToolbox.Commands
             // EDM end
             catch (Exception ex)
             {
-                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                if (ex.GetType() == typeof(System.IO.FileNotFoundException))
+                {
+                    EnvDteHelper.ShowMessage("Unable to find the EF Reverse POCO Template, is it installed?");
+                }
+                else
+                {
+                    DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                }
             }
         }
-
 
         public void GenerateEdmxInProject(object sender, ExecutedRoutedEventArgs e)
         {
