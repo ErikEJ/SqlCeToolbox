@@ -9,7 +9,11 @@ using ErikEJ.SqlCeScripting;
 using Microsoft.VisualStudio.Data.Core;
 using Microsoft.VisualStudio.Data.Services;
 using Microsoft.Win32;
+#if SSMS
+using SqlConnectionDialog;
+#else
 using ErikEJ.SqlCeToolbox.Dialogs;
+#endif
 using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.Data.SQLite;
@@ -415,6 +419,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public static string PromptForConnectionString(SqlCeToolboxPackage package)
         {
+#if SSMS
+            var factory = new ConnectionStringFactory();
+            return factory.BuildConnectionString();
+#else
             var databaseList = GetDataConnections(package, true, true);
             PickServerDatabaseDialog psd = new PickServerDatabaseDialog(databaseList);
             bool? res = psd.ShowModal();
@@ -423,6 +431,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 return psd.SelectedDatabase.Value.ConnectionString;
             }
             return null;
+#endif
         }
 
         private static string CreateStore(DatabaseType storeDbType)

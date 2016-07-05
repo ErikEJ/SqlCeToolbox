@@ -1,5 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using EnvDTE;
+using EnvDTE80;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.VisualStudio.Shell;
 
 // ReSharper disable once CheckNamespace
@@ -29,6 +34,30 @@ namespace ErikEJ.SqlCeToolbox
             // initialization is the Initialize method.
         }
 
+        public object GetServiceHelper(Type type)
+        {
+            return GetService(type);
+        }
+
+        public bool VsSupportsSimpleDdex35Provider()
+        {
+            return false;
+        }
+
+        public bool VsSupportsSimpleDdex4Provider()
+        {
+            return false;
+        }
+
+        public static Version VisualStudioVersion
+        {
+            get
+            {
+                return  new Version(0, 0, 0, 0);
+            }
+        }
+
+
         #region Package Members
 
         /// <summary>
@@ -37,6 +66,17 @@ namespace ErikEJ.SqlCeToolbox
         /// </summary>
         protected override void Initialize()
         {
+            var dte = (DTE2)GetService(typeof(DTE));
+            Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
+            if (Telemetry.Enabled)
+            {
+                Telemetry.Initialize(dte,
+                    Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                    //TODO Make this dynamic!
+                    "130",
+                    "d4881a82-2247-42c9-9272-f7bc8aa29315");
+            }
+            DataConnectionHelper.LogUsage("Platform: SSMS 130");
             OtherWindowsCommand.Initialize(this);
             ViewMenuCommand.Initialize(this);
             base.Initialize();            
