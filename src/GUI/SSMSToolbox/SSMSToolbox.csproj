@@ -8,6 +8,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <UseCodebase>true</UseCodebase>
+    <ReferencePath>$(ReferencePath);$(MSBuildThisFileDirectory)..\References\2010</ReferencePath>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -40,7 +41,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SSMS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CopyVsixExtensionFiles>True</CopyVsixExtensionFiles>
@@ -50,11 +51,35 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;SSMS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\DataConnectionHelper.cs">
+      <Link>Helpers\DataConnectionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\DDEXRegistry.cs">
+      <Link>Helpers\DDEXRegistry.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\EnvDTEHelper.cs">
+      <Link>Helpers\EnvDTEHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\Model.cs">
+      <Link>Helpers\Model.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\Telemetry.cs">
+      <Link>Helpers\Telemetry.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\TreeViewHelper.cs">
+      <Link>Helpers\TreeViewHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\VsTheming.cs">
+      <Link>Helpers\VsTheming.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Properties\Settings.Designer.cs">
+      <Link>Settings.Designer.cs</Link>
+    </Compile>
     <Compile Include="Package\ExplorerToolWindow.cs" />
     <Compile Include="Package\OtherWindowsCommand.cs" />
     <Compile Include="Package\ExplorerToolWindowControl.xaml.cs">
@@ -63,10 +88,20 @@
     <Compile Include="Package\SqlCeToolboxPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Package\ViewMenuCommand.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\SqlCe35Toolbox\Properties\Settings.settings">
+      <Link>Settings.settings</Link>
+    </None>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Readme.docx" />
+    <None Include="Resources\SqlCeSyntax.xshd" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -84,11 +119,21 @@
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="ISqlCeScripting">
+      <HintPath>..\lib\ISqlCeScripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.1.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Data, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Data.Core, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Data.Services, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Imaging, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Imaging.14.3.25407\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
       <Private>True</Private>
@@ -166,16 +211,34 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SqlCeScripting, Version=3.5.2.15, Culture=neutral, PublicKeyToken=3681435cabd17ad2, processorArchitecture=MSIL">
+      <HintPath>..\lib\SqlCeScripting.dll</HintPath>
+    </Reference>
+    <Reference Include="SqlCeScripting40">
+      <HintPath>..\lib\SqlCeScripting40.dll</HintPath>
+    </Reference>
+    <Reference Include="SqlConnectionDialog, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SQLConnectionStringUI.1.0.0.5\lib\net45\SqlConnectionDialog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SQLiteScripting">
+      <HintPath>..\lib\SQLiteScripting.dll</HintPath>
+    </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -185,18 +248,206 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\SqlCe35Toolbox\Resources\action_Cancel_16xLG.png">
+      <Link>Resources\action_Cancel_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\AddConnection_477.png">
+      <Link>Resources\AddConnection_477.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\AddTable_5632.png">
+      <Link>Resources\AddTable_5632.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\arrow_Sync_16xLG.png">
+      <Link>Resources\arrow_Sync_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\checkbox_16xLG.png">
+      <Link>Resources\checkbox_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Checkmark.png">
+      <Link>Resources\Checkmark.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Color_linecolor.png">
+      <Link>Resources\Color_linecolor.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\column_16xLG.png">
+      <Link>Resources\column_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Connections.png">
+      <Link>Resources\Connections.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Copy_6524.png">
+      <Link>Resources\Copy_6524.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\database_16xLG.png">
+      <Link>Resources\database_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\database_16xLG_Broken.png">
+      <Link>Resources\database_16xLG_Broken.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\database_16xLG_Own.png">
+      <Link>Resources\database_16xLG_Own.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\DataCompare_9880.png">
+      <Link>Resources\DataCompare_9880.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\data_out.png">
+      <Link>Resources\data_out.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\data_out_small.png">
+      <Link>Resources\data_out_small.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\DecisionTree.png">
+      <Link>Resources\DecisionTree.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Diagram_16XLG.png">
+      <Link>Resources\Diagram_16XLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Editdatasetwithdesigner_8449.png">
+      <Link>Resources\Editdatasetwithdesigner_8449.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Executequery_9958.png">
+      <Link>Resources\Executequery_9958.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\ExportReportData_10565.png">
+      <Link>Resources\ExportReportData_10565.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\feedback.png">
+      <Link>Resources\feedback.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\folder_Closed_16xLG.png">
+      <Link>Resources\folder_Closed_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\gear_16xLG.png">
+      <Link>Resources\gear_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\GroupBy_284.png">
+      <Link>Resources\GroupBy_284.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Hammer_Builder_16xLG.png">
+      <Link>Resources\Hammer_Builder_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Index_8287_16x.png">
+      <Link>Resources\Index_8287_16x.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\KeyDownFk_8461.png">
+      <Link>Resources\KeyDownFk_8461.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\KeyDown_8461.png">
+      <Link>Resources\KeyDown_8461.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\NewQuery.png">
+      <Link>Resources\NewQuery.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\NewWindow_6277.png">
+      <Link>Resources\NewWindow_6277.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Office_Excel_Application_16xLG.png">
+      <Link>Resources\Office_Excel_Application_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Open_6529.png">
+      <Link>Resources\Open_6529.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\process_16xLG.png">
+      <Link>Resources\process_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\properties_16xLG.png">
+      <Link>Resources\properties_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Query_16xLG.png">
+      <Link>Resources\Query_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Rename_6779.png">
+      <Link>Resources\Rename_6779.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\ResultsToGrid.png">
+      <Link>Resources\ResultsToGrid.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\ResultsToTextFile.png">
+      <Link>Resources\ResultsToTextFile.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Root.png">
+      <Link>Resources\Root.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\RSS.png">
+      <Link>Resources\RSS.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Run.png">
+      <Link>Resources\Run.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\RunOutline.png">
+      <Link>Resources\RunOutline.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Schema_16xLG.png">
+      <Link>Resources\Schema_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\script_16xLG.png">
+      <Link>Resources\script_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\search_glyph.png">
+      <Link>Resources\search_glyph.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\show_table_data.png">
+      <Link>Resources\show_table_data.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\StatusAnnotations_Help_and_inconclusive_16xLG_color.png">
+      <Link>Resources\StatusAnnotations_Help_and_inconclusive_16xLG_color.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Synchronize_16xLG.png">
+      <Link>Resources\Synchronize_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\Tables_8928.png">
+      <Link>Resources\Tables_8928.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\table_16xLG.png">
+      <Link>Resources\table_16xLG.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\toolbox2.png">
+      <Link>Resources\toolbox2.png</Link>
+    </Content>
+    <Content Include="..\SqlCe35Toolbox\Resources\TypeDefinition_521.png">
+      <Link>Resources\TypeDefinition_521.png</Link>
+    </Content>
     <Content Include="Resources\data_out.ico" />
+    <Content Include="Resources\Find_5650.png" />
     <Content Include="Resources\Images_32bit.bmp" />
+    <Content Include="Resources\license.txt" />
+    <Content Include="Resources\LocalDatabaseConnectionStringBuilder.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\refresh_16xLG.png" />
+    <Content Include="Resources\save_16xLG.png" />
+    <Content Include="Resources\SqlCe35AddinStore.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SqlCe40AddinStore.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Templates\Html.xslt" />
+    <Content Include="Resources\Templates\report.xsl" />
+    <Content Include="Resources\Templates\WikiPlex.xslt" />
     <VSCTCompile Include="Package\ExplorerToolWindowPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
+      <Project>{c6031278-5612-429f-a485-5169392db51c}</Project>
+      <Name>SqlCeToolbox.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ToolWindows\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

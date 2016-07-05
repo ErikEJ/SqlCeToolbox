@@ -1,8 +1,6 @@
-﻿using System.ServiceModel.Syndication;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Xml;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
@@ -69,27 +67,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             ((TreeViewItem)sender).IsSelected = true;
             e.Handled = true;
-        }
-
-        public static void GetInfoItems(StackPanel infoItem)
-        {
-            if (infoItem.Children.Count > 0)
-                return;
-            try
-            {
-                XmlReader reader = XmlReader.Create("http://sqlcompact.dk/VSAddinFeed.xml");
-                SyndicationFeed feed = SyndicationFeed.Load(reader);
-                if (feed != null)
-                    foreach (var item in feed.Items)
-                    {
-                        infoItem.Children.Add(CreateButtonWithHyperlink(item.Title.Text, item.Links[0].Uri.OriginalString));
-                    }
-            }
-            catch
-            {
-                // ignored
-            }
-            infoItem.Children.Add(CreateButtonWithHyperlink("Everything SQL Server Compact blog", "http://erikej.blogspot.com/"));
         }
 
         public static TreeViewItem GetTypesItem(TreeViewItem viewItem)
