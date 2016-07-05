@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox", "SqlCe35Toolbox\SqlCeToolbox.csproj", "{A633A9DF-98DB-42A5-91E4-853258C47854}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox.DDEX35", "SqlCeToolbox.DDEX35\SqlCeToolbox.DDEX35.csproj", "{3D2F4C65-6423-450C-8398-A00B9AF50ED6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryPlanVisualizer", "QueryPlanVisualizer\QueryPlanVisualizer.csproj", "{DF42BBC7-9733-4FD3-9758-13A1F657CFBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSMSToolbox", "SSMSToolbox\SSMSToolbox.csproj", "{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,14 @@ Global
 		{DF42BBC7-9733-4FD3-9758-13A1F657CFBB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF42BBC7-9733-4FD3-9758-13A1F657CFBB}.Release|x86.ActiveCfg = Release|x86
 		{DF42BBC7-9733-4FD3-9758-13A1F657CFBB}.Release|x86.Build.0 = Release|x86
+		{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}.Debug|x86.Build.0 = Debug|Any CPU
+		{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
