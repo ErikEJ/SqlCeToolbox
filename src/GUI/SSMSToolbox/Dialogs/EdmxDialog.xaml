@@ -1,0 +1,27 @@
+﻿<dw:DialogWindow x:Class="ErikEJ.SqlCeToolbox.Dialogs.EdmxDialog"
+        xmlns:dw="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit.PropertyGrid;assembly=Xceed.Wpf.Toolkit"
+        xmlns:extToolkit2="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        Title="Add Entity Data Model to current Project" ShowInTaskbar="False" Height="454" Width="420" Loaded="Window_Loaded" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60*" />
+            <RowDefinition Height="32*" />
+            <RowDefinition Height="34*" />
+            <RowDefinition Height="188*" />
+            <RowDefinition Height="48*" />
+            <RowDefinition Height="54*" />
+        </Grid.RowDefinitions>
+        <Label Content="Model name:" HorizontalAlignment="Left" Margin="12,0,0,32" Name="label1" Width="112" Height="28"  />
+        <TextBox Height="23" Margin="12,0,12,9" Name="textBox1" VerticalAlignment="Bottom" TabIndex="1" />
+        <CheckBox Content="Pluralize or singularize generated object names" Grid.Row="1" Height="24" HorizontalAlignment="Left" Margin="12,5.4,0,0" Name="chkPlural" VerticalAlignment="Top" TabIndex="2" Width="326" />
+        <CheckBox Content="Include foreign key columns in the model" IsChecked="True" Grid.Row="2" Height="24" HorizontalAlignment="Left" Margin="12,5.6,0,0" Name="chkFks2" VerticalAlignment="Top" TabIndex="3" Width="307" />
+        <extToolkit2:CheckListBox x:Name="chkTables" Grid.Row="3" Margin="12,0" DisplayMemberPath="Label" SelectedMemberPath="IsChecked" TabIndex="4" />
+        <dw:DialogButton Content="OK" IsDefault="True" Grid.Row="5" HorizontalAlignment="Left" Margin="230,0,0,12" Name="button1" TabIndex="6" Click="button1_Click" VerticalAlignment="Bottom" Width="75" />
+        <dw:DialogButton Content="Cancel" IsCancel="True" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,12,12" Name="button2" TabIndex="7" SnapsToDevicePixels="False" Click="button2_Click" Height="23" VerticalAlignment="Bottom" />
+        <CheckBox IsChecked="True" Content="Save/update entity connection string in app.config" Grid.Row="4" HorizontalAlignment="Left" Margin="12,0,0,24" Name="chkSave" TabIndex="5" Height="18" VerticalAlignment="Bottom" Checked="chkSave_Checked" Unchecked="chkSave_Unchecked" Width="366" />
+        <CheckBox IsChecked="False" Content="Add configuration for private desktop deployment" Height="18" HorizontalAlignment="Left" Margin="31,0,0,0" Name="chkDeploy" TabIndex="5" VerticalAlignment="Bottom" Grid.Row="4" Width="347" />
+    </Grid>
+</dw:DialogWindow>
