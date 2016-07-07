@@ -80,6 +80,15 @@
     <Compile Include="..\SqlCe35Toolbox\Properties\Settings.Designer.cs">
       <Link>Settings.Designer.cs</Link>
     </Compile>
+    <Compile Include="Dialogs\AboutDialog.xaml.cs">
+      <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CompareDialog.xaml.cs">
+      <DependentUpon>CompareDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ConnectionDialog.xaml.cs">
+      <DependentUpon>ConnectionDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Package\ExplorerToolWindow.cs" />
     <Compile Include="Package\OtherWindowsCommand.cs" />
     <Compile Include="Package\ExplorerToolWindowControl.xaml.cs">
@@ -240,8 +249,24 @@
     <Reference Include="System.Xml" />
     <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dialogs\AboutDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\CompareDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ConnectionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Package\ExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
