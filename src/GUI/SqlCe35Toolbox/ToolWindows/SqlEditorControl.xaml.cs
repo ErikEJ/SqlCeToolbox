@@ -65,8 +65,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         //public List<string> TableNames { get; set; }
         //public List<Column> Columns { get; set; }
 
+//TODO SSMS
+#if SSMS
+#else
         public ExplorerControl ExplorerControl { get; set; }
-
+#endif
         public string SqlText
         {
             get
@@ -265,7 +268,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        #region Toolbar Button events
+#region Toolbar Button events
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
@@ -453,7 +456,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        #endregion
+#endregion
 
         private void FormatTime(Stopwatch sw)
         {
@@ -527,10 +530,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     if (dataset == null) return;
                     ParseDataSetResultsToResultsBox(dataset);
                     if (!schemaChanged) return;
+                    //TODO SSMS
+#if SSMS
+#else
                     if (ExplorerControl != null)
                     {
                         ExplorerControl.RefreshTables(DatabaseInfo);
                     }
+#endif
                 }
             }
             catch (Exception sqlException)
@@ -760,6 +767,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         public void OpenSqlEditorToolWindow()
         {
+//TODO SSMS
+#if SSMS
+#else
             if (DatabaseInfo == null)  return;
             if (ExplorerControl == null) return;
 
@@ -779,6 +789,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType);
             }
+#endif
         }
 
         private void Options_Click(object sender, RoutedEventArgs e)

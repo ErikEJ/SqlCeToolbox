@@ -20,7 +20,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             BitmapResourceID = 301;
             BitmapIndex = 1;
             Telemetry.TrackPageView(nameof(ReportWindow));
-            _control = new ReportControl(this);
+            _control = new ReportControl();
         }
 
         /// <summary>

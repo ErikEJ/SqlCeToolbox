@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Windows.Controls;
 
@@ -37,7 +38,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
  
         void grid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            var pos = e.PropertyName.IndexOf("_");
+            var pos = e.PropertyName.IndexOf("_", StringComparison.Ordinal);
             if (pos > 0 && e.Column.Header != null)
             {
                 e.Column.Header = e.Column.Header.ToString().Replace("_", "__");

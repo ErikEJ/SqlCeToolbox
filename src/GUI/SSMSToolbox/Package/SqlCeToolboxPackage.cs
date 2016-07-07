@@ -7,7 +7,9 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Helpers;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 // ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox
@@ -60,6 +62,30 @@ namespace ErikEJ.SqlCeToolbox
             }
         }
 
+        private int _id;
+        /// <summary>
+        /// Support method for creating a new tool window based on type.
+        /// </summary>
+        /// <typeparam name="T">type of MDI tool window</typeparam>
+        /// <returns>the tool window pane</returns>
+        public ToolWindowPane CreateWindow<T>()
+        {
+            _id++;
+            //create a new window with explicit tool window _id
+            var window = FindToolWindow(typeof(T), _id, true);
+            if ((null == window) || (null == window.Frame))
+            {
+                throw new NotSupportedException(Resources.CanNotCreateWindow);
+            }
+            ShowWindow(window);
+            return window;
+        }
+
+        public void ShowWindow(ToolWindowPane window)
+        {
+            var windowFrame = (IVsWindowFrame)window.Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
 
         #region Package Members
 

@@ -14,7 +14,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         public DatabaseInfo DatabaseInfo { get; set; } //This property must be set by parent window
         public string Publication { get; set; }
         public bool IsNew { get; set; }
-        private SqlCeReplicationHelper replHelper;
+        private SqlCeReplicationHelper _replHelper;
         public SubscriptionControl()
         {
             InitializeComponent();
@@ -29,14 +29,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void SubscriptionWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            PrepareUI();
+            PrepareUi();
         }
 
-        private void PrepareUI()
+        private void PrepareUi()
         {
-            if (this.IsNew)
+            if (IsNew)
             {
-                btnSample.Visibility = System.Windows.Visibility.Hidden;
+                btnSample.Visibility = Visibility.Hidden;
                 txtSubscriber.Text = Environment.MachineName;
             }
             else
@@ -51,7 +51,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                                 DateTime date = repository.GetLastSuccessfulSyncTime(Publication);
                                 if (date != DateTime.MinValue)
                                 {
-                                    lblLastSync.Content = "Last sync: " + date.ToString();
+                                    lblLastSync.Content = "Last sync: " + date;
                                 }
                                 ReplicationProperties props = SqlCeReplicationHelper.GetProperties(DatabaseInfo.ConnectionString, Publication);
 
@@ -97,8 +97,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 CreateSampleFile(fileName);
 
-                dte.ItemOperations.OpenFile(fileName);
-                dte.ActiveDocument.Activate();
+                if (dte != null)
+                {
+                    dte.ItemOperations.OpenFile(fileName);
+                    dte.ActiveDocument.Activate();
+                }
             }
             catch (Exception ex)
             {
@@ -127,9 +130,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 txtStatus.Text = string.Empty;
                 btnSync.IsEnabled = false;
 
-                bool useNT = false;
-                if (comboBox1.SelectedIndex == 1)
-                    useNT = true;
+                bool useNt = comboBox1.SelectedIndex == 1;
 //#if DEBUG
 //                txtUrl.Text = "http://erik-pc/ssce35sync/sqlcesa35.dll";
 //                txtPublisher.Text = "Erik-PC";
@@ -137,11 +138,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 //                txtPublication.Text = "PubPostCodes";
 //                txtSubscriber.Text = "ERIK-PC";
 //#endif
-                replHelper = new SqlCeReplicationHelper(this.DatabaseInfo.ConnectionString, txtUrl.Text, txtPublisher.Text, txtPublisherDatabase.Text, txtPublication.Text, txtSubscriber.Text, txtHostname.Text, useNT, txtInternetUsername.Text, txtInternetPassword.Password, txtPublisherUsername.Text, txtPublisherPassword.Password, IsNew, option);
+                _replHelper = new SqlCeReplicationHelper(DatabaseInfo.ConnectionString, txtUrl.Text, txtPublisher.Text, txtPublisherDatabase.Text, txtPublication.Text, txtSubscriber.Text, txtHostname.Text, useNt, txtInternetUsername.Text, txtInternetPassword.Password, txtPublisherUsername.Text, txtPublisherPassword.Password, IsNew, option);
 
-                replHelper.Completed += new SqlCeReplicationHelper.CompletedHandler(replHelper_Completed);
-                replHelper.Progress += new SqlCeReplicationHelper.ProgressHandler(replHelper_Progress);
-                replHelper.Synchronize();
+                _replHelper.Completed += replHelper_Completed;
+                _replHelper.Progress += replHelper_Progress;
+                _replHelper.Synchronize();
             }
             catch (Exception ex)
             {
@@ -150,14 +151,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        void replHelper_Progress(object sender, ErikEJ.SqlCeScripting.SqlCeReplicationHelper.SyncArgs ca)
+        void replHelper_Progress(object sender, SqlCeReplicationHelper.SyncArgs ca)
         {
             if (!txtStatus.Dispatcher.CheckAccess())
             {
                 txtStatus.Dispatcher.Invoke(
                   System.Windows.Threading.DispatcherPriority.Normal,
                   new Action(
-                    delegate()
+                    delegate
                     {
                         txtStatus.Text += ca.Message() + Environment.NewLine;
                     }
@@ -169,23 +170,23 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        void replHelper_Completed(object sender, ErikEJ.SqlCeScripting.SqlCeReplicationHelper.SyncArgs ca)
+        void replHelper_Completed(object sender, SqlCeReplicationHelper.SyncArgs ca)
         {
             if (!btnSync.Dispatcher.CheckAccess())
             {
                 btnSync.Dispatcher.Invoke(
                   System.Windows.Threading.DispatcherPriority.Normal,
                   new Action(
-                    delegate()
+                    delegate
                     {
-                        PrepareUI();
+                        PrepareUi();
                         btnSync.IsEnabled = true;
                     }
                 ));
             }
             else
             {
-                PrepareUI();
+                PrepareUi();
                 btnSync.IsEnabled = true;
             }
 
@@ -196,7 +197,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     txtStatus.Dispatcher.Invoke(
                         System.Windows.Threading.DispatcherPriority.Normal,
                         new Action(
-                        delegate()
+                        delegate
                         {
                             txtStatus.Text += Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLCE35).FormatError(ca.Exception()) + Environment.NewLine;
                         }
@@ -209,14 +210,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             else
             {
-                this.IsNew = false;
+                IsNew = false;
             }
             if (!txtStatus.Dispatcher.CheckAccess())
             {
                 txtStatus.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
                     new Action(
-                    delegate()
+                    delegate
                     {
                         txtStatus.Text += ca.Message() + Environment.NewLine;
                     }
@@ -226,13 +227,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 txtStatus.Text += ca.Message() + Environment.NewLine;
             }
-            replHelper.Dispose();
+            _replHelper.Dispose();
         }
         #endregion
 
         private void CreateSampleFile(string fileName)
         {
-            string csharpCode = ErikEJ.SqlCeToolbox.Resources.ClassTemplateCsharp;
+            string csharpCode = SqlCeToolbox.Resources.ClassTemplateCsharp;
             StringBuilder code = new StringBuilder();
 
             code.AppendFormat("\t\trepl.InternetUrl = @\"{0}\";{1}", txtUrl.Text, Environment.NewLine);
