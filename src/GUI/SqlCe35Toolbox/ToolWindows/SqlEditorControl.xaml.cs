@@ -65,11 +65,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         //public List<string> TableNames { get; set; }
         //public List<Column> Columns { get; set; }
 
-//TODO SSMS
-#if SSMS
-#else
         public ExplorerControl ExplorerControl { get; set; }
-#endif
+
         public string SqlText
         {
             get
@@ -767,9 +764,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         public void OpenSqlEditorToolWindow()
         {
-//TODO SSMS
-#if SSMS
-#else
             if (DatabaseInfo == null)  return;
             if (ExplorerControl == null) return;
 
@@ -789,7 +783,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType);
             }
-#endif
         }
 
         private void Options_Click(object sender, RoutedEventArgs e)

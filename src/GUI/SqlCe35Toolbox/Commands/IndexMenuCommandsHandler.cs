@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ErikEJ.SqlCeToolbox.ToolWindows;
 using ErikEJ.SqlCeScripting;
+using ErikEJ.SqlCeToolbox.ToolWindows;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {

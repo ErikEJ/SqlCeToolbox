@@ -74,8 +74,80 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\SqlCe35Toolbox\Commands\BaseCommandHandler.cs">
+      <Link>Commands\BaseCommandHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\BaseCommandParameters.cs">
+      <Link>Commands\BaseCommandParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\ColumnMenuCommands.cs">
+      <Link>Commands\ColumnMenuCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\ColumnMenuCommandsHandler.cs">
+      <Link>Commands\ColumnMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\CommandHandlerBase.cs">
+      <Link>Commands\CommandHandlerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\DatabaseMenuCommandParameters.cs">
+      <Link>Commands\DatabaseMenuCommandParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\DatabaseMenuCommands.cs">
+      <Link>Commands\DatabaseMenuCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\DatabaseMenuCommandsHandler.cs">
+      <Link>Commands\DatabaseMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\DatabasesMenuCommandsHandler.cs">
+      <Link>Commands\DatabasesMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\IndexMenuCommands.cs">
+      <Link>Commands\IndexMenuCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\IndexMenuCommandsHandler.cs">
+      <Link>Commands\IndexMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\KeyMenuCommandsHandler.cs">
+      <Link>Commands\KeyMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\MenuCommandParameters.cs">
+      <Link>Commands\MenuCommandParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\MenuCommands.cs">
+      <Link>Commands\MenuCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\ScopesMenuCommands.cs">
+      <Link>Commands\ScopesMenuCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\ScopesMenuCommandsHandler.cs">
+      <Link>Commands\ScopesMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\SubscriptionsMenuCommands.cs">
+      <Link>Commands\SubscriptionsMenuCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\SubscriptionsMenuCommandsHandler.cs">
+      <Link>Commands\SubscriptionsMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\TableMenuCommandsHandler.cs">
+      <Link>Commands\TableMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\TablesMenuCommandsHandler.cs">
+      <Link>Commands\TablesMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\TriggerMenuCommandsHandler.cs">
+      <Link>Commands\TriggerMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\ViewMenuCommandsHandler.cs">
+      <Link>Commands\ViewMenuCommandsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\DbDoc\SqlCeDbDoc.cs">
+      <Link>DbDoc\SqlCeDbDoc.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Guids.cs">
       <Link>Package\Guids.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\AppConfigHelper.cs">
+      <Link>Helpers\AppConfigHelper.cs</Link>
     </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\DataConnectionHelper.cs">
       <Link>Helpers\DataConnectionHelper.cs</Link>
@@ -83,11 +155,20 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\DDEXRegistry.cs">
       <Link>Helpers\DDEXRegistry.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\DescriptionHelper.cs">
+      <Link>Helpers\DescriptionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\EdmGen2.cs">
+      <Link>Helpers\EdmGen2.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\EnvDTEHelper.cs">
       <Link>Helpers\EnvDTEHelper.cs</Link>
     </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\Model.cs">
       <Link>Helpers\Model.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\SyncFxHelper.cs">
+      <Link>Helpers\SyncFxHelper.cs</Link>
     </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\Telemetry.cs">
       <Link>Helpers\Telemetry.cs</Link>
@@ -184,13 +265,49 @@
     <Compile Include="Dialogs\ConnectionDialog.xaml.cs">
       <DependentUpon>ConnectionDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\DataContextDialog.xaml.cs">
+      <DependentUpon>DataContextDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DescriptionDialog.xaml.cs">
+      <DependentUpon>DescriptionDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EdmxDialog.xaml.cs">
       <DependentUpon>EdmxDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\ExportDialog.xaml.cs">
+      <DependentUpon>ExportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ForeignKeyDialog.xaml.cs">
+      <DependentUpon>ForeignKeyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ImportDialog.xaml.cs">
+      <DependentUpon>ImportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\IndexDialog.xaml.cs">
+      <DependentUpon>IndexDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PasswordDialog.xaml.cs">
+      <DependentUpon>PasswordDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PickTablesDialog.xaml.cs">
+      <DependentUpon>PickTablesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\RenameDialog.xaml.cs">
+      <DependentUpon>RenameDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SQLiteConnectionDialog.xaml.cs">
+      <DependentUpon>SQLiteConnectionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SyncFxDialog.xaml.cs">
+      <DependentUpon>SyncFxDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TableBuilderDialog.xaml.cs">
+      <DependentUpon>TableBuilderDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Package\ExplorerToolWindow.cs" />
     <Compile Include="Package\OtherWindowsCommand.cs" />
-    <Compile Include="Package\ExplorerToolWindowControl.xaml.cs">
-      <DependentUpon>ExplorerToolWindowControl.xaml</DependentUpon>
+    <Compile Include="Package\ExplorerControl.xaml.cs">
+      <DependentUpon>ExplorerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Package\SqlCeToolboxPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -344,6 +461,9 @@
     <Reference Include="SqlCeScripting40">
       <HintPath>..\lib\SqlCeScripting40.dll</HintPath>
     </Reference>
+    <Reference Include="SqlCeToolBoxSyncFxLib">
+      <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
+    </Reference>
     <Reference Include="SqlConnectionDialog, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLConnectionStringUI.1.0.0.5\lib\net45\SqlConnectionDialog.dll</HintPath>
       <Private>True</Private>
@@ -355,7 +475,10 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Entity.Design" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
     </Reference>
@@ -365,6 +488,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
@@ -411,11 +535,59 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Dialogs\DataContextDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DescriptionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\EdmxDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Package\ExplorerToolWindowControl.xaml">
+    <Page Include="Dialogs\ExportDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ForeignKeyDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ImportDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\IndexDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PasswordDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PickTablesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\RenameDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SQLiteConnectionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SyncFxDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\TableBuilderDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Package\ExplorerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -635,9 +807,7 @@
       <Name>SqlCeToolbox.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

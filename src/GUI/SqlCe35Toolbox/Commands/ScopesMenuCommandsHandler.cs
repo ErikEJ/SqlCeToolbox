@@ -33,13 +33,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (_parentWindow != null && _parentWindow.Content != null)
                 {
                     ExplorerControl control = _parentWindow.Content as ExplorerControl;
-                    control.BuildDatabaseTree();
+                    if (control != null) control.BuildDatabaseTree();
                 }
-                Helpers.DataConnectionHelper.LogUsage("SyncScopeDrop");
+                DataConnectionHelper.LogUsage("SyncScopeDrop");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType);
             }
         }        
     }
