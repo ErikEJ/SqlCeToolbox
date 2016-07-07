@@ -4,21 +4,26 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
-namespace SSMSToolbox
-{
-    using System.Diagnostics.CodeAnalysis;
-    using System.Windows;
-    using System.Windows.Controls;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Windows;
+using System.Windows.Controls;
+using ErikEJ.SqlCeScripting;
 
+namespace ErikEJ.SqlCeToolbox.ToolWindows
+{
     /// <summary>
     /// Interaction logic for ExplorerToolWindowControl.
     /// </summary>
-    public partial class ExplorerToolWindowControl : UserControl
+    public partial class ExplorerControl : UserControl
     {
+        public static List<DbDescription> DescriptionCache { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExplorerToolWindowControl"/> class.
         /// </summary>
-        public ExplorerToolWindowControl()
+        public ExplorerControl()
         {
             this.InitializeComponent();
         }
@@ -35,6 +40,16 @@ namespace SSMSToolbox
             MessageBox.Show(
                 string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
                 "ExplorerToolWindow");
+        }
+
+        internal void RefreshTables(DatabaseInfo databaseInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void BuildDatabaseTree()
+        {
+            throw new NotImplementedException();
         }
     }
 }

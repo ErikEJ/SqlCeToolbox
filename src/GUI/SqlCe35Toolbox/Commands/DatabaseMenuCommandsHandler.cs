@@ -840,7 +840,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             // EDM end
             catch (Exception ex)
             {
-                if (ex.GetType() == typeof(System.IO.FileNotFoundException))
+                if (ex.GetType() == typeof(FileNotFoundException))
                 {
                     EnvDteHelper.ShowMessage("Unable to find the EF Reverse POCO Template, is it installed?");
                 }

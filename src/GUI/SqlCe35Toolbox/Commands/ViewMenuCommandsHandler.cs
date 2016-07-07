@@ -26,15 +26,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
-                {
-                    OpenSqlEditorToolWindow(menuInfo, string.Format("CREATE VIEW [{0}] AS {1}{2}" + separator, menuInfo.Name, Environment.NewLine, menuInfo.Description));
-                    Helpers.DataConnectionHelper.LogUsage("ViewScriptAsCreate");
-                }
+                OpenSqlEditorToolWindow(menuInfo, string.Format("CREATE VIEW [{0}] AS {1}{2}" + separator, menuInfo.Name, Environment.NewLine, menuInfo.Description));
+                DataConnectionHelper.LogUsage("ViewScriptAsCreate");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -46,21 +43,18 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
-                {
-                    OpenSqlEditorToolWindow(menuInfo, string.Format("DROP VIEW [{0}]" + separator, menuInfo.Name));
-                    Helpers.DataConnectionHelper.LogUsage("ViewScriptAsDrop");
-                }
+                OpenSqlEditorToolWindow(menuInfo, string.Format("DROP VIEW [{0}]" + separator, menuInfo.Name));
+                DataConnectionHelper.LogUsage("ViewScriptAsDrop");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
         public void ReportTableData(object sender, ExecutedRoutedEventArgs e)
         {
-            string sqlText = null;
+            string sqlText;
             var menuItem = sender as MenuItem;
             var ds = new DataSet();
             if (menuItem == null) return;
@@ -68,7 +62,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     sqlText = string.Format(Environment.NewLine + "SELECT * FROM [{0}]", menuInfo.Name)
                         + Environment.NewLine + "GO";
@@ -78,15 +72,21 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 Debug.Assert(pkg != null, "Package property of the Explorere Tool Window should never be null, have you tried to create it manually and not through FindToolWindow()?");
 
                 string dbName = System.IO.Path.GetFileNameWithoutExtension(menuInfo.DatabaseInfo.Caption);
-                var window = pkg.CreateWindow<ReportWindow>(Math.Abs(menuInfo.Name.GetHashCode() - dbName.GetHashCode()));
-                window.Caption = menuInfo.Name + " (" + dbName + ")";
-                pkg.ShowWindow(window);
+                if (dbName != null)
+                {
+                    var window = pkg.CreateWindow<ReportWindow>(Math.Abs(menuInfo.Name.GetHashCode() - dbName.GetHashCode()));
+                    window.Caption = menuInfo.Name + " (" + dbName + ")";
+                    pkg.ShowWindow(window);
 
-                var control = window.Content as ReportControl;
-                control.DatabaseInfo = menuInfo.DatabaseInfo;
-                control.TableName = menuInfo.Name;
-                control.DataSet = ds;
-                control.ShowReport();
+                    var control = window.Content as ReportControl;
+                    if (control != null)
+                    {
+                        control.DatabaseInfo = menuInfo.DatabaseInfo;
+                        control.TableName = menuInfo.Name;
+                        control.DataSet = ds;
+                        control.ShowReport();
+                    }
+                }
                 DataConnectionHelper.LogUsage("ViewReport");
             }
             catch (System.IO.FileNotFoundException)

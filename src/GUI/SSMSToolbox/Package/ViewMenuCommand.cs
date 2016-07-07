@@ -9,7 +9,7 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace ErikEJ.SqlCeToolbox
+namespace ErikEJ.SqlCeToolbox.ToolWindows
 {
     /// <summary>
     /// Command handler

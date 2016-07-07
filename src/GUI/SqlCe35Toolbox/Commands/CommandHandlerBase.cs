@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using System.Diagnostics;
 
@@ -22,7 +21,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        public void OpenSqlEditorToolWindow(MenuCommandParameters menuInfo, string script, List<string> tables = null, List<ErikEJ.SqlCeScripting.Column> columns = null)
+        public void OpenSqlEditorToolWindow(MenuCommandParameters menuInfo, string script, List<string> tables = null, List<SqlCeScripting.Column> columns = null)
         {
             try
             {
@@ -31,12 +30,15 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 var sqlEditorWindow = pkg.CreateWindow<SqlEditorWindow>();
                 var control = sqlEditorWindow.Content as SqlEditorControl;
-                control.DatabaseInfo = menuInfo.DatabaseInfo;
-                control.ExplorerControl = _parentWindow.Content as ExplorerControl;
-                //TODO For intellisense
-                //control.TableNames = tables;
-                //control.Columns = columns;
-                control.SqlText = script;
+                if (control != null)
+                {
+                    control.DatabaseInfo = menuInfo.DatabaseInfo;
+                    control.ExplorerControl = _parentWindow.Content as ExplorerControl;
+                    //TODO For intellisense
+                    //control.TableNames = tables;
+                    //control.Columns = columns;
+                    control.SqlText = script;
+                }
             }
             catch (Exception ex)
             {

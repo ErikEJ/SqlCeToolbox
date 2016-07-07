@@ -44,13 +44,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (_parentWindow != null && _parentWindow.Content != null)
                 {
                     ExplorerControl control = _parentWindow.Content as ExplorerControl;
-                    control.BuildDatabaseTree();
+                    if (control != null) control.BuildDatabaseTree();
                 }
-                Helpers.DataConnectionHelper.LogUsage("SubscriptionDrop");
+                DataConnectionHelper.LogUsage("SubscriptionDrop");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -67,23 +67,26 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
                 var subsWindow = pkg.CreateWindow<SubscriptionWindow>(Math.Abs(menuInfo.DatabaseInfo.ConnectionString.GetHashCode() - menuInfo.Name.GetHashCode()));
                 var control = subsWindow.Content as SubscriptionControl;
-                control.DatabaseInfo = menuInfo.DatabaseInfo;
-                if (menuInfo.MenuItemType == MenuType.Manage)
+                if (control != null)
                 {
-                    control.Publication = menuInfo.Name;
-                    control.IsNew = false;
-                    subsWindow.Caption = menuInfo.Name;
+                    control.DatabaseInfo = menuInfo.DatabaseInfo;
+                    if (menuInfo.MenuItemType == MenuType.Manage)
+                    {
+                        control.Publication = menuInfo.Name;
+                        control.IsNew = false;
+                        subsWindow.Caption = menuInfo.Name;
+                    }
+                    else
+                    {
+                        control.IsNew = true;
+                        subsWindow.Caption = "New Subscription";
+                    }
                 }
-                else
-                {
-                    control.IsNew = true;
-                    subsWindow.Caption = "New Subscription";
-                }
-                Helpers.DataConnectionHelper.LogUsage("SubscriptionManage");
+                DataConnectionHelper.LogUsage("SubscriptionManage");
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType);
             }
         }
     }

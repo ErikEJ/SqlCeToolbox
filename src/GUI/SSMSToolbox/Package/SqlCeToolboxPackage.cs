@@ -17,7 +17,7 @@ namespace ErikEJ.SqlCeToolbox
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "0.1", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(ExplorerToolWindow), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Left, Window = "DocumentWell")]
+    [ProvideToolWindow(typeof(ToolWindows.ExplorerToolWindow), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Left, Window = "DocumentWell")]
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class SqlCeToolboxPackage : Package
@@ -54,11 +54,62 @@ namespace ErikEJ.SqlCeToolbox
             return false;
         }
 
+        public static bool VsSupportsEf6()
+        {
+            return false;
+        }
+
         public static Version VisualStudioVersion
         {
             get
             {
                 return  new Version(0, 0, 0, 0);
+            }
+        }
+
+        public void SetStatus(string message)
+        {
+            int frozen;
+            IVsStatusbar statusBar = GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+            if (statusBar != null)
+            {
+                statusBar.IsFrozen(out frozen);
+                if (!Convert.ToBoolean(frozen))
+                {
+                    statusBar.SetText(message);
+                }
+            }
+            OutputStringInGeneralPane(message);
+        }
+
+        private void OutputStringInGeneralPane(string text)
+        {
+            const int visible = 1;
+            const int doNotClearWithSolution = 0;
+
+            IVsOutputWindow outputWindow;
+            IVsOutputWindowPane outputWindowPane;
+            int hr;
+
+            // Get the output window
+            outputWindow = GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+
+            // The General pane is not created by default. We must force its creation
+            if (outputWindow != null)
+            {
+                hr = outputWindow.CreatePane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, "General", visible, doNotClearWithSolution);
+                ErrorHandler.ThrowOnFailure(hr);
+
+                // Get the pane
+                hr = outputWindow.GetPane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, out outputWindowPane);
+                ErrorHandler.ThrowOnFailure(hr);
+
+                // Output the text
+                if (outputWindowPane != null)
+                {
+                    outputWindowPane.Activate();
+                    outputWindowPane.OutputString(text + Environment.NewLine);
+                }
             }
         }
 
@@ -76,6 +127,30 @@ namespace ErikEJ.SqlCeToolbox
             if ((null == window) || (null == window.Frame))
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
+            }
+            ShowWindow(window);
+            return window;
+        }
+
+        /// <summary>
+        /// Support method for finding an existing or creating a new tool window based on type and _id.
+        /// </summary>
+        /// <typeparam name="T">type of MDI tool window</typeparam>
+        /// <param name="windowId"></param>
+        /// <returns>the tool window pane</returns>
+        public ToolWindowPane CreateWindow<T>(int windowId)
+        {
+            //find existing tool window based on _id
+            var window = FindToolWindow(typeof(T), windowId, false);
+
+            if (window == null)
+            {
+                //create a new window with explicit tool window _id
+                window = FindToolWindow(typeof(T), windowId, true);
+                if ((null == window) || (null == window.Frame))
+                {
+                    throw new NotSupportedException(Resources.CanNotCreateWindow);
+                }
             }
             ShowWindow(window);
             return window;
@@ -106,8 +181,8 @@ namespace ErikEJ.SqlCeToolbox
                     "d4881a82-2247-42c9-9272-f7bc8aa29315");
             }
             DataConnectionHelper.LogUsage("Platform: SSMS 130");
-            OtherWindowsCommand.Initialize(this);
-            ViewMenuCommand.Initialize(this);
+            ToolWindows.OtherWindowsCommand.Initialize(this);
+            ToolWindows.ViewMenuCommand.Initialize(this);
             base.Initialize();            
         }
         #endregion

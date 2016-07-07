@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ErikEJ.SqlCeToolbox.ToolWindows;
@@ -8,7 +9,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 {
     public class TriggerMenuCommandsHandler : CommandHandlerBase
     {
-        private readonly string separator = ";" + Environment.NewLine + "GO" + Environment.NewLine;
+        private readonly string _separator = ";" + Environment.NewLine + "GO" + Environment.NewLine;
 
         public TriggerMenuCommandsHandler(ExplorerToolWindow parent)
         {
@@ -23,11 +24,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
-                {
-                    OpenSqlEditorToolWindow(menuInfo, string.Format("{0}" + separator, menuInfo.Description));
-                    Helpers.DataConnectionHelper.LogUsage("TriggerScriptAsCreate");
-                }
+                OpenSqlEditorToolWindow(menuInfo, string.Format("{0}" + _separator, menuInfo.Description));
+                Helpers.DataConnectionHelper.LogUsage("TriggerScriptAsCreate");
             }
             catch (Exception ex)
             {
@@ -43,11 +41,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
-                {
-                    OpenSqlEditorToolWindow(menuInfo, string.Format("DROP TRIGGER [{0}]" + separator, menuInfo.Name));
-                    Helpers.DataConnectionHelper.LogUsage("TriggerScriptAsDrop");
-                }
+                OpenSqlEditorToolWindow(menuInfo, string.Format("DROP TRIGGER [{0}]" + _separator, menuInfo.Name));
+                Helpers.DataConnectionHelper.LogUsage("TriggerScriptAsDrop");
             }
             catch (Exception ex)
             {

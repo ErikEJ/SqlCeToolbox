@@ -1,0 +1,46 @@
+﻿<dw:DialogWindow x:Class="ErikEJ.SqlCeToolbox.Dialogs.ImportDialog"
+        xmlns:dw="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:ErikEJ.SqlCeToolbox"
+        xmlns:Dialogs="clr-namespace:ErikEJ.SqlCeToolbox.Dialogs"
+        Icon="../Resources/gear_16xLG.png"
+        Title="Import data from CSV" 
+        WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" 
+        ShowInTaskbar="False"
+        mc:Ignorable="d" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        d:DesignHeight="286" 
+        d:DesignWidth="405" 
+        SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
+    <Grid Height="246" Width="384">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="90" />
+            <ColumnDefinition Width="230*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="59" />
+            <RowDefinition Height="33" />
+            <RowDefinition Height="33" />
+            <RowDefinition Height="76" />
+            <RowDefinition Height="71*" />
+        </Grid.RowDefinitions>
+        <Label Margin="4,7,4.6,0" Content="Filename:" Height="28" VerticalAlignment="Top"></Label>
+        <Label Margin="4,4.8,294,0" Grid.Row="1" Content="Separator:" Height="26" VerticalAlignment="Top" Grid.ColumnSpan="2"></Label>
+        <Label Margin="4,6,235,0" Grid.Row="2" Content="Sample CSV format:" Grid.ColumnSpan="2" Height="28" VerticalAlignment="Top"></Label>
+        <TextBox Margin="12,0" IsReadOnly="True" Name="txtSample" Grid.Row="3" Grid.ColumnSpan="2" Background="Transparent" BorderBrush="Transparent" Text="test" Height="76" VerticalAlignment="Top" />
+        <TextBox Name="FileName" Grid.Column="1" TextChanged="FileName_TextChanged" Margin="0,7,12,0" TabIndex="0" Height="23" VerticalAlignment="Top" />
+        <ComboBox Grid.Column="1" Grid.Row="1" Height="24" HorizontalAlignment="Left" Margin="0,7,0,0" Name="comboBox1" VerticalAlignment="Top" Width="70" ItemsSource="{Binding}" SelectedIndex="0" SelectionChanged="comboBox1_SelectionChanged" IsEditable="True" TabIndex="2">
+            <ComboBoxItem Content="," />
+            <ComboBoxItem Content=";" />
+        </ComboBox>
+        <Label Content="(UTF8 format preferred)" Grid.ColumnSpan="2" Height="28" Margin="4,31,14,0" VerticalAlignment="Top" />
+        <dw:DialogButton Content="Browse..." Grid.Column="1" HorizontalAlignment="Left" Margin="207,36,0,0" Name="btnBrowse" VerticalAlignment="Top"  Click="btnBrowse_Click" TabIndex="1" />
+        <dw:DialogButton Content="Import" Height="23" IsDefault="True" Margin="126,0,0,12" Name="SaveButton" TabIndex="3" Width="75" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="SaveButton_Click" />
+        <dw:DialogButton Content="Cancel" Grid.Column="1" Height="23" IsCancel="True" Margin="207,0,0,12" Name="CancelButton" TabIndex="4" Width="75" Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Click="CancelButton_Click" />
+    </Grid>
+</dw:DialogWindow>

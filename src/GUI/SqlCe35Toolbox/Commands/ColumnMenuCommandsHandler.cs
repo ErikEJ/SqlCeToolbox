@@ -25,9 +25,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     List<Column> columns = repository.GetAllColumns();
                     var col = columns.SingleOrDefault(c => c.TableName == menuInfo.Description && c.ColumnName == menuInfo.Name);
                     if (col == null)
@@ -41,15 +41,15 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     if (tbd.ShowModal() == true && tbd.TableColumns.Count == 1)
                     {
                         generator.GenerateColumnAlterScript(tbd.TableColumns[0]);
-                        var script = generator.GeneratedScript.ToString();
+                        var script = generator.GeneratedScript;
                         OpenSqlEditorToolWindow(menuInfo, script);
-                        Helpers.DataConnectionHelper.LogUsage("TableBuildColumnEdit");
+                        DataConnectionHelper.LogUsage("TableBuildColumnEdit");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType);
             }
         }
 
@@ -61,9 +61,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     List<Column> columns = repository.GetAllColumns();
                     var col = columns.SingleOrDefault(c => c.TableName == menuInfo.Description && c.ColumnName == menuInfo.Name);
                     if (col == null)
@@ -76,12 +76,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         generator.GenerateColumnAddScript(col);
                     }
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("ColumnScriptAsCreate");
+                    DataConnectionHelper.LogUsage("ColumnScriptAsCreate");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -93,9 +93,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     List<Column> columns = repository.GetAllColumns();
                     var col = columns.SingleOrDefault(c => c.TableName == menuInfo.Description && c.ColumnName == menuInfo.Name);
                     if (col == null)
@@ -108,12 +108,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         generator.GenerateColumnDropScript(col);
                     }
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("ColumnScriptAsDrop");
+                    DataConnectionHelper.LogUsage("ColumnScriptAsDrop");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
@@ -125,9 +125,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     List<Column> columns = repository.GetAllColumns();
                     var col = columns.SingleOrDefault(c => c.TableName == menuInfo.Description && c.ColumnName == menuInfo.Name);
                     if (col == null)
@@ -140,12 +140,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         generator.GenerateColumnAlterScript(col);
                     }
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
-                    Helpers.DataConnectionHelper.LogUsage("ColumnScriptAsDrop");
+                    DataConnectionHelper.LogUsage("ColumnScriptAsDrop");
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
 
