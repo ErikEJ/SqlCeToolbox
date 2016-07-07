@@ -527,14 +527,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     if (dataset == null) return;
                     ParseDataSetResultsToResultsBox(dataset);
                     if (!schemaChanged) return;
-                    //TODO SSMS
-#if SSMS
-#else
                     if (ExplorerControl != null)
                     {
                         ExplorerControl.RefreshTables(DatabaseInfo);
                     }
-#endif
                 }
             }
             catch (Exception sqlException)

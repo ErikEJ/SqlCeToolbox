@@ -15,7 +15,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         /// </summary>
         public ExplorerToolWindow() : base(null)
         {
-            this.Caption = "ExplorerToolWindow";
+            this.Caption = Resources.App;
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
