@@ -140,6 +140,42 @@
     <Compile Include="..\SqlCe35Toolbox\Commands\ViewMenuCommandsHandler.cs">
       <Link>Commands\ViewMenuCommandsHandler.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\ColumnContextMenu.cs">
+      <Link>ContextMenues\ColumnContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\DatabaseContextMenu.cs">
+      <Link>ContextMenues\DatabaseContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\DatabasesContextMenu.cs">
+      <Link>ContextMenues\DatabasesContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\IndexContextMenu.cs">
+      <Link>ContextMenues\IndexContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\KeyContextMenu.cs">
+      <Link>ContextMenues\KeyContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\ScopesContextMenu.cs">
+      <Link>ContextMenues\ScopesContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\SqlServerDatabaseContextMenu.cs">
+      <Link>ContextMenues\SqlServerDatabaseContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\SubscriptionsContextMenu.cs">
+      <Link>ContextMenues\SubscriptionsContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\TableContextMenu.cs">
+      <Link>ContextMenues\TableContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\TablesContextMenu.cs">
+      <Link>ContextMenues\TablesContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\TriggerContextMenu.cs">
+      <Link>ContextMenues\TriggerContextMenu.cs</Link>
+    </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\ViewContextMenu.cs">
+      <Link>ContextMenues\ViewContextMenu.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\DbDoc\SqlCeDbDoc.cs">
       <Link>DbDoc\SqlCeDbDoc.cs</Link>
     </Compile>
