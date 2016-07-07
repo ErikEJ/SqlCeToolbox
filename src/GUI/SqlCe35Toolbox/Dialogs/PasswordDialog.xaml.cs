@@ -1,12 +1,9 @@
 ﻿using System.Windows;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.VisualStudio.PlatformUI;
+
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
-    /// <summary>
-    /// Interaction logic for RenameDialog.xaml
-    /// </summary>
-    public partial class PasswordDialog : DialogWindow
+    public partial class PasswordDialog
     {
         public string Password { get; set; }
 
@@ -14,19 +11,19 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(PasswordDialog));
             InitializeComponent();
-            this.Background = Helpers.VsThemes.GetWindowBackground();
+            Background = VsThemes.GetWindowBackground();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            DialogResult = true;
             SaveSettings();
             Close();
         }
 
         private void SaveSettings()
         {
-            Password = this.PasswordInput.Password;
+            Password = PasswordInput.Password;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -36,8 +33,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.PasswordInput.Focus();
+            PasswordInput.Focus();
         }
-
     }
 }

@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.VisualStudio.PlatformUI;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     /// <summary>
     /// Interaction logic for EdmxDialog.xaml
     /// </summary>
-    public partial class EdmxDialog : DialogWindow
+    public partial class EdmxDialog
     {
         public EdmxDialog()
         {
             Telemetry.TrackPageView(nameof(EdmxDialog));
             InitializeComponent();
-            this.Background = Helpers.VsThemes.GetWindowBackground();
+            Background = VsThemes.GetWindowBackground();
         }
 
         private List<CheckListItem> items = new List<CheckListItem>();
@@ -24,12 +23,12 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.Title;
+                return Title;
             }
 
             set
             {
-                this.Title = string.Format("Generate EDM in Project {0}", value);
+                Title = string.Format("Generate EDM in Project {0}", value);
             }
         }
 
@@ -37,44 +36,44 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.chkPlural.IsChecked.Value;
+                return chkPlural.IsChecked != null && chkPlural.IsChecked.Value;
             }
         }
         public bool ForeignKeys
         {
             get
             {
-                return this.chkFks2.IsChecked.Value;
+                return chkFks2.IsChecked != null && chkFks2.IsChecked.Value;
             }
         }
         public bool SaveConfig 
         {
             get
             {
-                return this.chkSave.IsChecked.Value;
+                return chkSave.IsChecked != null && chkSave.IsChecked.Value;
             }            
         }
         public bool AddPrivateConfig
         {
             get
             {
-                return this.chkDeploy.IsChecked.Value;
+                return chkDeploy.IsChecked != null && chkDeploy.IsChecked.Value;
             }            
         
         }
         public void HideAddPrivateConfig()
         {
-            this.chkDeploy.Visibility = System.Windows.Visibility.Collapsed;
+            chkDeploy.Visibility = Visibility.Collapsed;
         }
         public string ModelName 
         {
             get
             {
-                return this.textBox1.Text;
+                return textBox1.Text;
             }
             set
             {
-                this.textBox1.Text = value;
+                textBox1.Text = value;
             }
         }
         public List<string> Tables { get; set; }
@@ -83,35 +82,30 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Tables.Clear();
+            DialogResult = true;
+            Tables.Clear();
             foreach (object item in chkTables.Items)
             {
                 var checkItem = (CheckListItem)item;
                 if (checkItem.IsChecked)
                 {
-                    this.Tables.Add(checkItem.Label);
+                    Tables.Add(checkItem.Label);
                 }
             }
-            this.Close();
+            Close();
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.textBox1.Focus();
-            bool isChecked = true;
+            textBox1.Focus();
             foreach (string table in Tables)
             { 
-                isChecked = true;
-                if (table.StartsWith("__"))
-                {
-                    isChecked = false;
-                }
+                bool isChecked = !table.StartsWith("__");
                 items.Add(new CheckListItem { IsChecked = isChecked, Label = table });
                 
             }

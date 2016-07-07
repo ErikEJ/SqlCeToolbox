@@ -1,12 +1,9 @@
 ﻿using System.Windows;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.VisualStudio.PlatformUI;
+
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
-    /// <summary>
-    /// Interaction logic for RenameDialog.xaml
-    /// </summary>
-    public partial class RenameDialog : DialogWindow
+    public partial class RenameDialog
     {
         public string NewName { get; set; }
 
@@ -16,21 +13,21 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(RenameDialog));
             InitializeComponent();
-            this.Background = Helpers.VsThemes.GetWindowBackground();
-            this.Title = "Rename " + tableName;
-            this.ServerName.Text = tableName;
+            Background = VsThemes.GetWindowBackground();
+            Title = "Rename " + tableName;
+            ServerName.Text = tableName;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            DialogResult = true;
             SaveSettings();
             Close();
         }
 
         private void SaveSettings()
         {
-            NewName = this.ServerName.Text;
+            NewName = ServerName.Text;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -40,10 +37,10 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.ServerName.Focus();
+            ServerName.Focus();
             if (DbRename)
             {
-                this.Title = "Rename Connection";
+                Title = "Rename Connection";
             }
         }
 

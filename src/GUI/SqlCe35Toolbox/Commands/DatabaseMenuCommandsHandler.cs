@@ -522,7 +522,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 var databaseList = DataConnectionHelper.GetDataConnections(package, includeServerConnections: true, serverConnectionsOnly: true);
 
-                var cd = new ExportDialog(databaseInfo.DatabaseInfo.Caption, databaseList);
+                var cd = new ExportDialog(databaseList);
 
                 var result = cd.ShowModal();
                 if (!result.HasValue || result.Value != true || (cd.TargetDatabase.Key == null)) return;

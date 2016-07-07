@@ -2,20 +2,19 @@
 using System.Windows;
 using System.Windows.Controls;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.VisualStudio.PlatformUI;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     /// <summary>
     /// Interaction logic for DataContextDialog.xaml
     /// </summary>
-    public partial class DataContextDialog : DialogWindow
+    public partial class DataContextDialog
     {
         public DataContextDialog()
         {
             Telemetry.TrackPageView(nameof(DataContextDialog));
             InitializeComponent();
-            this.Background = Helpers.VsThemes.GetWindowBackground();
+            Background = VsThemes.GetWindowBackground();
         }
 
         #region Properties
@@ -23,12 +22,12 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.Title;
+                return Title;
             }
 
             set
             {
-                this.Title = string.Format("Create DataContext in Project {0}", value);
+                Title = string.Format("Create DataContext in Project {0}", value);
             }
         }
 
@@ -38,7 +37,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.chkPlural.IsChecked.Value;
+                return chkPlural.IsChecked != null && chkPlural.IsChecked.Value;
             }
         }
         
@@ -46,7 +45,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.chkAddVersion.IsChecked.Value;
+                return chkAddVersion.IsChecked != null && chkAddVersion.IsChecked.Value;
             }
         }
 
@@ -54,7 +53,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.chkAddRowVersion.IsChecked.Value;
+                return chkAddRowVersion.IsChecked != null && chkAddRowVersion.IsChecked.Value;
             }
         }
 
@@ -62,7 +61,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.chkConnStringBuilder.IsChecked.Value;
+                return chkConnStringBuilder.IsChecked != null && chkConnStringBuilder.IsChecked.Value;
             }
         }
 
@@ -71,7 +70,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.chkMultipleFiles.IsChecked.Value;
+                return chkMultipleFiles.IsChecked != null && chkMultipleFiles.IsChecked.Value;
             }        
         }
 
@@ -79,11 +78,11 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get 
             {
-                return this.cmbLanguage.SelectedValue.ToString();
+                return cmbLanguage.SelectedValue.ToString();
             }
             set
             {
-                this.cmbLanguage.SelectedValue = value;
+                cmbLanguage.SelectedValue = value;
             }
         }
 
@@ -91,11 +90,11 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.textBox1.Text;
+                return textBox1.Text;
             }
             set
             {
-                this.textBox1.Text = value;
+                textBox1.Text = value;
             }
         }
 
@@ -103,50 +102,50 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.txtNameSpace.Text;
+                return txtNameSpace.Text;
             }
             set
             {
-                this.txtNameSpace.Text = value;
+                txtNameSpace.Text = value;
             }
         }
         #endregion
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
+            DialogResult = true;
+            Close();
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             if (IsDesktop)
             {
-                chkMultipleFiles.Visibility = System.Windows.Visibility.Collapsed;
-                lblAdv.Visibility = System.Windows.Visibility.Collapsed;
-                chkAddRowVersion.Visibility = System.Windows.Visibility.Collapsed;
-                chkAddVersion.Visibility = System.Windows.Visibility.Collapsed;
-                chkConnStringBuilder.Visibility = System.Windows.Visibility.Collapsed;
+                chkMultipleFiles.Visibility = Visibility.Collapsed;
+                lblAdv.Visibility = Visibility.Collapsed;
+                chkAddRowVersion.Visibility = Visibility.Collapsed;
+                chkAddVersion.Visibility = Visibility.Collapsed;
+                chkConnStringBuilder.Visibility = Visibility.Collapsed;
             }
-            this.cmbLanguage.ItemsSource = new List<string> { "C#", "VB" };
-            this.cmbLanguage.SelectedValue = this.CodeLanguage;
-            this.textBox1.Focus();
+            cmbLanguage.ItemsSource = new List<string> { "C#", "VB" };
+            cmbLanguage.SelectedValue = CodeLanguage;
+            textBox1.Focus();
         }
 
         private void chkMultipleFiles_Checked(object sender, RoutedEventArgs e)
         {
-            this.txtNameSpace.Text = string.Empty;
-            this.txtNameSpace.IsEnabled = false;
+            txtNameSpace.Text = string.Empty;
+            txtNameSpace.IsEnabled = false;
         }
 
         private void chkMultipleFiles_Unchecked(object sender, RoutedEventArgs e)
         {
-            this.txtNameSpace.IsEnabled = true;
+            txtNameSpace.IsEnabled = true;
         }
 
         private void cmbLanguage_SelectionChanged(object sender, SelectionChangedEventArgs e)

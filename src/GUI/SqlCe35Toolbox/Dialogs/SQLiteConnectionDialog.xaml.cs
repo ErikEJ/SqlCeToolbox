@@ -2,17 +2,17 @@
 using System.Data.SQLite;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.Win32;
 using ErikEJ.SqlCeToolbox.Helpers;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
-    public partial class SQLiteConnectionDialog : DialogWindow
+    // ReSharper disable once InconsistentNaming
+    public partial class SQLiteConnectionDialog
     {
-        private SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder();
+        private readonly SQLiteConnectionStringBuilder _builder = new SQLiteConnectionStringBuilder();
 
-        private bool createDb;
+        private bool _createDb;
 
         public string ConnectionString { get; set; }
 
@@ -27,7 +27,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Props.ShowSummary = true;
-            Props.SelectedObject = builder;
+            Props.SelectedObject = _builder;
         }
 
         private void btn_Click(object sender, RoutedEventArgs e)
@@ -37,45 +37,45 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void TestConnection(bool showMessage)
         {
-            if (string.IsNullOrWhiteSpace(builder.DataSource))
+            if (string.IsNullOrWhiteSpace(_builder.DataSource))
             {
                 return;
             }
             try
             {
-                if (createDb)
+                if (_createDb)
                 {
-                    if (!System.IO.File.Exists(builder.DataSource))
+                    if (!System.IO.File.Exists(_builder.DataSource))
                     {
-                        var engineHelper = Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLite);
-                        engineHelper.CreateDatabase(builder.ConnectionString);
+                        var engineHelper = DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLite);
+                        engineHelper.CreateDatabase(_builder.ConnectionString);
                     }
                 }
 
-                using (var conn = new SQLiteConnection(builder.ConnectionString))
+                using (var conn = new SQLiteConnection(_builder.ConnectionString))
                 {
                     conn.Open();
-                    this.ConnectionString = builder.ConnectionString;
+                    ConnectionString = _builder.ConnectionString;
                     if (showMessage)
                     {
                         EnvDteHelper.ShowMessage("Test succeeded!");
                     }
                     else
                     {
-                        this.DialogResult = true;
+                        DialogResult = true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Helpers.DataConnectionHelper.SendError(ex, DatabaseType.SQLite, false);
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLite, false);
             }
         }
 
         private void close_Click(object sender, RoutedEventArgs e)
         {
             TestConnection(false);
-            this.Close();
+            Close();
         }
 
         private void create_Click(object sender, RoutedEventArgs e)
@@ -90,10 +90,10 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             sfd.Title = "Create new Database File";
             if (sfd.ShowDialog() == true && !string.IsNullOrEmpty(sfd.FileName))
             {
-                createDb = true;
-                this.builder.DataSource = sfd.FileName;
+                _createDb = true;
+                _builder.DataSource = sfd.FileName;
                 txtDataSource.Text = sfd.FileName;
-                Props.SelectedObject = builder;
+                Props.SelectedObject = _builder;
             }
         }
 
@@ -111,10 +111,10 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             ofd.Title = "Select Database File to Open";
             if (ofd.ShowDialog() == true && !string.IsNullOrEmpty(ofd.FileName))
             {
-                createDb = false;
-                this.builder.DataSource = ofd.FileName;
+                _createDb = false;
+                _builder.DataSource = ofd.FileName;
                 txtDataSource.Text = ofd.FileName;
-                Props.SelectedObject = builder;
+                Props.SelectedObject = _builder;
             }
         }
 

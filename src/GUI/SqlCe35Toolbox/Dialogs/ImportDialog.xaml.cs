@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System;
 using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.Win32;
-using Microsoft.VisualStudio.PlatformUI;
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     /// <summary>
     /// Interaction logic for ImportDialog.xaml
     /// </summary>
-    public partial class ImportDialog : DialogWindow
+    public partial class ImportDialog
     {
         public string NewName { get; set; }
 
@@ -18,13 +17,13 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(ImportDialog));
             InitializeComponent();
-            this.Background = Helpers.VsThemes.GetWindowBackground();
-            this.SaveButton.IsEnabled = false;
+            Background = VsThemes.GetWindowBackground();
+            SaveButton.IsEnabled = false;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            DialogResult = true;
             Close();
         }
 
@@ -38,17 +37,17 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                return this.FileName.Text;
+                return FileName.Text;
             }
         }
 
-        private List<string> sampleHeader = new List<string>();
+        private List<string> _sampleHeader = new List<string>();
 
         public List<string> SampleHeader
         {
             set
             {
-                this.sampleHeader = value;
+                _sampleHeader = value;
                 MakeSample();
             }
         }
@@ -57,18 +56,15 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             get
             {
-                if (!string.IsNullOrEmpty(this.comboBox1.Text))
+                if (!string.IsNullOrEmpty(comboBox1.Text))
                 {
-                    return this.comboBox1.Text.ToCharArray(0, 1)[0];
+                    return comboBox1.Text.ToCharArray(0, 1)[0];
                 }
-                else
-                {
-                    return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator.ToCharArray()[0];
-                }
+                return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator.ToCharArray()[0];
             }
             set
             {
-                this.comboBox1.Text = value.ToString();
+                comboBox1.Text = value.ToString();
             }
         }
 
@@ -76,7 +72,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             StringBuilder sb = new StringBuilder(200);
             bool first = true;
-            foreach (string hdr in this.sampleHeader)
+            foreach (string hdr in _sampleHeader)
             {
                 if (first)
                 {
@@ -85,20 +81,21 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 }
                 else
                 {
-                    sb.AppendFormat("{0}{1}", this.Separator.ToString(), hdr);
+                    sb.AppendFormat("{0}{1}", Separator.ToString(), hdr);
                 }
             }
             MakeSampleHeaderLine(sb);
             MakeSampleHeaderLine(sb);
             sb.Append(Environment.NewLine);
-            this.txtSample.Text = sb.ToString();
+            txtSample.Text = sb.ToString();
         }
 
         private void MakeSampleHeaderLine(StringBuilder sb)
         {
             sb.Append(Environment.NewLine);
             bool first = true;
-            foreach (string hdr in this.sampleHeader)
+            // ReSharper disable once UnusedVariable
+            foreach (string hdr in _sampleHeader)
             {
                 if (first)
                 {
@@ -107,7 +104,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 }
                 else
                 {
-                    sb.AppendFormat("{0}xxx", this.Separator.ToString());
+                    sb.AppendFormat("{0}xxx", Separator);
                 }
             }
         }
@@ -119,13 +116,13 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void FileName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(this.FileName.Text))
+            if (string.IsNullOrEmpty(FileName.Text))
             {
-                this.SaveButton.IsEnabled = false;
+                SaveButton.IsEnabled = false;
             }
             else
             {
-                this.SaveButton.IsEnabled = true;
+                SaveButton.IsEnabled = true;
             }
         }
 
@@ -139,13 +136,13 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             ofd.Title = "Select Import File";
             if (ofd.ShowDialog() == true)
             {
-                this.FileName.Text = ofd.FileName;
+                FileName.Text = ofd.FileName;
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.FileName.Focus();
+            FileName.Focus();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Microsoft.VisualStudio.PlatformUI;
 using System.Collections.Generic;
 using ErikEJ.SqlCeToolbox.Helpers;
 
@@ -8,7 +7,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
     /// <summary>
     /// Interaction logic for RenameDialog.xaml
     /// </summary>
-    public partial class DescriptionDialog : DialogWindow
+    public partial class DescriptionDialog 
     {
         public string TableDescription { get; set; }
         private IList<TableColumnInfo> _columnsInfo;
@@ -36,8 +35,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             {
                 if (value)
                 {
-                    this.Title = "Edit Description";
-                    this.lblTable.Content = "Database Description:";
+                    Title = "Edit Description";
+                    lblTable.Content = "Database Description:";
                 }
             }
         }
@@ -46,23 +45,23 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             Telemetry.TrackPageView(nameof(DescriptionDialog));
             InitializeComponent();
-            this.Background = Helpers.VsThemes.GetWindowBackground();
+            Background = VsThemes.GetWindowBackground();
             if (!string.IsNullOrWhiteSpace(tableDescription))
             {
-                this.txtTableDesc.Text = tableDescription;
+                txtTableDesc.Text = tableDescription;
             }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            DialogResult = true;
             SaveSettings();
             Close();
         }
 
         private void SaveSettings()
         {
-            TableDescription = this.txtTableDesc.Text;
+            TableDescription = txtTableDesc.Text;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -72,7 +71,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.txtTableDesc.Focus();
+            txtTableDesc.Focus();
         }
 
     }

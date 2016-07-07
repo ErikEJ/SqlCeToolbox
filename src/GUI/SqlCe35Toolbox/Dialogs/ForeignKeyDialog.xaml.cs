@@ -2,20 +2,19 @@
 using System.Linq;
 using System.Windows;
 using ErikEJ.SqlCeScripting;
-using Microsoft.VisualStudio.PlatformUI;
 using System;
 using ErikEJ.SqlCeToolbox.Helpers;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
-    public partial class ForeignKeyDialog : DialogWindow
+    public partial class ForeignKeyDialog
     {
         public ForeignKeyDialog(string tableName)
         {
             Telemetry.TrackPageView(nameof(ForeignKeyDialog));
             InitializeComponent();
             _tableName = tableName;
-            this.Background = Helpers.VsThemes.GetWindowBackground();
+            Background = VsThemes.GetWindowBackground();
         }
 
         #region Properties
@@ -63,13 +62,13 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             newKey.UniqueColumns = new ColumnList { pk.ColumnName };
             newKey.UniqueConstraintTableName = pk.TableName;
 
-            this.DialogResult = true;
+            DialogResult = true;
             Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
+            DialogResult = false;
             Close();
         }
         #endregion
@@ -93,8 +92,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             }
 
             cmbPrimaryKeyTableAndColumn.ItemsSource = displayKeys.OrderBy(d => d.DisplayValue).ToList();
-            this.dataSourceTextBox.Focus();
-            this.Title = "Add Foreign Key to table " + _tableName;
+            dataSourceTextBox.Focus();
+            Title = "Add Foreign Key to table " + _tableName;
         }
 
         public class PrimaryKeyDisplay
