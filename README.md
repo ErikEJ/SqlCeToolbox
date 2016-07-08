@@ -26,6 +26,11 @@ You can download the latest daily build from [VSIX Gallery](http://vsixgallery.c
 
 You can also subscribe to the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
 
-Other downloads: [Standalone .exe for SQL Compact 4.0](http://sqlcetoolbox.codeplex.com/releases/view/104096) and [Standalone .exe for SQL Compact 3.5](http://sqlcetoolbox.codeplex.com/releases/view/104781)
+# Other downloads 
+
+[Standalone .exe for SQL Compact 4.0](http://sqlcetoolbox.codeplex.com/releases/view/104096) and [Standalone .exe for SQL Compact 3.5](http://sqlcetoolbox.codeplex.com/releases/view/104781)
+
+[SSMS 2016 add-in (experimental/alpha)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
+To install, unzip contents to folder: C:\Program Files (x86)\Microsoft SQL Server\130\Tools\Binn\ManagementStudio\Extensions\SqlCeToolbox 
 
 ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/toolbox1.png)
