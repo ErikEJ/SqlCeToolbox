@@ -36,6 +36,6 @@ You can also subscribe to the [latest build of the Master branch directly in Vis
 
 # Alpha/experimental downloads 
 
-[SSMS 2016 add-in (experimental/alpha)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) (Link temporarily broken, pls check back soon) 
+[SSMS 2016 add-in (experimental/alpha)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
 
 To install, rename the downloaded .zip to .vsix, and double click!
