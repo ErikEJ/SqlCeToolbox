@@ -84,6 +84,11 @@ namespace ErikEJ.SqlCeToolbox
             }
         }
 
+        public static bool IsVsExtension
+        {
+            get { return false; }
+        }
+
         public void SetStatus(string message)
         {
             int frozen;

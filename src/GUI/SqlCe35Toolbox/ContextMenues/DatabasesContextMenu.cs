@@ -93,7 +93,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             addFromSolutionMenuItem.CommandBindings.Add(addFromSolutionCommandBinding);
             addFromSolutionMenuItem.IsEnabled = ver40IsInstalled || ver35IsInstalled;
-            Items.Add(addFromSolutionMenuItem);
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(addFromSolutionMenuItem);
 
             // Fix connections
             var fixConnectionsCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
@@ -122,7 +122,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             scriptDatabaseGraphMenuItem.CommandBindings.Add(scriptGraphCommandBinding);
-            Items.Add(scriptDatabaseGraphMenuItem);
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(scriptDatabaseGraphMenuItem);
 
             var designDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.DesignDatabase);
@@ -222,7 +222,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBlobMenuItem);
 
 
-
             Items.Add(scriptDatabaseRootMenuItem);
 
             Items.Add(new Separator());
@@ -266,9 +265,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             localDatabaseCacheMenuItem.CommandBindings.Add(localDatabaseCacheCommandBinding);
             localDatabaseCacheMenuItem.IsEnabled = (ver35IsInstalled && DataConnectionHelper.IsSyncFx21Installed());
-            Items.Add(localDatabaseCacheMenuItem);
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(localDatabaseCacheMenuItem);
 
-            Items.Add(new Separator());
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
             var detectDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                             dcmd.CheckCeVersion);
 

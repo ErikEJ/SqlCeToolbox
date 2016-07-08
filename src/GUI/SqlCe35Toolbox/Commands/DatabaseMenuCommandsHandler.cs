@@ -15,6 +15,9 @@ using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.Win32;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel;
+#if SSMS
+using SqlConnectionDialog;
+#endif
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -519,15 +522,19 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var databaseInfo = ValidateMenuInfo(sender);
                 if (databaseInfo == null) return;
-
+#if SSMS
+                var factory = new ConnectionStringFactory();
+                var connStr = factory.BuildConnectionString();
+                var targetInfo = new DatabaseInfo {DatabaseType = DatabaseType.SQLServer, ConnectionString = connStr};
+#else
                 var databaseList = DataConnectionHelper.GetDataConnections(package, includeServerConnections: true, serverConnectionsOnly: true);
-
                 var cd = new ExportDialog(databaseList);
-
                 var result = cd.ShowModal();
                 if (!result.HasValue || result.Value != true || (cd.TargetDatabase.Key == null)) return;
+                var targetInfo = cd.TargetDatabase.Value;
+#endif
                 var bw = new BackgroundWorker();
-                var parameters = new List<object> {databaseInfo.DatabaseInfo, cd.TargetDatabase.Value};
+                var parameters = new List<object> {databaseInfo.DatabaseInfo, targetInfo};
 
                 bw.DoWork += bw_DoWork;
                 bw.RunWorkerCompleted += (s, ea) =>
@@ -1751,7 +1758,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        #endregion
+#endregion
 
         private static string Remove(string s, IEnumerable<char> chars)
         {

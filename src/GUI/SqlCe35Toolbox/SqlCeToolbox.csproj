@@ -295,6 +295,7 @@
     <Compile Include="Options\OptionsPageGeneral.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -306,7 +307,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SqlCeToolboxPackage.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="ToolWindows\ExtEditControl.xaml.cs">
       <DependentUpon>ExtEditControl.xaml</DependentUpon>
