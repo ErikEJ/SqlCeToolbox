@@ -9,8 +9,7 @@
     <ReleaseNotes>https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes</ReleaseNotes>
     <Icon>Resources\data_out.ico</Icon>
   </Metadata>
-  <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
+  <Installation AllUsers="true">
     <InstallationTarget Id="ssms" Version="[13.0,14.0)" />
   </Installation>
   <Dependencies>
