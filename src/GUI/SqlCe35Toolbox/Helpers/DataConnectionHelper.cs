@@ -513,12 +513,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         public static ISqlCeHelper CreateEngineHelper(DatabaseType databaseType)
         {
             switch (databaseType)
-            {
-                case DatabaseType.SQLServer:
+            {               
                 case DatabaseType.SQLCE35:
                     return new SqlCeHelper();
                 case DatabaseType.SQLCE40:
                     return new SqlCeHelper4();
+                case DatabaseType.SQLServer:
                 case DatabaseType.SQLite:
                     return new SqliteHelper();
                 default:

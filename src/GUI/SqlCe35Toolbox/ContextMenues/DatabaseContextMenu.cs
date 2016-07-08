@@ -300,7 +300,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             scriptDatabaseGraphMenuItem.CommandBindings.Add(scriptGraphCommandBinding);
-            Items.Add(scriptDatabaseGraphMenuItem);
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(scriptDatabaseGraphMenuItem);
 
             // Documentation menu item
 
@@ -458,7 +458,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             generateCodeRootMenuItem.Items.Add(syncFxMenuItem);
             generateCodeRootMenuItem.Items.Add(syncFxRootMenuItem);
 
-            if (isSqlCe)
+            if (isSqlCe && SqlCeToolboxPackage.IsVsExtension)
             {
                 Items.Add(generateCodeRootMenuItem);
             }
@@ -475,7 +475,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                     CommandParameter = databaseMenuCommandParameters,
                 };
                 scriptModelMenuItem.CommandBindings.Add(scriptModelCommandBinding);
-                Items.Add(scriptModelMenuItem);
+                if (SqlCeToolboxPackage.IsVsExtension) Items.Add(scriptModelMenuItem);
 
                 //var scriptSqliteEdmxCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 //            dcmd.GenerateEdmxInProject);
@@ -490,7 +490,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 //scriptSqliteEdmxMenuItem.CommandBindings.Add(scriptSqliteEdmxCommandBinding);
                 //Items.Add(scriptSqliteEdmxMenuItem);
             }
-            Items.Add(new Separator());
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
             var addDescriptionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                                                     dcmd.AddDescription);

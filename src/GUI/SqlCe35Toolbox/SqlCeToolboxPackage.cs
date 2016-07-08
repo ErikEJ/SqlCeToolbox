@@ -218,6 +218,11 @@ namespace ErikEJ.SqlCeToolbox
                 && (DataConnectionHelper.IsV35Installed())
                 && (DataConnectionHelper.IsV35DbProviderInstalled());
         }
+
+        public static bool IsVsExtension
+        {
+            get { return false; }
+        }
         /////////////////////////////////////////////////////////////////////////////
         // Overriden Package Implementation
         #region Package Members

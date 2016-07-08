@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="SSMSToolbox.ErikEJ.d6c77c32-fe4b-4f6d-ad5d-f7b755212760" Version="0.1" Language="en-US" Publisher="ErikEJ" />
+    <Identity Id="SSMSToolbox.ErikEJ.d6c77c32-fe4b-4f6d-ad5d-f7b755212760" Version="4.5.0.6" Language="en-US" Publisher="ErikEJ" />
     <DisplayName>SQL Server Compact/SQLite Toolbox for SSMS</DisplayName>
     <Description xml:space="preserve">SQL Server Compact/SQLite Toolbox add-in for Visual Studio. This add-in adds several features to help your embedded database development efforts: Scripting of tables and data, import from SQL Server and CSV files and much, much more.</Description>
     <MoreInfo>https://github.com/ErikEJ/SqlCeToolbox</MoreInfo>
