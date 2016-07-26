@@ -159,6 +159,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.ShrinkDatabase(databaseInfo.DatabaseInfo.ConnectionString);
+                package.SetStatus("Shrink Database completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainShrink");
             }
             catch (Exception ex)
@@ -175,6 +176,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.CompactDatabase(databaseInfo.DatabaseInfo.ConnectionString);
+                package.SetStatus("Compact Database completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainCompact");
             }
             catch (Exception ex)
@@ -191,6 +193,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.VerifyDatabase(databaseInfo.DatabaseInfo.ConnectionString);
+                package.SetStatus("Verify Database completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainVerify");
             }
             catch (Exception ex)
@@ -207,6 +210,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseDeleteCorruptedRows(databaseInfo.DatabaseInfo.ConnectionString);
+                package.SetStatus("Repair Database completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
@@ -223,6 +227,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseRecoverAllOrFail(databaseInfo.DatabaseInfo.ConnectionString);
+                package.SetStatus("Repair Database completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
@@ -239,6 +244,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseRecoverAllPossibleRows(databaseInfo.DatabaseInfo.ConnectionString);
+                package.SetStatus("Repair Database completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
