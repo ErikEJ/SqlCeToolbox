@@ -15,9 +15,6 @@ using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.Win32;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel;
-#if SSMS
-using SqlConnectionDialog;
-#endif
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -523,8 +520,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var databaseInfo = ValidateMenuInfo(sender);
                 if (databaseInfo == null) return;
 #if SSMS
-                var factory = new ConnectionStringFactory();
-                var connStr = factory.BuildConnectionString();
+                var connStr = DataConnectionHelper.PromptForConnectionString(package);
+                if (string.IsNullOrEmpty(connStr)) return;
                 var targetInfo = new DatabaseInfo {DatabaseType = DatabaseType.SQLServer, ConnectionString = connStr};
 #else
                 var databaseList = DataConnectionHelper.GetDataConnections(package, includeServerConnections: true, serverConnectionsOnly: true);

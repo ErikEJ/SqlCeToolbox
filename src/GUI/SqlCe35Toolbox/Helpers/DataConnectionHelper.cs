@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Data.Core;
 using Microsoft.VisualStudio.Data.Services;
 using Microsoft.Win32;
 #if SSMS
-using SqlConnectionDialog;
+using Microsoft.Data.ConnectionUI;
 #else
 using ErikEJ.SqlCeToolbox.Dialogs;
 #endif
@@ -420,8 +420,16 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         public static string PromptForConnectionString(SqlCeToolboxPackage package)
         {
 #if SSMS
-            var factory = new ConnectionStringFactory();
-            return factory.BuildConnectionString();
+            DataSource sqlDataSource = new DataSource("MicrosoftSqlServer", "Microsoft SQL Server");
+            sqlDataSource.Providers.Add(DataProvider.SqlDataProvider);
+            DataConnectionDialog dcd = new DataConnectionDialog();
+            dcd.DataSources.Add(sqlDataSource);
+            dcd.SelectedDataProvider = DataProvider.SqlDataProvider;
+            dcd.SelectedDataSource = sqlDataSource;
+            if (DataConnectionDialog.Show(dcd) == System.Windows.Forms.DialogResult.OK)
+            {
+                return dcd.ConnectionString;
+            }
 #else
             var databaseList = GetDataConnections(package, true, true);
             PickServerDatabaseDialog psd = new PickServerDatabaseDialog(databaseList);
@@ -430,8 +438,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 return psd.SelectedDatabase.Value.ConnectionString;
             }
-            return null;
+            
 #endif
+            return null;
         }
 
         private static string CreateStore(DatabaseType storeDbType)
