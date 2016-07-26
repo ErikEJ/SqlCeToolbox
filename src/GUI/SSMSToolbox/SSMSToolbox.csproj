@@ -407,6 +407,12 @@
     </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.ConnectionUI, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\lib\Microsoft.Data.ConnectionUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.ConnectionUI.Dialog, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\lib\Microsoft.Data.ConnectionUI.Dialog.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ReportViewer.Common, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.ReportViewer.Common.dll</HintPath>
@@ -508,10 +514,6 @@
     </Reference>
     <Reference Include="SqlCeToolBoxSyncFxLib">
       <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
-    </Reference>
-    <Reference Include="SqlConnectionDialog, Version=1.0.0.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SQLConnectionStringUI.1.0.0.5\lib\net45\SqlConnectionDialog.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="SQLiteScripting">
       <HintPath>..\lib\SQLiteScripting.dll</HintPath>
@@ -798,6 +800,11 @@
     <Resource Include="..\SqlCe35Toolbox\Resources\TypeDefinition_521.png">
       <Link>Resources\TypeDefinition_521.png</Link>
     </Resource>
+    <Content Include="..\lib\Microsoft.Data.ConnectionUI.dll">
+      <Link>Microsoft.Data.ConnectionUI.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\data_out.ico" />
     <Resource Include="Resources\Find_5650.png" />
     <Resource Include="Resources\Images_32bit.bmp" />
