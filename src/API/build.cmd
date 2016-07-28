@@ -4,6 +4,7 @@ call ilmexpsqlce.cmd
 cd ..
 echo Copying new Scripting API files...
 copy bin\Release\*.dll ..\..\..\
+copy bin\x86\Release\*.dll ..\..\..\
 
 del ..\..\..\*.pdb
 del ..\..\..\exp*.zip
