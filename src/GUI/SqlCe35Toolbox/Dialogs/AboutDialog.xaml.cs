@@ -256,7 +256,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void CodeplexLink_Click(object sender, RoutedEventArgs e)
         {
-            EnvDteHelper.LaunchUrl("http://sqlcetoolbox.codeplex.com");
+            EnvDteHelper.LaunchUrl("https://github.com/ErikEJ/SqlCeToolbox");
         }
 
         private void DDEXButton_Click(object sender, RoutedEventArgs e)

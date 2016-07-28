@@ -107,7 +107,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             try
             {
                 BuildDatabaseTree(false);
-                e.Result = DataConnectionHelper.CheckVersion("addin35");
+                var product = "addin35";
+#if SSMS
+                product = "ssmsaddin";
+#endif
+                e.Result = DataConnectionHelper.CheckVersion(product);
             }
             catch
             {
@@ -184,6 +188,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void FillDatabaseList(Dictionary<string, DatabaseInfo> databaseList)
         {
+            txtConnections.Text = "Data Connections";
+            txtConnections.Focus();
             if (!string.IsNullOrWhiteSpace(_fatalError))
             {
                 var errorItem = new TreeViewItem
@@ -843,7 +849,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void Update_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://sqlcetoolbox.codeplex.com/");
+            System.Diagnostics.Process.Start("https://github.com/ErikEJ/SqlCeToolbox");
             DataConnectionHelper.LogUsage("ToolbarUpdate");
         }
 
@@ -863,7 +869,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        #region Properties Windows
+#region Properties Windows
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (Properties.Settings.Default.DisplayObjectProperties)
@@ -957,7 +963,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             _frame.Show();
         }
 
-        #endregion
+#endregion
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
         {
