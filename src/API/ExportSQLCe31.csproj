@@ -92,7 +92,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SqlServerCe, Version=9.0.242.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Program Files (x86)\Microsoft SQL Server Compact Edition\v3.1\System.Data.SqlServerCe.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Microsoft SQL Server Compact Edition\v3.1\System.Data.SqlServerCe.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
   </ItemGroup>
