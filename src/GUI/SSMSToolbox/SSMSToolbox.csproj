@@ -360,6 +360,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Resources\SqlCeCLR.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SqlCe35Toolbox\Properties\Settings.settings">
@@ -820,6 +821,7 @@
     <Content Include="Resources\data_out.ico" />
     <Resource Include="Resources\Find_5650.png" />
     <Resource Include="Resources\Images_32bit.bmp" />
+    <None Include="Resources\Install.sql" />
     <Content Include="Resources\license.txt" />
     <Content Include="Resources\LocalDatabaseConnectionStringBuilder.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
