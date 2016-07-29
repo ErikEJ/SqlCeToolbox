@@ -190,6 +190,34 @@ namespace ErikEJ.SqlCeToolbox {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to -- Configuration Region
+        ///--ALTER DATABASE [MyDatabase] SET TRUSTWORTHY ON;
+        ///--GO
+        ///--EXEC sp_configure &apos;clr enabled&apos;, &apos;1&apos;;
+        ///--GO
+        ///--RECONFIGURE
+        ///--GO
+        ///
+        ///-- Clean up Region
+        ///IF EXISTS ( SELECT * 
+        ///            FROM   sysobjects 
+        ///            WHERE  id = object_id(N&apos;[dbo].[GetSqlCeTable]&apos;) 
+        ///                   and OBJECTPROPERTY(id, N&apos;IsProcedure&apos;) = 1 )
+        ///BEGIN
+        ///    DROP PROCEDURE [dbo].[GetSqlCeTable]
+        ///END
+        ///
+        ///IF EXISTS (SELECT [name] FROM sys.assemblies WHERE [name] = N&apos;SqlCeCLR&apos;)
+        ///DROP ASSEMBLY [SqlCeCLR];
+        ///G [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Install {
+            get {
+                return ResourceManager.GetString("Install", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Integer (whole number) data from –2^31 (–2,147,483,648) through 2^31–1 (2,147,483,647).
         ///Storage size is 4 bytes..
         /// </summary>
@@ -355,6 +383,31 @@ namespace ErikEJ.SqlCeToolbox {
             get {
                 object obj = ResourceManager.GetObject("SqlCe40AddinStore", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to using System;
+        ///using System.Collections.Generic;
+        ///using System.Data;
+        ///using System.Data.OleDb;
+        ///using Microsoft.SqlServer.Server;
+        ///     
+        ///namespace ErikEJ.SqlCe
+        ///{
+        ///	public static class ClrAccess
+        ///	{
+        ///        [SqlProcedure()]
+        ///        public static void GetTable(string connectionString, string tableName)
+        ///        {
+        ///            var metaCount = 0;
+        ///            var fieldNames = new List&lt;string&gt;();
+        ///            //--use: &quot;Provider=Microsoft.SQLSERVER.MOBILE.OLEDB.3.0;OLE DB Services=-4;&quot; for SQL Compact 3.1
+        ///   [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SqlCeCLR {
+            get {
+                return ResourceManager.GetString("SqlCeCLR", resourceCulture);
             }
         }
         
