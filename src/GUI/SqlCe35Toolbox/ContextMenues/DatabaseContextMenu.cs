@@ -328,7 +328,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var scriptEfPocoMenuItem = new MenuItem
             {
-                Header = "Add Entity Data Model (Code First from Database) to current Project...",
+                Header = "Add Entity Data Model (Code First from Database) to current Project... (beta)",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
@@ -356,7 +356,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var scriptDcMenuItem = new MenuItem
             {
-                Header = "Add LINQ to SQL DataContext to current Project (needs 3.5)...",
+                Header = "Add LINQ to SQL DataContext to current Project...",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
@@ -368,7 +368,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var scriptWpdcMenuItem = new MenuItem
             {
-                Header = "Add Windows Phone DataContext to current Project (needs 3.5)...",
+                Header = "Add Windows Phone DataContext to current Project...",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,

@@ -7,15 +7,23 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class AppConfigHelper
     {
-        internal static void BuildConfig(string connectionString, string projectPath, string provider, string model, string prefix, string itemName)
+        internal static void BuildEfConfig(string connectionString, string projectPath, string provider, string model, string prefix, string itemName)
         {
-            EntityConnectionStringBuilder builder = new EntityConnectionStringBuilder();
-            builder.Metadata = string.Format("res://*/{0}.csdl|res://*/{0}.ssdl|res://*/{0}.msl", model);
-            builder.Provider = provider;
-            builder.ProviderConnectionString = connectionString;
+            EntityConnectionStringBuilder builder = new EntityConnectionStringBuilder
+            {
+                Metadata = string.Format("res://*/{0}.csdl|res://*/{0}.ssdl|res://*/{0}.msl", model),
+                Provider = provider,
+                ProviderConnectionString = connectionString
+            };
 
+            var connName = string.Format("{0}Entities", model);
+
+            WriteConnectionStringToAppConfig(connName, builder.ConnectionString, projectPath, "System.Data.EntityClient", prefix, itemName);
+        }
+
+        internal static void WriteConnectionStringToAppConfig(string connectionName, string connectionString, string projectPath, string provider, string prefix, string itemName)
+        {
             bool connectionFound = false;
-            string connName = string.Format("{0}Entities", model);
 
             //http://social.msdn.microsoft.com/forums/en-US/winforms/thread/3943ec30-8be5-4f12-9667-3b812f711fc9/
             if (projectPath == null) return;
@@ -34,16 +42,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             { }
             foreach (ConnectionStringSettings connection in config.ConnectionStrings.ConnectionStrings)
             {
-                if (connection.Name == connName)
+                if (connection.Name == connectionName)
                     connectionFound = true;
             }
             if (connectionFound)
-                config.ConnectionStrings.ConnectionStrings.Remove(string.Format("{0}Entities", model));
+                config.ConnectionStrings.ConnectionStrings.Remove(connectionName);
 
-            ConnectionStringSettings csSettings = new ConnectionStringSettings();
-            csSettings.Name = connName;
-            csSettings.ConnectionString = builder.ConnectionString;
-            csSettings.ProviderName = "System.Data.EntityClient";
+            ConnectionStringSettings csSettings = new ConnectionStringSettings
+            {
+                Name = connectionName,
+                ConnectionString = connectionString,
+                ProviderName = provider
+            };
             // Get the connection strings section. 
             ConnectionStringsSection csSection =
                 config.ConnectionStrings;
@@ -55,6 +65,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal static void WriteSettings(string configPath, DatabaseType dbType)
         {
+            
             if (!File.Exists(configPath))
                 return;
             XmlDocument doc;

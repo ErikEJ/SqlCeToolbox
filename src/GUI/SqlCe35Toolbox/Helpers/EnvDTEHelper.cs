@@ -73,6 +73,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             vsProject.References.Add(reference);
         }
 
+        public bool ContainsEf6Reference(Project project)
+        {
+            var vsProject = (VSLangProj.VSProject)project.Object;
+            for (var i = 1; i < vsProject.References.Count + 1; i++)
+            {
+                if (vsProject.References.Item(i).Name.Equals("EntityFramework.SqlServer")
+                    && new Version(vsProject.References.Item(i).Version) >= new Version(6, 0, 0, 0))
+                    return true;
+            }
+            return false;
+        }
+
         public bool ContainsEfSqlCeReference(Project project)
         {
             VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;

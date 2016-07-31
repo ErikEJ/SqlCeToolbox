@@ -221,7 +221,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptDatabaseSchemaDataBlobMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
             scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBlobMenuItem);
 
-
             Items.Add(scriptDatabaseRootMenuItem);
 
             Items.Add(new Separator());
@@ -253,6 +252,20 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             Items.Add(new Separator());
 
+            var scriptEfDacPacCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                dcmd.GenerateEfPocoFromDacPacInProject);
+
+            var scriptEfPocoDacPacMenuItem = new MenuItem
+            {
+                Header = "Add Entity Data Model (Code First from Dacpac) to current Project... (alpha)",
+                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters,
+            };
+            scriptEfPocoDacPacMenuItem.CommandBindings.Add(scriptEfDacPacCommandBinding);
+            scriptEfPocoDacPacMenuItem.IsEnabled = false;
+            if (SqlCeToolboxPackage.VsSupportsEf6()) Items.Add(scriptEfPocoDacPacMenuItem);
+
             var localDatabaseCacheCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                                                                 dcmd.SyncFxGenerateLocalDatabaseCacheCode);
             var localDatabaseCacheMenuItem = new MenuItem
@@ -280,8 +293,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             versionDetectMenuItem.CommandBindings.Add(detectDatabaseCommandBinding);
             Items.Add(versionDetectMenuItem);
-
         }
-
     }
 }
