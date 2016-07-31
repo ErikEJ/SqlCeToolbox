@@ -227,7 +227,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     //Windows Presentation Foundation (WPF)
                     new Guid("{60DC8134-EBA5-43B8-BCC9-BB4BC16C2548}"),
                     //Universal App Shared
-                    new Guid("{D954291E-2A0B-460D-934E-DC6B0785DB48}")
+                    new Guid("{D954291E-2A0B-460D-934E-DC6B0785DB48}"),
+                    //.NET Core project (Project.json)
+                    new Guid("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}")
                 };
             }
         }
