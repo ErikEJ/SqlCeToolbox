@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
 using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
@@ -499,6 +501,130 @@ namespace ErikEJ.SqlCeToolbox.Commands
             finally
             {
                 Properties.Settings.Default.KeepSchemaNames = originalValue;
+            }
+        }
+
+        public void GenerateEfPocoFromDacPacInProject(object sender, ExecutedRoutedEventArgs e)
+        {
+            EnvDteHelper.LaunchUrl("https://github.com/ErikEJ/SqlCeToolbox/wiki/EntityFramework-Reverse-POCO-Code-First-Generator");
+
+            var databaseInfo = ValidateMenuInfo(sender);
+            if (databaseInfo == null) return;
+
+            var isEf6 = SqlCeToolboxPackage.VsSupportsEf6();
+            try
+            {
+                if (_package == null) return;
+                var dte = _package.GetServiceHelper(typeof(DTE)) as DTE;
+                if (dte == null) return;
+                if (dte.Mode == vsIDEMode.vsIDEModeDebug)
+                {
+                    EnvDteHelper.ShowError("Cannot generate code while debugging");
+                    return;
+                }
+
+                var dteH = new EnvDteHelper();
+
+                var project = dteH.GetProject(dte);
+                if (project == null)
+                {
+                    EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the EDM to be placed");
+                    return;
+                }
+                if (dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateNotStarted)
+                {
+                    EnvDteHelper.ShowError("Please build the project before proceeding");
+                    return;
+                }
+                if (isEf6)
+                {
+                    if (!dteH.ContainsEf6Reference(project))
+                    {
+                        EnvDteHelper.ShowError("Please add the EntityFramework NuGet package to the project");
+                        return;
+                    }
+                    if (!File.Exists(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Context.tt")))
+                    {
+                        EnvDteHelper.ShowError("Please install the Entity Framework 6 Tools in order to proceed");
+                        return;
+                    }
+                }
+                if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
+                {
+                    EnvDteHelper.ShowError("The selected project type does not support Entity Framework (please let me know if I am wrong)");
+                    return;
+                }
+
+                if (project.Properties.Item("TargetFrameworkMoniker") == null)
+                {
+                    EnvDteHelper.ShowError("The selected project type does not have a TargetFrameworkMoniker");
+                    return;
+                }
+                if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
+                {
+                    EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                    return;
+                }
+
+                var ofd = new OpenFileDialog
+                {
+                    Filter = "Dacpac (*.dacpac)|*.dacpac|All Files(*.*)|*.*",
+                    CheckFileExists = true,
+                    Multiselect = false,
+                    ValidateNames = true
+                };
+                if (ofd.ShowDialog() != true) return;
+
+                //var dacPath = ofd.FileName;
+
+                //TODO Run DacPac against database on localdb
+                //TODO Provide status feedback during dacpac run (see dachelper)
+
+                var prefix = "App";
+                var configPath = Path.Combine(Path.GetTempPath(), prefix + ".config");
+
+                var item = dteH.GetProjectConfig(project);
+                if (item == null)
+                {
+                    //Add app.config file to project
+                    var cfgSb = new StringBuilder();
+                    cfgSb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+                    cfgSb.AppendLine("<configuration>");
+                    cfgSb.AppendLine("</configuration>");
+                    File.WriteAllText(configPath, cfgSb.ToString(), Encoding.UTF8);
+                    item = project.ProjectItems.AddFromFileCopy(configPath);
+                }
+                if (item != null)
+                {
+                    //TODO Get connection string from above
+                    AppConfigHelper.WriteConnectionStringToAppConfig("MyDbContext", "", project.FullName, "System.Data.SqlClient", prefix, item.Name);
+                }
+
+                var dte2 = (DTE2)_package.GetServiceHelper(typeof(DTE));
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                var solution2 = dte2.Solution as Solution2;
+
+                if (solution2 != null)
+                {
+                    var projectItemTemplate = solution2.GetProjectItemTemplate("EntityFramework Reverse POCO Code First Generator", "CSharp");
+                    if (!string.IsNullOrEmpty(projectItemTemplate))
+                    {
+                        project.ProjectItems.AddFromTemplate(projectItemTemplate, "Database.tt");
+                    }
+                }
+                DataConnectionHelper.LogUsage("DatabaseCreateEFPOCODacpac");
+            }
+            // EDM end
+            catch (Exception ex)
+            {
+                if (ex.GetType() == typeof(FileNotFoundException))
+                {
+                    EnvDteHelper.ShowMessage("Unable to find the EF Reverse POCO Template, is it installed?");
+                }
+                else
+                {
+                    DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                }
             }
         }
 

@@ -15,6 +15,7 @@ using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.Win32;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel;
+using System.Text;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -768,7 +769,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void GenerateEfPocoInProject(object sender, ExecutedRoutedEventArgs e)
         {
-            EnvDteHelper.LaunchUrl("https://github.com/ErikEJ/SqlCeToolbox/wiki/EntityFramework-Reverse-POCO-Code-First-Generator");
+            EnvDteHelper.LaunchUrl("https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator");
 
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
@@ -790,7 +791,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var project = dteH.GetProject(dte);
                 if (project == null)
                 {
-                    EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the EDM to be placed");
+                    EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the code to be placed");
                     return;
                 }
                 if (dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateNotStarted)
@@ -1057,12 +1058,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         cfgSb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
                         cfgSb.AppendLine("<configuration>");
                         cfgSb.AppendLine("</configuration>");
-                        File.WriteAllText(configPath, cfgSb.ToString());
+                        File.WriteAllText(configPath, cfgSb.ToString(), Encoding.UTF8);
                         item = project.ProjectItems.AddFromFileCopy(configPath);
                     }
                     if (item != null)
                     {
-                        AppConfigHelper.BuildConfig(databaseInfo.DatabaseInfo.ConnectionString, project.FullName, provider, model, prefix, item.Name);
+                        AppConfigHelper.BuildEfConfig(databaseInfo.DatabaseInfo.ConnectionString, project.FullName, provider, model, prefix, item.Name);
                         if (edmxDialog.AddPrivateConfig)
                         {
                             AppConfigHelper.WriteSettings(item.FileNames[0], databaseInfo.DatabaseInfo.DatabaseType);
@@ -1780,4 +1781,3 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
     }
 }
-
