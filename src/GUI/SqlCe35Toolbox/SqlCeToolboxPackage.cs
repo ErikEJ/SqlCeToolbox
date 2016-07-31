@@ -221,7 +221,7 @@ namespace ErikEJ.SqlCeToolbox
 
         public static bool IsVsExtension
         {
-            get { return false; }
+            get { return true; }
         }
         /////////////////////////////////////////////////////////////////////////////
         // Overriden Package Implementation

@@ -349,6 +349,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             scriptEdmxMenuItem.CommandBindings.Add(scriptEdmxCommandBinding);
             generateCodeRootMenuItem.Items.Add(scriptEdmxMenuItem);
+            generateCodeRootMenuItem.Items.Add(new Separator());
 
             var scriptDcCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                             dcmd.GenerateDataContextInProject);
