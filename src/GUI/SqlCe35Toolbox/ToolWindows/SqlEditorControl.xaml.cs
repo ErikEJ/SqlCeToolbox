@@ -46,9 +46,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private readonly SqlEditorWindow _parentWindow;
         private DatabaseInfo _dbInfo;
         private string _savedFileName;
-        private readonly FontFamily _fontFamiliy = new FontFamily("Consolas");
-        private readonly double _fontSize = 12;
-        public DTE Dte { get; private set; }
+        private FontFamily _fontFamiliy = new FontFamily("Consolas");
+        private float _fontSize = 12;
         private bool _ignoreDdlErrors;
         private bool _showResultInGrid;
         private bool _showBinaryValuesInResult;
@@ -129,8 +128,15 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 }
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
                 if (package == null) return;
-                Dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+                var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
 
+                if (dte == null) return;
+                var properties = dte.Properties["FontsAndColors", "TextEditor"];
+                _fontFamiliy = new FontFamily(properties.Item("FontFamily").Value.ToString());
+                _fontSize = Convert.ToSingle(properties.Item("FontSize").Value);
+
+                SqlTextBox.FontFamily = _fontFamiliy;
+                SqlTextBox.FontSize = _fontSize;
                 toolBar1.Background = toolTray.Background = VsThemes.GetCommandBackground();
                 dock1.Background = VsThemes.GetWindowBackground();
                 sep4.Background = VsThemes.GetToolbarSeparatorBackground();
