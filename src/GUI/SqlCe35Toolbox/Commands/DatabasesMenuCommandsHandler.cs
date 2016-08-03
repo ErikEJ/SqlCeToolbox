@@ -506,7 +506,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void GenerateEfPocoFromDacPacInProject(object sender, ExecutedRoutedEventArgs e)
         {
-            EnvDteHelper.LaunchUrl("https://github.com/ErikEJ/SqlCeToolbox/wiki/EntityFramework-Reverse-POCO-Code-First-Generator");
+            EnvDteHelper.LaunchUrl("https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator");
 
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
