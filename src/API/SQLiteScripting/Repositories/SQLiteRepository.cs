@@ -312,12 +312,19 @@ namespace ErikEJ.SQLiteScripting
         {
             var result = new List<SqlCeScripting.Constraint>();
             var dt = _cn.GetSchema("ForeignKeys");
-
+            var previousConstraintName = string.Empty; 
+            
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 var fk = new SqlCeScripting.Constraint();
                 fk.ColumnName = dt.Rows[i]["FKEY_FROM_COLUMN"].ToString();
-                fk.ConstraintName = dt.Rows[i]["CONSTRAINT_NAME"].ToString();
+                var constraintName = dt.Rows[i]["CONSTRAINT_NAME"].ToString();
+                var fkOrdinal = int.Parse(dt.Rows[i]["FKEY_FROM_ORDINAL_POSITION"].ToString());
+                if (fkOrdinal == 0)
+                {
+                    previousConstraintName = constraintName;
+                }
+                fk.ConstraintName = previousConstraintName;
                 fk.ConstraintTableName = dt.Rows[i]["TABLE_NAME"].ToString();
                 fk.DeleteRule = dt.Rows[i]["FKEY_ON_DELETE"].ToString();
                 fk.UniqueColumnName = dt.Rows[i]["FKEY_TO_COLUMN"].ToString();

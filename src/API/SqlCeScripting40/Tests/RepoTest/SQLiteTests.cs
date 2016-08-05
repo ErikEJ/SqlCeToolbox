@@ -7,7 +7,7 @@ using ErikEJ.SqlCeScripting;
 
 public class SQLiteScriptingTests
 {
-    private const string dbPath = @"C:\Users\Erik\SkyDrive\Dokumenter\Code\SQLCE\exportsqlce\SqlCeScripting40\Tests\";
+    private const string dbPath = @"C:\Code\SqlCeToolbox\src\API\SqlCeScripting40\Tests\";
 
     private string chinookConnectionString = string.Format(
             @"Data Source={0}chinook.db", dbPath);
@@ -15,8 +15,8 @@ public class SQLiteScriptingTests
     private string infoConnectionString = string.Format(
         @"Data Source={0}inf2700_orders-1.db", dbPath);
     
-    private string dtoConnectionString = string.Format(
-        @"Data Source={0}dto.db", dbPath);
+    private string fkConnectionString = string.Format(
+        @"Data Source={0}FkMultiKey.db", dbPath);
 
     [Test]
     public void TestGetAllTableNames()
@@ -135,6 +135,18 @@ public class SQLiteScriptingTests
     }
 
     [Test]
+    public void TestGetAllForeignKeysMultiColumnKey()
+    {
+        var list = new List<ErikEJ.SqlCeScripting.Constraint>();
+        using (IRepository repo = new SQLiteRepository(fkConnectionString))
+        {
+            list = repo.GetAllForeignKeys();
+        }
+        Assert.IsTrue(list.Count == 1);
+        Assert.IsTrue(list[0].ConstraintName == "FK_BEVERAGE_DIRECTORY_0_0");
+    }
+
+    [Test]
     public void TestGetAllIndexes()
     {
         var list = new List<Index>();
@@ -228,8 +240,8 @@ public class SQLiteScriptingTests
             reader = repo.GetDataFromReader("Album", columns);
             while (reader.Read())
             {
-                Assert.IsTrue(reader.GetValue(0).GetType() == typeof(long));
-                Assert.IsTrue(reader.GetValue(2).GetType() == typeof(long));
+                Assert.IsTrue(reader.GetValue(0) is long);
+                Assert.IsTrue(reader.GetValue(2) is long);
             }
         }
     }
