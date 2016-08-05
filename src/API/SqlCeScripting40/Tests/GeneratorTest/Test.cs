@@ -1,9 +1,6 @@
 ﻿using System;
 using System.IO;
 using NUnit.Framework;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.SqlServerCe;
 using ErikEJ.SqlCeScripting;
 using System.Collections.Generic;
 using ErikEJ.SQLiteScripting;
@@ -21,7 +18,7 @@ using System.Text.RegularExpressions;
             DataReaderTest
         }
 
-        private const string dbPath = @"C:\Users\Erik\SkyDrive\Dokumenter\Code\SQLCE\exportsqlce\SqlCeScripting40\Tests\";
+        private const string dbPath = @"C:\Code\SqlCeToolbox\src\API\SqlCeScripting40\Tests\";
         private string chinookSQLiteConnectionString = string.Format(
                 @"Data Source={0}chinook.db", dbPath);
         private string dtoConnectionString = string.Format(
