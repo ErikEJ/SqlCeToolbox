@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -540,7 +541,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     if (!dteH.ContainsEf6Reference(project))
                     {
-                        EnvDteHelper.ShowError("Please add the EntityFramework NuGet package to the project");
+                        EnvDteHelper.ShowError("Please add the EntityFramework 6.x NuGet package to the project");
                         return;
                     }
                     if (!File.Exists(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Context.tt")))
@@ -575,10 +576,17 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 };
                 if (ofd.ShowDialog() != true) return;
 
-                //var dacPath = ofd.FileName;
+                var dacPacFileName = ofd.FileName;
+                
+                var connectionStringBuilder = new SqlConnectionStringBuilder
+                {
+                    DataSource = @"(localdb)\mssqllocaldb",
+                    InitialCatalog = Path.GetFileNameWithoutExtension(dacPacFileName),
+                    IntegratedSecurity = true
+                };
 
-                //TODO Run DacPac against database on localdb
-                //TODO Provide status feedback during dacpac run (see dachelper)
+                var dacFxHelper = new DacFxHelper(_package);
+                dacFxHelper.RunDacPackage(connectionStringBuilder, dacPacFileName);
 
                 var prefix = "App";
                 var configPath = Path.Combine(Path.GetTempPath(), prefix + ".config");
@@ -597,7 +605,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (item != null)
                 {
                     //TODO Get connection string from above
-                    AppConfigHelper.WriteConnectionStringToAppConfig("MyDbContext", "", project.FullName, "System.Data.SqlClient", prefix, item.Name);
+                    AppConfigHelper.WriteConnectionStringToAppConfig("MyDbContext", connectionStringBuilder.ConnectionString, project.FullName, "System.Data.SqlClient", prefix, item.Name);
                 }
 
                 var dte2 = (DTE2)_package.GetServiceHelper(typeof(DTE));
@@ -611,10 +619,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     {
                         project.ProjectItems.AddFromTemplate(projectItemTemplate, "Database.tt");
                     }
+                    else
+                    {
+                        EnvDteHelper.ShowMessage("Please run Custom Tool against existing Database.tt file");
+                    }
                 }
                 DataConnectionHelper.LogUsage("DatabaseCreateEFPOCODacpac");
             }
-            // EDM end
             catch (Exception ex)
             {
                 if (ex.GetType() == typeof(FileNotFoundException))

@@ -68,6 +68,9 @@
       <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.SqlServer.Dac">
+      <HintPath>C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
       <Private>True</Private>
@@ -189,6 +192,7 @@
     <Compile Include="ContextMenues\IndexContextMenu.cs" />
     <Compile Include="ContextMenues\TableContextMenu.cs" />
     <Compile Include="ContextMenues\TablesContextMenu.cs" />
+    <Compile Include="Helpers\DacFxHelper.cs" />
     <Compile Include="Helpers\Telemetry.cs" />
     <Compile Include="Options\OptionsPageAdvanced.cs">
       <SubType>Component</SubType>
