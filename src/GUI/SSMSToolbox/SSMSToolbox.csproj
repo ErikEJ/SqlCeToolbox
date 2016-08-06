@@ -187,6 +187,9 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\AppConfigHelper.cs">
       <Link>Helpers\AppConfigHelper.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\DacFxHelper.cs">
+      <Link>Helpers\DacFxHelper.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\DataConnectionHelper.cs">
       <Link>Helpers\DataConnectionHelper.cs</Link>
     </Compile>
@@ -423,6 +426,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Dac">
+      <HintPath>C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\Microsoft.SqlServer.Dac.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>

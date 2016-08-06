@@ -263,7 +263,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             scriptEfPocoDacPacMenuItem.CommandBindings.Add(scriptEfDacPacCommandBinding);
-            scriptEfPocoDacPacMenuItem.IsEnabled = false;
             if (SqlCeToolboxPackage.VsSupportsEf6()) Items.Add(scriptEfPocoDacPacMenuItem);
 
             var localDatabaseCacheCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
