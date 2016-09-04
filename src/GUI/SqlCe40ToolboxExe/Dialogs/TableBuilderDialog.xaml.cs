@@ -1,11 +1,10 @@
 ﻿using System.Windows;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
 using ErikEJ.SqlCeScripting;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Linq;
+using ErikEJ.SqlCeToolbox.Helpers;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {

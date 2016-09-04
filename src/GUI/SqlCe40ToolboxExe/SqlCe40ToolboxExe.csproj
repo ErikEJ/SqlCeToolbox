@@ -52,7 +52,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug40\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -72,10 +72,10 @@
     <ApplicationIcon>Resources\data_out.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>16E9295792640C32FCE04DBBC660D2096CA4265A</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>5148018CA7AE350A14B146C1CCDC460D8056BDEC</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>SqlCe40ToolboxExe_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>SqlCe40ToolboxExe_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -388,6 +388,7 @@
       <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
     <None Include="Resources\SqlCeSyntax.xshd" />
+    <None Include="SqlCe40ToolboxExe_1_TemporaryKey.pfx" />
     <None Include="SqlCe40ToolboxExe_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -489,13 +490,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Templates\report.xsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
-      <Project>{C6031278-5612-429F-A485-5169392DB51C}</Project>
-      <Name>SqlCeToolbox.Common</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\lib\SqlCeToolbox.Common.dll">
@@ -750,6 +744,12 @@
     <EmbeddedResource Include="..\lib\Xceed.Wpf.Toolkit.dll">
       <Link>Xceed.Wpf.Toolkit.dll</Link>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
+      <Project>{c6031278-5612-429f-a485-5169392db51c}</Project>
+      <Name>SqlCeToolbox.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
