@@ -146,6 +146,11 @@ namespace ExportSqlCE
 #endif
                             generator.ExcludeTables(exclusions);
                             Console.WriteLine("Generating the tables....");
+                            if (sqlite)
+                            {
+                                generator.GenerateSqlitePrefix();
+                            }
+
                             if (includeSchema)
                             {
 #if V31
@@ -160,10 +165,10 @@ namespace ExportSqlCE
                                 generator.GenerateTableContent(false);
                                 Console.WriteLine("Generating the indexes....");
                                 generator.GenerateIndex();
+                                generator.GenerateSqliteSuffix();
                             }
                             else
                             {
-
                                 if (sqlAzure && includeSchema)
                                 {
                                     Console.WriteLine("Generating the primary keys (SQL Azure)....");
