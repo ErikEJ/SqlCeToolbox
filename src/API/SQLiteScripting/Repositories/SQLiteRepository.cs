@@ -124,7 +124,7 @@ namespace ErikEJ.SQLiteScripting
                 }
                 col.ColumnName = dt.Rows[i]["COLUMN_NAME"].ToString();
                 col.DataType = dt.Rows[i]["DATA_TYPE"].ToString();
-                if ((bool)dt.Rows[i]["PRIMARY_KEY"] && col.DataType == "INTEGER")
+                if ((bool)dt.Rows[i]["PRIMARY_KEY"] && col.DataType.ToLowerInvariant() == "integer")
                 {
                     col.AutoIncrementBy = 1;
                     col.AutoIncrementSeed = 1;
