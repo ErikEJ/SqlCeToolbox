@@ -436,10 +436,11 @@ GO";
         {
             //cloud_service_product_infos
             //;DateFormatString=yyyy-MM-dd HH:mm:ss zzz
-            using (IRepository sourceRepository = new SQLiteRepository(@"Data Source=C:\Users\erik\Downloads\spiceworks_prod.db"))
+            using (IRepository sourceRepository = new SQLiteRepository(@"Data Source=C:\Code\SqlCeToolbox\src\API\SqlCeScripting40\Tests\chinook.db"))
             {
-                var generator = new Generator4(sourceRepository, "sw.sql");
-                generator.GenerateTableCreate("alerts");
+                var generator = new Generator4(sourceRepository, "sw.sql", false, false, true);
+                generator.GenerateTableCreate("Artist");
+                Assert.IsTrue(generator.GeneratedScript.Contains("INTEGER"));
             }
         }
 
