@@ -1,42 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
-  <Identifier Id="41521019-e4c7-480c-8ea8-fc4a2c6f50aa">
-    <Name>SQL Server Compact/SQLite Toolbox</Name>
-    <Author>ErikEJ</Author>
-    <Version>4.5.0.6</Version>
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="SQLCeToolbox.ErikEJ.41521019-e4c7-480c-8ea8-fc4a2c6f50aa" Version="4.5.0.9" Language="en-US" Publisher="ErikEJ" />
+    <DisplayName>SQL Server Compact/SQLite Toolbox</DisplayName>
     <Description xml:space="preserve">SQL Server Compact/SQLite Toolbox add-in for Visual Studio. This add-in adds several features to help your embedded database development efforts: Scripting of tables and data, import from SQL Server and CSV files and much, much more.</Description>
-    <Locale>1033</Locale>
-    <MoreInfoUrl>https://github.com/ErikEJ/SqlCeToolbox</MoreInfoUrl>
-    <License>Resources/license.txt</License>
+    <MoreInfo>https://github.com/ErikEJ/SqlCeToolbox</MoreInfo>
+    <License>Resources\license.txt</License>
     <GettingStartedGuide>https://github.com/ErikEJ/SqlCeToolbox/wiki</GettingStartedGuide>
-    <Icon>Resources/data_out.png</Icon>
-    <PreviewImage>Resources/toolbox2.png</PreviewImage>
-    <InstalledByMsi>false</InstalledByMsi>
-    <SupportedProducts>
-      <VisualStudio Version="10.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="11.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="12.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="14.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>
-      <VisualStudio Version="15.0">
-        <Edition>Pro</Edition>
-      </VisualStudio>      
-    </SupportedProducts>
-    <SupportedFrameworkRuntimeEdition MinVersion="4.0" MaxVersion="4.9" />
-  </Identifier>
-  <References>
-    <Reference Id="Microsoft.VisualStudio.MPF" MinVersion="10.0">
-      <Name>Visual Studio MPF</Name>
-    </Reference>
-  </References>
-  <Content>
-    <VsPackage>|%CurrentProject%;PkgdefProjectOutputGroup|</VsPackage>
-  </Content>
-</Vsix>
+    <ReleaseNotes>https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes</ReleaseNotes>
+    <Icon>Resources\data_out.ico</Icon>
+    <PreviewImage>Resources\toolbox2.png</PreviewImage>
+    <Tags>sql sqlite sqlce entityframework ef linq codegeneration database ssdt ssms </Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,15.0)" />
+    <InstallationTarget Version="[12.0,15.0)" Id="Microsoft.VisualStudio.Community" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.11.0" DisplayName="Visual Studio MPF 11.0" d:Source="Installed" Version="[11.0]" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+  </Assets>
+</PackageManifest>

@@ -8,6 +8,7 @@
     <GettingStartedGuide>https://github.com/ErikEJ/SqlCeToolbox/wiki</GettingStartedGuide>
     <ReleaseNotes>https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes</ReleaseNotes>
     <Icon>Resources\data_out.ico</Icon>
+    <Tags>sql sqlite sqlce entityframework ef linq codegeneration database ssdt ssms</Tags>
   </Metadata>
   <Installation AllUsers="true">
     <InstallationTarget Id="ssms" Version="[13.0,14.0)" />
