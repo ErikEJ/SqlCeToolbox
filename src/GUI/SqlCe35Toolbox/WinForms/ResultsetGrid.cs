@@ -141,6 +141,8 @@ namespace ErikEJ.SqlCeToolbox.WinForms
                 
                 var sqliteadapter = new SQLiteDataAdapter();
                 sqliteadapter.SelectCommand = command;
+                // ReSharper disable once UnusedVariable
+                var cb = new SQLiteCommandBuilder(sqliteadapter);
                 return sqliteadapter;
             }
             else
