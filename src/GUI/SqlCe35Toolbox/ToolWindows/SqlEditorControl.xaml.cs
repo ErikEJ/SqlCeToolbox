@@ -126,17 +126,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 {
                     overflowGrid.Visibility = Visibility.Collapsed;
                 }
-                var package = _parentWindow.Package as SqlCeToolboxPackage;
-                if (package == null) return;
-                var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
-
-                if (dte == null) return;
-                var properties = dte.Properties["FontsAndColors", "TextEditor"];
-                _fontFamiliy = new FontFamily(properties.Item("FontFamily").Value.ToString());
-                _fontSize = Convert.ToSingle(properties.Item("FontSize").Value);
-
-                SqlTextBox.FontFamily = _fontFamiliy;
-                SqlTextBox.FontSize = _fontSize;
+                SetEditorFont();
                 toolBar1.Background = toolTray.Background = VsThemes.GetCommandBackground();
                 dock1.Background = VsThemes.GetWindowBackground();
                 sep4.Background = VsThemes.GetToolbarSeparatorBackground();
@@ -159,6 +149,21 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 DataConnectionHelper.SendError(ex, DatabaseInfo != null ? DatabaseInfo.DatabaseType : DatabaseType.SQLServer);
             }
+        }
+
+        private void SetEditorFont()
+        {
+            var package = _parentWindow.Package as SqlCeToolboxPackage;
+            if (package == null) return;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+            if (dte == null) return;
+            var properties = dte.Properties["FontsAndColors", "TextEditor"];
+
+            _fontSize = Convert.ToSingle(properties.Item("FontSize").Value);
+            SqlTextBox.FontSize = _fontSize;
+
+            //_fontFamiliy = new FontFamily(properties.Item("FontFamily").Value.ToString());
+            //SqlTextBox.FontFamily = _fontFamiliy;
         }
 
         private void LoadDefaultOptions()
