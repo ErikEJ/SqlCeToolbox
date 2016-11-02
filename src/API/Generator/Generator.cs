@@ -32,11 +32,10 @@ namespace ErikEJ.SqlCeScripting
         private List<Constraint> _allForeignKeys;
         private List<PrimaryKey> _allPrimaryKeys;
         private List<Index> _allIndexes;
-        private bool _batchForAzure = false;
-        private bool _sqlite = false;
-        private bool _keepSchema = false;
-        private bool _preserveDateAndDateTime2 = false;
-
+        private bool _batchForAzure;
+        private bool _sqlite;
+        private bool _keepSchema;
+        private bool _preserveDateAndDateTime2;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Generator"/> class.
@@ -181,7 +180,7 @@ namespace ErikEJ.SqlCeScripting
         public string ScriptDatabaseToFile(Scope scope)
         {
             Helper.FinalFiles = _outFile;
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            Stopwatch sw = new Stopwatch();
             sw.Start();
             switch (scope)
             {
@@ -274,7 +273,8 @@ namespace ErikEJ.SqlCeScripting
             if (_sqlite)
                 unicodePrefix = string.Empty;
             // Skip rowversion column
-            Int32 rowVersionOrdinal = _repository.GetRowVersionOrdinal(tableName);
+            var rowVersionOrdinal = _repository.GetRowVersionOrdinal(tableName);
+            if (_sqlite) rowVersionOrdinal = -1;
             List<Column> columns = _allColumns.Where(c => c.TableName == tableName).OrderBy(c => c.Ordinal).ToList();
             var nvarcharSizes = columns.Where(x => x.DataType == "nvarchar" && x.CharacterMaxLength > 0)
                 .ToDictionary(x => x.ColumnName, x => x.CharacterMaxLength);
@@ -1824,10 +1824,8 @@ namespace ErikEJ.SqlCeScripting
 
         private string GenerateColumLine(bool includeData, Column col, bool azure)
         {
-            string line = string.Empty;
+            string line;
 
-            if (_sqlite && col.DataType == "rowversion")
-                return line;
             string colDefault = col.ColumnHasDefault ? "DEFAULT " + col.ColumnDefault + " " : string.Empty;
             if (_sqlite && col.ColumnHasDefault)
             {
