@@ -61,7 +61,7 @@ namespace ErikEJ.SqlCeToolbox {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SQL Server Compact/SQLite Toolbox.
+        ///   Looks up a localized string similar to SQLite/SQL Server Compact Toolbox.
         /// </summary>
         internal static string App {
             get {
@@ -469,7 +469,7 @@ namespace ErikEJ.SqlCeToolbox {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SQL Server Compact/SQLite Toolbox.
+        ///   Looks up a localized string similar to SQLite/SQL Server Compact Toolbox.
         /// </summary>
         internal static string ToolWindowTitle {
             get {
