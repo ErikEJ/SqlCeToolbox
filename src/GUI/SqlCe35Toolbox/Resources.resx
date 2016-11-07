@@ -209,7 +209,7 @@ Storage size is 2 bytes.</value>
 Storage size is 1 byte.</value>
   </data>
   <data name="ToolWindowTitle" xml:space="preserve">
-    <value>SQL Server Compact/SQLite Toolbox</value>
+    <value>SQLite/SQL Server Compact Toolbox</value>
   </data>
   <data name="binary" xml:space="preserve">
     <value>Fixed-length binary data with a maximum length of 8000 bytes. Default length = 1.
@@ -306,7 +306,7 @@ Storage size varies. It is the length of the value in bytes.</value>
     <value>System.Data.SQLite</value>
   </data>
   <data name="App" xml:space="preserve">
-    <value>SQL Server Compact/SQLite Toolbox</value>
+    <value>SQLite/SQL Server Compact Toolbox</value>
   </data>
   <data name="SQLiteEF6InvariantName" xml:space="preserve">
     <value>System.Data.SQLite.EF6</value>
