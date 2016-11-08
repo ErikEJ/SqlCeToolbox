@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Xml;
 using EnvDTE;
 using ErikEJ.SqlCeToolbox.Dialogs;
@@ -19,6 +19,8 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Search;
 using Microsoft.Win32;
+using Brushes = System.Windows.Media.Brushes;
+using FontFamily = System.Windows.Media.FontFamily;
 
 namespace ErikEJ.SqlCeToolbox.ToolWindows
 {
@@ -27,12 +29,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
     /// </summary>
     public partial class SqlEditorControl
     {
-        public DatabaseInfo DatabaseInfo 
+        public DatabaseInfo DatabaseInfo
         {
-            get
-            {
-                return _dbInfo;
-            }
+            get { return _dbInfo; }
             set
             {
                 if (value != null)
@@ -41,7 +40,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     _parentWindow.Caption = _dbInfo.Caption;
                 }
             }
-        } 
+        }
+
         //This property must be set by parent window
         private readonly SqlEditorWindow _parentWindow;
         private DatabaseInfo _dbInfo;
@@ -68,10 +68,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         public string SqlText
         {
-            get
-            {
-                return SqlTextBox.Text;
-            }
+            get { return SqlTextBox.Text; }
             set
             {
                 if (!string.IsNullOrEmpty(value))
@@ -81,7 +78,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     SqlTextBox.Text = value;
                     _isDirty = false;
                     if (value.Length <= 10000 && SqlTextBox.SyntaxHighlighting == null)
-                        LoadHighlighter();                    
+                        LoadHighlighter();
                     Resultspanel.Children.Clear();
                 }
                 else
@@ -95,10 +92,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         public bool IsDirty
         {
-            get
-            {
-                return _isDirty;
-            }
+            get { return _isDirty; }
             set
             {
                 _isDirty = value;
@@ -147,7 +141,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             catch (Exception ex)
             {
-                DataConnectionHelper.SendError(ex, DatabaseInfo != null ? DatabaseInfo.DatabaseType : DatabaseType.SQLServer);
+                DataConnectionHelper.SendError(ex,
+                    DatabaseInfo != null ? DatabaseInfo.DatabaseType : DatabaseType.SQLServer);
             }
         }
 
@@ -162,8 +157,28 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             _fontSize = Convert.ToSingle(properties.Item("FontSize").Value);
             SqlTextBox.FontSize = _fontSize;
 
-            //_fontFamiliy = new FontFamily(properties.Item("FontFamily").Value.ToString());
-            //SqlTextBox.FontFamily = _fontFamiliy;
+            _fontFamiliy = GetFontFamily(properties, _fontSize);
+            SqlTextBox.FontFamily = _fontFamiliy;
+        }
+
+        private FontFamily GetFontFamily(EnvDTE.Properties properties, float fontSize)
+        {
+            var fontName = properties.Item("FontFamily").Value.ToString();
+            try
+            {
+                using (var fontTester = new Font(
+                    new System.Drawing.FontFamily(fontName),
+                    fontSize, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel))
+                {
+                    return fontTester.Name == fontName
+                        ? new FontFamily(fontName)
+                        : new FontFamily("Consolas");
+                }
+            }
+            catch 
+            {
+                return new FontFamily("Consolas");
+            }
         }
 
         private void LoadDefaultOptions()
