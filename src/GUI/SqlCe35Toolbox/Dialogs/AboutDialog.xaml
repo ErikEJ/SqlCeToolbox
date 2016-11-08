@@ -14,7 +14,7 @@
             <RowDefinition Height="35" />
         </Grid.RowDefinitions>
         <TextBlock VerticalAlignment="Center" Margin="5,20,5,396" TextWrapping="Wrap" Height="35">                
-            <Bold> SQL Server Compact/SQLite Toolbox </Bold> for Visual Studio</TextBlock>
+            <Bold>SQLite/SQL Server Compact Toolbox </Bold> for Visual Studio</TextBlock>
         <TextBlock Margin="5,0,5,280" Height="86" VerticalAlignment="Bottom">
                 For support, feedback and full source code, go to:<LineBreak/>
                 <Bold>
