@@ -24,7 +24,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
     public partial class SqlEditorControl
     {
         public string Database { get; set; } //This property must be set by parent window
-        
+
         public SqlEditorControl()
         {
             InitializeComponent();
@@ -40,10 +40,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         public string SqlText
         {
-            get
-            {
-                return SqlTextBox.Text;
-            }
+            get { return SqlTextBox.Text; }
             set
             {
                 if (value != null)
@@ -69,7 +66,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 ms = new MemoryStream(SqlCeToolbox.Resources.SqlCeSyntax);
                 SqlTextBox.SyntaxHighlighting = HighlightingLoader.Load(new XmlTextReader(ms),
-                HighlightingManager.Instance);
+                    HighlightingManager.Instance);
             }
             finally
             {
@@ -143,6 +140,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 MessageBox.Show(ex.ToString());
             }
         }
+
         private void ParseButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(SqlTextBox.Text))
@@ -222,7 +220,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private void OpenScript()
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*";
+            ofd.Filter =
+                "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*";
             ofd.CheckFileExists = true;
             ofd.Multiselect = false;
             ofd.ValidateNames = true;
@@ -236,7 +235,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private void SaveScript()
         {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*";
+            sfd.Filter =
+                "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*";
             sfd.ValidateNames = true;
             sfd.Title = "Save script as";
             if (sfd.ShowDialog() == true && !string.IsNullOrWhiteSpace(this.SqlTextBox.Text))
@@ -247,7 +247,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void ExecuteSqlScriptInEditor()
         {
-            Debug.Assert(!string.IsNullOrEmpty(Database), "Database property of this control has not been set by parent window or control");
+            Debug.Assert(!string.IsNullOrEmpty(Database),
+                "Database property of this control has not been set by parent window or control");
 
             using (var repository = RepoHelper.CreateRepository(Database))
             {
@@ -321,12 +322,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     {
                         var grid = new DataGrid();
                         grid.AutoGenerateColumns = true;
-                        grid.AutoGeneratingColumn += new EventHandler<DataGridAutoGeneratingColumnEventArgs>(grid_AutoGeneratingColumn);
+                        grid.AutoGeneratingColumn +=
+                            new EventHandler<DataGridAutoGeneratingColumnEventArgs>(grid_AutoGeneratingColumn);
                         grid.IsReadOnly = true;
                         grid.FontSize = 14;
                         grid.FontFamily = new System.Windows.Media.FontFamily("Consolas");
                         grid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-                        grid.ItemsSource = ((IListSource)table).GetList();
+                        grid.ItemsSource = ((IListSource) table).GetList();
                         DockPanel.SetDock(grid, Dock.Top);
                         this.Resultspanel.Children.Add(grid);
                     }
@@ -338,7 +340,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         {
                             results.Append(column + "\t");
                         }
-                        results.AppendLine("\n--------------------------------------------------------------------------------------");
+                        results.AppendLine(
+                            "\n--------------------------------------------------------------------------------------");
 
                         foreach (DataRow row in table.Rows)
                         {
@@ -349,21 +352,23 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                                     //This formatting is optional (causes perf degradation)
                                     if (item.GetType() == typeof(Byte[]))
                                     {
-                                        Byte[] buffer = (Byte[])item;
+                                        Byte[] buffer = (Byte[]) item;
                                         results.Append("0x");
                                         for (int i = 0; i < buffer.Length; i++)
                                         {
-                                            results.Append(buffer[i].ToString("X2", System.Globalization.CultureInfo.InvariantCulture));
+                                            results.Append(buffer[i].ToString("X2",
+                                                System.Globalization.CultureInfo.InvariantCulture));
                                         }
                                         results.Append("\t");
                                     }
                                     else if (item.GetType() == typeof(DateTime))
                                     {
-                                        results.Append(((DateTime)item).ToString("O") + "\t");
+                                        results.Append(((DateTime) item).ToString("O") + "\t");
                                     }
                                     else if (item.GetType() == typeof(Double) || item.GetType() == typeof(Single))
                                     {
-                                        string intString = Convert.ToDouble(item).ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+                                        string intString = Convert.ToDouble(item)
+                                            .ToString("R", System.Globalization.CultureInfo.InvariantCulture);
                                         results.Append(intString + "\t");
                                     }
                                     else
@@ -375,11 +380,12 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                                 {
                                     if (item.GetType() == typeof(DateTime))
                                     {
-                                        results.Append(((DateTime)item).ToString("O") + "\t");
+                                        results.Append(((DateTime) item).ToString("O") + "\t");
                                     }
                                     else if (item.GetType() == typeof(Double) || item.GetType() == typeof(Single))
                                     {
-                                        string intString = Convert.ToDouble(item).ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+                                        string intString = Convert.ToDouble(item)
+                                            .ToString("R", System.Globalization.CultureInfo.InvariantCulture);
                                         results.Append(intString + "\t");
                                     }
                                     else
@@ -427,5 +433,53 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         }
 
         #endregion
+
+        private void ExportButtonClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (Resultspanel.Children.Count > 0)
+                {
+                    if (Properties.Settings.Default.ShowResultInGrid)
+                    {
+                        var dataGrid = Resultspanel.Children[0] as DataGrid;
+                        if (dataGrid == null) return;
+                        var sfd = new SaveFileDialog();
+                        sfd.Filter = "CSV file (*.csv)|*.csv|All Files(*.*)|*.*";
+                        sfd.ValidateNames = true;
+                        sfd.Title = "Save result as CSV";
+                        if (sfd.ShowDialog() == true)
+                        {
+                            dataGrid.SelectAllCells();
+                            dataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                            ApplicationCommands.Copy.Execute(null, dataGrid);
+                            dataGrid.UnselectAllCells();
+                            var result = (string) Clipboard.GetData(DataFormats.CommaSeparatedValue);
+                            Clipboard.Clear();
+                            File.WriteAllText(sfd.FileName, result);
+                        }
+                    }
+                    else
+                    {
+                        var textBox = Resultspanel.Children[0] as TextBox;
+                        if (textBox == null) return;
+                        var sfd = new SaveFileDialog();
+                        sfd.Filter = "CSV file (*.csv)|*.csv|All Files(*.*)|*.*";
+                        sfd.ValidateNames = true;
+                        sfd.Title = "Save result as CSV";
+                        if (sfd.ShowDialog() == true)
+                        {
+                            var separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+                            var result = textBox.Text.Replace("\t", separator);
+                            File.WriteAllText(sfd.FileName, result);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
     }
 }
