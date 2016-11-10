@@ -2,10 +2,8 @@
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using EnvDTE;
-using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.VisualStudio;
@@ -34,17 +32,17 @@ namespace ErikEJ.SqlCeToolbox
         /// not sited yet inside Visual Studio environment. The place to do all the other 
         /// initialization is the Initialize method.
         /// </summary>
-        public SqlCeToolboxPackage()
-        {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
-        }
+        //public SqlCeToolboxPackage()
+        //{
+        //    //Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
+        //}
 
         public void SetStatus(string message)
         {
-            int frozen;
-            IVsStatusbar statusBar = GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+            var statusBar = GetService(typeof(SVsStatusbar)) as IVsStatusbar;
             if (statusBar != null)
             {
+                int frozen;
                 statusBar.IsFrozen(out frozen);
                 if (!Convert.ToBoolean(frozen))
                 {
@@ -59,20 +57,17 @@ namespace ErikEJ.SqlCeToolbox
             const int visible = 1;
             const int doNotClearWithSolution = 0;
 
-            IVsOutputWindow outputWindow;
-            IVsOutputWindowPane outputWindowPane;
-            int hr;
-
             // Get the output window
-            outputWindow = GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+            var outputWindow = GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
             // The General pane is not created by default. We must force its creation
             if (outputWindow != null)
             {
-                hr = outputWindow.CreatePane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, "General", visible, doNotClearWithSolution);
+                var hr = outputWindow.CreatePane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, "General", visible, doNotClearWithSolution);
                 ErrorHandler.ThrowOnFailure(hr);
 
                 // Get the pane
+                IVsOutputWindowPane outputWindowPane;
                 hr = outputWindow.GetPane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, out outputWindowPane);
                 ErrorHandler.ThrowOnFailure(hr);
 
@@ -90,8 +85,8 @@ namespace ErikEJ.SqlCeToolbox
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = FindToolWindow(typeof(ExplorerToolWindow), 0, true);
-            if ((null == window) || (null == window.Frame))
+            var window = FindToolWindow(typeof(ExplorerToolWindow), 0, true);
+            if (window?.Frame == null)
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
@@ -132,7 +127,7 @@ namespace ErikEJ.SqlCeToolbox
             {
                 //create a new window with explicit tool window _id
                 window = FindToolWindow(typeof(T), windowId, true);
-                if ((null == window) || (null == window.Frame))
+                if (window?.Frame == null)
                 {
                     throw new NotSupportedException(Resources.CanNotCreateWindow);
                 }
@@ -153,7 +148,7 @@ namespace ErikEJ.SqlCeToolbox
             _id++;
             //create a new window with explicit tool window _id
             var window = FindToolWindow(typeof(T), _id, true);
-            if ((null == window) || (null == window.Frame))
+            if (window?.Frame == null)
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
             }
@@ -198,11 +193,6 @@ namespace ErikEJ.SqlCeToolbox
             return VisualStudioVersion >= new Version(11, 0);
         }
 
-        public bool VsSupportsSqlPlan()
-        {
-            return VisualStudioVersion == new Version(10, 0) && (DataConnectionHelper.IsPremiumOrUltimate());
-        }
-
         public bool VsSupportsSimpleDdex4Provider()
         {
             return ( VisualStudioVersion >= new Version(12, 0))
@@ -219,10 +209,7 @@ namespace ErikEJ.SqlCeToolbox
                 && (DataConnectionHelper.IsV35DbProviderInstalled());
         }
 
-        public static bool IsVsExtension
-        {
-            get { return true; }
-        }
+        public static bool IsVsExtension => true;
         /////////////////////////////////////////////////////////////////////////////
         // Overriden Package Implementation
         #region Package Members
@@ -233,38 +220,31 @@ namespace ErikEJ.SqlCeToolbox
         /// </summary>
         protected override void Initialize()
         {
+            var sw = new Stopwatch();
+            sw.Start();
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", ToString()));
 
-            var dte = (DTE2)GetService(typeof(DTE));
-            Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
-            if (Telemetry.Enabled)
-            {
-                Telemetry.Initialize(dte,
-                    Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                    VisualStudioVersion.ToString(),
-                    "d4881a82-2247-42c9-9272-f7bc8aa29315");
-            }
-
             // Add our command handlers for menu (commands must exist in the .vsct file)
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (null != mcs)
             {
                 // Create the command for the menu item.
-                CommandID menuCommandId = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyCommand);
-                MenuCommand menuItem = new MenuCommand(ShowToolWindow, menuCommandId);
+                var menuCommandId = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyCommand);
+                var menuItem = new MenuCommand(ShowToolWindow, menuCommandId);
                 mcs.AddCommand(menuItem);
                 // Create the command for the tool window
-                CommandID toolwndCommandId = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyTool);
-                MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
+                var toolwndCommandId = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyTool);
+                var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
 
                 // Server Explorer button 
-                CommandID seCommandId = new CommandID(GuidList.guidSEPlusCmdSet, (int)PkgCmdIDList.cmdidSEHello);
-                MenuCommand seItem = new MenuCommand(ShowToolWindow, seCommandId);
+                var seCommandId = new CommandID(GuidList.guidSEPlusCmdSet, (int)PkgCmdIDList.cmdidSEHello);
+                var seItem = new MenuCommand(ShowToolWindow, seCommandId);
                 mcs.AddCommand(seItem);
-                DataConnectionHelper.LogUsage("Platform: Visual Studio " + VisualStudioVersion.ToString(1));
             }
             DataConnectionHelper.RegisterDdexProviders(false);
+            sw.Stop();
+            Debug.WriteLine("Startup: " + sw.ElapsedMilliseconds);
             base.Initialize();
         }
         #endregion
