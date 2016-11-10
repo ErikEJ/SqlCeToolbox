@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Commands;
 using ErikEJ.SqlCeToolbox.ContextMenues;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using SelectionContainer = Microsoft.VisualStudio.Shell.SelectionContainer;
 using Trigger = ErikEJ.SqlCeScripting.Trigger;
 
 namespace ErikEJ.SqlCeToolbox.ToolWindows
@@ -149,6 +152,17 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     if (!databaseList.ContainsKey(info.Key))
                         databaseList.Add(info.Key, info.Value);
                 }
+                //Boot Telemetry
+                var dte = (DTE2)package.GetServiceHelper(typeof(DTE));
+                Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
+                if (Telemetry.Enabled)
+                {
+                    Telemetry.Initialize(dte,
+                        Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                        SqlCeToolboxPackage.VisualStudioVersion.ToString(),
+                        "d4881a82-2247-42c9-9272-f7bc8aa29315");
+                }
+                DataConnectionHelper.LogUsage("Platform: Visual Studio " + SqlCeToolboxPackage.VisualStudioVersion.ToString(1));
             }
             catch (Exception e)
             {

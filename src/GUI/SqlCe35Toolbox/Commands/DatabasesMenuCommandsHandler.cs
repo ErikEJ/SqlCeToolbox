@@ -604,7 +604,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
                 if (item != null)
                 {
-                    //TODO Get connection string from above
                     AppConfigHelper.WriteConnectionStringToAppConfig("MyDbContext", connectionStringBuilder.ConnectionString, project.FullName, "System.Data.SqlClient", prefix, item.Name);
                 }
 
