@@ -749,7 +749,11 @@
     <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
       <Project>{c6031278-5612-429f-a485-5169392db51c}</Project>
       <Name>SqlCeToolbox.Common</Name>
+      <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Office_Excel_Application_16xLG.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
