@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="41521019-e4c7-480c-8ea8-fc4a2c6f50aa" Version="4.5.1000.1" Language="en-US" Publisher="ErikEJ" />
+    <Identity Id="41521019-e4c7-480c-8ea8-fc4a2c6f50aa" Version="4.5.1000.2" Language="en-US" Publisher="ErikEJ" />
     <DisplayName>SQLite/SQL Server Compact Toolbox</DisplayName>
     <Description xml:space="preserve">SQLite/SQL Server Compact Toolbox. This extension adds several features to help your embedded database development efforts: Scripting of tables and data, import from SQL Server and CSV files, export/migrate to SQL Server and much, much more.</Description>
     <MoreInfo>https://github.com/ErikEJ/SqlCeToolbox</MoreInfo>
