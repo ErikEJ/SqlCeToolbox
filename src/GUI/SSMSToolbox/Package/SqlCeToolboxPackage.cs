@@ -203,8 +203,8 @@ namespace ErikEJ.SqlCeToolbox
                     "d4881a82-2247-42c9-9272-f7bc8aa29315");
             }
             DataConnectionHelper.LogUsage("Platform: SSMS 130");
-            ToolWindows.OtherWindowsCommand.Initialize(this);
-            ToolWindows.ViewMenuCommand.Initialize(this);
+            OtherWindowsCommand.Initialize(this);
+            ViewMenuCommand.Initialize(this);
             base.Initialize();            
         }
         #endregion

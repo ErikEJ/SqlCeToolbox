@@ -121,10 +121,12 @@
     <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="QuickGraph">
       <HintPath>..\lib\QuickGraph.dll</HintPath>
@@ -163,6 +165,7 @@
     <Reference Include="WindowsFormsIntegration" />
     <Reference Include="Xceed.Wpf.Toolkit">
       <HintPath>..\lib\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -749,7 +752,11 @@
     <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
       <Project>{c6031278-5612-429f-a485-5169392db51c}</Project>
       <Name>SqlCeToolbox.Common</Name>
+      <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Office_Excel_Application_16xLG.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
