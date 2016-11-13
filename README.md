@@ -30,9 +30,9 @@ You can download the latest release for SQL Server Compact 3.5 from the [Github 
 
 **Daily build**
 
-You can download the latest 4.0 "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40Toolbox.zip?branch=master)
+You can download the latest 4.0 "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40ToolBox.zip?branch=master)
 
-You can download the latest 3.5 "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe35Toolbox.zip?branch=master)
+You can download the latest 3.5 "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe35ToolBox.zip?branch=master)
 
 ## SQL Server Management Studio 2016 extension (alpha/experimental) 
 
