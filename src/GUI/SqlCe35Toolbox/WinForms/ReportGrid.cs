@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Windows.Forms;
-using System.IO;
+using System.Security;
+using System.Security.Permissions;
 using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.Reporting.WinForms;
 
@@ -24,8 +25,16 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 DataSet.DataSetName = TableName;
 
-                Stream rdlc = RdlcHelper.BuildRDLCStream(
+                var rdlc = RdlcHelper.BuildRDLCStream(
                     DataSet, TableName, Resources.report);
+
+                //Fix for VS "15" permission issue
+                var permissionSet = new PermissionSet(PermissionState.Unrestricted);
+                var fIOPermission = new FileIOPermission(PermissionState.None);
+                fIOPermission.AllLocalFiles = FileIOPermissionAccess.Read;
+                permissionSet.AddPermission(fIOPermission);
+                permissionSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
+                reportView.LocalReport.SetBasePermissionsForSandboxAppDomain(permissionSet);
 
                 reportView.LocalReport.LoadReportDefinition(rdlc);
                 reportView.LocalReport.DataSources.Clear();
