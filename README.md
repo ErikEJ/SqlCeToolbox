@@ -35,14 +35,12 @@ You can download the latest release from the [Github releases here](https://gith
 
 You can download the latest "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40Toolbox.zip?branch=master)
 
-# Other downloads 
-
-[Standalone .exe for SQL Compact 4.0](http://sqlcetoolbox.codeplex.com/releases/view/104096) and [Standalone .exe for SQL Compact 3.5](http://sqlcetoolbox.codeplex.com/releases/view/104781)
-
-![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/toolbox1.png)
-
-# Alpha/experimental downloads 
+# SQL Server Management Studio 2016 extension (álpha/experimental) 
 
 [SQL Server Management Studio 2016 add-in (experimental/alpha)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
 
 To install, rename the downloaded .zip to .vsix, and double click!
+
+![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/toolbox1.png)
+
+
