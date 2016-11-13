@@ -22,7 +22,7 @@ In order to build the source code, you can use Visual Studio 2015. You will also
 
 ## Visual Studio Extension
 
-**Release*
+**Release**
 
 Download the latest version of the Visual Studio extension (for both 3.5, 4.0 and SQLite) from  [Visual Studio Gallery]
 (https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/) - Or just install from Tools, Extensions and Updates in Visual Studio!
