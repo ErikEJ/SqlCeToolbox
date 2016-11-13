@@ -3,21 +3,11 @@ A Visual Studio add-in and standalone app, for managing all aspects of your SQL 
 
 This repository also contains the ExportSqlCe command line tools and scripting API
 
-Download the latest version of the Visual Studio add-in (for both 3.5, 4.0 and SQLite) from  [Visual Studio Gallery]
-(https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/)
-
 If you use my tools, I would be very grateful for a rating or review here:  https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/view/Reviews
 
 Follow me on Twitter: [@ErikEJ](http://twitter.com/ErikEJ)
 
 In order to build the source code, you can use Visual Studio 2015. You will also need the SQL Server Compact 3.5 SP2 and 4.0 runtimes installed. To debug, make SqlCeToolbox the startup project, and ensure Debug, x86 (not AnyCPU)
-# Documentation
-
-[Getting started](https://github.com/ErikEJ/SqlCeToolbox/wiki)
-
-[Known issues](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
-
-[Release notes](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
 # Downloads
 
 ## Visual Studio Extension
@@ -48,5 +38,13 @@ You can download the latest "daily" build [from AppVeyor here](https://ci.appvey
 [SQL Server Management Studio 2016 add-in (experimental/alpha)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
 
 To install, rename the downloaded .zip to .vsix, and double click!
+
+# Documentation
+
+[Getting started](https://github.com/ErikEJ/SqlCeToolbox/wiki)
+
+[Known issues](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
+
+[Release notes](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
 
 ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/toolbox1.png)
