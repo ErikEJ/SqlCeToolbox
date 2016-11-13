@@ -18,29 +18,35 @@ In order to build the source code, you can use Visual Studio 2015. You will also
 [Known issues](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
 
 [Release notes](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
-
 # Downloads
 
 ## Visual Studio Extension
+
+**Release*
+
 Download the latest version of the Visual Studio extension (for both 3.5, 4.0 and SQLite) from  [Visual Studio Gallery]
 (https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/) - Or just install from Tools, Extensions and Updates in Visual Studio!
 
-You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix)
+**Daily build**
 
-You can also subscribe to the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
+You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix). You can also subscribe to the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
+**Release**
+
 You can download the latest release from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
+
+**Daily build**
 
 You can download the latest "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40Toolbox.zip?branch=master)
 
 ## SQL Server Management Studio 2016 extension (alpha/experimental) 
+
+**Daily build**
 
 [SQL Server Management Studio 2016 add-in (experimental/alpha)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
 
 To install, rename the downloaded .zip to .vsix, and double click!
 
 ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/toolbox1.png)
-
-
