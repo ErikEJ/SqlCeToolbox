@@ -31,8 +31,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    var sqlText = string.Format(Environment.NewLine + "SELECT * FROM [{0}]", menuInfo.Name)
-                                     + Environment.NewLine + "GO";
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    generator.GenerateTableSelect(menuInfo.Name);
+                    var sqlText = generator.GeneratedScript;
                     ds = repository.ExecuteSql(sqlText);
                 }
                 var pkg = ParentWindow.Package as SqlCeToolboxPackage;
