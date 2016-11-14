@@ -11,6 +11,7 @@ using Kent.Boogaart.KBCsv;
 using System.Linq;
 using System.Collections.Generic;
 using System.Data;
+using ErikEJ.SqlCeToolbox.Helpers;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -31,7 +32,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                     {
-                        var generator = RepoHelper.CreateGenerator(repository, null);
+                        var generator = RepoHelper.CreateGenerator(repository);
                         generator.GenerateTableScript(menuInfo.Name);
                         OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     }
@@ -39,7 +40,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             }
         }
 
@@ -52,7 +53,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                     {
-                        var generator = RepoHelper.CreateGenerator(repository, null);
+                        var generator = RepoHelper.CreateGenerator(repository);
                         generator.GenerateTableDrop(menuInfo.Name);
                         OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     }
@@ -60,7 +61,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             }
         }
 
@@ -73,7 +74,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                     {
-                        var generator = RepoHelper.CreateGenerator(repository, null);
+                        var generator = RepoHelper.CreateGenerator(repository);
                         generator.GenerateTableDrop(menuInfo.Name);
                         generator.GenerateTableScript(menuInfo.Name);
                         OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
@@ -81,7 +82,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                    MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
                 }
             }
         }
@@ -95,7 +96,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                     {
-                        var generator = RepoHelper.CreateGenerator(repository, null);
+                        var generator = RepoHelper.CreateGenerator(repository);
                         generator.GenerateTableSelect(menuInfo.Name);
                         OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     }
@@ -103,7 +104,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             }
         }
 
@@ -116,7 +117,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                     {
-                        var generator = RepoHelper.CreateGenerator(repository, null);
+                        var generator = RepoHelper.CreateGenerator(repository);
                         generator.GenerateTableInsert(menuInfo.Name);
                         OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     }
@@ -124,7 +125,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             }
         }
 
@@ -137,7 +138,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                     {
-                        var generator = RepoHelper.CreateGenerator(repository, null);
+                        var generator = RepoHelper.CreateGenerator(repository);
                         generator.GenerateTableUpdate(menuInfo.Name);
                         OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     }
@@ -145,7 +146,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             }
         }
 
@@ -158,7 +159,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                     {
-                        var generator = RepoHelper.CreateGenerator(repository, null);
+                        var generator = RepoHelper.CreateGenerator(repository);
                         generator.GenerateTableDelete(menuInfo.Name);
                         OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     }
@@ -166,7 +167,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             }
         }
 
@@ -179,7 +180,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                     {
-                        var generator = RepoHelper.CreateGenerator(repository, null);
+                        var generator = RepoHelper.CreateGenerator(repository);
                         generator.GenerateTableContent(menuInfo.Name, false, Properties.Settings.Default.IgnoreIdentityInInsertScript);
                         OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     }
@@ -187,7 +188,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             }
         }
 
@@ -229,7 +230,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                    MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
                 }
             }
         }
@@ -246,7 +247,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         RenameDialog ro = new RenameDialog(menuInfo.Name);
                         ro.Owner = Application.Current.MainWindow;
                         ro.ShowDialog();
-                        if (ro.DialogResult.HasValue && ro.DialogResult.Value == true && !string.IsNullOrWhiteSpace(ro.NewName))
+                        if (ro.DialogResult.HasValue && ro.DialogResult.Value && !string.IsNullOrWhiteSpace(ro.NewName))
                         {
                             repository.RenameTable(menuInfo.Name, ro.NewName);
                             if (_parent != null)
@@ -258,7 +259,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                    MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
                 }
             }
         }
@@ -270,21 +271,18 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 try
                 {
-                    using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
+                    var desc = ExplorerControl.DescriptionCache.Where(d => d.Object == menuInfo.Name && d.Parent == null).Select(d => d.Description).SingleOrDefault();
+                    DescriptionDialog ro = new DescriptionDialog(desc);
+                    ro.Owner = Application.Current.MainWindow;
+                    ro.ShowDialog();
+                    if (ro.DialogResult.HasValue && ro.DialogResult.Value && !string.IsNullOrWhiteSpace(ro.Description) && ro.Description != desc)
                     {
-                        var desc = ExplorerControl.DescriptionCache.Where(d => d.Object == menuInfo.Name && d.Parent == null).Select(d => d.Description).SingleOrDefault();
-                        DescriptionDialog ro = new DescriptionDialog(desc);
-                        ro.Owner = Application.Current.MainWindow;
-                        ro.ShowDialog();
-                        if (ro.DialogResult.HasValue && ro.DialogResult.Value == true && !string.IsNullOrWhiteSpace(ro.Description) && ro.Description != desc)
-                        {
-                            new Helpers.DescriptionHelper().SaveDescription(menuInfo.Connectionstring, ExplorerControl.DescriptionCache, ro.Description, null, menuInfo.Name);
-                        }
+                        new Helpers.DescriptionHelper().SaveDescription(menuInfo.Connectionstring, ExplorerControl.DescriptionCache, ro.Description, null, menuInfo.Name);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                    MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
                 }
             }
         }
@@ -325,7 +323,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 _parent.FabTab.Items.Add(tab);
                 _parent.FabTab.SelectedIndex = _parent.FabTab.Items.Count - 1;
             }
-            return;
         }
 
         public void SpawnDataEditorWindow(object sender, ExecutedRoutedEventArgs e)
@@ -345,7 +342,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                 {
-                    System.Collections.Generic.List<PrimaryKey> pks = repository.GetAllPrimaryKeys();
                     var tpks = repository.GetAllPrimaryKeys().Where(pk => pk.TableName == menuInfo.Name).ToList();
                     if (tpks.Count == 0)
                     {
@@ -401,11 +397,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     _parent.FabTab.SelectedIndex = _parent.FabTab.Items.Count - 1;
                     rg.Focus();
                 }
-                return;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             } 
         }
 
@@ -423,12 +418,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 WindowsFormsHost wh = new WindowsFormsHost();
                 ReportGrid rg = new ReportGrid();
 
-                var ds = new DataSet();
+                DataSet ds;
 
                 using (IRepository repository = RepoHelper.CreateRepository(menuInfo.Connectionstring))
                 {
-                    var sqlText = string.Format(Environment.NewLine + "SELECT * FROM [{0}]", menuInfo.Name) 
-                        + Environment.NewLine + "GO";
+                    var generator = RepoHelper.CreateGenerator(repository);
+                    generator.GenerateTableSelect(menuInfo.Name);
+                    var sqlText = generator.GeneratedScript;
                     ds = repository.ExecuteSql(sqlText);                
                 }
                 rg.DataSet = ds;
@@ -464,16 +460,14 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     _parent.FabTab.SelectedIndex = _parent.FabTab.Items.Count - 1;
                     rg.Focus();
                 }
-                return;
             }
             catch (System.IO.FileNotFoundException)
             {
                 MessageBox.Show("Microsoft Report Viewer 2010 not installed, please download and install to use this feature  http://www.microsoft.com/en-us/download/details.aspx?id=6442");
-                return;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helpers.DataConnectionHelper.ShowErrors(ex));
+                MessageBox.Show(DataConnectionHelper.ShowErrors(ex));
             }
         }
 
