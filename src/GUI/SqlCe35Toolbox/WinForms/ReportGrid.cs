@@ -5,8 +5,6 @@ using System.Security;
 using System.Security.Permissions;
 using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.Reporting.WinForms;
-using System.Security;
-using System.Security.Permissions;
 
 namespace ErikEJ.SqlCeToolbox.ToolWindows
 {
