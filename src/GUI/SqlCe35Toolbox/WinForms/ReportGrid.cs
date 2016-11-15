@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Windows.Forms;
-using System.IO;
+using System.Security;
+using System.Security.Permissions;
 using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.Reporting.WinForms;
 using System.Security;

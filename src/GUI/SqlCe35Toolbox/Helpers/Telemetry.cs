@@ -19,7 +19,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         public static void Initialize(DTE2 dte, string version, string vsVersion, string telemetryKey)
         {
             if (_telemetry != null)
-                throw new NotSupportedException("The telemetry client is already initialized");
+                return;
 
             _telemetry = new TelemetryClient();
             _telemetry.Context.Session.Id = Guid.NewGuid().ToString();

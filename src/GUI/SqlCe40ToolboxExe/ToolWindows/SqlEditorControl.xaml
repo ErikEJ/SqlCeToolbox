@@ -114,10 +114,8 @@
             <GridSplitter ResizeDirection="Rows" Grid.Row="0" HorizontalAlignment="Stretch" 
                     VerticalAlignment="Bottom" Height="20" Style="{DynamicResource GridSplitterStyleSqlEditor}"/>
             <Border Grid.Row="1"  Margin="0" CornerRadius="5" Grid.Column="1" Background="{StaticResource {x:Static SystemColors.WindowBrushKey}}" >
-                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" >
-                    <DockPanel Name="Resultspanel">
-                    </DockPanel>
-                </ScrollViewer>
+                <DockPanel Name="Resultspanel">
+                </DockPanel>
             </Border>
             <StatusBar Grid.Row="2">
                 <StatusBar.ItemsPanel>

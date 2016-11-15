@@ -87,10 +87,12 @@
     <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="QuickGraph">
       <HintPath>..\lib\QuickGraph.dll</HintPath>
@@ -103,6 +105,10 @@
     <Reference Include="SqlCeScripting, Version=3.5.2.15, Culture=neutral, PublicKeyToken=3681435cabd17ad2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\SqlCeScripting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SqlCeToolbox.Common">
+      <HintPath>..\lib\SqlCeToolbox.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -124,6 +130,7 @@
     <Reference Include="WindowsFormsIntegration" />
     <Reference Include="Xceed.Wpf.Toolkit">
       <HintPath>..\lib\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -455,13 +462,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Templates\report.xsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
-      <Project>{C6031278-5612-429F-A485-5169392DB51C}</Project>
-      <Name>SqlCeToolbox.Common</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\lib\SqlCeToolbox.Common.dll">

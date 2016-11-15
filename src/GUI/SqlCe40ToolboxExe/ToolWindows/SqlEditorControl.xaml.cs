@@ -5,7 +5,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using ErikEJ.SqlCeScripting;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System;
@@ -50,7 +49,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     SqlTextBox.Text = value;
                     if (value.Length <= 10000 && SqlTextBox.SyntaxHighlighting == null)
                         LoadHighlighter();
-                    this.Resultspanel.Children.Clear();
+                    Resultspanel.Children.Clear();
                 }
                 else
                 {
@@ -101,10 +100,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 using (var repository = RepoHelper.CreateRepository(Database))
                 {
                     var textBox = new TextBox();
-                    textBox.FontFamily = new System.Windows.Media.FontFamily("Consolas");
+                    textBox.FontFamily = new FontFamily("Consolas");
                     textBox.FontSize = 14;
                     string sql = GetSqlFromSqlEditorTextBox();
-                    string showPlan = string.Empty;
+                    string showPlan;
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     var dataset = repository.ExecuteSql(sql, out showPlan);
@@ -119,10 +118,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         if (!string.IsNullOrWhiteSpace(showPlan))
                         {
                             // Just try to start SSMS
-                            var fileName = System.IO.Path.GetTempFileName();
+                            var fileName = Path.GetTempFileName();
                             fileName = fileName + ".sqlplan";
-                            System.IO.File.WriteAllText(fileName, showPlan);
-                            System.Diagnostics.Process.Start(fileName);
+                            File.WriteAllText(fileName, showPlan);
+                            Process.Start(fileName);
                         }
                     }
                     catch (Exception ex)
@@ -149,15 +148,15 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             using (var repository = RepoHelper.CreateRepository(Database))
             {
                 var textBox = new TextBox();
-                textBox.FontFamily = new System.Windows.Media.FontFamily("Consolas");
+                textBox.FontFamily = new FontFamily("Consolas");
                 textBox.FontSize = 14;
                 try
                 {
                     string sql = GetSqlFromSqlEditorTextBox();
-                    string showPlan = repository.ParseSql(sql);
+                    repository.ParseSql(sql);
                     textBox.Text = "Statement(s) in script parsed and seems OK!";
-                    this.Resultspanel.Children.Clear();
-                    this.Resultspanel.Children.Add(textBox);
+                    Resultspanel.Children.Clear();
+                    Resultspanel.Children.Add(textBox);
                 }
                 catch (SqlCeException sqlException)
                 {
@@ -172,8 +171,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            SearchPanel sPanel = new SearchPanel();
-            sPanel.Attach(SqlTextBox.TextArea);
+            SearchPanel.Install(SqlTextBox.TextArea);
         }
 
         private void ShowPlanButton_Click(object sender, RoutedEventArgs e)
@@ -184,7 +182,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             using (var repository = RepoHelper.CreateRepository(Database))
             {
                 var textBox = new TextBox();
-                textBox.FontFamily = new System.Windows.Media.FontFamily("Consolas");
+                textBox.FontFamily = new FontFamily("Consolas");
                 textBox.FontSize = 14;
                 try
                 {
@@ -192,10 +190,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     string showPlan = repository.ParseSql(sql);
                     if (!string.IsNullOrWhiteSpace(showPlan))
                     {
-                        var fileName = System.IO.Path.GetTempFileName();
+                        var fileName = Path.GetTempFileName();
                         fileName = fileName + ".sqlplan";
-                        System.IO.File.WriteAllText(fileName, showPlan);
-                        System.Diagnostics.Process.Start(fileName);
+                        File.WriteAllText(fileName, showPlan);
+                        Process.Start(fileName);
                     }
                 }
                 catch (SqlCeException sqlException)
@@ -214,7 +212,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private void FormatTime(Stopwatch sw)
         {
             var ts = new TimeSpan(sw.ElapsedTicks);
-            this.txtTime.Text = string.Format("Duration: {0:00}:{1:00}.{2:000}", ts.Minutes, ts.Seconds, ts.Milliseconds);
+            txtTime.Text = string.Format("Duration: {0:00}:{1:00}.{2:000}", ts.Minutes, ts.Seconds, ts.Milliseconds);
         }
 
         private void OpenScript()
@@ -228,7 +226,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             ofd.Title = "Select Script to Open";
             if (ofd.ShowDialog() == true)
             {
-                this.SqlTextBox.Text = System.IO.File.ReadAllText(ofd.FileName);
+                SqlTextBox.Text = File.ReadAllText(ofd.FileName);
             }
         }
 
@@ -239,9 +237,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*";
             sfd.ValidateNames = true;
             sfd.Title = "Save script as";
-            if (sfd.ShowDialog() == true && !string.IsNullOrWhiteSpace(this.SqlTextBox.Text))
+            if (sfd.ShowDialog() == true && !string.IsNullOrWhiteSpace(SqlTextBox.Text))
             {
-                System.IO.File.WriteAllText(sfd.FileName, this.SqlTextBox.Text);
+                File.WriteAllText(sfd.FileName, SqlTextBox.Text);
             }
         }
 
@@ -292,29 +290,29 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void ParseSqlErrorToResultsBox(SqlCeException sqlException)
         {
-            this.Resultspanel.Children.Clear();
+            Resultspanel.Children.Clear();
             var textBox = new TextBox();
             textBox.Foreground = Brushes.Red;
-            textBox.FontFamily = new System.Windows.Media.FontFamily("Consolas");
+            textBox.FontFamily = new FontFamily("Consolas");
             textBox.Text = Helpers.DataConnectionHelper.ShowErrors(sqlException);
-            this.Resultspanel.Children.Add(textBox);
+            Resultspanel.Children.Add(textBox);
         }
 
         private void ParseDataSetResultsToResultsBox(DataSet dataset)
         {
-            this.Resultspanel.Children.Clear();
+            Resultspanel.Children.Clear();
 
             foreach (DataTable table in dataset.Tables)
             {
-                this.txtTime.Text = this.txtTime.Text + " / " + table.Rows.Count.ToString() + " rows ";
+                txtTime.Text = txtTime.Text + " / " + table.Rows.Count.ToString() + " rows ";
                 var textBox = new TextBox();
-                textBox.FontFamily = new System.Windows.Media.FontFamily("Consolas");
+                textBox.FontFamily = new FontFamily("Consolas");
                 textBox.FontSize = 14;
                 DockPanel.SetDock(textBox, Dock.Top);
                 if (table.Rows.Count == 0)
                 {
                     textBox.Text = string.Format("{0} rows affected", table.MinimumCapacity);
-                    this.Resultspanel.Children.Add(textBox);
+                    Resultspanel.Children.Add(textBox);
                 }
                 else
                 {
@@ -322,15 +320,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     {
                         var grid = new DataGrid();
                         grid.AutoGenerateColumns = true;
-                        grid.AutoGeneratingColumn +=
-                            new EventHandler<DataGridAutoGeneratingColumnEventArgs>(grid_AutoGeneratingColumn);
+                        grid.AutoGeneratingColumn += grid_AutoGeneratingColumn;
                         grid.IsReadOnly = true;
                         grid.FontSize = 14;
-                        grid.FontFamily = new System.Windows.Media.FontFamily("Consolas");
+                        grid.FontFamily = new FontFamily("Consolas");
                         grid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
                         grid.ItemsSource = ((IListSource) table).GetList();
                         DockPanel.SetDock(grid, Dock.Top);
-                        this.Resultspanel.Children.Add(grid);
+                        Resultspanel.Children.Add(grid);
                     }
                     else
                     {
@@ -347,7 +344,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         {
                             foreach (var item in row.ItemArray)
                             {
-                                if (Properties.Settings.Default.ShowBinaryValuesInResult == true)
+                                if (Properties.Settings.Default.ShowBinaryValuesInResult)
                                 {
                                     //This formatting is optional (causes perf degradation)
                                     if (item.GetType() == typeof(Byte[]))
@@ -361,11 +358,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                                         }
                                         results.Append("\t");
                                     }
-                                    else if (item.GetType() == typeof(DateTime))
+                                    else if (item is DateTime)
                                     {
                                         results.Append(((DateTime) item).ToString("O") + "\t");
                                     }
-                                    else if (item.GetType() == typeof(Double) || item.GetType() == typeof(Single))
+                                    else if (item is double || item is float)
                                     {
                                         string intString = Convert.ToDouble(item)
                                             .ToString("R", System.Globalization.CultureInfo.InvariantCulture);
@@ -378,11 +375,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                                 }
                                 else
                                 {
-                                    if (item.GetType() == typeof(DateTime))
+                                    if (item is DateTime)
                                     {
                                         results.Append(((DateTime) item).ToString("O") + "\t");
                                     }
-                                    else if (item.GetType() == typeof(Double) || item.GetType() == typeof(Single))
+                                    else if (item is double || item is float)
                                     {
                                         string intString = Convert.ToDouble(item)
                                             .ToString("R", System.Globalization.CultureInfo.InvariantCulture);
@@ -399,7 +396,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         results.AppendLine("\n");
                         textBox.Text = results.ToString();
 
-                        this.Resultspanel.Children.Add(textBox);
+                        Resultspanel.Children.Add(textBox);
                     }
                 }
             }
@@ -407,7 +404,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         void grid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
-            var pos = e.PropertyName.IndexOf("_");
+            var pos = e.PropertyName.IndexOf("_", StringComparison.Ordinal);
             if (pos > 0 && e.Column.Header != null)
             {
                 e.Column.Header = e.Column.Header.ToString().Replace("_", "__");
