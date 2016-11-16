@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlServerCe;
-using System.Text;
-using System.Windows;
-using System.Net;
-using System.Xml;
 using System.Reflection;
-using System.Linq;
 using ErikEJ.SqlCeScripting;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
@@ -144,27 +139,63 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     var xDoc = new System.Xml.XmlDocument();
                     string s = wc.DownloadString(@"http://www.sqlcompact.dk/SqlCeToolboxVersions.xml");
                     xDoc.LoadXml(s);
-                    string newVersion = xDoc.DocumentElement.Attributes[lookingFor].Value;
-
-                    Version vN = new Version(newVersion);
-                    if (vN > Assembly.GetExecutingAssembly().GetName().Version)
+                    if (xDoc.DocumentElement != null)
                     {
-                        return true;
+                        string newVersion = xDoc.DocumentElement.Attributes[lookingFor].Value;
+
+                        Version vN = new Version(newVersion);
+                        if (vN > Assembly.GetExecutingAssembly().GetName().Version)
+                        {
+                            return true;
+                        }
                     }
                 }
 
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
             return false;
         }
 
         public static bool IsRuntimeInstalled()
         {
 #if V35
-            return new SqlCeHelper().IsV35Installed();
+            return IsV35Installed();
 #else
-            return new SqlCeHelper4().IsV40Installed();
+            return IsV40Installed();
 #endif
+        }
+
+        private static bool IsV40Installed()
+        {
+            try
+            {
+                var assembly = Assembly.Load("System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                if (assembly.GetName().Version.ToString(2) != "4.0")
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool IsV35Installed()
+        {
+            try
+            {
+                var assembly = Assembly.Load("System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                if (assembly.GetName().Version.ToString(2) != "3.5")
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
