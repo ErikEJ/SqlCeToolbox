@@ -1,3 +1,4 @@
+
 # SQLite & SQL Server Compact Toolbox
 A Visual Studio add-in and standalone app, for managing all aspects of your SQL Server Compact/SQLite database files, including generation of code, database diagrams and database documentation.
 
@@ -15,7 +16,9 @@ In order to build the source code, you can use Visual Studio 2015. You will also
 **Release**
 
 Download the latest version of the Visual Studio extension (for both 3.5, 4.0 and SQLite) from  [Visual Studio MarketPlace]
-(https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox) - Or just install from Tools, Extensions and Updates in Visual Studio!
+(https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox)
+
+Or just install from Tools, Extensions and Updates in Visual Studio!
 
 **Daily build**
 
