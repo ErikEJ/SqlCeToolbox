@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("ErikEJ.SqlCeToolbox")]
 [assembly: AssemblyCopyright("Copyright ©  2010")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("4.6.0.0")]
-[assembly: AssemblyFileVersion("4.6.0.0")]
-[assembly: AssemblyInformationalVersion("4.6-hotfix1")]
+[assembly: AssemblyVersion("4.6.0.1")]
+[assembly: AssemblyFileVersion("4.6.0.1")]
+[assembly: AssemblyInformationalVersion("4.7-alpha1")]
 
