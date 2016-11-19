@@ -3,7 +3,7 @@ A Visual Studio add-in and standalone app, for managing all aspects of your SQL 
 
 This repository also contains the ExportSqlCe command line tools and scripting API
 
-If you use my tools, I would be very grateful for a rating or review here:  https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/view/Reviews
+If you use my free tools, I would be very grateful for a [rating or review](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details)
 
 Follow me on Twitter: [@ErikEJ](http://twitter.com/ErikEJ)
 
@@ -14,8 +14,8 @@ In order to build the source code, you can use Visual Studio 2015. You will also
 
 **Release**
 
-Download the latest version of the Visual Studio extension (for both 3.5, 4.0 and SQLite) from  [Visual Studio Gallery]
-(https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/) - Or just install from Tools, Extensions and Updates in Visual Studio!
+Download the latest version of the Visual Studio extension (for both 3.5, 4.0 and SQLite) from  [Visual Studio MarketPlace]
+(https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox) - Or just install from Tools, Extensions and Updates in Visual Studio!
 
 **Daily build**
 
