@@ -1,4 +1,5 @@
 
+
 # SQLite & SQL Server Compact Toolbox
 A Visual Studio add-in and standalone app, for managing all aspects of your SQL Server Compact/SQLite database files, including generation of code, database diagrams and database documentation.
 
@@ -22,14 +23,15 @@ Or just install from Tools, Extensions and Updates in Visual Studio!
 
 **Daily build**
 
-You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix). You can also subscribe to the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
+You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix). 
+
+You can also subscribe to the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
 **Release**
 
-You can download the latest release for SQL Server Compact 3.5 from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
-
+You can download the latest release of the standalone SQL Server Compact Toolbox from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
 
 **Daily build**
 
