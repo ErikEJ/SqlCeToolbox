@@ -858,7 +858,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void Feedback_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/view/Reviews");
+            System.Diagnostics.Process.Start("https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details");
         }
 
         private void Update_Click(object sender, RoutedEventArgs e)
