@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSMSToolbox", "SSMSToolbox\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSToolbox", "SqlCe35Toolbox\VSToolbox.csproj", "{CF9BB696-A1DC-4923-83BF-F223B18EE618}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSToolboxDebug", "SqlCe35Toolbox\VSToolboxDebug.csproj", "{602B3381-6AED-4007-ADBA-2B77A4C975B9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,13 +72,6 @@ Global
 		{CF9BB696-A1DC-4923-83BF-F223B18EE618}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF9BB696-A1DC-4923-83BF-F223B18EE618}.Release|x86.ActiveCfg = Release|x86
 		{CF9BB696-A1DC-4923-83BF-F223B18EE618}.Release|x86.Build.0 = Release|x86
-		{602B3381-6AED-4007-ADBA-2B77A4C975B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{602B3381-6AED-4007-ADBA-2B77A4C975B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{602B3381-6AED-4007-ADBA-2B77A4C975B9}.Debug|x86.ActiveCfg = Debug|x86
-		{602B3381-6AED-4007-ADBA-2B77A4C975B9}.Debug|x86.Build.0 = Debug|x86
-		{602B3381-6AED-4007-ADBA-2B77A4C975B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{602B3381-6AED-4007-ADBA-2B77A4C975B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{602B3381-6AED-4007-ADBA-2B77A4C975B9}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
