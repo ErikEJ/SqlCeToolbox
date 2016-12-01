@@ -192,10 +192,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 ExplorerControl = this
             }, _parentWindow);
             RootItem.Foreground = VsThemes.GetWindowText();
-            if (!DataConnectionHelper.IsV35Installed() && !DataConnectionHelper.IsV40Installed())
-            {
-                RuntimeMissing.Visibility = Visibility.Visible;
-            }
         }
 
         private delegate void FillDatabaseListHandler(Dictionary<string, DatabaseInfo> databaseList);
@@ -873,14 +869,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             if (package == null) return;
             package.ShowOptionPage(typeof (OptionsPageGeneral));
             DataConnectionHelper.LogUsage("ToolbarOptions");
-        }
-
-        private void RuntimeMissing_Click(object sender, RoutedEventArgs e)
-        {
-            if (!DataConnectionHelper.IsV35Installed() && !DataConnectionHelper.IsV40Installed())
-            {
-                EnvDteHelper.ShowMessage("The SQL Server Compact 3.5 SP2 and 4.0 runtimes are not properly installed,\r\nso many features are not available,\r\ninstall or repair SQL Server Compact 3.5 SP2 or 4.0 Desktop to remedy");
-            }
         }
 
 #region Properties Windows

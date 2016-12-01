@@ -31,10 +31,6 @@
                 <Button Name="Updated" Click="Update_Click" ToolTip="Update available!" Visibility="Collapsed" Padding="0,0,0,0" >
                     <TextBlock Name="UpdatedText" FontWeight="DemiBold" Foreground="Red">Updated!</TextBlock>
                 </Button>
-                <Button Name="RuntimeMissing" Click="RuntimeMissing_Click" Padding="4,0,0,0" Visibility="Collapsed">
-                    <TextBlock x:Name="txtRuntime" FontWeight="DemiBold" Foreground="Yellow">SQLCE 4.0 &amp; 3.5 missing</TextBlock>
-                </Button>
-
             </ToolBar>
         </ToolBarTray>
         <TreeView 
