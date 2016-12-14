@@ -1,7 +1,5 @@
-[
-
 # SQLite & SQL Server Compact Toolbox
-A Visual Studio add-in and standalone app, for managing all aspects of your SQL Server Compact/SQLite database files, including generation of code, database diagrams and database documentation.
+Visual Studio and SSMS extension, standalone app and command line tools, for managing all aspects of your SQL Server Compact/SQLite database files data and schema, including generation of code, database diagrams and database documentation.
 
 This repository also contains the [ExportSqlCe command line tools and scripting API](https://github.com/ErikEJ/SqlCeToolbox/wiki/Command-line-tools)
 
@@ -38,6 +36,12 @@ You can download the latest release of the standalone SQL Server Compact Toolbox
 You can download the latest 4.0 "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40ToolBox.zip?branch=master)
 
 You can download the latest 3.5 "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe35ToolBox.zip?branch=master)
+
+## Command line tools
+
+** Release **
+
+You can download the latest release of the command line tools from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
 
 ## SQL Server Management Studio 2016 extension (alpha/experimental) 
 
