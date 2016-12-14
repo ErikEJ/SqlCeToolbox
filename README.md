@@ -1,9 +1,9 @@
-
+[
 
 # SQLite & SQL Server Compact Toolbox
 A Visual Studio add-in and standalone app, for managing all aspects of your SQL Server Compact/SQLite database files, including generation of code, database diagrams and database documentation.
 
-This repository also contains the ExportSqlCe command line tools and scripting API
+This repository also contains the [ExportSqlCe command line tools and scripting API](https://github.com/ErikEJ/SqlCeToolbox/wiki/Command-line-tools)
 
 If you use my free tools, I would be very grateful for a [rating or review](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details)
 
