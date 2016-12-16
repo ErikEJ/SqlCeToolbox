@@ -58,6 +58,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             InitializeComponent();
             _parentWindow = parentWindow;
+            LoadDefaultOptions();
         }
 
         //TODO For intellisense
@@ -127,7 +128,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 txtSaveAs.Foreground = VsThemes.GetWindowText();
                 if (DatabaseInfo != null)
                     txtVersion.Text = DatabaseInfo.ServerVersion;
-                LoadDefaultOptions();
                 ConfigureOptions();
                 LoadHighlighter();
                 //TODO
