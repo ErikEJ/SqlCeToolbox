@@ -9,7 +9,9 @@ using System.Text;
 using QuickGraph.Algorithms;
 using QuickGraph.Data;
 using System.Diagnostics;
+using QuickGraph;
 
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeScripting
 {
     /// <summary>
@@ -32,10 +34,13 @@ namespace ErikEJ.SqlCeScripting
         private List<Constraint> _allForeignKeys;
         private List<PrimaryKey> _allPrimaryKeys;
         private List<Index> _allIndexes;
+        private List<View> _allViews;
+        private List<Trigger> _allTriggers;
         private bool _batchForAzure;
         private bool _sqlite;
         private bool _keepSchema;
         private bool _preserveDateAndDateTime2;
+        private bool _truncateSqLiteStrings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Generator"/> class.
@@ -76,6 +81,69 @@ namespace ErikEJ.SqlCeScripting
             Init(repository, outFile);
         }
 
+        private void Init(IRepository repository, string outFile)
+        {
+            _outFile = outFile;
+            _repository = repository;
+            _sbScript = new StringBuilder(10485760);
+            _tableNames = _repository.GetAllTableNames();
+            _allColumns = _repository.GetAllColumns();
+            _allForeignKeys = repository.GetAllForeignKeys();
+            _allPrimaryKeys = repository.GetAllPrimaryKeys();
+            _allTriggers = repository.GetAllTriggers();
+            _allViews = repository.GetAllViews();
+            if (!repository.IsServer())
+                _allIndexes = repository.GetAllIndexes();
+
+            string scriptEngineBuild = AssemblyFileVersion;
+
+            if (_repository.IsServer())
+            {
+                // Check if datatypes are supported when exporting from server
+                // Either they can be converted, are supported, or an exception is thrown (if not supported)
+                // Currently only sql_variant is not supported
+                foreach (Column col in _allColumns)
+                {
+                    col.CharacterMaxLength = Helper.CheckDateColumnLength(col.DataType, col);
+                    col.DateFormat = Helper.CheckDateFormat(col.DataType);
+
+                    // Check if the current column points to a unique identity column,
+                    // as the two columns' datatypes must match
+                    bool refToIdentity = false;
+                    Dictionary<string, Constraint> columnForeignKeys = new Dictionary<string, Constraint>();
+
+                    // Fix for multiple constraints with same columns
+                    var tableKeys = _allForeignKeys.Where(c => c.ConstraintTableName == col.TableName);
+                    foreach (var constraint in tableKeys)
+                    {
+                        if (!columnForeignKeys.ContainsKey(constraint.Columns.ToString()))
+                        {
+                            columnForeignKeys.Add(constraint.Columns.ToString(), constraint);
+                        }
+                    }
+
+                    if (columnForeignKeys.ContainsKey(string.Format("[{0}]", col.ColumnName)))
+                    {
+                        var refCol = _allColumns.Where(c => c.TableName == columnForeignKeys[string.Format("[{0}]", col.ColumnName)].UniqueConstraintTableName
+                            && string.Format("[{0}]", c.ColumnName) == columnForeignKeys[string.Format("[{0}]", col.ColumnName)].UniqueColumnName).FirstOrDefault();
+                        if (refCol != null && refCol.AutoIncrementBy > 0)
+                        {
+                            refToIdentity = true;
+                        }
+                    }
+                    col.ServerDataType = col.DataType;
+                    // This modifies the datatype to be SQL Compact compatible
+                    col.DataType = Helper.CheckDataType(col.DataType, col, refToIdentity, _preserveDateAndDateTime2);
+                }
+            }
+            _sbScript.AppendFormat("-- Script Date: {0} {1}  - ErikEJ.SqlCeScripting version {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString(), scriptEngineBuild);
+            _sbScript.AppendLine();
+            if (!string.IsNullOrEmpty(_outFile) && !_repository.IsServer())
+            {
+                GenerateDatabaseInfo();
+            }
+        }
+
         public void ExcludeTables(IList<string> tablesToExclude)
         {
             var allTables = _repository.GetAllTableNamesForExclusion();
@@ -106,18 +174,17 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        private bool _truncateSQLiteStrings;
         /// <summary>
         /// SQLite allows strings longer than the defined size to be stored. Enabling this option will truncate strings that are longer than the defined size, and log any truncations to: %temp%\SQLiteTruncates.log
         /// </summary>
         public bool TruncateSQLiteStrings
         {
-            get { return _truncateSQLiteStrings; }
+            get { return _truncateSqLiteStrings; }
 
             set
             {
-                _truncateSQLiteStrings = value;
-                if (_truncateSQLiteStrings)
+                _truncateSqLiteStrings = value;
+                if (_truncateSqLiteStrings)
                 {
                     if (File.Exists(TruncateLogFileName()))
                     {
@@ -126,56 +193,6 @@ namespace ErikEJ.SqlCeScripting
                 }
             }
         }
-
-        private string TruncateLogFileName()
-        {
-            return Path.Combine(Path.GetTempPath(), "SQLiteTruncates.log");
-        }
-
-        internal protected DataSet FillSchemaDataSet( List<string> tables)
-	    {
-            DataSet schemaDataSet = _repository.GetSchemaDataSet(tables);
-            foreach (Constraint fk in _allForeignKeys) 
-            {
-                //Only add relation if both tables are included!
-                if (tables.Contains(fk.ConstraintTableName) && tables.Contains(fk.UniqueConstraintTableName))
-                {
-                    // No self references supported 
-                    if (fk.ConstraintTableName != fk.UniqueConstraintTableName)
-                    {
-                        DataColumn[] fkColumns = new DataColumn[fk.Columns.Count];
-                        DataColumn[] uniqueColumns = new DataColumn[fk.Columns.Count];
-                        for (int i = 0; i < fk.Columns.Count; i++)
-                        {                        
-                            fk.Columns[i] = RemoveBrackets(fk.Columns[i]);
-                            fk.UniqueColumns[i] = RemoveBrackets(fk.UniqueColumns[i]);
-                            fkColumns[i] = schemaDataSet.Tables[fk.ConstraintTableName].Columns[fk.Columns[i]];
-                            uniqueColumns[i] = schemaDataSet.Tables[fk.UniqueConstraintTableName].Columns[fk.UniqueColumns[i]];
-                        }
-
-                        if (!schemaDataSet.Relations.Contains(fk.ConstraintName) && fkColumns != null)
-                        {
-                            try
-                            {
-                                schemaDataSet.Relations.Add(fk.ConstraintName,
-                                    uniqueColumns,
-                                    fkColumns);
-                            }
-                            //"Handle" duplicated Server foreign keys
-                            catch (ArgumentException ex1) 
-                            {
-                                _sbScript.AppendLine("-- Warning - constraint: " + fk.ConstraintTableName + " " + ex1.Message);
-                            }
-                            catch (InvalidConstraintException ex2) 
-                            {
-                                _sbScript.AppendLine("-- Warning - constraint: " + fk.ConstraintTableName + " " +  ex2.Message);
-                            }
-                        }
-                    }
-                }
-            }
-		    return schemaDataSet;
-	    }
 
         public string ScriptDatabaseToFile(Scope scope)
         {
@@ -213,11 +230,9 @@ namespace ErikEJ.SqlCeScripting
                     _sep = string.Empty;
                     GenerateAllAndSave(false, false, false, false);
                     break;
-                default:
-                    break;
             }
             sw.Stop();
-            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "Sent script to output file(s) : {0} in {1} ms", Helper.FinalFiles, (sw.ElapsedMilliseconds).ToString(System.Globalization.CultureInfo.CurrentCulture));
+            return string.Format(CultureInfo.InvariantCulture, "Sent script to output file(s) : {0} in {1} ms", Helper.FinalFiles, (sw.ElapsedMilliseconds).ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -261,6 +276,8 @@ namespace ErikEJ.SqlCeScripting
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="saveImageFiles">if set to <c>true</c> [save image files].</param>
+        /// <param name="ignoreIdentity"></param>
+        /// <param name="whereClause"></param>
         public void GenerateTableContent(string tableName, bool saveImageFiles, bool ignoreIdentity = false, string whereClause = null)
         {
             int identityOrdinal = _repository.GetIdentityOrdinal(tableName);
@@ -305,7 +322,7 @@ namespace ErikEJ.SqlCeScripting
 #else
                         if (hasIdentity && !_sqlite)
                         {
-                            _sbScript.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] ON;", tableName));
+                            _sbScript.Append(string.Format(CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] ON;", tableName));
                             _sbScript.Append(Environment.NewLine);
                             _sbScript.Append(_sep);
                             firstRun = false;
@@ -363,7 +380,7 @@ namespace ErikEJ.SqlCeScripting
                             // see http://msdn.microsoft.com/en-us/library/ms180878.aspx#BackwardCompatibilityforDownlevelClients
                             Column column = _allColumns.Where(c => c.TableName == tableName && c.ColumnName == rdr.GetName(iColumn)).Single();
                             //Being careful here due to issues with the sqlite ADO.NET provider
-                            DateTime? date = null;
+                            DateTime? date;
                             try
                             {
                                 date = rdr.GetDateTime(iColumn);
@@ -381,24 +398,24 @@ namespace ErikEJ.SqlCeScripting
                                 case DateFormat.None:
                                     //Datetime globalization - ODBC escape: {ts '2004-03-29 19:21:00'}
                                     _sbScript.Append(prefix);
-                                    _sbScript.Append(date.Value.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture));
+                                    _sbScript.Append(date.Value.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
                                     _sbScript.Append(postfix);
                                     break;
                                 case DateFormat.DateTime:
                                     // sqlite: '2007-01-01 00:00:00'
                                     //Datetime globalization - ODBC escape: {ts '2004-03-29 19:21:00'}
                                     _sbScript.Append(prefix);
-                                    _sbScript.Append(date.Value.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture));
+                                    _sbScript.Append(date.Value.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
                                     _sbScript.Append(postfix);
                                     break;
                                 case DateFormat.Date:
                                     _sbScript.Append(unicodePrefix + "'");
-                                    _sbScript.Append(date.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture));
+                                    _sbScript.Append(date.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
                                     _sbScript.Append("'");
                                     break;
                                 case DateFormat.DateTime2:
                                     _sbScript.Append(unicodePrefix + "'");
-                                    _sbScript.Append(date.Value.ToString("yyyy-MM-dd HH:mm:ss.fffffff", System.Globalization.CultureInfo.InvariantCulture));
+                                    _sbScript.Append(date.Value.ToString("yyyy-MM-dd HH:mm:ss.fffffff", CultureInfo.InvariantCulture));
                                     _sbScript.Append("'");
                                     break;
                             }
@@ -409,13 +426,13 @@ namespace ErikEJ.SqlCeScripting
                             if (_preserveDateAndDateTime2)
                             {
                                 _sbScript.Append(unicodePrefix + "'");
-                                _sbScript.Append(dto.ToString("yyyy-MM-dd HH:mm:ss.fffffff zzz", System.Globalization.CultureInfo.InvariantCulture));
+                                _sbScript.Append(dto.ToString("yyyy-MM-dd HH:mm:ss.fffffff zzz", CultureInfo.InvariantCulture));
                                 _sbScript.Append("'");
                             }
                             else
                             {
                                 _sbScript.Append(prefix);
-                                _sbScript.Append(dto.ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture));
+                                _sbScript.Append(dto.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
                                 _sbScript.Append(postfix);                                
                             }
                         }
@@ -543,7 +560,7 @@ namespace ErikEJ.SqlCeScripting
 #else
                         if (hasIdentity && !_sqlite)
                         {
-                            _sbScript.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] ON;", tableName));
+                            _sbScript.Append(string.Format(CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] ON;", tableName));
                             _sbScript.Append(Environment.NewLine);
                             _sbScript.Append(_sep);
                         }
@@ -563,7 +580,7 @@ namespace ErikEJ.SqlCeScripting
 #else
                 if (hasIdentity && !_sqlite)
                 {
-                    _sbScript.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] OFF;", tableName));
+                    _sbScript.Append(string.Format(CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] OFF;", tableName));
                     _sbScript.Append(Environment.NewLine);
                     _sbScript.Append(_sep);
                 }
@@ -581,110 +598,6 @@ namespace ErikEJ.SqlCeScripting
             return GenerateInserOrUpdate(tableName, false, row);
         }
 
-        private string GenerateInserOrUpdate(string tableName, bool createInsert, DataRow row)
-        {
-            StringBuilder sb = new StringBuilder();
-            int identityOrdinal = _repository.GetIdentityOrdinal(tableName);
-            bool hasIdentity = (identityOrdinal > -1);
-            string unicodePrefix = "N";
-            if (_sqlite)
-                unicodePrefix = string.Empty;
-            // Skip rowversion column
-            Int32 rowVersionOrdinal = _repository.GetRowVersionOrdinal(tableName);
-            List<Column> columns = _allColumns.Where(c => c.TableName == tableName).ToList();
-            var fields = columns.Select(c => c.ColumnName).ToList();
-            var scriptPrefix = string.Empty;
-            if (createInsert)
-                scriptPrefix = GetInsertScriptPrefix(tableName, fields, rowVersionOrdinal, identityOrdinal, false);
-
-            if (createInsert && hasIdentity && !_sqlite)
-            {
-                sb.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] ON;", tableName));
-                sb.Append(Environment.NewLine);
-                sb.Append(_sep);
-            }
-            sb.Append(scriptPrefix);
-            for (int iColumn = 0; iColumn < row.ItemArray.Count(); iColumn++)
-            {
-                var fieldType = row[iColumn].GetType();
-                //Skip rowversion column
-                if (rowVersionOrdinal == iColumn || row.Table.Columns[iColumn].ColumnName.StartsWith("__sys", StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-                //ignore identity for updates
-                if (!createInsert && (identityOrdinal == iColumn))
-                {
-                    continue;
-                }
-                if (!createInsert)
-                    sb.Append(string.Format(" [{0}] = ", row.Table.Columns[iColumn].ColumnName));
-                if (row.IsNull(iColumn))
-                {
-                    sb.Append("NULL");
-                }
-                else if (row[iColumn].GetType() == typeof(String))
-                {
-                    sb.AppendFormat("{0}'{1}'", unicodePrefix, row[iColumn].ToString().Replace("'", "''"));
-                }
-                else if (fieldType == typeof(DateTime))
-                {
-                    //Datetime globalization - ODBC escape: {ts '2004-03-29 19:21:00'}
-                    sb.Append("{ts '");
-                    sb.Append(((DateTime)row[iColumn]).ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture));
-                    sb.Append("'}");
-                }
-                else if (fieldType == typeof(Byte[]))
-                {
-                    Byte[] buffer = (Byte[])row[iColumn];
-                    sb.Append("0x");
-                    for (int i = 0; i < buffer.Length; i++)
-                    {
-                        sb.Append(buffer[i].ToString("X2", System.Globalization.CultureInfo.InvariantCulture));
-                    }
-                }
-                else if (fieldType == typeof(Double) || fieldType == typeof(Single))
-                {
-                    string intString = Convert.ToDouble(row[iColumn]).ToString("R", System.Globalization.CultureInfo.InvariantCulture);
-                    sb.Append(intString);
-                }
-                else if (fieldType == typeof(Byte) || fieldType == typeof(Int16) || fieldType == typeof(Int32) ||
-                    fieldType == typeof(Int64) || fieldType == typeof(Decimal))
-                {
-                    string intString = Convert.ToString(row[iColumn], System.Globalization.CultureInfo.InvariantCulture);
-                    sb.Append(intString);
-                }
-                else if (fieldType == typeof(Boolean))
-                {
-                    bool boolVal = (Boolean)row[iColumn];
-                    if (boolVal)
-                    { sb.Append("1"); }
-                    else
-                    { sb.Append("0"); }
-                }
-                else
-                {
-                    string value = Convert.ToString(row[iColumn], System.Globalization.CultureInfo.InvariantCulture);
-                    sb.AppendFormat("'{0}'", value.Replace("'", "''"));
-                }
-                sb.Append(",");
-            }
-            // remove trailing comma
-            sb.Remove(sb.Length - 1, 1);
-            if (createInsert)
-            {
-                sb.Append(");");
-                sb.Append(Environment.NewLine);
-                sb.Append(_sep);
-                if (hasIdentity && !_sqlite)
-                {
-                    sb.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] OFF;", tableName));
-                    sb.Append(Environment.NewLine);
-                    sb.Append(_sep);
-                }
-            }
-            return sb.ToString();
-        }
 
         public void GenerateTableSelect(string tableName)
         {
@@ -695,25 +608,26 @@ namespace ErikEJ.SqlCeScripting
         /// Generates the table select statement.
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
-        public void GenerateTableSelect(string tableName, bool editableInSqlite = false)
+        /// <param name="editableInSqlite"></param>
+        public void GenerateTableSelect(string tableName, bool editableInSqlite)
         {
             List<Column> columns = _allColumns.Where(c => c.TableName == tableName).ToList();
             if (columns.Count > 0)
             {
-                _sbScript.AppendFormat("SELECT ", tableName);
+                _sbScript.Append("SELECT ");
 
                 columns.ForEach(delegate(Column col)
                 {
                     if (_sqlite && col.DataType == "datetime" && editableInSqlite)
                     {
-                        _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                        _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                         "datetime([{0}]) AS [{0}]{1}      ,"
                         , col.ColumnName
                         , Environment.NewLine);
                     }
                     else
                     {
-                        _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                        _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                             "[{0}]{1}      ,"
                             , col.ColumnName
                             , Environment.NewLine);
@@ -736,13 +650,13 @@ namespace ErikEJ.SqlCeScripting
             List<Column> columns = _allColumns.Where(c => c.TableName == tableName).ToList();
             if (columns.Count > 0)
             {
-                _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "INSERT INTO [{0}]", tableName);
-                _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, Environment.NewLine);
+                _sbScript.AppendFormat(CultureInfo.InvariantCulture, "INSERT INTO [{0}]", tableName);
+                _sbScript.AppendFormat(CultureInfo.InvariantCulture, Environment.NewLine);
                 _sbScript.Append("           (");
 
                 columns.ForEach(delegate(Column col)
                 {
-                    _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                    _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                         "[{0}]{1}           ,"
                         , col.ColumnName
                         , Environment.NewLine);
@@ -753,7 +667,7 @@ namespace ErikEJ.SqlCeScripting
                 _sbScript.AppendFormat("){0}     VALUES{1}           (", Environment.NewLine, Environment.NewLine);
                 columns.ForEach(delegate(Column col)
                 {
-                    _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                    _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                         "<{0}, {1}>{2}           ,"
                         , col.ColumnName
                         , col.ShortType
@@ -772,6 +686,7 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="tableName">Name of the table.</param>
         /// <param name="fields">The fields.</param>
         /// <param name="values">The values.</param>
+        /// <param name="lineNumber"></param>
         public void GenerateTableInsert(string tableName, IList<string> fields, IList<string> values, int lineNumber)
         {
             if (fields.Count != values.Count)
@@ -784,7 +699,7 @@ namespace ErikEJ.SqlCeScripting
                     valueString.Append(val);
                     valueString.Append(Environment.NewLine);
                 }
-                throw new ArgumentException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Error on line {0} in the csv file. The number of values ({1}) and fields ({2}) do not match - {3}", lineNumber, values.Count, fields.Count, valueString.ToString()));
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Error on line {0} in the csv file. The number of values ({1}) and fields ({2}) do not match - {3}", lineNumber, values.Count, fields.Count, valueString));
             }
             List<Column> columns = _allColumns.Where(c => c.TableName == tableName).ToList();
             if (columns.Count > 0)
@@ -792,7 +707,7 @@ namespace ErikEJ.SqlCeScripting
                 _sbScript.AppendFormat("INSERT INTO [{0}] (", tableName);
                 foreach (string field in fields)
                 {
-                    _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                    _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                         "[{0}],", field);                
                 }
                 // Remove the last comma
@@ -816,16 +731,16 @@ namespace ErikEJ.SqlCeScripting
 
         public string SqlFormatValue(string tableName, string fieldName, string value)
         {
-            StringBuilder _sbScript = new StringBuilder();
+            StringBuilder sbScript = new StringBuilder();
             string unicodePrefix = "N";
             if (_sqlite)
                 unicodePrefix = string.Empty;
             Column column = _allColumns.Where(c => c.TableName == tableName && c.ColumnName.ToUpperInvariant() == fieldName.ToUpperInvariant()).SingleOrDefault();
             if (column == null)
-                throw new ArgumentException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Could not find column {0} in table {1}", fieldName.ToLowerInvariant(), tableName));
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Could not find column {0} in table {1}", fieldName.ToLowerInvariant(), tableName));
             if (string.IsNullOrEmpty(value))
             {
-                _sbScript.Append("NULL");
+                sbScript.Append("NULL");
             }
             //else if (value == string.Empty)
             //{
@@ -833,15 +748,15 @@ namespace ErikEJ.SqlCeScripting
             //}
             else if (column.DataType == "nchar" || column.DataType == "nvarchar" || column.DataType == "ntext")
             {
-                _sbScript.AppendFormat(unicodePrefix + "'{0}'", value.Replace("'", "''"));
+                sbScript.AppendFormat(unicodePrefix + "'{0}'", value.Replace("'", "''"));
             }
             else if (column.DataType == "datetime")
             {
                 DateTime date = DateTime.Parse(value);
                 //Datetime globalization - ODBC escape: {ts '2004-03-29 19:21:00'}
-                _sbScript.Append("{ts '");
-                _sbScript.Append(date.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
-                _sbScript.Append("'}");
+                sbScript.Append("{ts '");
+                sbScript.Append(date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+                sbScript.Append("'}");
             }
             else if (column.DataType == "bigint" 
                 || column.DataType == "int"
@@ -853,30 +768,30 @@ namespace ErikEJ.SqlCeScripting
                 || column.DataType == "tinyint"
                 || column.DataType == "smallint")
             {
-                string val = Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture);
-                _sbScript.Append(val);                
+                string val = Convert.ToString(value, CultureInfo.InvariantCulture);
+                sbScript.Append(val);                
             }
             else if (column.DataType == "bit")
             {
                 if (value == "0" || value == "1")
                 {
-                    _sbScript.Append(value);
+                    sbScript.Append(value);
                 }
                 else
                 {
                     bool boolVal = Boolean.Parse(value);
                     if (boolVal)
-                    { _sbScript.Append("1"); }
+                    { sbScript.Append("1"); }
                     else
-                    { _sbScript.Append("0"); }
+                    { sbScript.Append("0"); }
                 }
             }
             else
             {
-                string val = Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture);
-                _sbScript.AppendFormat("'{0}'", val.Replace("'", "''"));
+                string val = Convert.ToString(value, CultureInfo.InvariantCulture);
+                sbScript.AppendFormat("'{0}'", val.Replace("'", "''"));
             }
-            return _sbScript.ToString();
+            return sbScript.ToString();
         }
 
         public void AddIdentityInsert(string tableName)
@@ -884,7 +799,7 @@ namespace ErikEJ.SqlCeScripting
             bool hasIdentity = _repository.HasIdentityColumn(tableName);
             if (hasIdentity && !_sqlite)
             {
-                _sbScript.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] ON;", tableName));
+                _sbScript.Append(string.Format(CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] ON;", tableName));
                 _sbScript.Append(Environment.NewLine);
                 _sbScript.Append(_sep);
             }
@@ -936,13 +851,13 @@ namespace ErikEJ.SqlCeScripting
             List<Column> columns = _allColumns.Where(c => c.TableName == tableName).ToList();
             if (columns.Count > 0)
             {
-                _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "UPDATE [{0}] ", tableName);
-                _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, Environment.NewLine);
+                _sbScript.AppendFormat(CultureInfo.InvariantCulture, "UPDATE [{0}] ", tableName);
+                _sbScript.AppendFormat(CultureInfo.InvariantCulture, Environment.NewLine);
                 _sbScript.Append("   SET ");
 
                 columns.ForEach(delegate(Column col)
                 {
-                    _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
+                    _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                         "[{0}] = <{1}, {2}>{3}      ,"
                         , col.ColumnName
                         , col.ColumnName
@@ -1015,16 +930,16 @@ namespace ErikEJ.SqlCeScripting
                 var dbdesc = descriptionCache.Where(dc => dc.Parent == null && dc.Object == null).Select(dc => dc.Description).SingleOrDefault();
                 dgmlHelper.WriteNode("Database", connectionString, null, "Database", "Expanded", dbdesc);
 
-                var _serverTableNames = _repository.GetAllTableNamesForExclusion();
+                var serverTableNames = _repository.GetAllTableNamesForExclusion();
                 List<string> schemas = new List<string>();
                 if (_repository.IsServer())
                 {
                     foreach (string tableToExclude in tablesToExclude)
                     {
-                        _serverTableNames.Remove(tableToExclude);
+                        serverTableNames.Remove(tableToExclude);
                     }
-                    _tableNames = _serverTableNames;
-                    foreach (var table in _serverTableNames)
+                    _tableNames = serverTableNames;
+                    foreach (var table in serverTableNames)
                     {
                         string[] split = table.Split('.');
                         if (!schemas.Contains(split[0]))
@@ -1071,8 +986,8 @@ namespace ErikEJ.SqlCeScripting
                         // Fix for multiple constraints with same columns
                         Dictionary<string, Constraint> columnForeignKeys = new Dictionary<string, Constraint>();
 
-                        var _tableKeys = _allForeignKeys.Where(c => c.ConstraintTableName == col.TableName);
-                        foreach (var constraint in _tableKeys)
+                        var tableKeys = _allForeignKeys.Where(c => c.ConstraintTableName == col.TableName);
+                        foreach (var constraint in tableKeys)
                         {
                             if (!columnForeignKeys.ContainsKey(constraint.Columns.ToString()))
                             {
@@ -1133,9 +1048,9 @@ namespace ErikEJ.SqlCeScripting
                     List<Constraint> foreignKeys = _allForeignKeys.Where(c => c.ConstraintTableName == table).ToList();
                     foreach (Constraint key in foreignKeys)
                     {
-                        var col = key.Columns[0].ToString();
+                        var col = key.Columns[0];
                         col = RemoveBrackets(col);
-                        var uniqueCol = key.UniqueColumns[0].ToString();
+                        var uniqueCol = key.UniqueColumns[0];
                         uniqueCol = RemoveBrackets(uniqueCol);
                         string source = string.Format("{0}_{1}", table, col);
                         string target = string.Format("{0}_{1}", key.UniqueConstraintTableName, uniqueCol);
@@ -1149,9 +1064,9 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        internal void GeneratePrimaryKeys()
+        public void GeneratePrimaryKeys()
         {
-            foreach(string tableName in _tableNames)
+            foreach (string tableName in _tableNames)
             {
                 GeneratePrimaryKeys(tableName);
             }
@@ -1221,29 +1136,28 @@ namespace ErikEJ.SqlCeScripting
             {
                 if (_sqlite)
                 {
-                    _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "{0}, FOREIGN KEY ({1}) REFERENCES [{2}] ({3}) ON DELETE {4} ON UPDATE {5}"
+                    _sbScript.AppendFormat(CultureInfo.InvariantCulture, "{0}, FOREIGN KEY ({1}) REFERENCES [{2}] ({3}) ON DELETE {4} ON UPDATE {5}"
                         , Environment.NewLine
-                        , constraint.Columns.ToString()
+                        , constraint.Columns
                         , constraint.UniqueConstraintTableName
-                        , constraint.UniqueColumns.ToString()
+                        , constraint.UniqueColumns
                         , constraint.DeleteRule
                         , constraint.UpdateRule);
                 }
                 else
                 {
-                    _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "ALTER TABLE [{0}] ADD CONSTRAINT [{1}] FOREIGN KEY ({2}) REFERENCES [{3}]({4}) ON DELETE {5} ON UPDATE {6};{7}"
+                    _sbScript.AppendFormat(CultureInfo.InvariantCulture, "ALTER TABLE [{0}] ADD CONSTRAINT [{1}] FOREIGN KEY ({2}) REFERENCES [{3}]({4}) ON DELETE {5} ON UPDATE {6};{7}"
                         , constraint.ConstraintTableName
                         , constraint.ConstraintName
-                        , constraint.Columns.ToString()
+                        , constraint.Columns
                         , constraint.UniqueConstraintTableName
-                        , constraint.UniqueColumns.ToString()
+                        , constraint.UniqueColumns
                         , constraint.DeleteRule
                         , constraint.UpdateRule
                         , Environment.NewLine);
                     _sbScript.Append(_sep);
                 }
-            };
-
+            }
         }
 
         /// <summary>
@@ -1275,7 +1189,7 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="indexName">Name of the index.</param>
         public void GenerateIndexDrop(string tableName, string indexName)
         {
-            List<Index> tableIndexes = new List<Index>();
+            List<Index> tableIndexes;
             if (_repository.IsServer())
             {
                 tableIndexes = _repository.GetIndexesFromTable(tableName);
@@ -1289,7 +1203,7 @@ namespace ErikEJ.SqlCeScripting
                                                       where i.IndexName == indexName
                                                       orderby i.OrdinalPosition
                                                       select i;
-            if (indexesByName.Count() > 0)
+            if (indexesByName.Any())
             {
                 _sbScript.AppendFormat("DROP INDEX [{0}].[{1}];{2}", tableName, indexName, Environment.NewLine);
                 _sbScript.Append(_sep);
@@ -1328,7 +1242,7 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="tableName">Name of the table.</param>
         private void GenerateIndex(string tableName)
         {
-            List<Index> tableIndexes = new List<Index>();
+            List<Index> tableIndexes;
             if (_repository.IsServer())
             {
                 tableIndexes = _repository.GetIndexesFromTable(tableName);
@@ -1349,86 +1263,6 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        private void GenerateSingleIndex(string tableName, string uniqueIndexName)
-        {
-            List<Index> tableIndexes = new List<Index>();
-            if (_repository.IsServer())
-            {
-                tableIndexes = _repository.GetIndexesFromTable(tableName);
-            }
-            else
-            {
-                tableIndexes = _allIndexes.Where(i => i.TableName == tableName).ToList();
-            }
-            
-            IOrderedEnumerable<Index> indexesByName = from i in tableIndexes
-                                                      where i.IndexName == uniqueIndexName
-                                                      orderby i.OrdinalPosition
-                                                      select i;
-            if (indexesByName.Count() > 0)
-            {
-                var idx = indexesByName.First();
-
-                if (idx.Unique && !_sqlite)
-                {
-                    _sbScript.AppendFormat("ALTER TABLE [{0}] ADD CONSTRAINT [{1}] UNIQUE (", idx.TableName, idx.IndexName);
-                    foreach (Index col in indexesByName)
-                    {
-                        _sbScript.AppendFormat("[{0}],", col.ColumnName);
-                    }
-                }
-                else
-                {
-                    _sbScript.Append("CREATE ");
-                    // Just get the first one to decide whether it's unique and/or clustered index
-                    if (idx.Unique)
-                        _sbScript.Append("UNIQUE ");
-                    if (idx.Clustered)
-                        _sbScript.Append("CLUSTERED ");
-
-                    var indexName = idx.IndexName;
-                    if (_sqlite)
-                        indexName = idx.IndexName + "_" + idx.TableName;
-
-                    _sbScript.AppendFormat("INDEX [{0}] ON [{1}] (", indexName, idx.TableName);
-                    foreach (Index col in indexesByName)
-                    {
-                        _sbScript.AppendFormat("[{0}] {1},", col.ColumnName, col.SortOrder.ToString());
-                    }
-                }
-                // Remove the last comma
-                _sbScript.Remove(_sbScript.Length - 1, 1);
-                _sbScript.AppendLine(");");
-                _sbScript.Append(_sep);
-            }
-            else
-            {
-                GeneratePrimaryKeys(tableName);
-            }
-        }
-
-        private static string GetInsertScriptPrefix(string tableName, List<string> fieldNames, int rowVersionOrdinal, int identityOrdinal, bool ignoreIdentity)
-        {
-            if (!ignoreIdentity)
-                identityOrdinal = -1;
-
-            StringBuilder sbScriptTemplate = new StringBuilder(1000);
-            sbScriptTemplate.AppendFormat("INSERT INTO [{0}] (", tableName);
-
-            StringBuilder columnNames = new StringBuilder();
-            // Generate the field names first
-            for (int iColumn = 0; iColumn < fieldNames.Count; iColumn++)
-            {                
-                if (iColumn != rowVersionOrdinal && iColumn != identityOrdinal && !fieldNames[iColumn].StartsWith("__sys", StringComparison.OrdinalIgnoreCase))
-                {
-                    columnNames.AppendFormat("[{0}]{1}", fieldNames[iColumn], ",");
-                }
-            }
-            columnNames.Remove(columnNames.Length - 1, 1);
-            sbScriptTemplate.Append(columnNames.ToString());
-            sbScriptTemplate.Append(") VALUES (");
-            return sbScriptTemplate.ToString();
-        }
 
         /// <summary>
         /// Generates the table columns.
@@ -1487,12 +1321,12 @@ namespace ErikEJ.SqlCeScripting
 
         public void GenerateForeignKey(Constraint constraint)
         {
-            _sbScript.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "ALTER TABLE [{0}] ADD CONSTRAINT [{1}] FOREIGN KEY ({2}) REFERENCES [{3}]({4}) ON DELETE {5} ON UPDATE {6};{7}"
+            _sbScript.AppendFormat(CultureInfo.InvariantCulture, "ALTER TABLE [{0}] ADD CONSTRAINT [{1}] FOREIGN KEY ({2}) REFERENCES [{3}]({4}) ON DELETE {5} ON UPDATE {6};{7}"
                 , constraint.ConstraintTableName
                 , constraint.ConstraintName
-                , constraint.Columns.ToString()
+                , constraint.Columns
                 , constraint.UniqueConstraintTableName
-                , constraint.UniqueColumns.ToString()
+                , constraint.UniqueColumns
                 , constraint.DeleteRule
                 , constraint.UpdateRule
                 , Environment.NewLine);
@@ -1541,12 +1375,12 @@ namespace ErikEJ.SqlCeScripting
                 {
                     if (forServer)
                     {
-                        _sbScript.AppendLine(string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                        _sbScript.AppendLine(string.Format(CultureInfo.InvariantCulture,
                             "DBCC CHECKIDENT ('{0}', RESEED, {1});", tableName, col.AutoIncrementNext));
                     }
                     else
                     {
-                        _sbScript.AppendLine(string.Format(System.Globalization.CultureInfo.InvariantCulture, "ALTER TABLE [{0}] ALTER COLUMN [{1}] IDENTITY ({2},{3});", tableName, col.ColumnName, col.AutoIncrementNext, col.AutoIncrementBy));
+                        _sbScript.AppendLine(string.Format(CultureInfo.InvariantCulture, "ALTER TABLE [{0}] ALTER COLUMN [{1}] IDENTITY ({2},{3});", tableName, col.ColumnName, col.AutoIncrementNext, col.AutoIncrementBy));
                     }
                     _sbScript.Append(_sep);
                 }
@@ -1582,6 +1416,8 @@ namespace ErikEJ.SqlCeScripting
                         GenerateTableContent(false);
                     }
                     GenerateIndex();
+                    GenerateTriggers();
+                    GenerateViews();                    
                 }
                 GenerateSqliteSuffix();
             }
@@ -1611,8 +1447,10 @@ namespace ErikEJ.SqlCeScripting
                     GenerateForeignKeys();
                 }
             }
-            Helper.WriteIntoFile(GeneratedScript, _outFile, this.FileCounter, _sqlite);
+            Helper.WriteIntoFile(GeneratedScript, _outFile, FileCounter, _sqlite);
         }
+
+       
 
         public IList<string> GeneratedFiles 
         { 
@@ -1643,72 +1481,6 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        private void Init(IRepository repository, string outFile)
-        {
-            _outFile = outFile;
-            _repository = repository;
-            _sbScript = new StringBuilder(10485760);
-            _tableNames = _repository.GetAllTableNames();
-            _allColumns = _repository.GetAllColumns();
-            _allForeignKeys = repository.GetAllForeignKeys();
-            _allPrimaryKeys = repository.GetAllPrimaryKeys();
-            if (!repository.IsServer())
-                _allIndexes = repository.GetAllIndexes();
-
-            string scriptEngineBuild = AssemblyFileVersion;
-
-            if (_repository.IsServer())
-            {
-                // Check if datatypes are supported when exporting from server
-                // Either they can be converted, are supported, or an exception is thrown (if not supported)
-                // Currently only sql_variant is not supported
-                foreach (Column col in _allColumns)
-                {
-                    col.CharacterMaxLength = Helper.CheckDateColumnLength(col.DataType, col);
-                    col.DateFormat = Helper.CheckDateFormat(col.DataType);
-
-                    // Check if the current column points to a unique identity column,
-                    // as the two columns' datatypes must match
-                    bool refToIdentity = false;
-                    Dictionary<string, Constraint> columnForeignKeys = new Dictionary<string, Constraint>();
-
-                    // Fix for multiple constraints with same columns
-                    var _tableKeys = _allForeignKeys.Where(c => c.ConstraintTableName == col.TableName);
-                    foreach (var constraint in _tableKeys)
-                    { 
-                        if (!columnForeignKeys.ContainsKey(constraint.Columns.ToString()))
-                        {
-                            columnForeignKeys.Add(constraint.Columns.ToString(), constraint);
-                        }
-                    }
-
-                    if (columnForeignKeys.ContainsKey(string.Format("[{0}]", col.ColumnName)))
-                    {
-                        var refCol = _allColumns.Where(c => c.TableName == columnForeignKeys[string.Format("[{0}]", col.ColumnName)].UniqueConstraintTableName
-                            && string.Format("[{0}]", c.ColumnName) == columnForeignKeys[string.Format("[{0}]", col.ColumnName)].UniqueColumnName).FirstOrDefault();
-                        if (refCol != null && refCol.AutoIncrementBy > 0)
-                        {
-                            refToIdentity = true;
-                        }
-                    }
-                    col.ServerDataType = col.DataType;
-                    // This modifies the datatype to be SQL Compact compatible
-                    col.DataType = Helper.CheckDataType(col.DataType, col, refToIdentity, _preserveDateAndDateTime2);
-                }
-            }
-            _sbScript.AppendFormat("-- Script Date: {0} {1}  - ErikEJ.SqlCeScripting version {2}", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString(), scriptEngineBuild);
-            _sbScript.AppendLine();
-            if (!string.IsNullOrEmpty(_outFile) && !_repository.IsServer())
-            {
-                GenerateDatabaseInfo();
-            }
-            //if (!string.IsNullOrEmpty(_outFile) && _sqlite)
-            //{
-            //    _sbScript.AppendLine("SELECT 1;");
-            //    _sbScript.AppendLine("PRAGMA foreign_keys=OFF;");
-            //    _sbScript.AppendLine("BEGIN TRANSACTION;");
-            //}
-        }
 
         public void GenerateDatabaseInfo()
         {
@@ -1845,7 +1617,7 @@ namespace ErikEJ.SqlCeScripting
                 case "nchar":
                 case "binary":
                 case "varbinary":
-                    line = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    line = string.Format(CultureInfo.InvariantCulture,
                         "[{0}] {1}({2}) {3}{4}"
                         , col.ColumnName
                         , col.DataType
@@ -1855,7 +1627,7 @@ namespace ErikEJ.SqlCeScripting
                         );
                     break;
                 case "numeric":
-                    line = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    line = string.Format(CultureInfo.InvariantCulture,
                         "[{0}] {1}({2},{3}) {4}{5}"
                         , col.ColumnName
                         , col.DataType
@@ -1871,7 +1643,7 @@ namespace ErikEJ.SqlCeScripting
                     {
                         rowGuidCol = "ROWGUIDCOL ";
                     }
-                    line = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    line = string.Format(CultureInfo.InvariantCulture,
                         "[{0}] {1} {2}{3}{4}"
                         , col.ColumnName
                         , col.DataType
@@ -1891,29 +1663,29 @@ namespace ErikEJ.SqlCeScripting
                     }
                     if (includeData)
                     {
-                        line = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                        line = string.Format(CultureInfo.InvariantCulture,
                             "[{0}] {1} {2}{3}{4}"
                             , col.ColumnName
                             , col.DataType
                             , colDefault
-                            , (col.AutoIncrementBy > 0 ? string.Format(System.Globalization.CultureInfo.InvariantCulture, "IDENTITY ({0},{1}) ", col.AutoIncrementNext, col.AutoIncrementBy) : string.Empty)
+                            , (col.AutoIncrementBy > 0 ? string.Format(CultureInfo.InvariantCulture, "IDENTITY ({0},{1}) ", col.AutoIncrementNext, col.AutoIncrementBy) : string.Empty)
                             , colNull
                             );
                     }
                     else
                     {
-                        line = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                        line = string.Format(CultureInfo.InvariantCulture,
                             "[{0}] {1} {2}{3}{4}"
                             , col.ColumnName
                             , col.DataType
                             , colDefault
-                            , (col.AutoIncrementBy > 0 ? string.Format(System.Globalization.CultureInfo.InvariantCulture, "IDENTITY ({0},{1}) ", col.AutoIncrementSeed, col.AutoIncrementBy) : string.Empty)
+                            , (col.AutoIncrementBy > 0 ? string.Format(CultureInfo.InvariantCulture, "IDENTITY ({0},{1}) ", col.AutoIncrementSeed, col.AutoIncrementBy) : string.Empty)
                             , colNull
                             );
                     }
                     break;
                 default:
-                    line = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                    line = string.Format(CultureInfo.InvariantCulture,
                         "[{0}] {1} {2}{3}"
                         , col.ColumnName
                         , col.DataType
@@ -1933,10 +1705,11 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
+
         public void GenerateSqliteNetModel(string nameSpace)
         {
             _sbScript.Clear();
-            var baseTextWriter = new System.IO.StringWriter();
+            var baseTextWriter = new StringWriter();
             var indentWriter = new IndentedTextWriter(baseTextWriter);
 
             indentWriter.Indent = 0;
@@ -2068,5 +1841,263 @@ namespace ErikEJ.SqlCeScripting
             
             _sbScript.Append(baseTextWriter);
         }
+
+        #region private methods
+        private string TruncateLogFileName()
+        {
+            return Path.Combine(Path.GetTempPath(), "SQLiteTruncates.log");
+        }
+
+        private DataSet FillSchemaDataSet(List<string> tables)
+        {
+            DataSet schemaDataSet = _repository.GetSchemaDataSet(tables);
+            foreach (Constraint fk in _allForeignKeys)
+            {
+                //Only add relation if both tables are included!
+                if (tables.Contains(fk.ConstraintTableName) && tables.Contains(fk.UniqueConstraintTableName))
+                {
+                    // No self references supported 
+                    if (fk.ConstraintTableName != fk.UniqueConstraintTableName)
+                    {
+                        DataColumn[] fkColumns = new DataColumn[fk.Columns.Count];
+                        DataColumn[] uniqueColumns = new DataColumn[fk.Columns.Count];
+                        for (int i = 0; i < fk.Columns.Count; i++)
+                        {
+                            fk.Columns[i] = RemoveBrackets(fk.Columns[i]);
+                            fk.UniqueColumns[i] = RemoveBrackets(fk.UniqueColumns[i]);
+                            fkColumns[i] = schemaDataSet.Tables[fk.ConstraintTableName].Columns[fk.Columns[i]];
+                            uniqueColumns[i] = schemaDataSet.Tables[fk.UniqueConstraintTableName].Columns[fk.UniqueColumns[i]];
+                        }
+
+                        if (!schemaDataSet.Relations.Contains(fk.ConstraintName))
+                        {
+                            try
+                            {
+                                schemaDataSet.Relations.Add(fk.ConstraintName,
+                                    uniqueColumns,
+                                    fkColumns);
+                            }
+                            //"Handle" duplicated Server foreign keys
+                            catch (ArgumentException ex1)
+                            {
+                                _sbScript.AppendLine("-- Warning - constraint: " + fk.ConstraintTableName + " " + ex1.Message);
+                            }
+                            catch (InvalidConstraintException ex2)
+                            {
+                                _sbScript.AppendLine("-- Warning - constraint: " + fk.ConstraintTableName + " " + ex2.Message);
+                            }
+                        }
+                    }
+                }
+            }
+            return schemaDataSet;
+        }
+
+        private string GenerateInserOrUpdate(string tableName, bool createInsert, DataRow row)
+        {
+            StringBuilder sb = new StringBuilder();
+            int identityOrdinal = _repository.GetIdentityOrdinal(tableName);
+            bool hasIdentity = (identityOrdinal > -1);
+            string unicodePrefix = "N";
+            if (_sqlite)
+                unicodePrefix = string.Empty;
+            // Skip rowversion column
+            Int32 rowVersionOrdinal = _repository.GetRowVersionOrdinal(tableName);
+            List<Column> columns = _allColumns.Where(c => c.TableName == tableName).ToList();
+            var fields = columns.Select(c => c.ColumnName).ToList();
+            var scriptPrefix = string.Empty;
+            if (createInsert)
+                scriptPrefix = GetInsertScriptPrefix(tableName, fields, rowVersionOrdinal, identityOrdinal, false);
+
+            if (createInsert && hasIdentity && !_sqlite)
+            {
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] ON;", tableName));
+                sb.Append(Environment.NewLine);
+                sb.Append(_sep);
+            }
+            sb.Append(scriptPrefix);
+            for (int iColumn = 0; iColumn < row.ItemArray.Count(); iColumn++)
+            {
+                var fieldType = row[iColumn].GetType();
+                //Skip rowversion column
+                if (rowVersionOrdinal == iColumn || row.Table.Columns[iColumn].ColumnName.StartsWith("__sys", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                //ignore identity for updates
+                if (!createInsert && (identityOrdinal == iColumn))
+                {
+                    continue;
+                }
+                if (!createInsert)
+                    sb.Append(string.Format(" [{0}] = ", row.Table.Columns[iColumn].ColumnName));
+                if (row.IsNull(iColumn))
+                {
+                    sb.Append("NULL");
+                }
+                else if (fieldType == typeof(String))
+                {
+                    sb.AppendFormat("{0}'{1}'", unicodePrefix, row[iColumn].ToString().Replace("'", "''"));
+                }
+                else if (fieldType == typeof(DateTime))
+                {
+                    //Datetime globalization - ODBC escape: {ts '2004-03-29 19:21:00'}
+                    sb.Append("{ts '");
+                    sb.Append(((DateTime)row[iColumn]).ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
+                    sb.Append("'}");
+                }
+                else if (fieldType == typeof(Byte[]))
+                {
+                    Byte[] buffer = (Byte[])row[iColumn];
+                    sb.Append("0x");
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        sb.Append(buffer[i].ToString("X2", CultureInfo.InvariantCulture));
+                    }
+                }
+                else if (fieldType == typeof(Double) || fieldType == typeof(Single))
+                {
+                    string intString = Convert.ToDouble(row[iColumn]).ToString("R", CultureInfo.InvariantCulture);
+                    sb.Append(intString);
+                }
+                else if (fieldType == typeof(Byte) || fieldType == typeof(Int16) || fieldType == typeof(Int32) ||
+                    fieldType == typeof(Int64) || fieldType == typeof(Decimal))
+                {
+                    string intString = Convert.ToString(row[iColumn], CultureInfo.InvariantCulture);
+                    sb.Append(intString);
+                }
+                else if (fieldType == typeof(Boolean))
+                {
+                    bool boolVal = (Boolean)row[iColumn];
+                    if (boolVal)
+                    { sb.Append("1"); }
+                    else
+                    { sb.Append("0"); }
+                }
+                else
+                {
+                    string value = Convert.ToString(row[iColumn], CultureInfo.InvariantCulture);
+                    sb.AppendFormat("'{0}'", value.Replace("'", "''"));
+                }
+                sb.Append(",");
+            }
+            // remove trailing comma
+            sb.Remove(sb.Length - 1, 1);
+            if (createInsert)
+            {
+                sb.Append(");");
+                sb.Append(Environment.NewLine);
+                sb.Append(_sep);
+                if (hasIdentity && !_sqlite)
+                {
+                    sb.Append(string.Format(CultureInfo.InvariantCulture, "SET IDENTITY_INSERT [{0}] OFF;", tableName));
+                    sb.Append(Environment.NewLine);
+                    sb.Append(_sep);
+                }
+            }
+            return sb.ToString();
+        }
+
+
+        private void GenerateSingleIndex(string tableName, string uniqueIndexName)
+        {
+            List<Index> tableIndexes;
+            if (_repository.IsServer())
+            {
+                tableIndexes = _repository.GetIndexesFromTable(tableName);
+            }
+            else
+            {
+                tableIndexes = _allIndexes.Where(i => i.TableName == tableName).ToList();
+            }
+
+            IOrderedEnumerable<Index> indexesByName = from i in tableIndexes
+                                                      where i.IndexName == uniqueIndexName
+                                                      orderby i.OrdinalPosition
+                                                      select i;
+            if (indexesByName.Any())
+            {
+                var idx = indexesByName.First();
+
+                if (idx.Unique && !_sqlite)
+                {
+                    _sbScript.AppendFormat("ALTER TABLE [{0}] ADD CONSTRAINT [{1}] UNIQUE (", idx.TableName, idx.IndexName);
+                    foreach (Index col in indexesByName)
+                    {
+                        _sbScript.AppendFormat("[{0}],", col.ColumnName);
+                    }
+                }
+                else
+                {
+                    _sbScript.Append("CREATE ");
+                    // Just get the first one to decide whether it's unique and/or clustered index
+                    if (idx.Unique)
+                        _sbScript.Append("UNIQUE ");
+                    if (idx.Clustered)
+                        _sbScript.Append("CLUSTERED ");
+
+                    var indexName = idx.IndexName;
+                    if (_sqlite)
+                        indexName = idx.IndexName + "_" + idx.TableName;
+
+                    _sbScript.AppendFormat("INDEX [{0}] ON [{1}] (", indexName, idx.TableName);
+                    foreach (Index col in indexesByName)
+                    {
+                        _sbScript.AppendFormat("[{0}] {1},", col.ColumnName, col.SortOrder.ToString());
+                    }
+                }
+                // Remove the last comma
+                _sbScript.Remove(_sbScript.Length - 1, 1);
+                _sbScript.AppendLine(");");
+                _sbScript.Append(_sep);
+            }
+            else
+            {
+                GeneratePrimaryKeys(tableName);
+            }
+        }
+
+        private static string GetInsertScriptPrefix(string tableName, List<string> fieldNames, int rowVersionOrdinal, int identityOrdinal, bool ignoreIdentity)
+        {
+            if (!ignoreIdentity)
+                identityOrdinal = -1;
+
+            StringBuilder sbScriptTemplate = new StringBuilder(1000);
+            sbScriptTemplate.AppendFormat("INSERT INTO [{0}] (", tableName);
+
+            StringBuilder columnNames = new StringBuilder();
+            // Generate the field names first
+            for (int iColumn = 0; iColumn < fieldNames.Count; iColumn++)
+            {
+                if (iColumn != rowVersionOrdinal && iColumn != identityOrdinal && !fieldNames[iColumn].StartsWith("__sys", StringComparison.OrdinalIgnoreCase))
+                {
+                    columnNames.AppendFormat("[{0}]{1}", fieldNames[iColumn], ",");
+                }
+            }
+            columnNames.Remove(columnNames.Length - 1, 1);
+            sbScriptTemplate.Append(columnNames);
+            sbScriptTemplate.Append(") VALUES (");
+            return sbScriptTemplate.ToString();
+        }
+
+        private void GenerateViews()
+        {
+            foreach (var view in _allViews)
+            {
+                _sbScript.AppendFormat("CREATE VIEW {0} AS{1}{2};{3}", view.ViewName, Environment.NewLine, view.Definition, Environment.NewLine);
+                _sbScript.Append(_sep);
+            }
+        }
+
+        private void GenerateTriggers()
+        {
+            foreach (var trigger in _allTriggers)
+            {
+                _sbScript.Append(trigger.Definition);
+                _sbScript.Append(Environment.NewLine);
+                _sbScript.Append(_sep);
+            }
+        }
+        #endregion
     }
 }
