@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>EntityFramework.SqlServerCompact.PrivateDeployment</id>
+    <version>6.1.3.1</version>
+    <title>EntityFramework.SqlServerCompact.PrivateDeployment</title>
+    <authors>ErikEJ</authors>
+    <owners>ErikEJ</owners>
+    <projectUrl>http://sqlcetoolbox.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>**Unofficial** Enables SQL Server Compact 4.0 private desktop deployment with Entity Framework 6.1.x
+ </description>
+	<summary>See the blog post at http://erikej.blogspot.dk/2014/10/entity-framework-6-and-sql-server.html for details. To make the most of this package, make sure that:
+- The binding redirect is set to: oldVersion='4.0.0.0-4.0.0.1'
+- Prefer32Bit project option is disabled if using AnyCPU
+	</summary>
+    <releaseNotes>Release for 6.1.3 RTW</releaseNotes> 
+    <copyright>Copyright 2015</copyright>
+    <language />
+    <dependencies>
+      <dependency id="Baseclass.Contrib.Nuget.Output" version="1.0.7" />
+      <dependency id="EntityFramework" version="[6.1.3]" />
+    </dependencies>
+  </metadata>
+  <files> 
+    <file src="readme.txt" target="" />
+    <file src="lib\**" target="lib" />
+    <file src="tools\install.ps1" target="tools\install.ps1" />
+    <file src="Content\app.config.transform" target="Content\app.config.transform" />
+
+    <file src="output\x86\sqlcecompact40.dll" target="output\x86\sqlcecompact40.dll" />
+    <file src="output\x86\sqlceer40EN.dll" target="output\x86\sqlceer40EN.dll" /> 
+    <file src="output\x86\sqlceme40.dll" target="output\x86\sqlceme40.dll" /> 
+    <file src="output\x86\sqlceqp40.dll" target="output\x86\sqlceqp40.dll" /> 
+    <file src="output\x86\sqlcese40.dll" target="output\x86\sqlcese40.dll" /> 
+    <file src="output\x86\sqlceca40.dll" target="output\x86\sqlceca40.dll" /> 
+    <file src="output\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" target="output\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" /> 
+    <file src="output\x86\Microsoft.VC90.CRT\msvcr90.dll" target="output\x86\Microsoft.VC90.CRT\msvcr90.dll" /> 
+
+    <file src="output\amd64\sqlcecompact40.dll" target="output\amd64\sqlcecompact40.dll" />
+    <file src="output\amd64\sqlceer40EN.dll" target="output\amd64\sqlceer40EN.dll" /> 
+    <file src="output\amd64\sqlceme40.dll" target="output\amd64\sqlceme40.dll" /> 
+    <file src="output\amd64\sqlceqp40.dll" target="output\amd64\sqlceqp40.dll" /> 
+    <file src="output\amd64\sqlcese40.dll" target="output\amd64\sqlcese40.dll" /> 
+    <file src="output\amd64\sqlceca40.dll" target="output\amd64\sqlceca40.dll" /> 
+    <file src="output\amd64\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" target="output\amd64\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" /> 
+    <file src="output\amd64\Microsoft.VC90.CRT\msvcr90.dll" target="output\amd64\Microsoft.VC90.CRT\msvcr90.dll" /> 
+
+  </files> 
+</package>
