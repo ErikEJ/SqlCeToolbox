@@ -217,6 +217,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
+                //var serverList = new ObjectExplorerManager(_package).GetAllServers();
                 var connectionString =  databaseInfo.DatabaseInfo != null
                     ? databaseInfo.DatabaseInfo.ConnectionString :
                     DataConnectionHelper.PromptForConnectionString(_package);
