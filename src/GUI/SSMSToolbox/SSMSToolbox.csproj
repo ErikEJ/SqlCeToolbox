@@ -363,7 +363,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SSMSEngine\DatabaseMenuItem.cs" />
     <Compile Include="SSMSEngine\ObjectExplorerManager.cs" />
+    <Compile Include="SSMSEngine\ToolStripSeparatorMenuItem.cs" />
     <None Include="Resources\SqlCeCLR.cs" />
   </ItemGroup>
   <ItemGroup>

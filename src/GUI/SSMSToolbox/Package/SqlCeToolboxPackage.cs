@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -8,8 +7,8 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Helpers;
+using ErikEJ.SqlCeToolbox.SSMSEngine;
 using ErikEJ.SqlCeToolbox.ToolWindows;
-using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -25,12 +24,14 @@ namespace ErikEJ.SqlCeToolbox
     [ProvideToolWindow(typeof(DataGridViewWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
     [ProvideToolWindow(typeof(ReportWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
     [ProvideToolWindow(typeof(SubscriptionWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
-    [ProvideOptionPage(typeof(OptionsPageGeneral), "SQLCE/SQLite Toolbox", "General", 100, 101, true)]
-    [ProvideOptionPage(typeof(OptionsPageAdvanced), "SQLCE/SQLite Toolbox", "Advanced", 100, 102, true)]
+    [ProvideOptionPage(typeof(OptionsPageGeneral), "SQLite/SQLCE Toolbox", "General", 100, 101, true)]
+    [ProvideOptionPage(typeof(OptionsPageAdvanced), "SQLite/SQLCE Toolbox", "Advanced", 100, 102, true)]
     [Guid(PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class SqlCeToolboxPackage : Package
     {
+        private ObjectExplorerManager _objectExplorerManager;
+
         /// <summary>
         /// ExplorerToolWindowPackage GUID string.
         /// </summary>
@@ -53,30 +54,17 @@ namespace ErikEJ.SqlCeToolbox
             return GetService(type);
         }
 
-        public bool VsSupportsSimpleDdex35Provider()
-        {
-            return false;
-        }
+        public static bool IsVsExtension => false;
 
-        public bool VsSupportsSimpleDdex4Provider()
-        {
-            return false;
-        }
+        public bool VsSupportsSimpleDdex35Provider() => false;
 
-        public static bool VsSupportsEf6()
-        {
-            return false;
-        }
+        public bool VsSupportsSimpleDdex4Provider() => false;
 
-        public bool VsSupportsDdex40()
-        {
-            return false;
-        }
+        public static bool VsSupportsEf6() => false;
 
-        public bool VsSupportsDdex35()
-        {
-            return false;
-        }
+        public bool VsSupportsDdex40() => false;
+
+        public bool VsSupportsDdex35() => false;
 
         public static Version VisualStudioVersion
         {
@@ -84,11 +72,6 @@ namespace ErikEJ.SqlCeToolbox
             {
                 return  new Version(0, 0, 0, 0);
             }
-        }
-
-        public static bool IsVsExtension
-        {
-            get { return false; }
         }
 
         public void SetStatus(string message)
@@ -180,59 +163,25 @@ namespace ErikEJ.SqlCeToolbox
             return window;
         }
 
+        public void ShowToolWindow(object sender, EventArgs e)
+        {
+            // Get the instance number 0 of this tool window. This window is single instance so this instance
+            // is actually the only one.
+            // The last flag is set to true so that if the tool window does not exists it will be created.
+            var window = FindToolWindow(typeof(ExplorerToolWindow), 0, true);
+            if (window?.Frame == null)
+            {
+                throw new NotSupportedException(Resources.CanNotCreateWindow);
+            }
+            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            ErrorHandler.ThrowOnFailure(windowFrame.Show());
+        }
+
         public void ShowWindow(ToolWindowPane window)
         {
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
-
-        private void SetObjectExplorerEventProvider()
-        {
-            var mi = GetType().GetMethod("Provider_SelectionChanged", BindingFlags.NonPublic | BindingFlags.Instance);
-            var objectExplorer = new ObjectExplorerManager(this).GetObjectExplorer();
-            var t = Assembly.Load("Microsoft.SqlServer.Management.SqlStudio.Explorer").GetType("Microsoft.SqlServer.Management.SqlStudio.Explorer.ObjectExplorerService");
-
-            int nodeCount;
-            INodeInformation[] nodes;
-            objectExplorer.GetSelectedNodes(out nodeCount, out nodes);
-
-            PropertyInfo piContainer = t.GetProperty("Container", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            object objectExplorerContainer = piContainer.GetValue(objectExplorer, null);
-            PropertyInfo piContextService = objectExplorerContainer.GetType().GetProperty("Components", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            //object[] indexArgs = { 1 };
-            ComponentCollection objectExplorerComponents = piContextService.GetValue(objectExplorerContainer, null) as ComponentCollection;
-            object contextService = null;
-
-            if (objectExplorerComponents != null)
-                foreach (Component component in objectExplorerComponents)
-                {
-                    if (component.GetType().FullName.Contains("ContextService"))
-                    {
-                        contextService = component;
-                        break;
-                    }
-                }
-            if (contextService == null)
-                throw new NullReferenceException("Can't find ObjectExplorer ContextService.");
-
-            PropertyInfo piObjectExplorerContext = contextService.GetType().GetProperty("ObjectExplorerContext", System.Reflection.BindingFlags.Public | BindingFlags.Instance);
-            object objectExplorerContext = piObjectExplorerContext.GetValue(contextService, null);
-            EventInfo ei = objectExplorerContext.GetType().GetEvent("CurrentContextChanged", System.Reflection.BindingFlags.Public | BindingFlags.Instance);
-            Delegate del = Delegate.CreateDelegate(ei.EventHandlerType, this, mi);
-            ei.AddEventHandler(objectExplorerContext, del);
-        }
-
-        private void Provider_SelectionChanged(object sender, NodesChangedEventArgs args)
-        {
-            if (args.ChangedNodes.Count <= 0) return;
-            var node = args.ChangedNodes[0];
-            if (node == null) return;
-            Debug.WriteLine(node.UrnPath);
-            Debug.WriteLine(node.Name);
-            Debug.WriteLine(node.Context);
-        }
-
-        #region Package Members
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -253,9 +202,9 @@ namespace ErikEJ.SqlCeToolbox
             DataConnectionHelper.LogUsage("Platform: SSMS 130");
             OtherWindowsCommand.Initialize(this);
             ViewMenuCommand.Initialize(this);
-            //SetObjectExplorerEventProvider();
+            _objectExplorerManager = new ObjectExplorerManager(this);
+            _objectExplorerManager.SetObjectExplorerEventProvider();
             base.Initialize();            
         }
-        #endregion
     }
 }
