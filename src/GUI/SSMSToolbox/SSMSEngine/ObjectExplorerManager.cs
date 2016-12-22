@@ -21,6 +21,8 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
 
         public Dictionary<string, DatabaseInfo> GetAllServerUserDatabases()
         {
+            //TODO ErikEJ use this from DataConnectionHelper in SSMS edition
+
             var servers = new List<SqlConnectionInfo>();
 
             foreach (var srvHerarchy in GetExplorerHierarchies())
