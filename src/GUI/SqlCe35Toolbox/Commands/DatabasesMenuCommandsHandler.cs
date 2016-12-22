@@ -31,6 +31,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
             _package = _parentWindow.Package as SqlCeToolboxPackage;
         }
 
+        public DatabasesMenuCommandsHandler(SqlCeToolboxPackage package)
+        {
+            _package = package;
+        }
+
         #region Root Level Commands
         public void AddPrivateCe35Database(object sender, ExecutedRoutedEventArgs e)
         {
@@ -456,7 +461,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     DataConnectionHelper.PromptForConnectionString(_package);
 
                 if (string.IsNullOrEmpty(connectionString)) return;
-                string fileName;
                 var ptd = new PickTablesDialog();
                 using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                 {
@@ -475,7 +479,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     var result = fd.ShowDialog();
                     if (!result.HasValue || result.Value != true) return;
                     Properties.Settings.Default.KeepSchemaNames = true;
-                    fileName = fd.FileName;
+                    var fileName = fd.FileName;
                     using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                     {
                         try

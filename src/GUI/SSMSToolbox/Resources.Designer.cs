@@ -140,6 +140,16 @@ namespace ErikEJ.SqlCeToolbox {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap data_out_small {
+            get {
+                object obj = ResourceManager.GetObject("data_out_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date and time data from January 1, 1753, to December 31, 9999, with an accuracy of one three-hundredth second, or 3.33 milliseconds. Values are rounded to increments of .000, .003, or .007 milliseconds. 
         ///Stored as two 4-byte integers. 
         ///The first 4 bytes store the number of days before or after the base date , January 1, 1900. The base date is the system&apos;s reference date. 
@@ -148,6 +158,16 @@ namespace ErikEJ.SqlCeToolbox {
         internal static string datetime {
             get {
                 return ResourceManager.GetString("datetime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ExportReportData_10565 {
+            get {
+                object obj = ResourceManager.GetObject("ExportReportData_10565", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -342,6 +362,26 @@ namespace ErikEJ.SqlCeToolbox {
         internal static System.Drawing.Bitmap saveHS {
             get {
                 object obj = ResourceManager.GetObject("saveHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Schema_16xLG {
+            get {
+                object obj = ResourceManager.GetObject("Schema_16xLG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap script_16xLG {
+            get {
+                object obj = ResourceManager.GetObject("script_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
