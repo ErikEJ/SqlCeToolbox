@@ -18,6 +18,7 @@ using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Diagnostics;
+using ErikEJ.SqlCeToolbox.SSMSEngine;
 using Microsoft.VisualStudio.Shell;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
@@ -131,6 +132,15 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                 }
             }
+#if SSMS
+            var objectExplorerManager = new ObjectExplorerManager(package);
+            var list = objectExplorerManager.GetAllServerUserDatabases();
+            foreach (var item in list)
+            {
+                if (!databaseList.ContainsKey(item.Key))
+                    databaseList.Add(item.Key, item.Value);
+            }
+#endif
             return databaseList;
         }
 
