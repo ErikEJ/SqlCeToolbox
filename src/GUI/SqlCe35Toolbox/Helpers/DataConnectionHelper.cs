@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Data.Services;
 using Microsoft.Win32;
 #if SSMS
 using Microsoft.Data.ConnectionUI;
+using ErikEJ.SqlCeToolbox.SSMSEngine;
 #else
 using ErikEJ.SqlCeToolbox.Dialogs;
 #endif
@@ -18,7 +19,6 @@ using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Diagnostics;
-using ErikEJ.SqlCeToolbox.SSMSEngine;
 using Microsoft.VisualStudio.Shell;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
