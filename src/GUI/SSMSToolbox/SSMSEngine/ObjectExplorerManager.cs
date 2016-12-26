@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
+using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
 
@@ -21,28 +23,69 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
 
         public Dictionary<string, DatabaseInfo> GetAllServerUserDatabases()
         {
-            //TODO ErikEJ use this from DataConnectionHelper in SSMS edition
-
-            var servers = new List<SqlConnectionInfo>();
-
-            foreach (var srvHerarchy in GetExplorerHierarchies())
+            var result = new Dictionary<string, DatabaseInfo>();
+            try
             {
-                var provider = srvHerarchy.Root as IServiceProvider;
+                var servers = new List<SqlConnectionInfo>();
 
-                if (provider == null) continue;
-                var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
-                if (containedItem != null) servers.Add(containedItem.Connection as SqlConnectionInfo);
+                foreach (var srvHerarchy in GetExplorerHierarchies())
+                {
+                    var provider = srvHerarchy.Root as IServiceProvider;
+
+                    if (provider == null) continue;
+                    var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
+                    if (containedItem != null) servers.Add(containedItem.Connection as SqlConnectionInfo);
+                }
+
+                foreach (var sqlConnectionInfo in servers)
+                {
+                    var builder = new SqlConnectionStringBuilder(sqlConnectionInfo.ConnectionString);
+                    var databaseNames = GetDatabaseNames(builder);
+                    foreach (var databaseName in databaseNames)
+                    {
+                        builder.InitialCatalog = databaseName.Item2;
+                        var databaseInfo = new DatabaseInfo
+                        {
+                            Caption = databaseName.Item1 + "." + databaseName.Item2,
+                            ConnectionString = builder.ConnectionString,
+                            DatabaseType = DatabaseType.SQLServer,
+                            FromServerExplorer = true
+                        };
+                        result.Add(builder.ConnectionString, databaseInfo);
+                    }
+                }
             }
-
-            //SELECT @@servername AS ServerName, name AS DatabaseName FROM sys.databases
-            //WHERE name NOT IN('master', 'model', 'tempdb', 'msdb', 'Resource')
-            
-            //caption = servername.databasename
-
-            return new Dictionary<string, DatabaseInfo>();            
+            catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+            }
+            return result;
         }
 
-        public IObjectExplorerService GetObjectExplorer()
+        private List<Tuple<string, string>> GetDatabaseNames(SqlConnectionStringBuilder builder)
+        {
+            var sql = @"SELECT @@servername AS ServerName, name AS DatabaseName FROM sys.databases
+                WHERE name NOT IN('master', 'model', 'tempdb', 'msdb', 'Resource');";
+            var result = new List<Tuple<string, string>>();
+            builder.InitialCatalog = "master";
+            using (var conn = new SqlConnection(builder.ConnectionString))
+            {
+                using (var command = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    command.CommandTimeout = 5;
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        result.Add(new Tuple<string, string>(
+                            reader[0].ToString(), reader[1].ToString()));
+                    }
+                }
+            }
+            return result;
+        }
+
+        private IObjectExplorerService GetObjectExplorer()
         {
             return _package.GetServiceHelper(typeof(IObjectExplorerService)) as IObjectExplorerService;
         }
@@ -84,6 +127,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             ei.AddEventHandler(objectExplorerContext, del);
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void Provider_SelectionChanged(object sender, NodesChangedEventArgs args)
         {
             if (args.ChangedNodes.Count <= 0) return;

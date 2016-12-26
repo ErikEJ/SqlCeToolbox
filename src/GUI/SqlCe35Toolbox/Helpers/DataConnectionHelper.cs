@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Data.Services;
 using Microsoft.Win32;
 #if SSMS
 using Microsoft.Data.ConnectionUI;
+using ErikEJ.SqlCeToolbox.SSMSEngine;
 #else
 using ErikEJ.SqlCeToolbox.Dialogs;
 #endif
@@ -131,6 +132,15 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                 }
             }
+#if SSMS
+            var objectExplorerManager = new ObjectExplorerManager(package);
+            var list = objectExplorerManager.GetAllServerUserDatabases();
+            foreach (var item in list)
+            {
+                if (!databaseList.ContainsKey(item.Key))
+                    databaseList.Add(item.Key, item.Value);
+            }
+#endif
             return databaseList;
         }
 
