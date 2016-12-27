@@ -187,6 +187,9 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\AppConfigHelper.cs">
       <Link>Helpers\AppConfigHelper.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\CheckListItem.cs">
+      <Link>Helpers\CheckListItem.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\DacFxHelper.cs">
       <Link>Helpers\DacFxHelper.cs</Link>
     </Compile>
@@ -316,14 +319,8 @@
     <Compile Include="Dialogs\ConnectionDialog.xaml.cs">
       <DependentUpon>ConnectionDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\DataContextDialog.xaml.cs">
-      <DependentUpon>DataContextDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\DescriptionDialog.xaml.cs">
       <DependentUpon>DescriptionDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\EdmxDialog.xaml.cs">
-      <DependentUpon>EdmxDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ExportDialog.xaml.cs">
       <DependentUpon>ExportDialog.xaml</DependentUpon>
@@ -629,15 +626,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogs\DataContextDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Dialogs\DescriptionDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\EdmxDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

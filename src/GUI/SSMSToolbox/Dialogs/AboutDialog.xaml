@@ -14,12 +14,12 @@
             <RowDefinition Height="35" />
         </Grid.RowDefinitions>
         <TextBlock VerticalAlignment="Center" Margin="5,20,5,396" TextWrapping="Wrap" Height="35">                
-            <Bold> SQL Server Compact/SQLite Toolbox </Bold> for VS/SSMS</TextBlock>
+            <Bold> SQLite / SQL Server Compact Toolbox </Bold> for SSMS</TextBlock>
         <TextBlock Margin="5,0,5,280" Height="86" VerticalAlignment="Bottom">
                 For support, feedback and full source code, go to:<LineBreak/>
                 <Bold>
                     <Hyperlink TextDecorations="" Click="CodeplexLink_Click" x:Name="CodeplexLink">
-                    http://sqlcetoolbox.codeplex.com</Hyperlink>
+                    https://github.com/ErikEJ/SqlCeToolbox</Hyperlink>
                 </Bold>
                 <LineBreak/><LineBreak/>
                 This add-in is FREE, but I would be grateful for a review:

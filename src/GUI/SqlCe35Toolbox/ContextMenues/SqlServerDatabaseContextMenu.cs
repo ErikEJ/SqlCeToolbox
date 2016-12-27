@@ -23,9 +23,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             scriptDatabaseGraphMenuItem.CommandBindings.Add(scriptGraphCommandBinding);
-            Items.Add(scriptDatabaseGraphMenuItem);
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(scriptDatabaseGraphMenuItem);
 
-            Items.Add(new Separator());
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
             var scriptDatabaseRootMenuItem = new MenuItem
             {
@@ -130,7 +130,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                                                                dcmd.ExportServerDatabaseToSqlite);
             var exportServerToLiteMenuItem = new MenuItem
             {
-                Header = "Export SQL Server to SQLite... (beta)",
+                Header = "Export SQL Server to SQLite (beta)...",
                 Icon = ImageHelper.GetImageFromResource("../resources/ExportReportData_10565.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters
