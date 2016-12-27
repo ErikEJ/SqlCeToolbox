@@ -202,9 +202,6 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\DescriptionHelper.cs">
       <Link>Helpers\DescriptionHelper.cs</Link>
     </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Helpers\EdmGen2.cs">
-      <Link>Helpers\EdmGen2.cs</Link>
-    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\EnvDTEHelper.cs">
       <Link>Helpers\EnvDTEHelper.cs</Link>
     </Compile>

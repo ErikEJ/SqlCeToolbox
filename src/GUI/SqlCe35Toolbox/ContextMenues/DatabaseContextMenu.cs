@@ -339,20 +339,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
 #if SSMS
 #else
-            var scriptEdmxCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                                        dcmd.GenerateEdmxInProject);
-        
-            var scriptEdmxMenuItem = new MenuItem
-            {
-                Header = "Add Entity Data Model (EDMX) to current Project...",
-                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            scriptEdmxMenuItem.CommandBindings.Add(scriptEdmxCommandBinding);
-            generateCodeRootMenuItem.Items.Add(scriptEdmxMenuItem);
-            generateCodeRootMenuItem.Items.Add(new Separator());
-
             var scriptDcCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                             dcmd.GenerateDataContextInProject);
 

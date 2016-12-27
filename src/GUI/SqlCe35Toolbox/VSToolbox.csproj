@@ -257,9 +257,6 @@
     <Compile Include="Dialogs\DataContextDialog.xaml.cs">
       <DependentUpon>DataContextDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\EdmxDialog.xaml.cs">
-      <DependentUpon>EdmxDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\ImportDialog.xaml.cs">
       <DependentUpon>ImportDialog.xaml</DependentUpon>
     </Compile>
@@ -272,7 +269,6 @@
     <Compile Include="Helpers\DataConnectionHelper.cs" />
     <Compile Include="Helpers\DDEXRegistry.cs" />
     <Compile Include="Helpers\DescriptionHelper.cs" />
-    <Compile Include="Helpers\EdmGen2.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
     <Resource Include="Resources\TypeDefinition_521.png" />
     <Resource Include="Resources\data_out_small.png" />
@@ -541,10 +537,6 @@
     <Page Include="Dialogs\DataContextDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\EdmxDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\ImportDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

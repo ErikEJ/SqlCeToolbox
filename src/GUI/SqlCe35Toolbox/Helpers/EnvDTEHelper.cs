@@ -31,18 +31,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return null;
         }
 
-        public ProjectItem GetProjectEdmx(Project project, string model)
-        {
-            foreach (ProjectItem item in project.ProjectItems)
-            {
-                if (item.Name.ToLowerInvariant() == model.ToLowerInvariant() + ".edmx")
-                {
-                    return item;
-                }
-            }
-            return null;
-        }
-
         public ProjectItem GetProjectDc(Project project, string model, string extension)
         {
             foreach (ProjectItem item in project.ProjectItems)
@@ -178,18 +166,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 if (vsProject.References.Item(i).Name == "EntityFramework.SqlServerCompact.Legacy"
                     && new Version(vsProject.References.Item(i).Version) >= new Version(6, 0, 0, 0))
-                    return true;
-            }
-            return false;
-        }
-
-        internal bool ContainsEfsqLiteReference(Project project)
-        {
-            VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
-            for (int i = 1; i < vsProject.References.Count + 1; i++)
-            {
-                if (vsProject.References.Item(i).Name == "System.Data.SQLite.EF6"
-                    && new Version(vsProject.References.Item(i).Version) >= new Version(1, 0, 93, 0))
                     return true;
             }
             return false;

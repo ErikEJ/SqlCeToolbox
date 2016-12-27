@@ -258,7 +258,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             //var scriptEfPocoDacPacMenuItem = new MenuItem
             //{
-            //    Header = "Add Entity Data Model (Code First from Dacpac) to current Project... (alpha)",
+            //    Header = "Add Entity Data Model (Code Based from Dacpac) to current Project... (alpha)",
             //    Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
             //    Command = DatabaseMenuCommands.DatabaseCommand,
             //    CommandParameter = databaseMenuCommandParameters,
