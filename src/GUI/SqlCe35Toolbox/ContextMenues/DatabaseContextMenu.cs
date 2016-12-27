@@ -337,6 +337,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             if (isSqlCe && SqlCeToolboxPackage.VsSupportsEf6())
                 generateCodeRootMenuItem.Items.Add(scriptEfPocoMenuItem);
 
+#if SSMS
+#else
             var scriptEdmxCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                                         dcmd.GenerateEdmxInProject);
         
@@ -366,6 +368,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptDcMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() && DataConnectionHelper.IsV35DbProviderInstalled();
             generateCodeRootMenuItem.Items.Add(scriptDcMenuItem);
 
+
             var scriptWpdcMenuItem = new MenuItem
             {
                 Header = "Add Windows Phone DataContext to current Project...",
@@ -382,7 +385,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             }            
             generateCodeRootMenuItem.Items.Add(scriptWpdcMenuItem);
             generateCodeRootMenuItem.Items.Add(new Separator());
-
+#endif
             var syncFxRootMenuItem = new MenuItem
             {
                 Header = "Sync Framework Tools",

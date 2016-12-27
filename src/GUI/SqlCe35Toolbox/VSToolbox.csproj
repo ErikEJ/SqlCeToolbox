@@ -208,6 +208,7 @@
     <Compile Include="ContextMenues\IndexContextMenu.cs" />
     <Compile Include="ContextMenues\TableContextMenu.cs" />
     <Compile Include="ContextMenues\TablesContextMenu.cs" />
+    <Compile Include="Helpers\CheckListItem.cs" />
     <Compile Include="Helpers\DacFxHelper.cs" />
     <Compile Include="Helpers\Telemetry.cs" />
     <Compile Include="Options\OptionsPageAdvanced.cs">

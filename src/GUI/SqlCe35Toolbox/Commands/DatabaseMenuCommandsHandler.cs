@@ -862,6 +862,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
+#if SSMS
+#else
         public void GenerateEdmxInProject(object sender, ExecutedRoutedEventArgs e)
         {
             if (
@@ -1078,6 +1080,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
+
 
         public void GenerateDataContextInProject(object sender, ExecutedRoutedEventArgs e)
         {
@@ -1442,7 +1445,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             return paths;
         }
-
+#endif
         public void GenerateModelCodeInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
