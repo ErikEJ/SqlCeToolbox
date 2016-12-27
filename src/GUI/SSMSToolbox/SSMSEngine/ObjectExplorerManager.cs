@@ -30,6 +30,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
 
                 foreach (var srvHerarchy in GetExplorerHierarchies())
                 {
+                    // ReSharper disable once SuspiciousTypeConversion.Global
                     var provider = srvHerarchy.Root as IServiceProvider;
 
                     if (provider == null) continue;
@@ -65,7 +66,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
         private List<Tuple<string, string>> GetDatabaseNames(SqlConnectionStringBuilder builder)
         {
             var sql = @"SELECT @@servername AS ServerName, name AS DatabaseName FROM sys.databases
-                WHERE name NOT IN('master', 'model', 'tempdb', 'msdb', 'Resource');";
+                WHERE state = 0 AND name NOT IN('master', 'model', 'tempdb', 'msdb', 'Resource') AND collation_name IS NOT NULL;";
             var result = new List<Tuple<string, string>>();
             builder.InitialCatalog = "master";
             using (var conn = new SqlConnection(builder.ConnectionString))
@@ -128,6 +129,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
         }
 
         // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
         private void Provider_SelectionChanged(object sender, NodesChangedEventArgs args)
         {
             if (args.ChangedNodes.Count <= 0) return;
