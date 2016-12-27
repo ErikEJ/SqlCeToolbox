@@ -43,11 +43,11 @@ You can download the latest 3.5 "daily" build [from AppVeyor here](https://ci.ap
 
 You can download the latest release of the command line tools from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
 
-## SQL Server Management Studio 2016 extension (alpha/experimental) 
+## SQL Server Management Studio 2016 extension (beta) 
 
 **Daily build**
 
-[SQL Server Management Studio 2016 add-in (experimental/alpha)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
+[SQL Server Management Studio 2016 add-in (beta)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
 
 To install, rename the downloaded .zip to .vsix, and double click!
 
