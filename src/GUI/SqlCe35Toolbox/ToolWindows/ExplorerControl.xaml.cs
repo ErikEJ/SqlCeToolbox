@@ -332,10 +332,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 var views = TreeViewHelper.CreateTreeViewItemWithImage("Views", "../Resources/folder_Closed_16xLG.png", true);
                 views.Expanded += (sender, args) => new GetViewsItemsHandler(GetViews).BeginInvoke(sender, args, database, null, null);
                 databaseTreeViewItem.Items.Add(views);
-
-                var triggers = TreeViewHelper.CreateTreeViewItemWithImage("Triggers", "../Resources/folder_Closed_16xLG.png", true);
-                triggers.Expanded += (sender, args) => new GetTriggersItemsHandler(GetTriggers).BeginInvoke(sender, args, database, null, null);
-                databaseTreeViewItem.Items.Add(triggers);
             }
             return databaseTreeViewItem;
         }
@@ -498,46 +494,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        private delegate void GetTriggersItemsHandler(object sender, RoutedEventArgs args, KeyValuePair<string, DatabaseInfo> database);
-
-        private void GetTriggers(object sender, RoutedEventArgs args, KeyValuePair<string, DatabaseInfo> database)
-        {
-            var viewItem = sender as DatabaseTreeViewItem;
-            // Prevent loading again and again
-            if (viewItem != null && (viewItem.Items.Count > 0 && viewItem.Items[0].ToString() == "Loading..."))
-            {
-                List<Trigger> triggerList;
-                try
-                {
-                    using (var repository = DataConnectionHelper.CreateRepository(database.Value))
-                    {
-                        triggerList = repository.GetAllTriggers();
-                    }
-                }
-                catch (Exception e)
-                {
-                    DataConnectionHelper.SendError(e, database.Value.DatabaseType);
-                    return;
-                }
-                Dispatcher.BeginInvoke(new FillTriggerItemsHandler(FillTriggerItems), database, viewItem, triggerList);
-            }
-            args.Handled = true;
-        }
-
-        private delegate void FillTriggerItemsHandler(KeyValuePair<string, DatabaseInfo> database, DatabaseTreeViewItem parentItem, IList<Trigger> childItems);
-
-        private static void FillTriggerItems(KeyValuePair<string, DatabaseInfo> database, DatabaseTreeViewItem parentItem, IList<Trigger> triggerList)
-        {
-            if (triggerList == null) throw new ArgumentNullException(nameof(triggerList));
-            parentItem.Items.Clear();
-            foreach (var trigger in triggerList)
-            {
-                var item = TreeViewHelper.CreateTreeViewItemWithImage(trigger.TriggerName, "../Resources/RunOutline.png", false);
-                item.ContextMenu = new TriggerContextMenu(new MenuCommandParameters {DatabaseInfo = database.Value, Name = trigger.TriggerName, MenuItemType = MenuType.Manage, Description = trigger.Definition}, _parentWindow);
-                parentItem.Items.Add(item);
-            }
-        }
-
         private delegate void GetTableItemsHandler(object sender, RoutedEventArgs args, KeyValuePair<string, DatabaseInfo> database);
 
         private void GetTableItems(object sender, RoutedEventArgs args, KeyValuePair<string, DatabaseInfo> database)
@@ -644,6 +600,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var primaryKeys = repository.GetAllPrimaryKeys();
                     var foreignKeys = repository.GetAllForeignKeys();
                     var indexes = repository.GetAllIndexes();
+                    var triggers = repository.GetAllTriggers();
 
                     foreach (var table in tables)
                     {
@@ -668,8 +625,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         var tablePrimaryKeys = primaryKeys.Where(pk => pk.TableName == table).ToList();
                         var tableForeignKeys = foreignKeys.Where(fk => fk.ConstraintTableName == table).ToList();
                         var tableIndexes = indexes.Where(i => i.TableName == table).ToList();
+                        var tableTriggers = triggers.Where(t => t.TableName == table).ToList();
                         parentItem.Items.Add(item);
-                        item.Expanded += (s, e) => GetTableColumns(s, e, tableColumns, tableForeignKeys, tablePrimaryKeys, tableIndexes, database);
+                        item.Expanded += (s, e) => GetTableColumns(s, e, tableColumns, tableForeignKeys, tablePrimaryKeys, tableIndexes, tableTriggers, database);
                     }
                 }
             }
@@ -679,7 +637,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        private static void GetTableColumns(object sender, RoutedEventArgs args, List<Column> columns, List<Constraint> fkList, List<PrimaryKey> pkList, List<Index> indexes, KeyValuePair<string, DatabaseInfo> database)
+        private static void GetTableColumns(object sender, RoutedEventArgs args, List<Column> columns, List<Constraint> fkList, List<PrimaryKey> pkList, List<Index> indexes, List<Trigger> triggers, KeyValuePair<string, DatabaseInfo> database)
         {
             var viewItem = sender as DatabaseTreeViewItem;
             // Prevent loading again and again
@@ -730,7 +688,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 }
 
                 var indexesItem = TreeViewHelper.CreateTreeViewItemWithImage("Indexes", "../Resources/folder_Closed_16xLG.png", true);
-
                 indexesItem.Items.Clear();
 
                 string oldName = string.Empty;
@@ -771,7 +728,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 viewItem.Items.Add(indexesItem);
 
                 var keysItem = TreeViewHelper.CreateTreeViewItemWithImage("Keys", "../Resources/folder_Closed_16xLG.png", true);
-
                 keysItem.Items.Clear();
 
                 foreach (var primaryKey in pkList)
@@ -795,8 +751,31 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     keyItem.ToolTip = fk.ConstraintName;
                     keysItem.Items.Add(keyItem);
                 }
-
                 viewItem.Items.Add(keysItem);
+
+
+                if (database.Value.DatabaseType == DatabaseType.SQLite)
+                {
+                    var triggersItem = TreeViewHelper.CreateTreeViewItemWithImage("Triggers", 
+                        "../Resources/folder_Closed_16xLG.png", true);
+                    triggersItem.Items.Clear();
+
+                    foreach (var trigger in triggers)
+                    {
+                        var triggerItem = TreeViewHelper.CreateTreeViewItemWithImage(trigger.TriggerName,
+                            "../Resources/RunOutline.png", false);
+                        triggerItem.ContextMenu = new TriggerContextMenu(
+                                new MenuCommandParameters
+                                {
+                                    DatabaseInfo = database.Value,
+                                    Name = trigger.TriggerName,
+                                    MenuItemType = MenuType.Manage,
+                                    Description = trigger.Definition
+                                }, _parentWindow);
+                        triggersItem.Items.Add(triggerItem);
+                    }
+                    viewItem.Items.Add(triggersItem);
+                }
             }
             args.Handled = true;
         }
