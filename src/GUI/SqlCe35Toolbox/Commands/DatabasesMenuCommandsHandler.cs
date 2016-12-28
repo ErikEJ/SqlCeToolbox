@@ -534,7 +534,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var project = dteH.GetProject(dte);
                 if (project == null)
                 {
-                    EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the EDM to be placed");
+                    EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the generated code to be placed");
                     return;
                 }
                 if (dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateNotStarted)
@@ -547,11 +547,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     if (!dteH.ContainsEf6Reference(project))
                     {
                         EnvDteHelper.ShowError("Please add the EntityFramework 6.x NuGet package to the project");
-                        return;
-                    }
-                    if (!File.Exists(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Context.tt")))
-                    {
-                        EnvDteHelper.ShowError("Please install the Entity Framework 6 Tools in order to proceed");
                         return;
                     }
                 }

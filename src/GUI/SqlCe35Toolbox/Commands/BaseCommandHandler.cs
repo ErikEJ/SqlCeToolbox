@@ -316,8 +316,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableSelect(menuInfo.Name);
-                    //TODO Something like this for intellisense (maybe a single object)
-                    //OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript, false, repository.GetAllTableNames(), repository.GetAllColumns());
                     OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
                     DataConnectionHelper.LogUsage("TableScriptAsSelect");
                 }

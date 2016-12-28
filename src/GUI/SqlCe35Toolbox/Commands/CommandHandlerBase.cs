@@ -34,9 +34,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     control.DatabaseInfo = menuInfo.DatabaseInfo;
                     control.ExplorerControl = _parentWindow.Content as ExplorerControl;
-                    //TODO For intellisense
-                    //control.TableNames = tables;
-                    //control.Columns = columns;
                     control.SqlText = script;
                 }
             }

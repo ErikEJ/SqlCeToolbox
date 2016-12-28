@@ -61,10 +61,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             LoadDefaultOptions();
         }
 
-        //TODO For intellisense
-        //public List<string> TableNames { get; set; }
-        //public List<Column> Columns { get; set; }
-
         public ExplorerControl ExplorerControl { get; set; }
 
         public string SqlText
@@ -130,13 +126,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     txtVersion.Text = DatabaseInfo.ServerVersion;
                 ConfigureOptions();
                 LoadHighlighter();
-                //TODO
-                //formsHost.Visibility = Visibility.Collapsed;
                 SqlTextBox.TextChanged += SqlTextBox_TextChanged;
-                //TODO Entry point for Intellisense
-                //SqlTextBox.TextArea.TextEntering += SqlTextBox_TextArea_TextEntering;
-                //SqlTextBox.TextArea.TextEntered += SqlTextBox_TextArea_TextEntered;
-
                 SqlTextBox.Focus();
             }
             catch (Exception ex)
