@@ -156,8 +156,8 @@ namespace ErikEJ.SqlCeScripting
             foreach (string table in allTables)
             {
                 finalTables.Add(GetLocalName(table));
-                _tableNames = finalTables;
             }
+            _tableNames = finalTables;
             try
             {
                 var sortedTables = new List<string>();
@@ -2093,8 +2093,9 @@ namespace ErikEJ.SqlCeScripting
         {
             foreach (var trigger in _allTriggers)
             {
+                if (!_tableNames.Contains(trigger.TableName)) continue;
                 _sbScript.Append(trigger.Definition);
-                _sbScript.Append(Environment.NewLine);
+                _sbScript.Append(";" + Environment.NewLine);
                 _sbScript.Append(_sep);
             }
         }
