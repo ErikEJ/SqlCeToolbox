@@ -1547,7 +1547,22 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-#endregion
+        public void RefreshViews(object sender, ExecutedRoutedEventArgs e)
+        {
+            var databaseInfo = ValidateMenuInfo(sender);
+            if (databaseInfo == null) return;
+            try
+            {
+                databaseInfo.ExplorerControl.RefreshViews(databaseInfo.DatabaseInfo);
+                DataConnectionHelper.LogUsage("DatabaseRefreshViews");
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+            }
+        }
+
+        #endregion
 
         private static string Remove(string s, IEnumerable<char> chars)
         {
