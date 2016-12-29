@@ -30,8 +30,6 @@ namespace ErikEJ.SqlCeToolbox
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class SqlCeToolboxPackage : Package
     {
-        private ObjectExplorerManager _objectExplorerManager;
-
         /// <summary>
         /// ExplorerToolWindowPackage GUID string.
         /// </summary>

@@ -31,7 +31,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var refreshMenuItem = new MenuItem
             {
                 Header = "Refresh",
-                Icon = ImageHelper.GetImageFromResource("../resources/refresh.png"),
+                Icon = ImageHelper.GetImageFromResource("../resources/refresh_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = menuCommandParameters
             };

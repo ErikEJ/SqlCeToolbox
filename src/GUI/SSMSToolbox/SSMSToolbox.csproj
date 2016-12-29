@@ -178,6 +178,9 @@
     <Compile Include="..\SqlCe35Toolbox\ContextMenues\ViewContextMenu.cs">
       <Link>ContextMenues\ViewContextMenu.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\ContextMenues\ViewsContextMenu.cs">
+      <Link>ContextMenues\ViewsContextMenu.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\DbDoc\SqlCeDbDoc.cs">
       <Link>DbDoc\SqlCeDbDoc.cs</Link>
     </Compile>

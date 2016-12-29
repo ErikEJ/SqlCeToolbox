@@ -330,6 +330,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             if (database.Value.DatabaseType == DatabaseType.SQLite)
             {
                 var views = TreeViewHelper.CreateTreeViewItemWithImage("Views", "../Resources/folder_Closed_16xLG.png", true);
+                views.ContextMenu = new ViewsContextMenu(new DatabaseMenuCommandParameters
+                {
+                    DatabaseInfo = database.Value,
+                    ExplorerControl = this
+                }, _parentWindow);
                 views.Expanded += (sender, args) => new GetViewsItemsHandler(GetViews).BeginInvoke(sender, args, database, null, null);
                 databaseTreeViewItem.Items.Add(views);
             }
@@ -461,7 +466,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             var viewItem = sender as DatabaseTreeViewItem;
             // Prevent loading again and again
-            if (viewItem != null && (viewItem.Items.Count > 0 && viewItem.Items[0].ToString() == "Loading..."))
+            if (viewItem != null && (viewItem.Items.Count > 0 && viewItem.Items[0].ToString() == "Loading...")
+                || args == null && viewItem != null)
             {
                 List<View> viewList;
                 try
@@ -478,7 +484,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 }
                 Dispatcher.BeginInvoke(new FillViewItemsHandler(FillViewItems), database, viewItem, viewList);
             }
-            args.Handled = true;
+            if (args != null) args.Handled = true;
         }
 
         private delegate void FillViewItemsHandler(KeyValuePair<string, DatabaseInfo> database, DatabaseTreeViewItem parentItem, IList<View> childItems);
@@ -520,10 +526,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 }
                 Dispatcher.BeginInvoke(new FillTableItemsHandler(FillTableItems), database, viewItem, ex, args);
             }
-            if (args != null)
-            {
-                args.Handled = true;
-            }
+            if (args != null) args.Handled = true;
         }
 
         private delegate void FillTableItemsHandler(KeyValuePair<string, DatabaseInfo> database, DatabaseTreeViewItem parentItem, Exception ex, RoutedEventArgs args);
@@ -782,12 +785,19 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         public void RefreshTables(DatabaseInfo databaseInfo)
         {
-            var item = FindTablesItem(databaseInfo);
+            var item = FindItem(databaseInfo, "Tables");
             if (item != null)
                 GetTableItems(item, null, new KeyValuePair<string, DatabaseInfo>(databaseInfo.Caption, databaseInfo));
         }
 
-        private DatabaseTreeViewItem FindTablesItem(DatabaseInfo databaseInfo)
+        public void RefreshViews(DatabaseInfo databaseInfo)
+        {
+            var item = FindItem(databaseInfo, "Views");
+            if (item != null)
+                GetViews(item, null, new KeyValuePair<string, DatabaseInfo>(databaseInfo.Caption, databaseInfo));
+        }
+
+        private DatabaseTreeViewItem FindItem(DatabaseInfo databaseInfo, string label)
         {
             if (RootItem.HasItems)
             {
@@ -803,7 +813,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         foreach (var tabItem in dbItem.Items)
                         {
                             var tabFoundItem = tabItem as DatabaseTreeViewItem;
-                            if (tabFoundItem != null && tabFoundItem.ToString() == "Tables")
+                            if (tabFoundItem != null && tabFoundItem.ToString() == label)
                                 return tabFoundItem;
                         }
                     }
