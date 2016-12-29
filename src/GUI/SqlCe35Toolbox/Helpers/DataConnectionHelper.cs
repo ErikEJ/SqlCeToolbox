@@ -782,7 +782,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     || ex is SqlException
                     || ex is SQLiteException;
 
-                if (!dontTrack)
+                if (!dontTrack && report)
                 {
                     Telemetry.TrackException(ex);
                 }
