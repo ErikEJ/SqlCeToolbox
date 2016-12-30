@@ -8,6 +8,7 @@ If you use my free tools, I would be very grateful for a [rating or review](http
 Follow me on Twitter: [@ErikEJ](http://twitter.com/ErikEJ)
 
 In order to build the source code, you can use Visual Studio 2015. You will also need the SQL Server Compact 3.5 SP2 and 4.0 runtimes installed. To debug, make SqlCeToolbox the startup project, and ensure Debug, x86 (not AnyCPU)
+
 # Downloads
 
 ## Visual Studio Extension
@@ -24,6 +25,14 @@ Or just install from Tools, Extensions and Updates in Visual Studio!
 You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix). 
 
 You can also subscribe to the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
+
+## SQL Server Management Studio (SSMS) 2016 Extension (beta) 
+
+**Daily build**
+
+[SQL Server Management Studio 2016 extension (beta)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
+
+To install, rename the downloaded .zip to .vsix, and double click!
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
@@ -42,14 +51,6 @@ You can download the latest 3.5 "daily" build [from AppVeyor here](https://ci.ap
 **Release**
 
 You can download the latest release of the command line tools from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
-
-## SQL Server Management Studio 2016 extension (beta) 
-
-**Daily build**
-
-[SQL Server Management Studio 2016 add-in (beta)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
-
-To install, rename the downloaded .zip to .vsix, and double click!
 
 # Documentation
 
