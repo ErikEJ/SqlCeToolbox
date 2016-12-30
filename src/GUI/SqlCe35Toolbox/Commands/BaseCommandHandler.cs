@@ -647,11 +647,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
         private static MenuCommandParameters ValidateMenuInfo(object sender)
         {
             var menuItem = sender as MenuItem;
-            if (menuItem != null)
-            {
-                return menuItem.CommandParameter as MenuCommandParameters;
-            }
-            return null;
+            return menuItem?.CommandParameter as MenuCommandParameters;
         }        
     }
 }
