@@ -12,9 +12,26 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var tcmd = new ViewMenuCommandsHandler(parent);
             CreateReportDataMenuItem(tcmd, menuCommandParameters);
+            AddSqlEditorItem(tcmd, menuCommandParameters);
             Items.Add(new Separator());
             CreateScriptAsCreateMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDropMenuItem(tcmd, menuCommandParameters);
+            CreateScriptAsDropAndCreateMenuItem(tcmd, menuCommandParameters);
+        }
+
+        private void AddSqlEditorItem(ViewMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
+        {
+            var showSqlEditorCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                                                                tcmd.SpawnSqlEditorWindow);
+            var showSqlEditorMenuItem = new MenuItem
+            {
+                Header = "New Query",
+                Icon = ImageHelper.GetImageFromResource("../resources/NewQuery.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = menuCommandParameters
+            };
+            showSqlEditorMenuItem.CommandBindings.Add(showSqlEditorCommandBinding);
+            Items.Add(showSqlEditorMenuItem);
         }
 
         private void CreateReportDataMenuItem(ViewMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
@@ -53,6 +70,20 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Header = "Script as DROP",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 Command = IndexMenuCommands.IndexCommand,
+                CommandParameter = menuCommandParameters
+            };
+            scriptMenuItem.CommandBindings.Add(scriptCommandBinding);
+            Items.Add(scriptMenuItem);
+        }
+
+        private void CreateScriptAsDropAndCreateMenuItem(ViewMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
+        {
+            var scriptCommandBinding = new CommandBinding(TableMenuCommands.TableCommand, tcmd.ScriptAsDropAndCreate);
+            var scriptMenuItem = new MenuItem
+            {
+                Header = "Script as DROP and CREATE",
+                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
+                Command = TableMenuCommands.TableCommand,
                 CommandParameter = menuCommandParameters
             };
             scriptMenuItem.CommandBindings.Add(scriptCommandBinding);

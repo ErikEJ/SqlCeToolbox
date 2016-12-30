@@ -11,7 +11,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 {
     public class ViewMenuCommandsHandler :CommandHandlerBase
     {
-        private string separator = ";" + Environment.NewLine + "GO" + Environment.NewLine;
+        private string separator = ";" + Environment.NewLine;
 
         public ViewMenuCommandsHandler(ExplorerToolWindow parent)
         {
@@ -21,12 +21,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
         public void ScriptAsCreate(object sender, ExecutedRoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
-            if (menuItem == null) return;
-            var menuInfo = menuItem.CommandParameter as MenuCommandParameters;
+            var menuInfo = menuItem?.CommandParameter as MenuCommandParameters;
             if (menuInfo == null) return;
             try
             {
-                OpenSqlEditorToolWindow(menuInfo, string.Format("CREATE VIEW [{0}] AS {1}{2}" + separator, menuInfo.Name, Environment.NewLine, menuInfo.Description));
+                OpenSqlEditorToolWindow(menuInfo, string.Format("CREATE VIEW [{0}] AS {1}" + separator, menuInfo.Name, menuInfo.Description));
                 DataConnectionHelper.LogUsage("ViewScriptAsCreate");
             }
             catch (Exception ex)
@@ -38,8 +37,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
         public void ScriptAsDrop(object sender, ExecutedRoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
-            if (menuItem == null) return;
-            var menuInfo = menuItem.CommandParameter as MenuCommandParameters;
+            var menuInfo = menuItem?.CommandParameter as MenuCommandParameters;
             if (menuInfo == null) return;
             try
             {
@@ -52,13 +50,37 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
+        public void ScriptAsDropAndCreate(object sender, ExecutedRoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var menuInfo = menuItem?.CommandParameter as MenuCommandParameters;
+            if (menuInfo == null) return;
+            try
+            {
+                var sql = string.Format("DROP VIEW [{0}]" + separator, menuInfo.Name);
+                sql += string.Format("CREATE VIEW [{0}] AS {1}" + separator, menuInfo.Name, menuInfo.Description);
+                OpenSqlEditorToolWindow(menuInfo, sql);
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+            }
+        }
+
+        public void SpawnSqlEditorWindow(object sender, ExecutedRoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var menuInfo = menuItem?.CommandParameter as MenuCommandParameters;
+            if (menuInfo == null) return;
+            OpenSqlEditorToolWindow(menuInfo, string.Empty);
+        }
+
         public void ReportTableData(object sender, ExecutedRoutedEventArgs e)
         {
             string sqlText;
             var menuItem = sender as MenuItem;
             var ds = new DataSet();
-            if (menuItem == null) return;
-            var menuInfo = menuItem.CommandParameter as MenuCommandParameters;
+            var menuInfo = menuItem?.CommandParameter as MenuCommandParameters;
             if (menuInfo == null) return;
             try
             {
