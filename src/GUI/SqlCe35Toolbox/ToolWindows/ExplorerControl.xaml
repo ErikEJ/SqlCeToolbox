@@ -17,6 +17,25 @@
                     <Image Name="imgRefresh" Height="20" Width="20" Stretch="None" Source="../Resources/refresh_16xLG.png" />
                 </Button>
                 <Separator x:Name="sep1" />
+                <Button x:Name="AddConnections" Click="AddConnections_OnClick" ToolTip="Add SQLite and SQL Compact connections from current Solution" Padding="0,0,0,0" >
+                    <Image Height="20" Width="20" Stretch="None" Source="../Resources/AddConnection_477.png" />
+                </Button>
+                <Button x:Name="AddSqliteDb" Click="AddSqliteDb_OnClick" ToolTip="Add SQLite Connection" Padding="0,0,0,0" >
+                    <Image Height="20" Width="20" Stretch="None" Source="../Resources/AddDatabase_16x.png" />
+                </Button>
+                <Button x:Name="NewQuery" Click="NewQuery_OnClick" ToolTip="New Query" Padding="0,0,0,0" >
+                    <Image Height="20" Width="20" Stretch="None" Source="../Resources/NewQuery.png" IsEnabled="False" >
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0.5" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </Button>
                 <Button Name="Options" Click="Options_Click" ToolTip="Options" Padding="0,0,0,0" >
                     <Image Height="20" Width="20" Stretch="None" Source="../Resources/gear_16xLG.png"  />
                 </Button>

@@ -836,6 +836,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="..\SqlCe35Toolbox\Resources\AddDatabase_16x.png">
+      <Link>Resources\AddDatabase_16x.png</Link>
+    </Resource>
     <Content Include="Resources\data_out.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
