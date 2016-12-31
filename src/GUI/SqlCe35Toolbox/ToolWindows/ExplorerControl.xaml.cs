@@ -56,7 +56,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 overflowGrid.Visibility = Visibility.Collapsed;
             }
             Updated.Visibility = Visibility.Collapsed;
-
+#if SSMS
+            AddConnections.Visibility = Visibility.Collapsed;
+#endif
             // Look for update async
             var bw = new BackgroundWorker();
             bw.DoWork += bw_DoWork;
@@ -112,7 +114,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 BuildDatabaseTree(false);
                 var product = "addin35";
 #if SSMS
-                product = "ssmsaddin";
+                product = "ssmsaddin";                
 #endif
                 e.Result = DataConnectionHelper.CheckVersion(product);
             }
@@ -863,10 +865,20 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 #region Properties Windows
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            NewQuery.IsEnabled = false;
+            var image = NewQuery.Content as Image;
+            if (image != null) image.Opacity = 0.5;
+            var dbInfo = TryGetDatabaseInfo(TreeView1);
+            if (dbInfo != null)
+            {
+                NewQuery.IsEnabled = true;
+                NewQuery.Tag = dbInfo;                
+                if (image != null) image.Opacity = 1;
+            }
             if (Properties.Settings.Default.DisplayObjectProperties)
             {
                 var databaseTreeviewItem = TreeView1.SelectedItem as DatabaseTreeViewItem;
-                if (databaseTreeviewItem != null && databaseTreeviewItem.Tag != null)
+                if (databaseTreeviewItem?.Tag != null)
                 {
                     if (databaseTreeviewItem.Tag is DatabaseInfo)
                         TrackSelection(databaseTreeviewItem.Tag as DatabaseInfo);
@@ -883,7 +895,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         if (treeItem != null)
                         {
                             databaseTreeviewItem = (treeItem).Parent as DatabaseTreeViewItem;
-                            if (databaseTreeviewItem != null && databaseTreeviewItem.Tag != null)
+                            if (databaseTreeviewItem?.Tag != null)
                             {
                                 TrackSelection(databaseTreeviewItem.Tag as DatabaseInfo);
                             }
@@ -903,15 +915,58 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     }
                 }
                 var focusItem = TreeView1.SelectedItem as DatabaseTreeViewItem;
-                if (focusItem != null)
-                {
-                    focusItem.Focus();
-                }
+                focusItem?.Focus();
             }
             else
             {
                 TrackSelection(null);
             }
+        }
+
+        private DatabaseInfo TryGetDatabaseInfo(TreeView treeView)
+        {
+            var databaseTreeviewItem = treeView.SelectedItem as DatabaseTreeViewItem;
+            if (databaseTreeviewItem?.Tag != null && databaseTreeviewItem.Tag.GetType() == typeof(DatabaseInfo))
+            {
+                return databaseTreeviewItem.Tag as DatabaseInfo;
+            }
+            try
+            {
+                var treeItem = treeView.SelectedItem as TreeViewItem;
+                if (treeItem != null)
+                {
+                    databaseTreeviewItem = (treeItem).Parent as DatabaseTreeViewItem;
+                    if (databaseTreeviewItem?.Tag != null && databaseTreeviewItem.Tag.GetType() == typeof(DatabaseInfo))
+                    {
+                        return databaseTreeviewItem.Tag as DatabaseInfo;
+                    }
+                    var item = (treeItem).Parent as TreeViewItem;
+
+                    //TODO Recursive?
+                    var parent = item?.Parent as TreeViewItem;
+                    if (parent?.Tag != null && parent.Tag.GetType() == typeof(DatabaseInfo))
+                    {
+                        return parent.Tag as DatabaseInfo;
+                    }
+
+                    var grandParent = parent?.Parent as TreeViewItem;
+                    if (grandParent?.Tag != null && grandParent.Tag.GetType() == typeof(DatabaseInfo))
+                    {
+                        return grandParent.Tag as DatabaseInfo;
+                    }
+
+                    var greatGrandParent = grandParent?.Parent as TreeViewItem;
+                    if (greatGrandParent?.Tag != null && greatGrandParent.Tag.GetType() == typeof(DatabaseInfo))
+                    {
+                        return greatGrandParent.Tag as DatabaseInfo;
+                    }
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+            return null;
         }
 
         // http://msdn.microsoft.com/en-us/library/cc138529.aspx
@@ -935,10 +990,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
             //Must use the GetService of the Window to get the ITrackSelection reference
             var track = _parentWindow.GetServiceHelper(typeof (STrackSelection)) as ITrackSelection;
-            if (track != null)
-            {
-                track.OnSelectChange(_mySelContainer);
-            }
+            track?.OnSelectChange(_mySelContainer);
         }
 
         private void ShowPropertiesFrame()
@@ -977,6 +1029,38 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
             }
+        }
+
+        private void AddConnections_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dbsCommandHandler = new DatabasesMenuCommandsHandler(_parentWindow);
+            dbsCommandHandler.ScanConnections(null, null);
+        }
+
+        private void AddSqliteDb_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dbsCommandHandler = new DatabasesMenuCommandsHandler(_parentWindow);
+            dbsCommandHandler.AddSqLiteDatabase(null, null);
+        }
+
+        private void NewQuery_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dbCommandHandler = new DatabaseMenuCommandsHandler(_parentWindow);
+            var button = sender as Button;
+            if (button?.Tag is DatabaseInfo)
+            {
+                var parameter = new DatabaseMenuCommandParameters
+                {
+                    DatabaseInfo = button.Tag as DatabaseInfo,
+                    ExplorerControl = this
+                };
+                var theSender = new MenuItem
+                {
+                    CommandParameter = parameter
+                };
+                dbCommandHandler.SpawnSqlEditorWindow(theSender, null);
+            }
+            
         }
     }
 }
