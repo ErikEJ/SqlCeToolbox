@@ -21,7 +21,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var addCeDatabaseMenuItem = new MenuItem
             {
                 Header = "Add SQL Server Compact 4.0 Connection...",
-                Icon = ImageHelper.GetImageFromResource("../resources/AddConnection_477.png"),
+                Icon = ImageHelper.GetImageFromResource("../resources/AddDatabase_16x.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
             };
@@ -47,7 +47,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var addCe35DatabaseMenuItem = new MenuItem
             {
                 Header = "Add SQL Server Compact 3.5 Connection...",
-                Icon = ImageHelper.GetImageFromResource("../resources/AddConnection_477.png"),
+                Icon = ImageHelper.GetImageFromResource("../resources/AddDatabase_16x.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
             };
@@ -72,7 +72,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var addSqLiteDatabaseMenuItem = new MenuItem
             {
                 Header = "Add SQLite Connection...",
-                Icon = ImageHelper.GetImageFromResource("../resources/AddConnection_477.png"),
+                Icon = ImageHelper.GetImageFromResource("../resources/AddDatabase_16x.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
             };
