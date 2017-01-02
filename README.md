@@ -22,15 +22,15 @@ Or just install from Tools, Extensions and Updates in Visual Studio!
 
 **Daily build**
 
-You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix). 
+You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix). 
 
-You can also autonmmatically get the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
+You can also automatically get the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
 
 ## SQL Server Management Studio (SSMS) 2016 Extension (beta) 
 
 **Daily build**
 
-You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extensions/d6c77c32-fe4b-4f6d-ad5d-f7b755212760/extension.vsix)
+You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/d6c77c32-fe4b-4f6d-ad5d-f7b755212760/extension.vsix)
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
@@ -40,9 +40,9 @@ You can download the latest release of the standalone SQL Server Compact Toolbox
 
 **Daily build**
 
-You can download the latest 4.0 "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40ToolBox.zip?branch=master)
+You can download the latest 4.0 daily build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40ToolBox.zip?branch=master)
 
-You can download the latest 3.5 "daily" build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe35ToolBox.zip?branch=master)
+You can download the latest 3.5 daily build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe35ToolBox.zip?branch=master)
 
 ## Command line tools
 
