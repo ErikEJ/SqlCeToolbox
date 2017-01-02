@@ -30,9 +30,7 @@ You can also subscribe to the [latest build of the Master branch directly in Vis
 
 **Daily build**
 
-[SQL Server Management Studio 2016 extension (beta)](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SSMSToolbox.vsix?branch=master) 
-
-To install, rename the downloaded .zip to .vsix, and double click!
+You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extension/SSMSToolbox.ErikEJ.d6c77c32-fe4b-4f6d-ad5d-f7b755212760/extension.vsix)
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
