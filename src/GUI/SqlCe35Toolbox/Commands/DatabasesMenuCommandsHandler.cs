@@ -611,16 +611,18 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 // ReSharper disable once SuspiciousTypeConversion.Global
                 var solution2 = dte2.Solution as Solution2;
 
-                if (solution2 != null)
+                var projectItemTemplate = solution2?.GetProjectItemTemplate("EntityFramework Reverse POCO Code First Generator", "CSharp");
+                if (!string.IsNullOrEmpty(projectItemTemplate))
                 {
-                    var projectItemTemplate = solution2.GetProjectItemTemplate("EntityFramework Reverse POCO Code First Generator", "CSharp");
-                    if (!string.IsNullOrEmpty(projectItemTemplate))
+                    var projectItem = dteH.GetProjectDataContextClass(project, "Database.tt".ToLowerInvariant());
+                    if (projectItem == null)
                     {
                         project.ProjectItems.AddFromTemplate(projectItemTemplate, "Database.tt");
+                        EnvDteHelper.ShowMessage("Please run Custom Tool with the Database.tt file");
                     }
                     else
                     {
-                        EnvDteHelper.ShowMessage("Please run Custom Tool against existing Database.tt file");
+                        EnvDteHelper.ShowMessage("Database.tt already exists, please run Custom Tool with existing Database.tt file");
                     }
                 }
                 DataConnectionHelper.LogUsage("DatabaseCreateEFPOCODacpac");

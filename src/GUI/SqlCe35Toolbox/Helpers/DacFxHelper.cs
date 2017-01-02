@@ -24,6 +24,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                         upgradeExisting: true,
                                         options: dacOptions);
             }
+            _package.SetStatus("Database deployed successfully to LocalDB");
         }
     }
 }
