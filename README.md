@@ -5,9 +5,7 @@ This repository also contains the [ExportSqlCe command line tools and scripting 
 
 If you use my free tools, I would be very grateful for a [rating or review](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details)
 
-Follow me on Twitter: [@ErikEJ](http://twitter.com/ErikEJ)
-
-In order to build the source code, you can use Visual Studio 2015. You will also need the SQL Server Compact 3.5 SP2 and 4.0 runtimes installed. To debug, make SqlCeToolbox the startup project, and ensure Debug, x86 (not AnyCPU)
+Follow me on Twitter for Data Development and EF/ADO.NET tweets: [@ErikEJ](http://twitter.com/ErikEJ)
 
 # Downloads
 
