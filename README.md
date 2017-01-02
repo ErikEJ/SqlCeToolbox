@@ -32,8 +32,6 @@ You can also autonmmatically get the [latest build of the Master branch directly
 
 You can download the latest extension daily build from [VSIX Gallery](http://vsixgallery.com/extensions/d6c77c32-fe4b-4f6d-ad5d-f7b755212760/extension.vsix)
 
-You can also autonmmatically get the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
-
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
 **Release**
