@@ -510,7 +510,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        public void GenerateEfPocoFromDacPacInProject(object sender, ExecutedRoutedEventArgs e)
+        public async void GenerateEfPocoFromDacPacInProject(object sender, ExecutedRoutedEventArgs e)
         {
             EnvDteHelper.LaunchUrl("https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator");
 
@@ -520,8 +520,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var isEf6 = SqlCeToolboxPackage.VsSupportsEf6();
             try
             {
-                if (_package == null) return;
-                var dte = _package.GetServiceHelper(typeof(DTE)) as DTE;
+                var dte = _package?.GetServiceHelper(typeof(DTE)) as DTE;
                 if (dte == null) return;
                 if (dte.Mode == vsIDEMode.vsIDEModeDebug)
                 {
@@ -586,7 +585,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 };
 
                 var dacFxHelper = new DacFxHelper(_package);
-                dacFxHelper.RunDacPackage(connectionStringBuilder, dacPacFileName);
+                await dacFxHelper.RunDacPackageAsync(connectionStringBuilder, dacPacFileName);
 
                 var prefix = "App";
                 var configPath = Path.Combine(Path.GetTempPath(), prefix + ".config");
