@@ -7,6 +7,18 @@ Follow me on Twitter for Data Development and EF/ADO.NET tweets: [@ErikEJ](http:
 
 [Get an overview of my tools and utilities for embedded database development](http://erikej.github.io/SqlCeToolbox/)
 
+# Documentation
+
+[Getting started](https://github.com/ErikEJ/SqlCeToolbox/wiki)
+
+[Known issues](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
+
+[Release notes](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
+
+[Command line tools](https://github.com/ErikEJ/SqlCeToolbox/wiki/Command-line-tools)
+
+[Scripting API samples](https://github.com/ErikEJ/SqlCeToolbox/wiki/Scripting-API-samples)
+
 # Downloads
 
 ## Visual Studio Extension
@@ -47,13 +59,5 @@ You can download the latest 3.5 daily build [from AppVeyor here](https://ci.appv
 **Release**
 
 You can download the latest release of the command line tools from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
-
-# Documentation
-
-[Getting started](https://github.com/ErikEJ/SqlCeToolbox/wiki)
-
-[Known issues](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
-
-[Release notes](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
 
 ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/toolbox1.png)
