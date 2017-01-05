@@ -252,6 +252,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             Items.Add(new Separator());
 
+#if VS2010
+#else
             var scriptEfDacPacCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.GenerateEfPocoFromDacPacInProject);
 
@@ -264,7 +266,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             scriptEfPocoDacPacMenuItem.CommandBindings.Add(scriptEfDacPacCommandBinding);
             if (SqlCeToolboxPackage.VsSupportsEf6()) Items.Add(scriptEfPocoDacPacMenuItem);
-
+#endif
             var localDatabaseCacheCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                                                                 dcmd.SyncFxGenerateLocalDatabaseCacheCode);
             var localDatabaseCacheMenuItem = new MenuItem

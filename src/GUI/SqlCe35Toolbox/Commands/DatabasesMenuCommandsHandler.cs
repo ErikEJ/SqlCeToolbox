@@ -510,6 +510,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
+#if VS2010
+#else
         public async void GenerateEfPocoFromDacPacInProject(object sender, ExecutedRoutedEventArgs e)
         {
             EnvDteHelper.LaunchUrl("https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator");
@@ -638,6 +640,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
             }
         }
+#endif
 
         public void SyncFxGenerateLocalDatabaseCacheCode(object sender, ExecutedRoutedEventArgs e)
         {
@@ -783,7 +786,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        #endregion
+#endregion
 
         private static void SyncFxGetObjectsForSync(SyncFxDialog sfd, DatabaseMenuCommandParameters databaseInfo)
         {
