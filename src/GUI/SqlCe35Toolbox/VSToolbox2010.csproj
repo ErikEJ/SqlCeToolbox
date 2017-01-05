@@ -1,0 +1,598 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A633A9DF-98DB-42A5-91E4-853258C47854}</ProjectGuid>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ErikEJ.SqlCeToolbox</RootNamespace>
+    <AssemblyName>SqlCeVs2010Toolbox</AssemblyName>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+    <ReferencePath>$(ReferencePath);$(MSBuildThisFileDirectory)..\References\2010</ReferencePath>
+    <MinimumVisualStudioVersion Condition="'$(VisualStudioVersion)' != ''">$(VisualStudioVersion)</MinimumVisualStudioVersion>
+    <!--<VsSDKInstall>C:\Program Files (x86)\Microsoft Visual Studio 2010 SDK SP1</VsSDKInstall>
+    <VsSDKIncludes>C:\Program Files (x86)\Microsoft Visual Studio 2010 SDK SP1\VisualStudioIntegration\Common\Inc</VsSDKIncludes>
+    <VsSDKToolsPath>C:\Program Files (x86)\Microsoft Visual Studio 2010 SDK SP1\VisualStudioIntegration\Tools\Bin</VsSDKToolsPath>-->
+  </PropertyGroup>
+  <!-- Look for the SDK specific to the current version of Visual Studio -->
+  <PropertyGroup>
+    <VsSdkTargets>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\VSSDK\Microsoft.VsSDK.targets</VsSdkTargets>
+    <VsSdkTargets Condition=" '$(VisualStudioVersion)' == '' ">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets</VsSdkTargets>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="EnvDTE80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="ExtendedGrid">
+      <HintPath>..\lib\ExtendedGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\lib\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="ISqlCeScripting, Version=3.5.2.15, Culture=neutral, PublicKeyToken=3681435cabd17ad2, processorArchitecture=MSIL">
+      <HintPath>..\lib\ISqlCeScripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Kent.Boogaart.HelperTrinity">
+      <HintPath>..\lib\Kent.Boogaart.HelperTrinity.dll</HintPath>
+    </Reference>
+    <Reference Include="Kent.Boogaart.KBCsv">
+      <HintPath>..\lib\Kent.Boogaart.KBCsv.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=1.2.0.5639, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.1.2.0\lib\net40\Microsoft.ApplicationInsights.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.1.24.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.24\lib\net40\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Dac">
+      <HintPath>C:\Program Files (x86)\Microsoft SQL Server\130\DAC\bin\Microsoft.SqlServer.Dac.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Data, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\Microsoft.VisualStudio.Data.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Data.Core, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Data.Services, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Shell.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <HintPath>..\lib\QuickGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph.Data, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=3681435cabd17ad2, processorArchitecture=MSIL">
+      <HintPath>..\lib\QuickGraph.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph.Graphviz">
+      <HintPath>..\lib\QuickGraph.Graphviz.dll</HintPath>
+    </Reference>
+    <Reference Include="SqlCeScripting, Version=3.5.2.15, Culture=neutral, PublicKeyToken=3681435cabd17ad2, processorArchitecture=MSIL">
+      <HintPath>..\lib\SqlCeScripting.dll</HintPath>
+    </Reference>
+    <Reference Include="SqlCeScripting40, Version=3.5.2.15, Culture=neutral, PublicKeyToken=f411b7eab4d5c1c5, processorArchitecture=MSIL">
+      <HintPath>..\lib\SqlCeScripting40.dll</HintPath>
+    </Reference>
+    <Reference Include="SqlCeToolBoxSyncFxLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=55f9af0144148fde, processorArchitecture=MSIL">
+      <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLiteScripting">
+      <HintPath>..\lib\SQLiteScripting.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Data.SQLite, Version=1.0.103.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO, Version=2.6.8.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.IO.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime, Version=2.6.8.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks, Version=2.6.8.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.Threading.Tasks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\lib\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\BaseCommandHandler.cs" />
+    <Compile Include="Commands\BaseCommandParameters.cs" />
+    <Compile Include="Commands\ColumnMenuCommands.cs" />
+    <Compile Include="Commands\ColumnMenuCommandsHandler.cs" />
+    <Compile Include="Commands\CommandHandlerBase.cs" />
+    <Compile Include="Commands\TriggerMenuCommandsHandler.cs" />
+    <Compile Include="Commands\ViewMenuCommandsHandler.cs" />
+    <Compile Include="Commands\DatabasesMenuCommandsHandler.cs" />
+    <Compile Include="Commands\ScopesMenuCommands.cs" />
+    <Compile Include="Commands\ScopesMenuCommandsHandler.cs" />
+    <Compile Include="Commands\TablesMenuCommandsHandler.cs" />
+    <Compile Include="Commands\KeyMenuCommandsHandler.cs" />
+    <Compile Include="Commands\SubscriptionsMenuCommands.cs" />
+    <Compile Include="Commands\SubscriptionsMenuCommandsHandler.cs" />
+    <Compile Include="Commands\DatabaseMenuCommandParameters.cs" />
+    <Compile Include="Commands\DatabaseMenuCommands.cs" />
+    <Compile Include="Commands\DatabaseMenuCommandsHandler.cs" />
+    <Compile Include="Commands\IndexMenuCommands.cs" />
+    <Compile Include="Commands\IndexMenuCommandsHandler.cs" />
+    <Compile Include="Commands\MenuCommandParameters.cs" />
+    <Compile Include="Commands\MenuCommands.cs" />
+    <Compile Include="Commands\TableMenuCommandsHandler.cs" />
+    <Compile Include="ContextMenues\ColumnContextMenu.cs" />
+    <Compile Include="ContextMenues\SqlServerDatabaseContextMenu.cs" />
+    <Compile Include="ContextMenues\TriggerContextMenu.cs" />
+    <Compile Include="ContextMenues\ViewContextMenu.cs" />
+    <Compile Include="ContextMenues\ScopesContextMenu.cs" />
+    <Compile Include="ContextMenues\KeyContextMenu.cs" />
+    <Compile Include="ContextMenues\SubscriptionsContextMenu.cs" />
+    <Compile Include="ContextMenues\DatabaseContextMenu.cs" />
+    <Compile Include="ContextMenues\DatabasesContextMenu.cs" />
+    <Compile Include="ContextMenues\IndexContextMenu.cs" />
+    <Compile Include="ContextMenues\TableContextMenu.cs" />
+    <Compile Include="ContextMenues\TablesContextMenu.cs" />
+    <Compile Include="ContextMenues\ViewsContextMenu.cs" />
+    <Compile Include="Helpers\CheckListItem.cs" />
+    <Compile Include="Helpers\DacFxHelper.cs" />
+    <Compile Include="Helpers\Telemetry.cs" />
+    <Compile Include="Options\OptionsPageAdvanced.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DbDoc\SqlCeDbDoc.cs" />
+    <Compile Include="Dialogs\AboutDialog.xaml.cs">
+      <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ConnectionDialog.xaml.cs">
+      <DependentUpon>ConnectionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\CompareDialog.xaml.cs">
+      <DependentUpon>CompareDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PickServerDatabaseDialog.xaml.cs">
+      <DependentUpon>PickServerDatabaseDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ForeignKeyDialog.xaml.cs">
+      <DependentUpon>ForeignKeyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\IndexDialog.xaml.cs">
+      <DependentUpon>IndexDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SQLiteConnectionDialog.xaml.cs">
+      <DependentUpon>SQLiteConnectionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\TableBuilderDialog.xaml.cs">
+      <DependentUpon>TableBuilderDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ExportDialog.xaml.cs">
+      <DependentUpon>ExportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\SyncFxDialog.xaml.cs">
+      <DependentUpon>SyncFxDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PickTablesDialog.xaml.cs">
+      <DependentUpon>PickTablesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\PasswordDialog.xaml.cs">
+      <DependentUpon>PasswordDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DescriptionDialog.xaml.cs">
+      <DependentUpon>DescriptionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DataContextDialog.xaml.cs">
+      <DependentUpon>DataContextDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ImportDialog.xaml.cs">
+      <DependentUpon>ImportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\RenameDialog.xaml.cs">
+      <DependentUpon>RenameDialog.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Guids.cs" />
+    <Compile Include="Helpers\AppConfigHelper.cs" />
+    <Compile Include="Helpers\DataConnectionHelper.cs" />
+    <Compile Include="Helpers\DDEXRegistry.cs" />
+    <Compile Include="Helpers\DescriptionHelper.cs" />
+    <Compile Include="Helpers\EnvDTEHelper.cs" />
+    <None Include="VS2010\source.extension.vsixmanifest" />
+    <Resource Include="Resources\TypeDefinition_521.png" />
+    <Resource Include="Resources\data_out_small.png" />
+    <Resource Include="Resources\gear_16xLG.png" />
+    <Resource Include="Resources\Connections.png" />
+    <Resource Include="Resources\database_16xLG.png" />
+    <Resource Include="Resources\AddConnection_477.png" />
+    <Resource Include="Resources\folder_Closed_16xLG.png" />
+    <Resource Include="Resources\KeyDown_8461.png" />
+    <Resource Include="Resources\KeyDownFk_8461.png" />
+    <Resource Include="Resources\column_16xLG.png" />
+    <Resource Include="Resources\Index_8287_16x.png" />
+    <Resource Include="Resources\DataCompare_9880.png" />
+    <Resource Include="Resources\action_Cancel_16xLG.png" />
+    <Resource Include="Resources\AddTable_5632.png" />
+    <Resource Include="Resources\Diagram_16XLG.png" />
+    <Resource Include="Resources\ExportReportData_10565.png" />
+    <Resource Include="Resources\Copy_6524.png" />
+    <Resource Include="Resources\Hammer_Builder_16xLG.png" />
+    <Resource Include="Resources\Editdatasetwithdesigner_8449.png" />
+    <Resource Include="Resources\arrow_Sync_16xLG.png" />
+    <Resource Include="Resources\Find_5650.png" />
+    <Resource Include="Resources\Executequery_9958.png" />
+    <Resource Include="Resources\checkbox_16xLG.png" />
+    <Resource Include="Resources\database_16xLG_Broken.png" />
+    <Resource Include="Resources\database_16xLG_Own.png" />
+    <Resource Include="Resources\feedback.png" />
+    <Resource Include="Resources\Checkmark.png" />
+    <Resource Include="Resources\DecisionTree.png" />
+    <Resource Include="Resources\GroupBy_284.png" />
+    <Content Include="Resources\LocalDatabaseConnectionStringBuilder.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Helpers\LocalDatabaseConnectionStringBuilderTest.cs" />
+    <Compile Include="Helpers\Model.cs" />
+    <Compile Include="Helpers\SqlCeSyntaxProvider.cs" />
+    <Compile Include="Helpers\SyncFxHelper.cs" />
+    <Compile Include="Helpers\TreeViewHelper.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\VsTheming.cs" />
+    <Compile Include="Options\OptionsPageGeneral.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SqlCeToolboxPackage.cs" />
+    <Compile Include="PkgCmdID.cs" />
+    <Compile Include="ToolWindows\ExtEditControl.xaml.cs">
+      <DependentUpon>ExtEditControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ReportControl.xaml.cs">
+      <DependentUpon>ReportControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ReportWindow.cs" />
+    <Compile Include="ToolWindows\DataEditControl.xaml.cs">
+      <DependentUpon>DataEditControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\DataGridViewWindow.cs" />
+    <Compile Include="ToolWindows\SubscriptionControl.xaml.cs">
+      <DependentUpon>SubscriptionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SubscriptionWindow.cs" />
+    <Compile Include="ToolWindows\ExplorerControl.xaml.cs">
+      <DependentUpon>ExplorerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ExplorerToolWindow.cs" />
+    <Compile Include="ToolWindows\SqlEditorControl.xaml.cs">
+      <DependentUpon>SqlEditorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SqlEditorWindow.cs" />
+    <Compile Include="WinForms\DataGridViewSearch.cs" />
+    <Compile Include="WinForms\LinkArgs.cs" />
+    <Compile Include="WinForms\PanelQuickSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\PanelQuickSearch.designer.cs">
+      <DependentUpon>PanelQuickSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\ReportGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\ReportGrid.designer.cs">
+      <DependentUpon>ReportGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\ResultsetGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\ResultsetGrid.designer.cs">
+      <DependentUpon>ResultsetGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\SqlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="WinForms\SqlPanel.Designer.cs">
+      <DependentUpon>SqlPanel.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\PanelQuickSearch.resx">
+      <DependentUpon>PanelQuickSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\ReportGrid.resx">
+      <DependentUpon>ReportGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\ResultsetGrid.resx">
+      <DependentUpon>ResultsetGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\SqlPanel.resx">
+      <DependentUpon>SqlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Resource Include="Resources\SqlCeSyntax.xshd" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Key.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="SqlCeToolbox.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Images_32bit.bmp" />
+    <None Include="Resources\Images_24bit.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SqlCe35AddinStore.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Resources\Color_linecolor.png" />
+    <Resource Include="Resources\Templates\Html.xslt">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Resources\Templates\WikiPlex.xslt">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Resources\search_glyph.png" />
+    <Resource Include="Resources\Templates\report.xsl" />
+    <None Include="Resources\SqlCe40AddinStore.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Resources\RSS.png" />
+    <Resource Include="Resources\refresh_16xLG.png" />
+    <Resource Include="Resources\Office_Excel_Application_16xLG.png" />
+    <Resource Include="Resources\table_16xLG.png" />
+    <Resource Include="Resources\Rename_6779.png" />
+    <Resource Include="Resources\script_16xLG.png" />
+    <Resource Include="Resources\properties_16xLG.png" />
+    <Resource Include="Resources\Query_16xLG.png" />
+    <Resource Include="Resources\Schema_16xLG.png" />
+    <Resource Include="Resources\Synchronize_16xLG.png" />
+    <Resource Include="Resources\Tables_8928.png" />
+    <Resource Include="Resources\Open_6529.png" />
+    <Resource Include="Resources\StatusAnnotations_Help_and_inconclusive_16xLG_color.png" />
+    <Resource Include="Resources\save_16xLG.png" />
+    <Resource Include="Resources\process_16xLG.png" />
+    <Resource Include="Resources\Root.png" />
+    <Resource Include="Resources\NewWindow_6277.png" />
+    <Resource Include="Resources\NewQuery.png" />
+    <Resource Include="Resources\ResultsToGrid.png" />
+    <Resource Include="Resources\ResultsToTextFile.png" />
+    <Resource Include="Resources\Run.png" />
+    <Resource Include="Resources\RunOutline.png" />
+    <Content Include="Resources\toolbox2.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\data_out.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Resource Include="Resources\show_table_data.png" />
+    <Content Include="Resources\data_out.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\license.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Dialogs\AboutDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ConnectionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\CompareDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PickServerDatabaseDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ForeignKeyDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\IndexDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SQLiteConnectionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\TableBuilderDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ExportDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\SyncFxDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PickTablesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PasswordDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DescriptionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\DataContextDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\ImportDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\RenameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ToolWindows\ExtEditControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\ReportControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\DataEditControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\SubscriptionControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\ExplorerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ToolWindows\SqlEditorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QueryPlanVisualizer\QueryPlanVisualizer.csproj">
+      <Project>{df42bbc7-9733-4fd3-9758-13a1f657cfbb}</Project>
+      <Name>QueryPlanVisualizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqlCeToolbox.Common\SqlCeToolbox.Common.csproj">
+      <Project>{C6031278-5612-429F-A485-5169392DB51C}</Project>
+      <Name>SqlCeToolbox.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqlCeToolbox.DDEX35\SqlCeToolbox.DDEX35.csproj">
+      <Project>{3D2F4C65-6423-450C-8398-A00B9AF50ED6}</Project>
+      <Name>SqlCeToolbox.DDEX35</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqlCeToolbox.DDEX4\SqlCeToolbox.DDEX4.csproj">
+      <Project>{42939E33-FC72-459C-9403-B62AB074635E}</Project>
+      <Name>SqlCeToolbox.DDEX4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <UseCodebase>true</UseCodebase>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Condition="Exists($(VsSdkTargets))" Project="$(VsSdkTargets)" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
