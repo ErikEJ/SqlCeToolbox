@@ -837,6 +837,9 @@
     <Resource Include="..\SqlCe35Toolbox\Resources\AddDatabase_16x.png">
       <Link>Resources\AddDatabase_16x.png</Link>
     </Resource>
+    <Resource Include="..\SqlCe35Toolbox\Resources\CopyLongTextToClipboard_16x.png">
+      <Link>Resources\CopyLongTextToClipboard_16x.png</Link>
+    </Resource>
     <Content Include="Resources\data_out.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

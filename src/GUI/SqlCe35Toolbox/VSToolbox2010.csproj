@@ -248,6 +248,8 @@
     <Resource Include="Resources\Checkmark.png" />
     <Resource Include="Resources\DecisionTree.png" />
     <Resource Include="Resources\GroupBy_284.png" />
+    <Resource Include="Resources\AddDatabase_16x.png" />
+    <Resource Include="Resources\CopyLongTextToClipboard_16x.png" />
     <Content Include="Resources\LocalDatabaseConnectionStringBuilder.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
