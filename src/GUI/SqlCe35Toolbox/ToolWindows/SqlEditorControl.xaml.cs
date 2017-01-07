@@ -803,5 +803,18 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             package.ShowOptionPage(typeof(OptionsPageGeneral));
             DataConnectionHelper.LogUsage("ToolbarOptions");
         }
+        private void CodeCopyButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var text = SqlTextBox.SelectedText;
+            if (!string.IsNullOrEmpty(text))
+            {
+                Clipboard.SetText(FormatAsCodeSnippet(text));
+            }
+        }
+
+        private string FormatAsCodeSnippet(string text)
+        {
+            return $"var sql = @\"{Environment.NewLine}{text}\";";
+        }
     }
 }
