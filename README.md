@@ -29,6 +29,7 @@ Download the latest version of the Visual Studio extension (for both 3.5, 4.0 an
 (https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox)
 
 Or just install from Tools, Extensions and Updates in Visual Studio! ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/ext.png)
+
 **Daily build**
 
 You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix). 
