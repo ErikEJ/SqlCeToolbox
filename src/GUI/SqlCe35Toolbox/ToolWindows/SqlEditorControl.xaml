@@ -57,6 +57,11 @@
                     </StackPanel>
                 </Button>
                 <Separator></Separator>
+                <Button x:Name="CodeCopyButton" ToolTip="Copy as Code Snippet" Click="CodeCopyButton_OnClick" >
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="../Resources/CopyLongTextToClipboard_16x.png" Height="16" Width="16" />
+                    </StackPanel>
+                </Button>
                 <Button Name="ExportButton" ToolTip="Save Results As Text" Click="ExportButton_Click" >
                     <StackPanel Orientation="Horizontal" >
                         <Image Source="../Resources/Office_Excel_Application_16xLG.png" Height="16" Width="16" />
