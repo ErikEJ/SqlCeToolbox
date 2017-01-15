@@ -259,7 +259,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var scriptDatabaseExportMenuItem = new MenuItem
             {
-                Header = "Migrate to SQL Server (incl. LocalDB/Express)...",
+                Header = "Migrate to SQL Server (incl. Azure/Express)...",
                 Icon = ImageHelper.GetImageFromResource("../resources/ExportReportData_10565.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,

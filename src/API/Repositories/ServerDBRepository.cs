@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
 using System.Text;
-using System.Linq;
 using DbUp.Support.SqlServer;
 
 namespace ErikEJ.SqlCeScripting
@@ -15,11 +13,10 @@ namespace ErikEJ.SqlCeScripting
     public sealed class ServerDBRepository : IRepository
 #endif
     {
-        private readonly string _connectionString;
-        private SqlConnection cn;
-        private bool _keepSchemaName = false;
+        private SqlConnection _cn;
+        private readonly bool _keepSchemaName = false;
 
-        private List<string> sqlCeFunctions = new List<string>()
+        private readonly List<string> _sqlCeFunctions = new List<string>()
         {
           "ABS(",
           "ACOS(",
@@ -75,24 +72,23 @@ namespace ErikEJ.SqlCeScripting
         public ServerDBRepository(string connectionString, bool keepSchemaName = false)
 #endif
         {
-            _connectionString = connectionString;
             _keepSchemaName = keepSchemaName;
-            cn = new SqlConnection(_connectionString);
-            cn.Open();
+            _cn = new SqlConnection(connectionString);
+            _cn.Open();
         }
 
         public void Dispose()
         {
-            if (cn != null)
+            if (_cn != null)
             {
-                cn.Close();
-                cn = null;
+                _cn.Close();
+                _cn = null;
             }
         }
 
         public string GetRunTimeVersion()
         {
-            return cn.ServerVersion;
+            return _cn.ServerVersion;
         }
 
         private static void AddToListString(ref List<string> list, SqlDataReader dr)
@@ -115,7 +111,7 @@ namespace ErikEJ.SqlCeScripting
                 {
                     t = "(NEWID())";
                 }
-                if (t.ToUpperInvariant().ContainsAny(sqlCeFunctions.ToArray()))
+                if (t.ToUpperInvariant().ContainsAny(_sqlCeFunctions.ToArray()))
                 {
                     defValue = t;    
                 }
@@ -223,15 +219,15 @@ namespace ErikEJ.SqlCeScripting
             });
         }
 
-        private List<T> ExecuteReader<T>(string commandText, AddToListDelegate<T> AddToListMethod)
+        private List<T> ExecuteReader<T>(string commandText, AddToListDelegate<T> addToListMethod)
         {
             List<T> list = new List<T>();
-            using (var cmd = new SqlCommand(commandText, cn))
+            using (var cmd = new SqlCommand(commandText, _cn))
             {
                 using (var dr = cmd.ExecuteReader())
                 {
                     while (dr.Read())
-                        AddToListMethod(ref list, dr);
+                        addToListMethod(ref list, dr);
                 }
             }
             return list;
@@ -239,7 +235,7 @@ namespace ErikEJ.SqlCeScripting
 
         private IDataReader ExecuteDataReader(string commandText)
         {
-            using (var cmd = new SqlCommand(commandText, cn))
+            using (var cmd = new SqlCommand(commandText, _cn))
             {
                 return cmd.ExecuteReader();
             }
@@ -252,7 +248,7 @@ namespace ErikEJ.SqlCeScripting
             {
                 dt = new DataTable();
                 dt.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                using (var cmd = new SqlCommand(commandText, cn))
+                using (var cmd = new SqlCommand(commandText, _cn))
                 {
                     using (var da = new SqlDataAdapter(cmd))
                     {
@@ -272,7 +268,7 @@ namespace ErikEJ.SqlCeScripting
         private object ExecuteScalar(string commandText)
         {
             object val;
-            using (var cmd = new SqlCommand(commandText, cn))
+            using (var cmd = new SqlCommand(commandText, _cn))
             {
                 val = cmd.ExecuteScalar();
             }
@@ -281,7 +277,7 @@ namespace ErikEJ.SqlCeScripting
 
         private void ExecuteNonQuery(string commandText)
         {
-            using (var cmd = new SqlCommand(commandText, cn))
+            using (var cmd = new SqlCommand(commandText, _cn))
             {
                 cmd.ExecuteNonQuery();
             }
@@ -301,7 +297,7 @@ namespace ErikEJ.SqlCeScripting
             if (value != null)
             {
                 int offsetOrdinal = 0;
-                object offset = ExecuteScalar("SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "' AND (DATA_TYPE = 'sql_variant') AND ORDINAL_POSITION < "+ value.ToString() + ";");
+                object offset = ExecuteScalar("SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "' AND (DATA_TYPE = 'sql_variant') AND ORDINAL_POSITION < "+ value + ";");
                 if (offset != null)
                     offsetOrdinal = (int)offset;
                 return (int)value - 1 - offsetOrdinal;
@@ -360,25 +356,44 @@ namespace ErikEJ.SqlCeScripting
 
         public List<Column> GetAllColumns()
         {
-            return ExecuteReader(
-                "SELECT COLUMN_NAME, col.IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, " +
-                "AUTOINC_INCREMENT =  CASE cols.is_identity  WHEN 0 THEN 0 WHEN 1 THEN IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  END, " +
-                "AUTOINC_SEED =     CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_SEED('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  END, " +
-                "COLUMN_HASDEFAULT =  CASE WHEN col.COLUMN_DEFAULT IS NULL THEN CAST(0 AS bit) ELSE CAST (1 AS bit) END, COLUMN_DEFAULT, " +
-                "COLUMN_FLAGS = CASE cols.is_rowguidcol WHEN 0 THEN 0 ELSE 378 END, " +
-                "NUMERIC_SCALE, col.TABLE_NAME, " +
-                "AUTOINC_NEXT = CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_CURRENT('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') + IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') END, " +
-                "col.TABLE_SCHEMA " + 
-                "FROM INFORMATION_SCHEMA.COLUMNS col  " +
-                "JOIN sys.columns cols on col.COLUMN_NAME = cols.name " +
-                "AND cols.object_id = OBJECT_ID('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  " +
-                "JOIN sys.schemas schms on schms.name = col.TABLE_SCHEMA " +               
-                "JOIN sys.tables tab ON col.TABLE_NAME = tab.name and tab.schema_id = schms.schema_id " +
-                "WHERE SUBSTRING(COLUMN_NAME, 1,5) <> '__sys' " +
-                "AND tab.type = 'U' AND is_ms_shipped = 0 " +
-                "AND cols.is_computed = 0 " +
-                "AND DATA_TYPE <> 'sql_variant' " +
-                "ORDER BY col.TABLE_NAME, col.ORDINAL_POSITION ASC"
+            return ExecuteReader(@"SELECT COLUMN_NAME, col.IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, 
+                AUTOINC_INCREMENT =  CASE cols.is_identity  WHEN 0 THEN 0 WHEN 1 THEN IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  END, 
+                AUTOINC_SEED =     CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_SEED('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  END, 
+                COLUMN_HASDEFAULT =  CASE WHEN col.COLUMN_DEFAULT IS NULL THEN CAST(0 AS bit) ELSE CAST (1 AS bit) END, COLUMN_DEFAULT, 
+                COLUMN_FLAGS = CASE cols.is_rowguidcol WHEN 0 THEN 0 ELSE 378 END,
+                NUMERIC_SCALE, col.TABLE_NAME, 
+                AUTOINC_NEXT = CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_CURRENT('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') + IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') END, 
+                col.TABLE_SCHEMA, col.ORDINAL_POSITION
+                FROM INFORMATION_SCHEMA.COLUMNS col  
+                JOIN sys.columns cols on col.COLUMN_NAME = cols.name 
+                AND cols.object_id = OBJECT_ID('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  
+                JOIN sys.schemas schms on schms.name = col.TABLE_SCHEMA                
+                JOIN sys.tables tab ON col.TABLE_NAME = tab.name and tab.schema_id = schms.schema_id 
+                WHERE SUBSTRING(COLUMN_NAME, 1,5) <> '__sys' 
+                AND tab.type = 'U' AND is_ms_shipped = 0 
+                AND (cols.is_computed = 0)
+                AND DATA_TYPE <> 'sql_variant' 
+				UNION 
+                SELECT COLUMN_NAME, col.IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, 
+                AUTOINC_INCREMENT =  CASE cols.is_identity  WHEN 0 THEN 0 WHEN 1 THEN IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  END, 
+                AUTOINC_SEED =     CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_SEED('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  END, 
+                COLUMN_HASDEFAULT =  CASE WHEN col.COLUMN_DEFAULT IS NULL THEN CAST(0 AS bit) ELSE CAST (1 AS bit) END, COLUMN_DEFAULT, 
+                COLUMN_FLAGS = CASE cols.is_rowguidcol WHEN 0 THEN 0 ELSE 378 END,
+                NUMERIC_SCALE, col.TABLE_NAME, 
+                AUTOINC_NEXT = CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_CURRENT('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') + IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') END, 
+                col.TABLE_SCHEMA, col.ORDINAL_POSITION
+                FROM INFORMATION_SCHEMA.COLUMNS col  
+                JOIN sys.columns cols on col.COLUMN_NAME = cols.name 
+                AND cols.object_id = OBJECT_ID('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  
+                JOIN sys.schemas schms on schms.name = col.TABLE_SCHEMA                
+                JOIN sys.tables tab ON col.TABLE_NAME = tab.name and tab.schema_id = schms.schema_id 
+			    JOIN sys.computed_columns cc on cc.object_id = cols.object_id 
+                WHERE SUBSTRING(COLUMN_NAME, 1,5) <> '__sys' 
+                AND tab.type = 'U' AND is_ms_shipped = 0 
+                AND (cc.is_computed = 1 AND cc.is_persisted = 1)
+                AND DATA_TYPE <> 'sql_variant' 
+				ORDER BY col.TABLE_NAME, col.ORDINAL_POSITION ASC
+"
                 , new AddToListDelegate<Column>(AddToListColumns));
         }
 
@@ -390,7 +405,7 @@ namespace ErikEJ.SqlCeScripting
         public DataTable GetDataFromTable(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys)
         {
             // Include the schema name, may not always be dbo!
-            System.Text.StringBuilder sb = new System.Text.StringBuilder(200);
+            var sb = new StringBuilder(200);
             sb.Append("SELECT ");
             foreach (Column col in tableColumns)
             {
@@ -411,7 +426,7 @@ namespace ErikEJ.SqlCeScripting
 
         public IDataReader GetDataFromReader(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys, string whereClause = null)
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder(200);
+            var sb = new StringBuilder(200);
             sb.Append("SELECT ");
             foreach (Column col in tableColumns)
             {
@@ -525,19 +540,19 @@ namespace ErikEJ.SqlCeScripting
                 {
                     using (SqlCommand cmd = new SqlCommand())
                     {
-                        cmd.Connection = cn;
+                        cmd.Connection = _cn;
                         foreach (var table in tables)
                         {
-                            string strSQL = string.Format(System.Globalization.CultureInfo.InvariantCulture, "SELECT * FROM [{0}] WHERE 0 = 1", GetSchemaAndTableName(table));
+                            var strSql = string.Format(System.Globalization.CultureInfo.InvariantCulture, "SELECT * FROM [{0}] WHERE 0 = 1", GetSchemaAndTableName(table));
 
-                            using (SqlCommand command = new SqlCommand(strSQL, cn))
+                            using (SqlCommand command = new SqlCommand(strSql, _cn))
                             {
                                 using (SqlDataAdapter adapter1 = new SqlDataAdapter(command))
                                 {
                                     adapter1.FillSchema(schemaSet, SchemaType.Source, table);
 
                                     //Fill the table in the dataset 
-                                    cmd.CommandText = strSQL;
+                                    cmd.CommandText = strSql;
                                     adapter.SelectCommand = cmd;
                                     adapter.Fill(schemaSet, table);
                                 }
@@ -616,14 +631,14 @@ namespace ErikEJ.SqlCeScripting
             {
                 using (SqlCommand cmd = new SqlCommand())
                 {
-                    cmd.Connection = cn;
+                    cmd.Connection = _cn;
                     cmd.CommandText = sql;
                     cmd.ExecuteNonQuery();
                 }
             }
             catch (SqlException ex)
             { 
-                throw new Exception(FormatSqlException(ex as SqlException, sql));
+                throw new Exception(FormatSqlException(ex, sql));
             }
         }
 
@@ -659,7 +674,7 @@ namespace ErikEJ.SqlCeScripting
             if (value != null)
             {
                 int offsetOrdinal = 0;
-                object offset = ExecuteScalar("SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "' AND (DATA_TYPE = 'sql_variant') AND ORDINAL_POSITION < " + value.ToString() + ";");
+                object offset = ExecuteScalar("SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "' AND (DATA_TYPE = 'sql_variant') AND ORDINAL_POSITION < " + value + ";");
                 if (offset != null)
                     offsetOrdinal = (int)offset;
                 return (int)value - 1 - offsetOrdinal;
@@ -702,7 +717,7 @@ namespace ErikEJ.SqlCeScripting
             {
                 foreach (string value in values)
                 {
-                    if (str.Contains(value))
+                    if (str != null && str.Contains(value))
                         return true;
                 }
             }
