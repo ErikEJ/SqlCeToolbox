@@ -1,0 +1,57 @@
+version: 4.6.{build}
+branches:
+  only:
+  - master
+skip_tags: true
+configuration: Release
+platform: x86
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+install:
+- ps: >-
+    (new-object Net.WebClient).DownloadString("https://raw.github.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1") | iex
+
+    Vsix-IncrementVsixVersion | Vsix-UpdateBuildVersion
+
+    Vsix-IncrementVsixVersion C:\projects\sqlcetoolbox\src\GUI\SqlCe35Toolbox\source.extension.vsixmanifest
+
+    Vsix-IncrementVsixVersion C:\projects\sqlcetoolbox\src\GUI\SqlCe35Toolbox\VS2010\source.extension.vsixmanifest
+build_script:
+- cmd: >-
+    msbuild src\API\SqlCeScripting40.sln /p:configuration=Release /v:m
+
+    msbuild src\API\Export2SqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
+
+    msbuild src\API\ExportSqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
+
+    msbuild src\API\ExportSqlCe40.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
+
+
+    nuget restore src\GUI\SqlCeToolbox.sln -DisableParallelProcessing -Verbosity quiet
+
+
+    msbuild src\GUI\SqlCeToolbox.sln /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
+
+
+    msbuild src\GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /v:m
+
+
+    7z a SqlCe40ToolBox.zip %APPVEYOR_BUILD_FOLDER%\src\GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe
+
+
+    7z a SqlCe35ToolBox.zip %APPVEYOR_BUILD_FOLDER%\src\GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe
+test: off
+artifacts:
+- path: SqlCe40Toolbox.zip
+  name: SqlCe40Toolbox
+- path: SqlCe35Toolbox.zip
+  name: SqlCe35Toolbox
+deploy_script:
+- ps: >-
+    Vsix-PushArtifacts | Vsix-PublishToGallery
+
+    Push-AppveyorArtifact C:\projects\sqlcetoolbox\src\GUI\SSMSToolbox\bin\x86\Release\SSMSToolbox.vsix -FileName SSMSToolbox.vsix -DeploymentName "Latest build"
