@@ -7,7 +7,7 @@
     <ReferencePath>$(ReferencePath);$(MSBuildThisFileDirectory)..\References\2010</ReferencePath>
     <StartAction>Program</StartAction>
     <TargetFrameworkProfile />
-    <DeployExtension>False</DeployExtension>
+    <DeployExtension>True</DeployExtension>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
