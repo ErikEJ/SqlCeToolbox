@@ -200,8 +200,6 @@ namespace ErikEJ.SqlCeToolbox
             DataConnectionHelper.LogUsage("Platform: SSMS 130");
             OtherWindowsCommand.Initialize(this);
             ViewMenuCommand.Initialize(this);
-            //_objectExplorerManager = new ObjectExplorerManager(this);
-            //_objectExplorerManager.SetObjectExplorerEventProvider();
             base.Initialize();            
         }
     }

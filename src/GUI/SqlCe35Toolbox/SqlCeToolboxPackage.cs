@@ -220,8 +220,6 @@ namespace ErikEJ.SqlCeToolbox
         /// </summary>
         protected override void Initialize()
         {
-            var sw = new Stopwatch();
-            sw.Start();
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", ToString()));
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
@@ -243,8 +241,6 @@ namespace ErikEJ.SqlCeToolbox
                 mcs.AddCommand(seItem);
             }
             DataConnectionHelper.RegisterDdexProviders(false);
-            sw.Stop();
-            Debug.WriteLine("Startup: " + sw.ElapsedMilliseconds);
             base.Initialize();
         }
         #endregion
