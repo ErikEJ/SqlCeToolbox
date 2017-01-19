@@ -161,10 +161,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 {
                     Telemetry.Initialize(dte,
                         Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                        SqlCeToolboxPackage.VisualStudioVersion.ToString(),
+                        SqlCeToolboxPackage.TelemetryVersion.ToString(),
                         "d4881a82-2247-42c9-9272-f7bc8aa29315");
                 }
+#if SSMS
+                DataConnectionHelper.LogUsage("Platform: SSMS " + SqlCeToolboxPackage.TelemetryVersion.ToString(1));
+#else
                 DataConnectionHelper.LogUsage("Platform: Visual Studio " + SqlCeToolboxPackage.VisualStudioVersion.ToString(1));
+#endif
             }
             catch (Exception e)
             {

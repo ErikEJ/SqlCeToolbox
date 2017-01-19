@@ -64,13 +64,10 @@ namespace ErikEJ.SqlCeToolbox
 
         public bool VsSupportsDdex35() => false;
 
-        public static Version VisualStudioVersion
-        {
-            get
-            {
-                return  new Version(0, 0, 0, 0);
-            }
-        }
+        public static Version VisualStudioVersion => new Version(0, 0, 0, 0);
+
+        //TODO Make this dynamic!
+        public static Version TelemetryVersion => new Version(130, 0, 0, 0);
 
         public void SetStatus(string message)
         {
@@ -187,17 +184,6 @@ namespace ErikEJ.SqlCeToolbox
         /// </summary>
         protected override void Initialize()
         {
-            var dte = (DTE2)GetService(typeof(DTE));
-            Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
-            if (Telemetry.Enabled)
-            {
-                Telemetry.Initialize(dte,
-                    Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                    //TODO Make this dynamic!
-                    "130",
-                    "d4881a82-2247-42c9-9272-f7bc8aa29315");
-            }
-            DataConnectionHelper.LogUsage("Platform: SSMS 130");
             OtherWindowsCommand.Initialize(this);
             ViewMenuCommand.Initialize(this);
             base.Initialize();            

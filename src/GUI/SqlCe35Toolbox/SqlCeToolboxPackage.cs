@@ -178,6 +178,8 @@ namespace ErikEJ.SqlCeToolbox
             }
         }
 
+        public static Version TelemetryVersion => VisualStudioVersion;
+
         public bool VsSupportsDdex40()
         {
             return Properties.Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
