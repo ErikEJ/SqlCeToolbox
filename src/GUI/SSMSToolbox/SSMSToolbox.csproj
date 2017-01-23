@@ -363,7 +363,6 @@
     <Compile Include="SSMSEngine\DatabaseMenuItem.cs" />
     <Compile Include="SSMSEngine\ObjectExplorerManager.cs" />
     <Compile Include="SSMSEngine\ToolStripSeparatorMenuItem.cs" />
-    <None Include="Resources\SqlCeCLR.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SqlCe35Toolbox\Properties\Settings.settings">
@@ -547,6 +546,9 @@
     </Reference>
     <Reference Include="SqlCeToolBoxSyncFxLib">
       <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLEditors">
+      <HintPath>..\lib\SQLEditors.dll</HintPath>
     </Reference>
     <Reference Include="SQLiteScripting">
       <HintPath>..\lib\SQLiteScripting.dll</HintPath>
@@ -845,7 +847,7 @@
     </Content>
     <Resource Include="Resources\Find_5650.png" />
     <Resource Include="Resources\Images_32bit.bmp" />
-    <None Include="Resources\Install.sql" />
+    <Content Include="Resources\InstallSqlClr.sql" />
     <Content Include="Resources\license.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -884,6 +886,7 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
