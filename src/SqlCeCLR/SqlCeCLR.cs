@@ -31,7 +31,7 @@ namespace ErikEJ.SqlCe
                     {
                         while (rdr != null && rdr.Read())
                         {
-                            if (SqlContext.Pipe != null) SqlContext.Pipe.Send(rdr[1].ToString());
+                            //if (SqlContext.Pipe != null) SqlContext.Pipe.Send(rdr[1].ToString());
                             if (rdr[1].ToString() == "ntext" || rdr[1].ToString() == "image") continue;
                             metaCount++;
                             fieldNames.Add("[" + rdr[0] + "]");
@@ -61,7 +61,7 @@ namespace ErikEJ.SqlCe
                     {
                         if (SqlContext.Pipe != null)
                         {
-                            SqlContext.Pipe.Send(cmd.CommandText);
+                            //SqlContext.Pipe.Send(cmd.CommandText);
                             SqlContext.Pipe.SendResultsStart(record);
                             while (rdr != null && rdr.Read())
                             {

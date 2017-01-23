@@ -210,30 +210,22 @@ namespace ErikEJ.SqlCeToolbox {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to -- Configuration Region
-        ///--ALTER DATABASE [MyDatabase] SET TRUSTWORTHY ON;
-        ///--GO
-        ///--EXEC sp_configure &apos;clr enabled&apos;, &apos;1&apos;;
-        ///--GO
-        ///--RECONFIGURE
-        ///--GO
+        ///   Looks up a localized string similar to -- This script will install a SQLCLR Table-Valued Function, 
+        ///-- that gives you direct access to a SQL Server Compact table
+        ///-- from any SQL Server script/stored procedure
         ///
-        ///-- Clean up Region
-        ///IF EXISTS ( SELECT * 
-        ///            FROM   sysobjects 
-        ///            WHERE  id = object_id(N&apos;[dbo].[GetSqlCeTable]&apos;) 
-        ///                   and OBJECTPROPERTY(id, N&apos;IsProcedure&apos;) = 1 )
-        ///BEGIN
-        ///    DROP PROCEDURE [dbo].[GetSqlCeTable]
-        ///END
+        ///-- C# source is available here: https://github.com/ErikEJ/SqlCeToolbox/blob/master/src/SqlCeCLR/SqlCeCLR.cs
         ///
-        ///IF EXISTS (SELECT [name] FROM sys.assemblies WHERE [name] = N&apos;SqlCeCLR&apos;)
-        ///DROP ASSEMBLY [SqlCeCLR];
-        ///G [rest of string was truncated]&quot;;.
+        ///
+        ///-- A: Configuration Region
+        ///-- Uncomment and run below statements if the SQL Server database is not configured for the SQLCLR feature
+        ///-- Replace &quot;MyDatabase&quot; with the name of your database
+        ///
+        ///--ALTER DATABASE [MyDatabase] S [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Install {
+        internal static string InstallSqlClr {
             get {
-                return ResourceManager.GetString("Install", resourceCulture);
+                return ResourceManager.GetString("InstallSqlClr", resourceCulture);
             }
         }
         
@@ -423,31 +415,6 @@ namespace ErikEJ.SqlCeToolbox {
             get {
                 object obj = ResourceManager.GetObject("SqlCe40AddinStore", resourceCulture);
                 return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to using System;
-        ///using System.Collections.Generic;
-        ///using System.Data;
-        ///using System.Data.OleDb;
-        ///using Microsoft.SqlServer.Server;
-        ///     
-        ///namespace ErikEJ.SqlCe
-        ///{
-        ///	public static class ClrAccess
-        ///	{
-        ///        [SqlProcedure()]
-        ///        public static void GetTable(string connectionString, string tableName)
-        ///        {
-        ///            var metaCount = 0;
-        ///            var fieldNames = new List&lt;string&gt;();
-        ///            //--use: &quot;Provider=Microsoft.SQLSERVER.MOBILE.OLEDB.3.0;OLE DB Services=-4;&quot; for SQL Compact 3.1
-        ///   [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string SqlCeCLR {
-            get {
-                return ResourceManager.GetString("SqlCeCLR", resourceCulture);
             }
         }
         

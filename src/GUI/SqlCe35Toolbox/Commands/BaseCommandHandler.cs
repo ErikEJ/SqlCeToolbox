@@ -6,11 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
+using EnvDTE;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Kent.Boogaart.KBCsv;
+#if SSMS
+using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
+#endif
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -410,6 +414,62 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
+
+        // ReSharper disable once InconsistentNaming
+        public void ScriptAsSQLCLRSample(object sender, ExecutedRoutedEventArgs e)
+        {
+#if SSMS
+
+            var menuInfo = ValidateMenuInfo(sender);
+            if (menuInfo == null) return;
+            var package = ParentWindow.Package as SqlCeToolboxPackage;
+            if (package == null) return;
+            try
+            {
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                {
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    generator.GenerateTableCreate(menuInfo.Name);
+                    var sqlClrScript = new StringBuilder(Resources.InstallSqlClr);
+                    sqlClrScript.AppendLine();
+
+                    sqlClrScript.AppendFormat(
+                        "EXEC dbo.GetSqlCeTable 'Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;OLE DB Services=-4;{0}', '{1}'", 
+                        menuInfo.DatabaseInfo.ConnectionString, 
+                        menuInfo.Name);
+                    sqlClrScript.AppendLine();
+                    sqlClrScript.AppendLine();
+                    sqlClrScript.Append("-- Sample 2: Load data into SQL Server table");
+                    sqlClrScript.AppendLine();
+                    sqlClrScript.Append(generator.GeneratedScript);
+                    sqlClrScript.AppendLine();
+                    sqlClrScript.AppendFormat("INSERT INTO {0}", menuInfo.Name);
+                    sqlClrScript.AppendLine();
+                    sqlClrScript.AppendFormat(
+                        "EXEC dbo.GetSqlCeTable 'Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;OLE DB Services=-4;{0}', '{1}'",
+                        menuInfo.DatabaseInfo.ConnectionString,
+                        menuInfo.Name);
+                    sqlClrScript.AppendLine();
+                    sqlClrScript.Append("GO");
+
+                    //Add new script to SSMS editor with content
+                    ScriptFactory.Instance.CreateNewBlankScript(ScriptType.Sql);
+                    var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+                    if (dte != null)
+                    {
+                        var doc = (TextDocument)dte.Application.ActiveDocument.Object(null);
+                        doc.EndPoint.CreateEditPoint().Insert(sqlClrScript.ToString());
+                        doc.DTE.ActiveDocument.Saved = true;
+                    }
+                    DataConnectionHelper.LogUsage("TableScriptAsSQLCLRSample");
+                }
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+            }
+#endif
+        }
         public void GenerateDataDiffScript(object sender, ExecutedRoutedEventArgs e)
         {
             try

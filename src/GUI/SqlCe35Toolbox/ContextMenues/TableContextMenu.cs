@@ -35,6 +35,12 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             CreateScriptAsUpdateMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDeleteMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDataMenuItem(tcmd, menuCommandParameters);
+#if SSMS
+            if (isSqlCe)
+            {
+                CreateScriptAsSQLCLRSampleMenuItem(tcmd, menuCommandParameters);
+            }
+#endif
             Items.Add(new Separator());
             ImportDataMenuItem(tcmd, menuCommandParameters);
             Items.Add(new Separator());
@@ -241,6 +247,21 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var scriptMenuItem = new MenuItem
             {
                 Header = "Script as Data (INSERTs)",
+                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
+                Command = TableMenuCommands.TableCommand,
+                CommandParameter = menuCommandParameters
+            };
+            scriptMenuItem.CommandBindings.Add(scriptCommandBinding);
+            Items.Add(scriptMenuItem);
+        }
+
+        // ReSharper disable once InconsistentNaming
+        private void CreateScriptAsSQLCLRSampleMenuItem(TableMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
+        {
+            var scriptCommandBinding = new CommandBinding(TableMenuCommands.TableCommand, tcmd.ScriptAsSQLCLRSample);
+            var scriptMenuItem = new MenuItem
+            {
+                Header = "Script as SQLCLR sample",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 Command = TableMenuCommands.TableCommand,
                 CommandParameter = menuCommandParameters
