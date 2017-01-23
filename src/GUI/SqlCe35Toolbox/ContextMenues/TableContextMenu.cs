@@ -261,7 +261,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var scriptCommandBinding = new CommandBinding(TableMenuCommands.TableCommand, tcmd.ScriptAsSQLCLRSample);
             var scriptMenuItem = new MenuItem
             {
-                Header = "Script as SQLCLR sample",
+                Header = "Script as SQLCLR sample (beta)",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 Command = TableMenuCommands.TableCommand,
                 CommandParameter = menuCommandParameters

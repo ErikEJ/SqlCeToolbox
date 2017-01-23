@@ -242,7 +242,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                                                                dcmd.ExportServerDatabaseToSqlite);
             var exportServerToLiteMenuItem = new MenuItem
             {
-                Header = "Export SQL Server to SQLite... (beta)",
+                Header = "Export SQL Server to SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/ExportReportData_10565.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters
