@@ -167,7 +167,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 #if SSMS
                 DataConnectionHelper.LogUsage("Platform: SSMS " + SqlCeToolboxPackage.TelemetryVersion.ToString(1));
 #else
-                DataConnectionHelper.LogUsage("Platform: Visual Studio " + SqlCeToolboxPackage.VisualStudioVersion.ToString(1));
+                DataConnectionHelper.LogUsage("Platform: Visual Studio " + SqlCeToolboxPackage.TelemetryVersion.ToString(1));
 #endif
             }
             catch (Exception e)
