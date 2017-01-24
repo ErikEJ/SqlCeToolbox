@@ -430,27 +430,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableCreate(menuInfo.Name);
-                    var sqlClrScript = new StringBuilder(Resources.InstallSqlClr);
-                    sqlClrScript.AppendLine();
-
-                    sqlClrScript.AppendFormat(
-                        "EXEC dbo.GetSqlCeTable 'Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;OLE DB Services=-4;{0}', '{1}'", 
-                        menuInfo.DatabaseInfo.ConnectionString, 
-                        menuInfo.Name);
-                    sqlClrScript.AppendLine();
-                    sqlClrScript.AppendLine();
-                    sqlClrScript.Append("-- Sample 2: Load data into SQL Server table");
-                    sqlClrScript.AppendLine();
-                    sqlClrScript.Append(generator.GeneratedScript);
-                    sqlClrScript.AppendLine();
-                    sqlClrScript.AppendFormat("INSERT INTO {0}", menuInfo.Name);
-                    sqlClrScript.AppendLine();
-                    sqlClrScript.AppendFormat(
-                        "EXEC dbo.GetSqlCeTable 'Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;OLE DB Services=-4;{0}', '{1}'",
-                        menuInfo.DatabaseInfo.ConnectionString,
-                        menuInfo.Name);
-                    sqlClrScript.AppendLine();
-                    sqlClrScript.Append("GO");
+                    var sqlClrScript = BuildSqlClrScript(menuInfo, generator.GeneratedScript);
 
                     //Add new script to SSMS editor with content
                     ScriptFactory.Instance.CreateNewBlankScript(ScriptType.Sql);
@@ -458,7 +438,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     if (dte != null)
                     {
                         var doc = (TextDocument)dte.Application.ActiveDocument.Object(null);
-                        doc.EndPoint.CreateEditPoint().Insert(sqlClrScript.ToString());
+                        doc.EndPoint.CreateEditPoint().Insert(sqlClrScript);
                         doc.DTE.ActiveDocument.Saved = true;
                     }
                     DataConnectionHelper.LogUsage("TableScriptAsSQLCLRSample");
@@ -470,6 +450,33 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
 #endif
         }
+
+        private static string BuildSqlClrScript(MenuCommandParameters menuInfo, string script)
+        {
+            var sqlClrScript = new StringBuilder(Resources.InstallSqlClr);
+            sqlClrScript.AppendLine();
+
+            sqlClrScript.AppendFormat(
+                "EXEC dbo.GetSqlCeTable 'Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;OLE DB Services=-4;{0}', '{1}'",
+                menuInfo.DatabaseInfo.ConnectionString,
+                menuInfo.Name);
+            sqlClrScript.AppendLine();
+            sqlClrScript.AppendLine();
+            sqlClrScript.Append("-- Sample 2: Load data into SQL Server table");
+            sqlClrScript.AppendLine();
+            sqlClrScript.Append(script);
+            sqlClrScript.AppendLine();
+            sqlClrScript.AppendFormat("INSERT INTO {0}", menuInfo.Name);
+            sqlClrScript.AppendLine();
+            sqlClrScript.AppendFormat(
+                "EXEC dbo.GetSqlCeTable 'Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;OLE DB Services=-4;{0}', '{1}'",
+                menuInfo.DatabaseInfo.ConnectionString,
+                menuInfo.Name);
+            sqlClrScript.AppendLine();
+            sqlClrScript.Append("GO");
+            return sqlClrScript.ToString();
+        }
+
         public void GenerateDataDiffScript(object sender, ExecutedRoutedEventArgs e)
         {
             try

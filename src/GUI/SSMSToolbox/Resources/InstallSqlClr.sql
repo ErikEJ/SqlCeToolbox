@@ -6,6 +6,7 @@
 
 
 -- A: Configuration Region
+
 -- Uncomment and run below statements if the SQL Server database is not configured for the SQLCLR feature
 -- Replace "MyDatabase" with the name of your database
 
@@ -17,7 +18,8 @@
 --GO
 
 
--- B: Install Region
+-- B: Install Region (only required once per user database)
+
 IF EXISTS (SELECT * FROM sys.procedures WHERE ([name] = N'GetSqlCeTable'))
   DROP PROCEDURE dbo.GetSqlCeTable;
 GO
