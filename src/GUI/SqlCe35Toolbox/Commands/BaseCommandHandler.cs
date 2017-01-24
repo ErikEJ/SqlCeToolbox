@@ -450,7 +450,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
 #endif
         }
-
+#if SSMS
         private static string BuildSqlClrScript(MenuCommandParameters menuInfo, string script)
         {
             var sqlClrScript = new StringBuilder(Resources.InstallSqlClr);
@@ -476,7 +476,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             sqlClrScript.Append("GO");
             return sqlClrScript.ToString();
         }
-
+#endif
         public void GenerateDataDiffScript(object sender, ExecutedRoutedEventArgs e)
         {
             try
