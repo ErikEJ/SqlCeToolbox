@@ -12,7 +12,6 @@ using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Xml;
 using EnvDTE;
-using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ExecutionPlanVisualizer;
 using ICSharpCode.AvalonEdit.Highlighting;
