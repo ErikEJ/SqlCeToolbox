@@ -12,7 +12,7 @@
     <Tags>sql sqlite sqlce entityframework ef linq codegeneration database ssdt ssms</Tags>
   </Metadata>
   <Installation AllUsers="true">
-    <InstallationTarget Id="ssms" Version="[13.0,14.0)" />
+    <InstallationTarget Id="ssms" Version="[13.0,15.0)" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
