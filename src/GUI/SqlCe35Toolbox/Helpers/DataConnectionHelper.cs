@@ -133,12 +133,19 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 }
             }
 #if SSMS
-            var objectExplorerManager = new ObjectExplorerManager(package);
-            var list = objectExplorerManager.GetAllServerUserDatabases();
-            foreach (var item in list)
+            try
             {
-                if (!databaseList.ContainsKey(item.Key))
-                    databaseList.Add(item.Key, item.Value);
+                var objectExplorerManager = new ObjectExplorerManager(package);
+                var list = objectExplorerManager.GetAllServerUserDatabases();
+                foreach (var item in list)
+                {
+                    if (!databaseList.ContainsKey(item.Key))
+                        databaseList.Add(item.Key, item.Value);
+                }
+            }
+            //TODO Make SSMS 14.x (17) work with above method!
+            catch (MissingMethodException)
+            {
             }
 #endif
             return databaseList;
