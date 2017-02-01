@@ -38,7 +38,7 @@ You can also automatically get the [latest build of the Master branch directly i
 
 If you need the Visual Studio 2010 extension, please contact me, and I can provide a link! 
 
-## SQL Server Management Studio (SSMS) 2016 Extension (beta) 
+## SQL Server Management Studio (SSMS) 16.x and 17.x Extension (beta) 
 
 **Daily build**
 
