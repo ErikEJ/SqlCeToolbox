@@ -303,11 +303,12 @@ namespace ErikEJ.SqlCeToolbox.WinForms
         {
             // if the user moves to a new row, check if the 
             // last row was changed
-            BindingSource thisBindingSource =
-              (BindingSource)sender;
+            var thisBindingSource = sender as BindingSource;
 
-            DataRow thisDataRow =
-              ((DataRowView)thisBindingSource.Current).Row;
+            var current = thisBindingSource?.Current;
+            if (current == null) return;
+
+            var thisDataRow = ((DataRowView)current).Row;
             if (thisDataRow == _lastDataRow)
             {
                 // we need to avoid to write a datarow to the 
@@ -315,8 +316,8 @@ namespace ErikEJ.SqlCeToolbox.WinForms
                 // we get a problem with the event handling of 
                 //the DataTable.
                 throw new InvalidOperationException("It seems the" +
-                  " PositionChanged event was fired twice for" +
-                  " the same row");
+                                                    " PositionChanged event was fired twice for" +
+                                                    " the same row");
             }
 
             UpdateRowToDatabase();
@@ -369,7 +370,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             if (_pnlSql == null)
             {
                 _pnlSql = new SqlPanel();
-                dataGridView1.Controls.Add(_pnlSql);
+                Controls.Add(_pnlSql);
                 _pnlSql.SqlText = SqlText;
                 _pnlSql.SqlChanged += pnlSql_SqlChanged;
             }
