@@ -236,7 +236,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                     catch (Exception ex)
                     {
-                        if (ex.GetType().Name == "SqlCeException")
+                        if (ex.GetType().Name.StartsWith("SqlCe"))
                         {
                             removals.Add(connection);
                         }
