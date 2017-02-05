@@ -236,7 +236,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                     catch (Exception ex)
                     {
-                        if (ex.GetType().Name.StartsWith("SqlCe"))
+                        if (ex.GetType().Name == "SqlCeException")
+                        {
+                            removals.Add(connection);
+                        }
+                        if (ex.GetType().Name == "SqlCeInvalidDatabaseFormatException")
                         {
                             removals.Add(connection);
                         }
