@@ -284,7 +284,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 }
                 catch (Exception ex)
                 {
-                    if (ex.GetType().Name == "SqlCeException")
+                    if (ex.GetType().Name == "SqlCeException" 
+                        || ex.GetType().Name == "SqlCeInvalidDatabaseFormatException")
                     {
 #if DEBUG
                         Debug.WriteLine(ex.Message);
@@ -790,6 +791,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             if (ex != null)
             {
                 var dontTrack = ex.GetType().Name == "SqlCeException"
+                    || ex.GetType().Name == "SqlCeInvalidDatabaseFormatException"
                     || ex is SqlException
                     || ex is SQLiteException;
 
