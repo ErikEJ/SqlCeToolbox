@@ -253,6 +253,18 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Items.Add(maintenanceMenuItem);
                 Items.Add(new Separator());
             }
+            if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
+            {
+                maintenanceMenuItem.Items.Clear();
+                compactMenuItem.Header = "Vacuum";
+                compactMenuItem.ToolTip = "Rebuilds the database file, repacking it into a minimal amount of disk space";
+                shrinkMenuItem.Header = "Re-index";
+                shrinkMenuItem.ToolTip = "Deletes and recreates indexes";
+                maintenanceMenuItem.Items.Add(compactMenuItem);
+                maintenanceMenuItem.Items.Add(shrinkMenuItem);
+                Items.Add(maintenanceMenuItem);
+                Items.Add(new Separator());
+            }
 
             var scriptExportCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.ExportToServer);
