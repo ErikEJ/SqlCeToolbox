@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using ErikEJ.SqlCeScripting;
 using System.Data.SQLite;
 
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SQLiteScripting
 {
     public class SqliteHelper : ISqlCeHelper
@@ -65,7 +64,7 @@ namespace ErikEJ.SQLiteScripting
 
         public string FormatError(Exception e)
         {
-            if (e.GetType() == typeof(SQLiteException))
+            if (e is SQLiteException)
             {
                 SQLiteException ex = e as SQLiteException;
                 StringBuilder bld = new StringBuilder();
@@ -73,7 +72,7 @@ namespace ErikEJ.SQLiteScripting
 
                 if (null != inner)
                 {
-                    bld.Append("Inner Exception: " + inner.ToString());
+                    bld.Append(value: "Inner Exception: " + inner);
                 }
                 bld.AppendLine("ErrorCode : " + ex.ErrorCode);
                 bld.AppendLine("Message   : " + ex.Message);
@@ -105,11 +104,27 @@ namespace ErikEJ.SQLiteScripting
         {
             using (var cmd = new SQLiteCommand())
             {
-                var conn = new SQLiteConnection(connectionString);
-                cmd.Connection = conn;
-                cmd.CommandText = "VACUUM;";
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                using (var conn = new SQLiteConnection(connectionString))
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = "VACUUM;";
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void ShrinkDatabase(string connectionString)
+        {
+            using (var cmd = new SQLiteCommand())
+            {
+                using (var conn = new SQLiteConnection(connectionString))
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = "REINDEX;";
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
         #endregion
@@ -140,10 +155,6 @@ namespace ErikEJ.SQLiteScripting
             throw new NotImplementedException();
         }
 
-        public void ShrinkDatabase(string connectionString)
-        {
-            throw new NotImplementedException();
-        }
 
         public void UpgradeTo40(string connectionString)
         {
