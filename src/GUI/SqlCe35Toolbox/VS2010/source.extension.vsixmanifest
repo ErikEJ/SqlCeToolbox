@@ -3,7 +3,7 @@
   <Identifier Id="45521019-e4c7-480c-8ea8-fc4a2c6f50aa">
     <Name>SQL Server Compact/SQLite Toolbox</Name>
     <Author>ErikEJ</Author>
-    <Version>4.6.0.0</Version>
+    <Version>4.7.0.0</Version>
     <Description xml:space="preserve">SQL Server Compact/SQLite Toolbox add-in for Visual Studio. This add-in adds several features to help your embedded database development efforts: Scripting of tables and data, import from SQL Server and CSV files and much, much more.</Description>
     <Locale>1033</Locale>
     <MoreInfoUrl>https://github.com/ErikEJ/SqlCeToolbox</MoreInfoUrl>
