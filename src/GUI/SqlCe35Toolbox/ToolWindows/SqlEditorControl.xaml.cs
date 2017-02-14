@@ -332,6 +332,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 return;
             try
             {
+                ExecuteButton.IsEnabled = false;
+                ExecuteWithPlanButton.IsEnabled = false;
                 using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
@@ -360,7 +362,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             catch (Exception ex)
             {
-                ParseSqlErrorToResultsBox(DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
+                ParseSqlErrorToResultsBox(
+                    DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
+            }
+            finally
+            {
+                ExecuteButton.IsEnabled = true;
+                ExecuteWithPlanButton.IsEnabled = true;
             }
         }
 
@@ -527,6 +535,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             try
             {
+                ExecuteButton.IsEnabled = false;
+                ExecuteWithPlanButton.IsEnabled = false;
                 using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
@@ -541,7 +551,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var sw = new Stopwatch();
                     sw.Start();
 
-                    var dataset = await Task.Run(() 
+                    var dataset = await Task.Run(()
                         => repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors));
                     sw.Stop();
                     FormatTime(sw);
@@ -556,7 +566,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             catch (Exception sqlException)
             {
-                ParseSqlErrorToResultsBox(DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
+                ParseSqlErrorToResultsBox(
+                    DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
+            }
+            finally
+            {
+                ExecuteWithPlanButton.IsEnabled = true;
+                ExecuteButton.IsEnabled = true;
             }
         }
 
