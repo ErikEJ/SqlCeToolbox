@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms.Integration;
@@ -324,7 +325,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             ExecuteScript();
         }
 
-        private void ExecuteWithPlanButton_Click(object sender, RoutedEventArgs e)
+        private async void ExecuteWithPlanButton_Click(object sender, RoutedEventArgs e)
         {
             DataConnectionHelper.LogUsage("EditorExecuteWithPlan");
             if (string.IsNullOrWhiteSpace(SqlText))
@@ -334,10 +335,12 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
-                    string showPlan;
+                    string showPlan = string.Empty;
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
-                    var dataset = repository.ExecuteSql(sql, out showPlan);
+                    var dataset = await Task.Run(()
+                        => repository.ExecuteSql(sql, out showPlan));
+
                     sw.Stop();
                     FormatTime(sw);
                     if (dataset != null)
@@ -520,22 +523,26 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        private void ExecuteSqlScriptInEditor()
+        private async void ExecuteSqlScriptInEditor()
         {
             try
             {
                 using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
-                    bool schemaChanged;
+                    var schemaChanged = false;
                     if (sql.Length == 0) return;
+
                     var sbSql = new StringBuilder(sql);
                     sbSql = sbSql.Replace("\r", " \r");
                     sbSql = sbSql.Replace("GO  \r", "GO\r");
                     sql = sbSql.Replace("GO \r", "GO\r").ToString();
+
                     var sw = new Stopwatch();
                     sw.Start();
-                    var dataset = repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors);
+
+                    var dataset = await Task.Run(() 
+                        => repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors));
                     sw.Stop();
                     FormatTime(sw);
                     if (dataset == null) return;
