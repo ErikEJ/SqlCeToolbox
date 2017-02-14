@@ -130,6 +130,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="4*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -139,15 +140,18 @@
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
                 <StatusBarItem>
-                    <TextBlock x:Name="txtTime">Duration: 00:00.000</TextBlock>
+                    <ProgressBar  x:Name="pBar" Height="15" Width="50" IsIndeterminate="True" Visibility="Collapsed" ></ProgressBar>
                 </StatusBarItem>
                 <StatusBarItem Grid.Column="1">
-                    <TextBlock></TextBlock>
+                    <TextBlock x:Name="txtTime">Duration: 00:00.000</TextBlock>
                 </StatusBarItem>
                 <StatusBarItem Grid.Column="2">
                     <TextBlock></TextBlock>
                 </StatusBarItem>
                 <StatusBarItem Grid.Column="3">
+                    <TextBlock></TextBlock>
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="4">
                     <TextBlock x:Name="txtVersion">4.0.0.0</TextBlock>
                 </StatusBarItem>
             </StatusBar>

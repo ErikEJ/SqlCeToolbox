@@ -332,8 +332,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 return;
             try
             {
-                ExecuteButton.IsEnabled = false;
-                ExecuteWithPlanButton.IsEnabled = false;
+                StartQuerying();
                 using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
@@ -367,10 +366,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             finally
             {
-                ExecuteButton.IsEnabled = true;
-                ExecuteWithPlanButton.IsEnabled = true;
+                StopQuerying();
             }
         }
+
 
         private void TryLaunchSqlplan(string showPlan, bool isEstimatedPlan)
         {
@@ -535,8 +534,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             try
             {
-                ExecuteButton.IsEnabled = false;
-                ExecuteWithPlanButton.IsEnabled = false;
+                StartQuerying();
                 using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
@@ -571,9 +569,24 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             finally
             {
-                ExecuteWithPlanButton.IsEnabled = true;
-                ExecuteButton.IsEnabled = true;
+                StopQuerying();
             }
+        }
+
+        private void StartQuerying()
+        {
+            pBar.Visibility = Visibility.Visible;
+            pBar.IsIndeterminate = true;
+            ExecuteButton.IsEnabled = false;
+            ExecuteWithPlanButton.IsEnabled = false;
+        }
+
+        private void StopQuerying()
+        {
+            pBar.Visibility = Visibility.Collapsed;
+            pBar.IsIndeterminate = false;
+            ExecuteButton.IsEnabled = true;
+            ExecuteWithPlanButton.IsEnabled = true;
         }
 
         private string GetSqlFromSqlEditorTextBox()
