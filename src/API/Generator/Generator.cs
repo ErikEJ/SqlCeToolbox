@@ -9,7 +9,6 @@ using System.Text;
 using QuickGraph.Algorithms;
 using QuickGraph.Data;
 using System.Diagnostics;
-using QuickGraph;
 
 // ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeScripting
@@ -53,6 +52,10 @@ namespace ErikEJ.SqlCeScripting
         public Generator(IRepository repository, string outFile)
 #endif
         {
+            if (string.IsNullOrEmpty(_outFile))
+            {
+                throw new ArgumentNullException(nameof(outFile));
+            }
             Init(repository, outFile);
         }
 
@@ -263,12 +266,17 @@ namespace ErikEJ.SqlCeScripting
         }
 
         /// <summary>
-        /// Gets the generated script.
+        /// Gets the generated script, and clears what has been generated so far
         /// </summary>
         /// <value>The generated script.</value>
         public string GeneratedScript
         {
-            get { return _sbScript.ToString(); }
+            get
+            {
+                var script = _sbScript.ToString();
+                _sbScript.Clear();
+                return script;
+            }
         }
 
         /// <summary>
@@ -280,6 +288,11 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="whereClause"></param>
         public void GenerateTableContent(string tableName, bool saveImageFiles, bool ignoreIdentity = false, string whereClause = null)
         {
+            if (saveImageFiles && string.IsNullOrEmpty(_outFile))
+            {
+                throw new ArgumentNullException(nameof(saveImageFiles), "outFile must be specified in the Generator constructor when using saveImageFiles");
+            }
+
             int identityOrdinal = _repository.GetIdentityOrdinal(tableName);
             bool hasIdentity = (identityOrdinal > -1);
             if (ignoreIdentity)
@@ -1450,8 +1463,6 @@ namespace ErikEJ.SqlCeScripting
             Helper.WriteIntoFile(GeneratedScript, _outFile, FileCounter, _sqlite);
         }
 
-       
-
         public IList<string> GeneratedFiles 
         { 
             get 
@@ -1741,7 +1752,7 @@ namespace ErikEJ.SqlCeScripting
 
             foreach (var tableName in _tableNames)
             {
-                indentWriter.WriteLine(string.Format("db.CreateTable<{0}>();", tableName));
+                indentWriter.WriteLine(@"db.CreateTable<{0}>();", tableName);
             }
             indentWriter.Indent = 3;
             indentWriter.WriteLine("}");
