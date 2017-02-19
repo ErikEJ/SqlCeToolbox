@@ -51,7 +51,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ErikEJ.SqlCeToolbox</RootNamespace>
     <AssemblyName>SqlCeVsToolbox</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <UseCodebase>true</UseCodebase>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
