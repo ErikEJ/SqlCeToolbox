@@ -331,9 +331,35 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(new Separator());
             var generateCodeRootMenuItem = new MenuItem
             {
-                Header = "Generate Code (EF/LINQ to SQL/SyncFX)",
+                Header = "Generate Code",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
             };
+
+            var efCoreModelCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                            dcmd.GenerateEFCoreModelInProject);
+            var efCoreModelMenuItem = new MenuItem
+            {
+                Header = "Add Entity Framework Core Model to current Project... (alpha)",
+                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters
+            };
+            efCoreModelMenuItem.CommandBindings.Add(efCoreModelCommandBinding);
+            generateCodeRootMenuItem.Items.Add(efCoreModelMenuItem);
+
+            var scriptModelCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+            dcmd.GenerateModelCodeInProject);
+
+            var scriptModelMenuItem = new MenuItem
+            {
+                Header = "Add sqlite-net DataAccess.cs to current Project...",
+                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters,
+            };
+            scriptModelMenuItem.CommandBindings.Add(scriptModelCommandBinding);
+            if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
+                generateCodeRootMenuItem.Items.Add(scriptModelMenuItem);
 
             var scriptEfPocoCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                             dcmd.GenerateEfPocoInProject);
@@ -364,8 +390,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             scriptDcMenuItem.CommandBindings.Add(scriptDcCommandBinding);
             scriptDcMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() && DataConnectionHelper.IsV35DbProviderInstalled();
-            generateCodeRootMenuItem.Items.Add(scriptDcMenuItem);
-
+            if (isSqlCe) generateCodeRootMenuItem.Items.Add(scriptDcMenuItem);
 
             var scriptWpdcMenuItem = new MenuItem
             {
@@ -381,9 +406,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             {
                 scriptWpdcMenuItem.IsEnabled = false;
             }            
-            generateCodeRootMenuItem.Items.Add(scriptWpdcMenuItem);
-            generateCodeRootMenuItem.Items.Add(new Separator());
+            if (isSqlCe) generateCodeRootMenuItem.Items.Add(scriptWpdcMenuItem);
+            if (isSqlCe) generateCodeRootMenuItem.Items.Add(new Separator());
 #endif
+
             var syncFxRootMenuItem = new MenuItem
             {
                 Header = "Sync Framework Tools",
@@ -457,41 +483,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             syncFxMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
                 && isSyncFxInstalled;
 
-            generateCodeRootMenuItem.Items.Add(syncFxMenuItem);
-            generateCodeRootMenuItem.Items.Add(syncFxRootMenuItem);
+            if (isSqlCe) generateCodeRootMenuItem.Items.Add(syncFxMenuItem);
+            if (isSqlCe) generateCodeRootMenuItem.Items.Add(syncFxRootMenuItem);
 
-            if (isSqlCe && SqlCeToolboxPackage.IsVsExtension)
-            {
-                Items.Add(generateCodeRootMenuItem);
-            }
-            else if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
-            {
-                var scriptModelCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                            dcmd.GenerateModelCodeInProject);
-
-                var scriptModelMenuItem = new MenuItem
-                {
-                    Header = "Add sqlite-net DataAccess.cs to current Project...",
-                    Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
-                    Command = DatabaseMenuCommands.DatabaseCommand,
-                    CommandParameter = databaseMenuCommandParameters,
-                };
-                scriptModelMenuItem.CommandBindings.Add(scriptModelCommandBinding);
-                if (SqlCeToolboxPackage.IsVsExtension) Items.Add(scriptModelMenuItem);
-
-                //var scriptSqliteEdmxCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                //            dcmd.GenerateEdmxInProject);
-
-                //var scriptSqliteEdmxMenuItem = new MenuItem
-                //{
-                //    Header = "Add Entity Data Model (EDMX) to current Project...",
-                //    Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
-                //    Command = DatabaseMenuCommands.DatabaseCommand,
-                //    CommandParameter = databaseMenuCommandParameters,
-                //};
-                //scriptSqliteEdmxMenuItem.CommandBindings.Add(scriptSqliteEdmxCommandBinding);
-                //Items.Add(scriptSqliteEdmxMenuItem);
-            }
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(generateCodeRootMenuItem);
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
             var addDescriptionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,

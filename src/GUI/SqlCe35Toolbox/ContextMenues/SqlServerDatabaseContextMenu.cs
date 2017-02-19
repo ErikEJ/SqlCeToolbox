@@ -11,6 +11,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         public SqlServerDatabaseContextMenu(DatabaseMenuCommandParameters databaseMenuCommandParameters, ExplorerToolWindow parent)
         {
             var dcmd = new DatabasesMenuCommandsHandler(parent);
+            var dbcmd = new DatabaseMenuCommandsHandler(parent);
             bool isSqlCe40Installed = DataConnectionHelper.IsV40Installed();
             
             var scriptGraphCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
@@ -112,6 +113,19 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptDatabaseRootMenuItem.Items.Add(scriptDatabaseSchemaDataBlobMenuItem);
             Items.Add(scriptDatabaseRootMenuItem);
             Items.Add(new Separator());
+
+            var efCoreModelCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                                                    dbcmd.GenerateEFCoreModelInProject);
+            var efCoreModelMenuItem = new MenuItem
+            {
+                Header = "Add Entity Framework Core Model to current Project (alpha)...",
+                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters
+            };
+            efCoreModelMenuItem.CommandBindings.Add(efCoreModelCommandBinding);
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(efCoreModelMenuItem);
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
             var exportServerCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                                                                 dcmd.ExportServerDatabaseTo40);

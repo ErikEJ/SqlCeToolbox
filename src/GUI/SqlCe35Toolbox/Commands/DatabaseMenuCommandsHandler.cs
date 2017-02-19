@@ -1228,6 +1228,86 @@ namespace ErikEJ.SqlCeToolbox.Commands
             return paths;
         }
 #endif
+        public void GenerateEFCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
+        {
+            MessageBox.Show("Hello");
+            return;
+
+            var databaseInfo = ValidateMenuInfo(sender);
+            if (databaseInfo == null) return;
+
+            var dte = package?.GetServiceHelper(typeof(DTE)) as DTE;
+            if (dte == null) return;
+            if (dte.Mode == vsIDEMode.vsIDEModeDebug)
+            {
+                EnvDteHelper.ShowError("Cannot generate code while debugging");
+                return;
+            }
+
+            var dteH = new EnvDteHelper();
+            var project = dteH.GetProject(dte);
+            if (project == null)
+            {
+                EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the DataContext to be placed");
+                return;
+            }
+
+            var sdfFileName = string.Empty;
+
+            try
+            {
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
+                if (fileNameWithoutExtension != null)
+                {
+                    var model = fileNameWithoutExtension.Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
+                    model = model + "Context";
+                    //var dcDialog = new DataContextDialog();
+                    //dcDialog.ModelName = model;
+                    //dcDialog.ProjectName = project.Name;
+                    //dcDialog.NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString();
+                    //if (EnvDteHelper.VbProject == new Guid(project.Kind))
+                    //{
+                    //    dcDialog.CodeLanguage = "VB";
+                    //}
+                    //else
+                    //{
+                    //    dcDialog.CodeLanguage = "C#";
+                    //}
+                    //var result = dcDialog.ShowModal();
+                    //if (!result.HasValue || result.Value != true || string.IsNullOrWhiteSpace(dcDialog.ModelName))
+                    //    return;
+
+                    //if (dcDialog.MultipleFiles)
+                    //{
+                    //    var classes = DataContextHelper.SplitIntoMultipleFiles(dcPath, dcDialog.NameSpace, model);
+                    //    var projectPath = project.Properties.Item("FullPath").Value.ToString();
+
+                    //    foreach (var item in classes)
+                    //    {
+                    //        var fileName = Path.Combine(projectPath, item.Key + ".cs");
+                    //        if (File.Exists(fileName))
+                    //        {
+                    //            File.Delete(fileName);
+                    //        }
+                    //        File.WriteAllText(fileName, item.Value);
+                    //        var classItem = dteH.GetProjectDataContextClass(project, fileName);
+                    //        if (classItem != null)
+                    //        {
+                    //            classItem.Delete();
+                    //        }
+                    //        project.ProjectItems.AddFromFile(fileName);
+                    //    }
+
+                    //}
+                    DataConnectionHelper.LogUsage("DatabaseCreateEfCoreModel");
+                }
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+            }
+        }
+
         public void GenerateModelCodeInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
