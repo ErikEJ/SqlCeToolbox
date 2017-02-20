@@ -1,4 +1,6 @@
-﻿namespace EFCoreReverseEngineer
+﻿using System.Collections.Generic;
+
+namespace EFCoreReverseEngineer
 {
     public class ReverseEngineerOptions
     {
@@ -8,7 +10,6 @@
         public string ProjectRootNamespace { get; set; }
         public bool UseFluentApiOnly { get; set; }
         public  string ContextClassName { get; set; }
-
-        //TODO Table selection!
+        public List<string> Tables { get; set; }
     }
 }

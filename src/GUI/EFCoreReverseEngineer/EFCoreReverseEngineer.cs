@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Scaffolding;
 using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,6 @@ namespace EFCoreReverseEngineer
             var serviceCollection = new ServiceCollection()
             .AddScaffolding()
             .AddLogging();
-
 
             // Add database provider services
             switch (reverseEngineerOptions.DatabaseType)
@@ -39,6 +39,10 @@ namespace EFCoreReverseEngineer
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var generator = serviceProvider.GetService<ReverseEngineeringGenerator>();
 
+            var tableSelectionSet = reverseEngineerOptions.Tables.Count == 0 
+                ? TableSelectionSet.All 
+                : new TableSelectionSet(reverseEngineerOptions.Tables);
+
             var options = new ReverseEngineeringConfiguration
             {
                 ConnectionString = reverseEngineerOptions.ConnectionString,
@@ -46,11 +50,11 @@ namespace EFCoreReverseEngineer
                 ProjectRootNamespace = reverseEngineerOptions.ProjectRootNamespace,
                 OverwriteFiles = true,
                 UseFluentApiOnly = reverseEngineerOptions.UseFluentApiOnly,
-                ContextClassName = reverseEngineerOptions.ContextClassName
+                ContextClassName = reverseEngineerOptions.ContextClassName,
+                TableSelectionSet = tableSelectionSet
             };
 
             var model = generator.GetMetadataModel(options);
-            //var contextName = model.Scaffolding().DatabaseName + "Context";
 
             var filePaths = generator.GenerateAsync(options).GetAwaiter().GetResult();
 
