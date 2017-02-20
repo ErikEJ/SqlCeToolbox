@@ -15,6 +15,7 @@ using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.Win32;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Text;
 #if SSMS
 #else
@@ -1237,6 +1238,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
 
+            var dbType = databaseInfo.DatabaseInfo.DatabaseType;
+
             var dte = package?.GetServiceHelper(typeof(DTE)) as DTE;
             if (dte == null) return;
             if (dte.Mode == vsIDEMode.vsIDEModeDebug)
@@ -1263,15 +1266,15 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var res = ptd.ShowModal();
                 if (!res.HasValue || !res.Value) return;
 
-                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
-                if (fileNameWithoutExtension == null) return;
+                var revEng = new EFCoreReverseEngineer.EFCoreReverseEngineer();
 
-                var model =
-                    fileNameWithoutExtension.Replace(" ", string.Empty)
-                        .Replace("#", string.Empty)
-                        .Replace(".", string.Empty)
-                        .Replace("-", string.Empty);
-                model = model + "Context";
+                var classBasis = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
+                if (dbType == DatabaseType.SQLServer)
+                {
+                    classBasis = new SqlConnectionStringBuilder(databaseInfo.DatabaseInfo.ConnectionString).InitialCatalog;
+                }
+
+                var model = revEng.GenerateClassName(classBasis) + "Context";
 
                 var modelDialog = new EfCoreModelDialog
                 {
@@ -1285,14 +1288,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
-                var revEng = new EFCoreReverseEngineer.EFCoreReverseEngineer();
 
                 var options = new ReverseEngineerOptions
                 {
                     UseFluentApiOnly = !modelDialog.UseDataAnnotations,
                     ConnectionString = databaseInfo.DatabaseInfo.ConnectionString,
                     ContextClassName = modelDialog.ModelName,
-                    DatabaseType = (EFCoreReverseEngineer.DatabaseType) databaseInfo.DatabaseInfo.DatabaseType,
+                    DatabaseType = (EFCoreReverseEngineer.DatabaseType)dbType,
                     ProjectPath = projectPath,
                     ProjectRootNamespace = modelDialog.NameSpace,
                     Tables = ptd.Tables
