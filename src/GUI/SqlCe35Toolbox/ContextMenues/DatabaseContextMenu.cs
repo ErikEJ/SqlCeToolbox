@@ -116,9 +116,11 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
             };
 
+#if SSMS
+#else
             if (dbType != DatabaseType.SQLCE35)
                 generateCodeRootMenuItem.Items.Add(BuildEfCoreModelMenuItem(databaseMenuCommandParameters, dcmd));
-
+#endif
             if (dbType == DatabaseType.SQLite)
                 generateCodeRootMenuItem.Items.Add(BuildScriptModelMenuItem(databaseMenuCommandParameters, dcmd));
 
@@ -514,6 +516,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return docDatabaseMenuItem;
         }
 
+#if SSMS
+#else
+
         private MenuItem BuildEfCoreModelMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabaseMenuCommandsHandler dcmd)
         {
@@ -529,7 +534,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             efCoreModelMenuItem.CommandBindings.Add(efCoreModelCommandBinding);
             return efCoreModelMenuItem;
         }
-
+#endif
         private MenuItem BuildScriptModelMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabaseMenuCommandsHandler dcmd)
         {

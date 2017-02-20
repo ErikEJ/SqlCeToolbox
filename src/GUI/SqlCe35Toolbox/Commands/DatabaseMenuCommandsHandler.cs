@@ -16,7 +16,10 @@ using Microsoft.Win32;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel;
 using System.Text;
+#if SSMS
+#else
 using EFCoreReverseEngineer;
+#endif
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -31,7 +34,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             package = _parentWindow.Package as SqlCeToolboxPackage;
         }
 
-        #region Database Level Commands
+#region Database Level Commands
         public void CopyCeDatabase(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
@@ -1228,7 +1231,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             return paths;
         }
-#endif
+
         public void GenerateEFCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
@@ -1272,7 +1275,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 var revEng = new EFCoreReverseEngineer.EFCoreReverseEngineer();
 
-                var options = new EFCoreReverseEngineer.ReverseEngineerOptions
+                var options = new ReverseEngineerOptions
                 {
                     UseFluentApiOnly = !modelDialog.UseDataAnnotations, 
                     ConnectionString = databaseInfo.DatabaseInfo.ConnectionString,
@@ -1317,7 +1320,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             EnvDteHelper.ShowMessage(errors.ToString());
         }
-
+#endif
         public void GenerateModelCodeInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
@@ -1652,7 +1655,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        #endregion
+#endregion
 
         private static string Remove(string s, IEnumerable<char> chars)
         {

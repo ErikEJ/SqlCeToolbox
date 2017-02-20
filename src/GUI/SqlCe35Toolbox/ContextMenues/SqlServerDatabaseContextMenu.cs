@@ -45,9 +45,11 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(scriptDatabaseRootMenuItem);
             Items.Add(new Separator());
 
+#if SSMS
+#else
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildEfCoreModelMenuItem(databaseMenuCommandParameters, dbcmd));
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
-
+#endif
             Items.Add(BuildExportServerMenuItem(databaseMenuCommandParameters, dcmd, isSqlCe40Installed));
 
             Items.Add(BuildExportServerToLiteMenuItem(databaseMenuCommandParameters, dcmd));
@@ -167,6 +169,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return scriptDatabaseSchemaDataBlobMenuItem;
         }
 
+#if SSMS
+#else
         private MenuItem BuildEfCoreModelMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabaseMenuCommandsHandler dbcmd)
         {
@@ -182,7 +186,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             efCoreModelMenuItem.CommandBindings.Add(efCoreModelCommandBinding);
             return efCoreModelMenuItem;
         }
-
+#endif
         private MenuItem BuildExportServerMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabasesMenuCommandsHandler dcmd, bool isSqlCe40Installed)
         {
