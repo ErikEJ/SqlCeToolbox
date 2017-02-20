@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Scaffolding;
 using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
@@ -29,7 +31,7 @@ namespace EFCoreReverseEngineer
                     provider.ConfigureDesignTimeServices(serviceCollection);
                     break;
                 case DatabaseType.SQLite:
-                    var sqliteProvider = new SqlServerDesignTimeServices();
+                    var sqliteProvider = new SqliteDesignTimeServices();
                     sqliteProvider.ConfigureDesignTimeServices(serviceCollection);
                     break;
                 default:
@@ -68,6 +70,27 @@ namespace EFCoreReverseEngineer
             result.FilePaths.Add(filePaths.ContextFile);
 
             return result;
+        }
+
+        public string GenerateClassName(string value)
+        {
+            var className = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value);
+            var isValid = System.CodeDom.Compiler.CodeDomProvider.CreateProvider("C#").IsValidIdentifier(className);
+
+            if (!isValid)
+            {
+                // File name contains invalid chars, remove them
+                Regex regex = new Regex(@"[^\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Nl}\p{Mn}\p{Mc}\p{Cf}\p{Pc}\p{Lm}]");
+                className = regex.Replace(className, "");
+
+                // Class name doesn't begin with a letter, insert an underscore
+                if (!char.IsLetter(className, 0))
+                {
+                    className = className.Insert(0, "_");
+                }
+            }
+
+            return className.Replace(" ", string.Empty);
         }
     }
 }
