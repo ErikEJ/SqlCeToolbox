@@ -1232,7 +1232,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             return paths;
         }
 
-        public void GenerateEFCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
+        public void GenerateEfCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
@@ -1255,10 +1255,22 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
+                var ptd = new PickTablesDialog();
+                using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = databaseInfo.DatabaseInfo.ConnectionString, DatabaseType = databaseInfo.DatabaseInfo.DatabaseType }))
+                {
+                    ptd.Tables = repository.GetAllTableNamesForExclusion();
+                }
+                var res = ptd.ShowModal();
+                if (!res.HasValue || !res.Value) return;
+
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
                 if (fileNameWithoutExtension == null) return;
 
-                var model = fileNameWithoutExtension.Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
+                var model =
+                    fileNameWithoutExtension.Replace(" ", string.Empty)
+                        .Replace("#", string.Empty)
+                        .Replace(".", string.Empty)
+                        .Replace("-", string.Empty);
                 model = model + "Context";
 
                 var modelDialog = new EfCoreModelDialog
@@ -1277,12 +1289,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 var options = new ReverseEngineerOptions
                 {
-                    UseFluentApiOnly = !modelDialog.UseDataAnnotations, 
+                    UseFluentApiOnly = !modelDialog.UseDataAnnotations,
                     ConnectionString = databaseInfo.DatabaseInfo.ConnectionString,
                     ContextClassName = modelDialog.ModelName,
-                    DatabaseType = (EFCoreReverseEngineer.DatabaseType)databaseInfo.DatabaseInfo.DatabaseType,
+                    DatabaseType = (EFCoreReverseEngineer.DatabaseType) databaseInfo.DatabaseInfo.DatabaseType,
                     ProjectPath = projectPath,
-                    ProjectRootNamespace = modelDialog.NameSpace
+                    ProjectRootNamespace = modelDialog.NameSpace,
+                    Tables = ptd.Tables
                 };
 
                 var revEngResult = revEng.GenerateFiles(options);

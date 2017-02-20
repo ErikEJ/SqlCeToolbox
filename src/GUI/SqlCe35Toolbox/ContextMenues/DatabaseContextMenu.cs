@@ -523,7 +523,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             DatabaseMenuCommandsHandler dcmd)
         {
             var efCoreModelCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.GenerateEFCoreModelInProject);
+                dcmd.GenerateEfCoreModelInProject);
             var efCoreModelMenuItem = new MenuItem
             {
                 Header = "Add Entity Framework Core Model to current Project... (alpha)",
