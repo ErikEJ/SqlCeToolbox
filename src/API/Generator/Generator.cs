@@ -767,9 +767,11 @@ namespace ErikEJ.SqlCeScripting
             {
                 DateTime date = DateTime.Parse(value);
                 //Datetime globalization - ODBC escape: {ts '2004-03-29 19:21:00'}
-                sbScript.Append("{ts '");
+                if (!_sqlite) sbScript.Append("{ts ");
+                sbScript.Append("'");
                 sbScript.Append(date.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
-                sbScript.Append("'}");
+                sbScript.Append("'");
+                if (!_sqlite) sbScript.Append("}");
             }
             else if (column.DataType == "bigint" 
                 || column.DataType == "int"
