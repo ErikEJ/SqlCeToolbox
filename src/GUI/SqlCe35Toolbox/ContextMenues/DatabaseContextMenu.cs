@@ -10,8 +10,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
     {
         public DatabaseContextMenu(DatabaseMenuCommandParameters databaseMenuCommandParameters, ExplorerToolWindow parent)
         {
-            var isSqlCe = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35
-                || databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40;
+            var dbType = databaseMenuCommandParameters.DatabaseInfo.DatabaseType;
+            var isSqlCe = dbType == DatabaseType.SQLCE35
+                || dbType == DatabaseType.SQLCE40;
 
             var dcmd = new DatabaseMenuCommandsHandler(parent);
 
@@ -253,7 +254,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Items.Add(maintenanceMenuItem);
                 Items.Add(new Separator());
             }
-            if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
+            if (dbType == DatabaseType.SQLite)
             {
                 maintenanceMenuItem.Items.Clear();
                 compactMenuItem.Header = "Vacuum";
@@ -293,7 +294,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptUpgradeMenuItem.CommandBindings.Add(scriptUpgradeCommandBinding);
             scriptUpgradeMenuItem.ToolTip = "Create a copy of this database in 4.0 format";
 
-            if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
+            if (dbType == DatabaseType.SQLCE35 
                 && DataConnectionHelper.IsV40Installed())
             {
                 Items.Add(scriptUpgradeMenuItem);
@@ -345,7 +346,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters
             };
             efCoreModelMenuItem.CommandBindings.Add(efCoreModelCommandBinding);
-            generateCodeRootMenuItem.Items.Add(efCoreModelMenuItem);
+            if (dbType != DatabaseType.SQLCE35) generateCodeRootMenuItem.Items.Add(efCoreModelMenuItem);
 
             var scriptModelCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
             dcmd.GenerateModelCodeInProject);
@@ -358,7 +359,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             scriptModelMenuItem.CommandBindings.Add(scriptModelCommandBinding);
-            if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
+            if (dbType == DatabaseType.SQLite)
                 generateCodeRootMenuItem.Items.Add(scriptModelMenuItem);
 
             var scriptEfPocoCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
@@ -402,7 +403,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             scriptWpdcMenuItem.CommandBindings.Add(scriptDcCommandBinding);
             scriptWpdcMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() && DataConnectionHelper.IsV35DbProviderInstalled();
-            if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType != DatabaseType.SQLCE35)
+            if (dbType != DatabaseType.SQLCE35)
             {
                 scriptWpdcMenuItem.IsEnabled = false;
             }            
@@ -429,7 +430,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             syncFxProvisionMenuItem.CommandBindings.Add(syncFxProvisionCommandBinding);
-            syncFxProvisionMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
+            syncFxProvisionMenuItem.IsEnabled = dbType == DatabaseType.SQLCE35 
                 && isSyncFxInstalled;
             
             syncFxRootMenuItem.Items.Add(syncFxProvisionMenuItem);
@@ -446,7 +447,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             syncFxDeprovisionMenuItem.CommandBindings.Add(syncFxDeprovisionCommandBinding);
 
-            syncFxDeprovisionMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
+            syncFxDeprovisionMenuItem.IsEnabled = dbType == DatabaseType.SQLCE35 
                 && isSyncFxInstalled;
 
             syncFxRootMenuItem.Items.Add(syncFxDeprovisionMenuItem);
@@ -463,7 +464,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             syncFxGenerateSnapshotMenuItem.CommandBindings.Add(syncFxGenerateSnapshotCommandBinding);
 
-            syncFxGenerateSnapshotMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35
+            syncFxGenerateSnapshotMenuItem.IsEnabled = dbType == DatabaseType.SQLCE35
                 && isSyncFxInstalled;
 
             syncFxRootMenuItem.Items.Add(syncFxGenerateSnapshotMenuItem);
@@ -480,7 +481,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             syncFxMenuItem.CommandBindings.Add(syncFxCommandBinding);
 
-            syncFxMenuItem.IsEnabled = databaseMenuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 
+            syncFxMenuItem.IsEnabled = dbType == DatabaseType.SQLCE35 
                 && isSyncFxInstalled;
 
             if (isSqlCe) generateCodeRootMenuItem.Items.Add(syncFxMenuItem);
