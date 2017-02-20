@@ -346,6 +346,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return exportServerToLiteMenuItem;
         }
 
+#if VS2010
+#else
         private MenuItem BuildScriptEfPocoDacPacMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabasesMenuCommandsHandler dcmd)
         {
@@ -361,7 +363,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptEfPocoDacPacMenuItem.CommandBindings.Add(scriptEfDacPacCommandBinding);
             return scriptEfPocoDacPacMenuItem;
         }
-
+#endif
         private MenuItem BuildLocalDatabaseCacheMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabasesMenuCommandsHandler dcmd, bool ver35IsInstalled)
         {
