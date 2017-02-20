@@ -157,6 +157,9 @@
     <Compile Include="ContextMenues\TableContextMenu.cs" />
     <Compile Include="ContextMenues\TablesContextMenu.cs" />
     <Compile Include="ContextMenues\ViewsContextMenu.cs" />
+    <Compile Include="Dialogs\EfCoreModelDialog.xaml.cs">
+      <DependentUpon>EfCoreModelDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\CheckListItem.cs" />
     <Compile Include="Helpers\DacFxHelper.cs" />
     <Compile Include="Helpers\TelemetryStub.cs" />
@@ -438,6 +441,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Dialogs\EfCoreModelDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\PickServerDatabaseDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -516,6 +523,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EFCoreReverseEngineer\EFCoreReverseEngineer.csproj">
+      <Project>{7e384a05-2677-4f39-82ff-f6b1cd8a9e06}</Project>
+      <Name>EFCoreReverseEngineer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QueryPlanVisualizer\QueryPlanVisualizer.csproj">
       <Project>{df42bbc7-9733-4fd3-9758-13a1f657cfbb}</Project>
       <Name>QueryPlanVisualizer</Name>

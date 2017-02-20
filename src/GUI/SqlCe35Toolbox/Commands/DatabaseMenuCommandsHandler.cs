@@ -16,6 +16,7 @@ using Microsoft.Win32;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.ComponentModel;
 using System.Text;
+using EFCoreReverseEngineer;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -1230,9 +1231,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
 #endif
         public void GenerateEFCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("Hello");
-            return;
-
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
 
@@ -1248,64 +1246,76 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var project = dteH.GetProject(dte);
             if (project == null)
             {
-                EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the DataContext to be placed");
+                EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the EF Core Model to be placed");
                 return;
             }
-
-            var sdfFileName = string.Empty;
 
             try
             {
                 var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
-                if (fileNameWithoutExtension != null)
+                if (fileNameWithoutExtension == null) return;
+
+                var model = fileNameWithoutExtension.Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
+                model = model + "Context";
+
+                var modelDialog = new EfCoreModelDialog
                 {
-                    var model = fileNameWithoutExtension.Replace(" ", string.Empty).Replace("#", string.Empty).Replace(".", string.Empty).Replace("-", string.Empty);
-                    model = model + "Context";
-                    //var dcDialog = new DataContextDialog();
-                    //dcDialog.ModelName = model;
-                    //dcDialog.ProjectName = project.Name;
-                    //dcDialog.NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString();
-                    //if (EnvDteHelper.VbProject == new Guid(project.Kind))
-                    //{
-                    //    dcDialog.CodeLanguage = "VB";
-                    //}
-                    //else
-                    //{
-                    //    dcDialog.CodeLanguage = "C#";
-                    //}
-                    //var result = dcDialog.ShowModal();
-                    //if (!result.HasValue || result.Value != true || string.IsNullOrWhiteSpace(dcDialog.ModelName))
-                    //    return;
+                    ModelName = model,
+                    ProjectName = project.Name,
+                    NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString()
+                };
+                var result = modelDialog.ShowModal();
+                if (!result.HasValue || result.Value != true || string.IsNullOrWhiteSpace(modelDialog.ModelName))
+                    return;
 
-                    //if (dcDialog.MultipleFiles)
-                    //{
-                    //    var classes = DataContextHelper.SplitIntoMultipleFiles(dcPath, dcDialog.NameSpace, model);
-                    //    var projectPath = project.Properties.Item("FullPath").Value.ToString();
+                var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
-                    //    foreach (var item in classes)
-                    //    {
-                    //        var fileName = Path.Combine(projectPath, item.Key + ".cs");
-                    //        if (File.Exists(fileName))
-                    //        {
-                    //            File.Delete(fileName);
-                    //        }
-                    //        File.WriteAllText(fileName, item.Value);
-                    //        var classItem = dteH.GetProjectDataContextClass(project, fileName);
-                    //        if (classItem != null)
-                    //        {
-                    //            classItem.Delete();
-                    //        }
-                    //        project.ProjectItems.AddFromFile(fileName);
-                    //    }
+                var revEng = new EFCoreReverseEngineer.EFCoreReverseEngineer();
 
-                    //}
-                    DataConnectionHelper.LogUsage("DatabaseCreateEfCoreModel");
+                var options = new EFCoreReverseEngineer.ReverseEngineerOptions
+                {
+                    UseFluentApiOnly = !modelDialog.UseDataAnnotations, 
+                    ConnectionString = databaseInfo.DatabaseInfo.ConnectionString,
+                    ContextClassName = modelDialog.ModelName,
+                    DatabaseType = (EFCoreReverseEngineer.DatabaseType)databaseInfo.DatabaseInfo.DatabaseType,
+                    ProjectPath = projectPath,
+                    ProjectRootNamespace = modelDialog.NameSpace
+                };
+
+                var revEngResult = revEng.GenerateFiles(options);
+
+                foreach (var filePath in revEngResult.FilePaths)
+                {
+                    project.ProjectItems.AddFromFile(filePath);
                 }
+
+                ReportRevEngErrors(revEngResult);
+
+                DataConnectionHelper.LogUsage("DatabaseCreateEfCoreModel");
             }
             catch (Exception ex)
             {
                 DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
+        }
+
+        private void ReportRevEngErrors(EFCoreReverseEngineerResult revEngResult)
+        {
+            var errors = new StringBuilder();
+            foreach (var entityError in revEngResult.EntityErrors)
+            {
+                errors.Append($"Table: {entityError.Key}{Environment.NewLine}");
+                errors.Append($"Error: {entityError.Value}{Environment.NewLine}");
+            }
+            if (revEngResult.EntityErrors.Count == 0)
+            {
+                errors.Insert(0, "Model generated successfully" + Environment.NewLine);
+            }
+            else
+            {
+                errors.Insert(0, "The following issues were encountered:" + Environment.NewLine);
+            }
+            EnvDteHelper.ShowMessage(errors.ToString());
         }
 
         public void GenerateModelCodeInProject(object sender, ExecutedRoutedEventArgs e)
