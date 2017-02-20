@@ -29,7 +29,8 @@ namespace EFCoreReverseEngineer
                     provider.ConfigureDesignTimeServices(serviceCollection);
                     break;
                 case DatabaseType.SQLite:
-                    //TODO Add SQLIte!
+                    var sqliteProvider = new SqlServerDesignTimeServices();
+                    sqliteProvider.ConfigureDesignTimeServices(serviceCollection);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
