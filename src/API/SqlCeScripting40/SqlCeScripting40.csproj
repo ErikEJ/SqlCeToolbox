@@ -140,6 +140,7 @@
     <Compile Include="..\Repositories\ServerDBRepository.cs">
       <Link>Repositories\ServerDBRepository.cs</Link>
     </Compile>
+    <Compile Include="Generator\SqlServerHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="data_out.ico" />

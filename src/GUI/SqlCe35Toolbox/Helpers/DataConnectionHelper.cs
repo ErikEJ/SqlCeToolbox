@@ -357,7 +357,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             var dataExplorerConnectionManager = package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) as IVsDataExplorerConnectionManager;
             if (dataExplorerConnectionManager != null)
             {
-                string savedName = GetFileName(testString, dbType);
+                var savedName = GetFileName(testString, dbType);
                 dataExplorerConnectionManager.AddConnection(savedName, provider, connectionString, encryptedString);
             }
         }
@@ -370,6 +370,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         private static string GetFileName(string connectionString, DatabaseType dbType)
         {
+            if (dbType == DatabaseType.SQLServer)
+            {
+                var helper = new SqlServerHelper();
+                return helper.PathFromConnectionString(connectionString);
+            }
             var filePath = GetFilePath(connectionString, dbType);
             return Path.GetFileName(filePath);
         }
