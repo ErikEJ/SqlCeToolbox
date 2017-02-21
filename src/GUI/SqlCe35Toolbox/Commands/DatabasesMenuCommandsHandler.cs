@@ -97,7 +97,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, objIVsDataConnectionDialog.DisplayConnectionString, DatabaseType.SQLCE35, new Guid(Resources.SqlCompact35Provider));
                     var control = _parentWindow.Content as ExplorerControl;
-                    if (control != null) control.BuildDatabaseTree();
+                    control?.BuildDatabaseTree();
                     DataConnectionHelper.LogUsage("DatabasesAddCe35Database");
                 }
                 objIVsDataConnectionDialog.Dispose();
@@ -105,6 +105,33 @@ namespace ErikEJ.SqlCeToolbox.Commands
             catch (Exception ex)
             {
                 DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
+            }
+        }
+
+        public void AddSqlServerDatabase(object sender, ExecutedRoutedEventArgs e)
+        {
+            // http://www.mztools.com/articles/2007/MZ2007011.aspx
+            try
+            {
+                var objIVsDataConnectionDialogFactory = _package.GetServiceHelper(typeof(IVsDataConnectionDialogFactory)) as IVsDataConnectionDialogFactory;
+                if (objIVsDataConnectionDialogFactory == null) return;
+                var objIVsDataConnectionDialog = objIVsDataConnectionDialogFactory.CreateConnectionDialog();
+                objIVsDataConnectionDialog.AddAllSources();
+                objIVsDataConnectionDialog.SelectedSource = new Guid("067EA0D9-BA62-43f7-9106-34930C60C528");
+                objIVsDataConnectionDialog.SelectedProvider = new Guid(Resources.SqlServerDotNetProvider);
+
+                if (objIVsDataConnectionDialog.ShowDialog() && objIVsDataConnectionDialog.SelectedProvider == new Guid(Resources.SqlServerDotNetProvider))
+                {
+                    DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, objIVsDataConnectionDialog.DisplayConnectionString, DatabaseType.SQLServer, new Guid(Resources.SqlServerDotNetProvider));
+                    var control = _parentWindow.Content as ExplorerControl;
+                    control?.BuildDatabaseTree();
+                    DataConnectionHelper.LogUsage("DatabasesAddSqlServerDatabase");
+                }
+                objIVsDataConnectionDialog.Dispose();
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
             }
         }
 
@@ -130,7 +157,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     {
                         DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, objIVsDataConnectionDialog.DisplayConnectionString, DatabaseType.SQLCE40, new Guid(Resources.SqlCompact40Provider));
                         var control = _parentWindow.Content as ExplorerControl;
-                        if (control != null) control.BuildDatabaseTree();
+                        control?.BuildDatabaseTree();
                         DataConnectionHelper.LogUsage("DatabasesAddCe40Database");
                     }
                     objIVsDataConnectionDialog.Dispose();
