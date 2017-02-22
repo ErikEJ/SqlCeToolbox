@@ -13,6 +13,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             Background = VsThemes.GetWindowBackground();
         }
 
+        public bool ExcludeTables { get; set; }
+
         private List<CheckListItem> items = new List<CheckListItem>();
 
         public List<string> Tables { get; set; }
@@ -34,7 +36,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             foreach (object item in chkTables.Items)
             {
                 var checkItem = (CheckListItem)item;
-                if (!checkItem.IsChecked)
+                if ((!checkItem.IsChecked && ExcludeTables) 
+                    || (checkItem.IsChecked && !ExcludeTables))
                 {
                     Tables.Add(checkItem.Label);
                 }
