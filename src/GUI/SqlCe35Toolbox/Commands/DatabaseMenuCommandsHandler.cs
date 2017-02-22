@@ -1258,7 +1258,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                var ptd = new PickTablesDialog();
+                var ptd = new PickTablesDialog {ExcludeTables = false};
                 using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = databaseInfo.DatabaseInfo.ConnectionString, DatabaseType = databaseInfo.DatabaseInfo.DatabaseType }))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
@@ -1287,7 +1287,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     return;
 
                 var projectPath = project.Properties.Item("FullPath").Value.ToString();
-
 
                 var options = new ReverseEngineerOptions
                 {
