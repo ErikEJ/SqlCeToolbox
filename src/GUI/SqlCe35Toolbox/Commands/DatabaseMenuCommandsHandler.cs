@@ -1258,7 +1258,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                var ptd = new PickTablesDialog {ExcludeTables = false};
+                var ptd = new PickTablesDialog {IncludeTables = true};
                 using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = databaseInfo.DatabaseInfo.ConnectionString, DatabaseType = databaseInfo.DatabaseInfo.DatabaseType }))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
