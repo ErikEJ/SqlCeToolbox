@@ -508,7 +508,7 @@ namespace ErikEJ.SqlCeScripting
                 "i.is_unique AS [UNIQUE], CAST(0 AS bit) AS [CLUSTERED], CAST(ic.key_ordinal AS int) AS ORDINAL_POSITION, c.name AS COLUMN_NAME, ic.is_descending_key AS SORT_ORDER, '" + tableName + "' AS original " +
                 "from sys.indexes i left outer join     sys.index_columns ic on i.object_id = ic.object_id and i.index_id = ic.index_id " +
                 "left outer join sys.columns c on c.object_id = ic.object_id and c.column_id = ic.column_id " +
-                "where  i.is_disabled = 0 AND i.object_id = object_id('[" + GetSchemaAndTableName(tableName) + "]') AND i.name IS NOT NULL AND i.is_primary_key = 0  AND ic.is_included_column  = 0 " +
+                "where  i.is_disabled = 0 AND i.is_hypothetical AND i.object_id = object_id('[" + GetSchemaAndTableName(tableName) + "]') AND i.name IS NOT NULL AND i.is_primary_key = 0  AND ic.is_included_column  = 0 " +
                 "AND i.type IN (1,2) AND c.is_computed = 0 " +
                 "order by i.name, case key_ordinal when 0 then 256 else ic.key_ordinal end"
                 , new AddToListDelegate<Index>(AddToListIndexes));
