@@ -13,7 +13,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             Background = VsThemes.GetWindowBackground();
         }
 
-        public bool ExcludeTables { get; set; }
+        public bool IncludeTables { get; set; }
 
         private List<CheckListItem> items = new List<CheckListItem>();
 
@@ -21,9 +21,9 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            foreach (string table in Tables)
+            foreach (var table in Tables)
             { 
-                bool isChecked = !table.StartsWith("__");
+                var isChecked = !table.StartsWith("__");
                 items.Add(new CheckListItem { IsChecked = isChecked, Label = table });                
             }
             chkTables.ItemsSource = items;
@@ -33,11 +33,11 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             DialogResult = true;
             Tables.Clear();
-            foreach (object item in chkTables.Items)
+            foreach (var item in chkTables.Items)
             {
                 var checkItem = (CheckListItem)item;
-                if ((!checkItem.IsChecked && ExcludeTables) 
-                    || (checkItem.IsChecked && !ExcludeTables))
+                if ((!checkItem.IsChecked && !IncludeTables) 
+                    || (checkItem.IsChecked && IncludeTables))
                 {
                     Tables.Add(checkItem.Label);
                 }
@@ -54,7 +54,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             if (chkClear.IsChecked != null && chkClear.IsChecked.Value)
             {
-                foreach (CheckListItem item in items)
+                foreach (var item in items)
                 {
                     if (!item.IsChecked)
                     {
@@ -64,7 +64,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             }
             else
             {
-                foreach (CheckListItem item in items)
+                foreach (var item in items)
                 {
                     if (item.IsChecked)
                     {
