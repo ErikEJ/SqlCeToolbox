@@ -44,12 +44,15 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             Items.Add(scriptDatabaseRootMenuItem);
             Items.Add(new Separator());
-
 #if SSMS
 #else
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildEfCoreModelMenuItem(databaseMenuCommandParameters, dbcmd));
-            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 #endif
+#if VS2010
+#else
+            if (SqlCeToolboxPackage.VsSupportsEf6()) Items.Add(BuildScriptEfPocoDacPacMenuItem(databaseMenuCommandParameters, dcmd));
+#endif
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
             Items.Add(BuildExportServerMenuItem(databaseMenuCommandParameters, dcmd, isSqlCe40Installed));
 
             Items.Add(BuildExportServerToLiteMenuItem(databaseMenuCommandParameters, dcmd));
@@ -178,13 +181,31 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dbcmd.GenerateEfCoreModelInProject);
             var efCoreModelMenuItem = new MenuItem
             {
-                Header = "Add Entity Framework Core Model to current Project (alpha)...",
+                Header = "Add Entity Framework Core Model to current Project... (beta)",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters
             };
             efCoreModelMenuItem.CommandBindings.Add(efCoreModelCommandBinding);
             return efCoreModelMenuItem;
+        }
+#endif
+#if VS2010
+#else
+        private MenuItem BuildScriptEfPocoDacPacMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
+            DatabasesMenuCommandsHandler dcmd)
+        {
+            var scriptEfDacPacCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                dcmd.GenerateEfPocoFromDacPacInProject);
+            var scriptEfPocoDacPacMenuItem = new MenuItem
+            {
+                Header = "Add Entity Data Model (Code Based from Dacpac) to current Project... (alpha)",
+                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters,
+            };
+            scriptEfPocoDacPacMenuItem.CommandBindings.Add(scriptEfDacPacCommandBinding);
+            return scriptEfPocoDacPacMenuItem;
         }
 #endif
         private MenuItem BuildExportServerMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
