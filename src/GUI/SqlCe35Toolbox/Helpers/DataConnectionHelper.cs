@@ -104,7 +104,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                 info.Caption = connection.DisplayName;
                                 info.FromServerExplorer = true;
                                 info.DatabaseType = dbType;
-                                info.ServerVersion = "3.9";
+                                //TODO Update this when SQLite provider is updated!
+                                info.ServerVersion = "3.15";
                                 info.ConnectionString = sConnectionString;
                                 info.FileIsMissing = IsMissing(info);
                                 if (!databaseList.ContainsKey(sConnectionString))
@@ -198,7 +199,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     if (type == DatabaseType.SQLCE35)
                         info.ServerVersion = "3.5.1.0";
                     if (type == DatabaseType.SQLite)
-                        info.ServerVersion = "3.9";
+                        //TODO Update this when SQLite provider is updated!
+                        info.ServerVersion = "3.15";
                     info.FileIsMissing = IsMissing(info);
                     if (!databaseList.ContainsKey(key))
                     {
