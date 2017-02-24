@@ -41,18 +41,23 @@ namespace ErikEJ.SqlCeScripting
         private bool _preserveDateAndDateTime2;
         private bool _truncateSqLiteStrings;
 
+#if V40
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Generator4"/> class.
+        /// </summary>
+        /// <param name="repository">The repository.</param>
+        /// <param name="outFile">The out file.</param>
+        public Generator4(IRepository repository, string outFile)
+#else
         /// <summary>
         /// Initializes a new instance of the <see cref="Generator"/> class.
         /// </summary>
         /// <param name="repository">The repository.</param>
         /// <param name="outFile">The out file.</param>
-#if V40
-        public Generator4(IRepository repository, string outFile)
-#else
         public Generator(IRepository repository, string outFile)
 #endif
         {
-            if (string.IsNullOrEmpty(_outFile))
+            if (string.IsNullOrEmpty(outFile))
             {
                 throw new ArgumentNullException(nameof(outFile));
             }
