@@ -526,7 +526,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dcmd.GenerateEfCoreModelInProject);
             var efCoreModelMenuItem = new MenuItem
             {
-                Header = "Add Entity Framework Core Model to current Project... (alpha)",
+                Header = "Add Entity Framework Core Model to current Project... (beta)",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters
@@ -742,7 +742,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dcmd.RenameConnection);
             var renameConnectionMenuItem = new MenuItem
             {
-                Header = "Rename Connection... (beta)",
+                Header = "Rename Connection...",
                 Icon = ImageHelper.GetImageFromResource("../resources/Rename_6779.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters

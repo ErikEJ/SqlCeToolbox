@@ -26,52 +26,11 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildAddFromSolutionMenuItem(databaseMenuCommandParameters, dcmd, ver40IsInstalled, ver35IsInstalled));
 
             Items.Add(BuildFixConnectionsMenuItem(databaseMenuCommandParameters, dcmd));
-
             Items.Add(new Separator());
-
-            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildScriptDatabaseGraphMenuItem(databaseMenuCommandParameters, dcmd));
 
             Items.Add(BuildDesignDatabaseMenuItem(databaseMenuCommandParameters, dcmd));
-
             Items.Add(new Separator());
 
-            var scriptDatabaseRootMenuItem = new MenuItem
-            {
-                Header = "Script SQL Server Database",
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-            };
-
-            var toolTip = new ToolTip
-            {
-                Content = "Generate a SQL Server Compact compatible database script from SQL Server 2005+"
-            };
-            var scriptDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand, dcmd.ScriptServerDatabase);
-
-            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseSchemaMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
-
-            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseDataMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
-
-            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseSchemaDataMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
-
-            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseSchemaDataSqLiteMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
-
-            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseSchemaSqLiteMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
-
-            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseSchemaDataBlobMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
-
-            Items.Add(scriptDatabaseRootMenuItem);
-
-            Items.Add(new Separator());
-
-            Items.Add(BuildExportServerMenuItem(databaseMenuCommandParameters, dcmd, ver40IsInstalled));
-
-            Items.Add(BuildExportServerToLiteMenuItem(databaseMenuCommandParameters, dcmd));
-
-            Items.Add(new Separator());
-#if VS2010
-#else
-            if (SqlCeToolboxPackage.VsSupportsEf6()) Items.Add(BuildScriptEfPocoDacPacMenuItem(databaseMenuCommandParameters, dcmd));
-#endif
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildLocalDatabaseCacheMenuItem(databaseMenuCommandParameters, dcmd, ver35IsInstalled));
 
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
@@ -201,22 +160,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return fixConnectionsMenuItem;
         }
 
-        private MenuItem BuildScriptDatabaseGraphMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd)
-        {
-            var scriptGraphCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.GenerateServerDgmlFiles);
-            var scriptDatabaseGraphMenuItem = new MenuItem
-            {
-                Header = "Create SQL Server Database Graph (DGML)...",
-                Icon = ImageHelper.GetImageFromResource("../resources/Diagram_16XLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            scriptDatabaseGraphMenuItem.CommandBindings.Add(scriptGraphCommandBinding);
-            return scriptDatabaseGraphMenuItem;
-        }
-
         private MenuItem BuildDesignDatabaseMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabasesMenuCommandsHandler dcmd)
         {
@@ -233,155 +176,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return designDatabaseMenuItem;
         }
 
-        private MenuItem BuildScriptDatabaseSchemaMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
-        {
-            var scriptDatabaseSchemaMenuItem = new MenuItem
-            {
-                Header = "Script SQL Server Database Schema...",
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-                ToolTip = toolTip,
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.Schema
-            };
-            scriptDatabaseSchemaMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            return scriptDatabaseSchemaMenuItem;
-        }
-
-        private MenuItem BuildScriptDatabaseDataMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
-        {
-            var scriptDatabaseDataMenuItem = new MenuItem
-            {
-                Header = "Script SQL Server Database Data...",
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-                ToolTip = toolTip,
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.DataOnly
-            };
-            scriptDatabaseDataMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            return scriptDatabaseDataMenuItem;
-        }
-
-        private MenuItem BuildScriptDatabaseSchemaDataMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
-        {
-            var scriptDatabaseSchemaDataMenuItem = new MenuItem
-            {
-                Header = "Script SQL Server Database Schema and Data...",
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-                ToolTip = toolTip,
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.SchemaData
-            };
-            scriptDatabaseSchemaDataMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            return scriptDatabaseSchemaDataMenuItem;
-        }
-
-        private MenuItem BuildScriptDatabaseSchemaDataSqLiteMenuItem(
-            DatabaseMenuCommandParameters databaseMenuCommandParameters, ToolTip toolTip,
-            CommandBinding scriptDatabaseCommandBinding)
-        {
-            var scriptDatabaseSchemaDataSqLiteMenuItem = new MenuItem
-            {
-                Header = "Script SQL Server Database Schema and Data for SQLite...",
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-                ToolTip = toolTip,
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.SchemaDataSQLite
-            };
-
-            scriptDatabaseSchemaDataSqLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            return scriptDatabaseSchemaDataSqLiteMenuItem;
-        }
-
-        private MenuItem BuildScriptDatabaseSchemaSqLiteMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
-        {
-            var scriptDatabaseSchemaSqLiteMenuItem = new MenuItem
-            {
-                Header = "Script SQL Server Database Schema for SQLite...",
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-                ToolTip = toolTip,
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.SchemaSQLite
-            };
-            scriptDatabaseSchemaSqLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            return scriptDatabaseSchemaSqLiteMenuItem;
-        }
-
-        private MenuItem BuildScriptDatabaseSchemaDataBlobMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
-        {
-            var scriptDatabaseSchemaDataBlobMenuItem = new MenuItem
-            {
-                Header = "Script SQL Server Database Schema and Data with BLOBs...",
-                ToolTip = toolTip,
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.SchemaDataBlobs
-            };
-            scriptDatabaseSchemaDataBlobMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            return scriptDatabaseSchemaDataBlobMenuItem;
-        }
-
-        private MenuItem BuildExportServerMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd, bool ver40IsInstalled)
-        {
-            var exportServerCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.ExportServerDatabaseTo40);
-            var exportServerMenuItem = new MenuItem
-            {
-                Header = "Export SQL Server to SQL Server Compact 4.0...",
-                Icon = ImageHelper.GetImageFromResource("../resources/ExportReportData_10565.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters
-            };
-            exportServerMenuItem.CommandBindings.Add(exportServerCommandBinding);
-            exportServerMenuItem.IsEnabled = (ver40IsInstalled);
-            return exportServerMenuItem;
-        }
-
-        private static MenuItem BuildExportServerToLiteMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd)
-        {
-            var exportServerToLiteCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.ExportServerDatabaseToSqlite);
-            var exportServerToLiteMenuItem = new MenuItem
-            {
-                Header = "Export SQL Server to SQLite...",
-                Icon = ImageHelper.GetImageFromResource("../resources/ExportReportData_10565.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters
-            };
-            exportServerToLiteMenuItem.CommandBindings.Add(exportServerToLiteCommandBinding);
-            return exportServerToLiteMenuItem;
-        }
-
-#if VS2010
-#else
-        private MenuItem BuildScriptEfPocoDacPacMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd)
-        {
-            var scriptEfDacPacCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.GenerateEfPocoFromDacPacInProject);
-            var scriptEfPocoDacPacMenuItem = new MenuItem
-            {
-                Header = "Add Entity Data Model (Code Based from Dacpac) to current Project (alpha)...",
-                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            scriptEfPocoDacPacMenuItem.CommandBindings.Add(scriptEfDacPacCommandBinding);
-            return scriptEfPocoDacPacMenuItem;
-        }
-#endif
         private MenuItem BuildLocalDatabaseCacheMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabasesMenuCommandsHandler dcmd, bool ver35IsInstalled)
         {
