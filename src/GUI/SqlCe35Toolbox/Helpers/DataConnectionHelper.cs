@@ -536,9 +536,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 case DatabaseType.SQLServer:
                     return new Generator(repository, outFile, false, Properties.Settings.Default.PreserveSqlDates, false, Properties.Settings.Default.KeepSchemaNames);
                 case DatabaseType.SQLCE35:
-                    return new Generator(repository, outFile);
+                    return string.IsNullOrEmpty(outFile) ? new Generator(repository) : new Generator(repository, outFile);
                 case DatabaseType.SQLCE40:
-                    return new Generator4(repository, outFile);
+                    return string.IsNullOrEmpty(outFile) ? new Generator4(repository) : new Generator4(repository, outFile);
                 case DatabaseType.SQLite:
                     return new Generator(repository, outFile, false, false, true);
                 default:
@@ -582,28 +582,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 default:
                     return null;
             }
-        }
-
-        public static bool IsPremiumOrUltimate()
-        {
-            // From http://blogs.msdn.com/b/heaths/archive/2010/05/04/detection-keys-for-net-framework-4-0-and-visual-studio-2010.aspx
-            //Key HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DevDiv\VS\Servicing\10.0\$(var.ProductEdition)\$(var.LCID) 
-            //The values for $(var.ProductEdition) include the following table. 
-            //Visual Studio 2010 Ultimate VSTSCore 
-            //Visual Studio 2010 Premium VSTDCore 
-            //Visual Studio 2010 Professional PROCore 
-            //Visual Studio 2010 Shell (Integrated) IntShell 
-            using (var key = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-            {
-                var ultimateKey = key.OpenSubKey(@"SOFTWARE\Microsoft\DevDiv\VS\Servicing\10.0\VSTSCore");
-                if (ultimateKey != null)
-                    return true;
-
-                var premiumKey = key.OpenSubKey(@"SOFTWARE\Microsoft\DevDiv\VS\Servicing\10.0\VSTDCore");
-                if (premiumKey != null)
-                    return true;
-            }
-            return false;
         }
 
         private const string Ddex35Dll = "SqlCeToolbox.DDEX35.dll";
@@ -773,7 +751,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 // ignored
             }
-            return string.Format("- more than {0:0,0} downloads", 520000d);
+            return string.Format("- more than {0:0,0} downloads", 610000d);
         }
 
         public static string GetSqlCeFileFilter()
