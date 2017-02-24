@@ -939,22 +939,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 return;
             }
 
-            var sqlMetalPath = string.Empty;
-            var sqlMetalPaths = ProbeSqlMetalRegPaths();
-            if (sqlMetalPaths.Count == 0)
-            {
-                EnvDteHelper.ShowError("Could not find SQLMetal location in registry");
-                return;
-            }
-
-            foreach (var path in sqlMetalPaths)
-            {
-                if (File.Exists(path))
-                {
-                    sqlMetalPath = path;
-                    break;
-                }
-            }
+            var sqlMetalPath = ProbeSqlMetalRegPaths();
             if (string.IsNullOrEmpty(sqlMetalPath))
             {
                 EnvDteHelper.ShowError("Could not find SQLMetal file location");
@@ -1202,7 +1187,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        private List<string> ProbeSqlMetalRegPaths()
+        private string ProbeSqlMetalRegPaths()
         {
             var paths = new List<string>();
 
@@ -1225,12 +1210,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
 
             sqlMetalRegPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.0A\WinSDK-NetFx40Tools", "InstallationFolder", string.Empty);
+
             if (!string.IsNullOrEmpty(sqlMetalRegPath))
             {
                 paths.Add(Path.Combine(sqlMetalRegPath, "sqlmetal.exe"));
             }
 
-            return paths;
+            return paths.FirstOrDefault(path => File.Exists(path));
         }
 
         public void GenerateEfCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
