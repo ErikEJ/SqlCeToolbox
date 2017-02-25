@@ -1432,7 +1432,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     dte.ItemOperations.OpenFile(revEngResult.FilePaths.Last());
                 }
 
-                ReportRevEngErrors(revEngResult);
+                ReportRevEngErrors(revEngResult, dteH.ContainsEfCoreReference(project, dbType));
 
                 DataConnectionHelper.LogUsage("DatabaseCreateEfCoreModel");
             }
@@ -1442,7 +1442,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        private void ReportRevEngErrors(EFCoreReverseEngineerResult revEngResult)
+        private void ReportRevEngErrors(EFCoreReverseEngineerResult revEngResult, string missingProviderPackage)
         {
             var errors = new StringBuilder();
             foreach (var entityError in revEngResult.EntityErrors)
@@ -1458,6 +1458,15 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 errors.Insert(0, "The following issues were encountered:" + Environment.NewLine);
             }
+
+            if (!string.IsNullOrEmpty(missingProviderPackage))
+            {
+                errors.AppendLine();
+                errors.AppendFormat("The {0} NuGet package was not found", missingProviderPackage);
+                errors.AppendLine();
+                errors.Append("You must install it in order to build");
+            }
+
             EnvDteHelper.ShowMessage(errors.ToString());
         }
 #endif

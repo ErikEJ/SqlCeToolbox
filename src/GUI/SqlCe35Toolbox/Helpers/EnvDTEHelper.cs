@@ -73,6 +73,29 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
+        public string ContainsEfCoreReference(Project project, DatabaseType dbType)
+        {
+            var providerPackage = "Microsoft.EntityFrameworkCore.SqlServer";
+            if (dbType == DatabaseType.SQLCE40)
+            {
+                providerPackage = "EntityFrameworkCore.SqlServerCompact40";
+            }
+            if (dbType == DatabaseType.SQLite)
+            {
+                providerPackage = "Microsoft.EntityFrameworkCore.Sqlite";
+            }
+
+            var vsProject = (VSLangProj.VSProject)project.Object;
+            for (var i = 1; i < vsProject.References.Count + 1; i++)
+            {
+                if (vsProject.References.Item(i).Name.Equals(providerPackage))
+                {
+                    return null;
+                }
+            }
+            return providerPackage;
+        }
+
         public bool ContainsEfSqlCeReference(Project project)
         {
             VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
