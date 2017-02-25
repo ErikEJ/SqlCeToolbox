@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.SqlClient;
-using System.Threading;
 using System.Windows.Forms;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Commands;
@@ -13,12 +12,12 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
     internal class DatabaseMenuItem : ToolsMenuItemBase, IWinformsMenuHandler
     {
         private readonly SqlCeToolboxPackage _package;
-        private readonly DatabasesMenuCommandsHandler _handler;
+        private readonly SqlServerDatabaseMenuCommandsHandler _handler;
 
         public DatabaseMenuItem(SqlCeToolboxPackage package)
         {
             _package = package;
-            _handler = new DatabasesMenuCommandsHandler(_package);
+            _handler = new SqlServerDatabaseMenuCommandsHandler(_package);
             Text = "Script database...";
         }
 

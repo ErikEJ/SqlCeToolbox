@@ -946,7 +946,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     }
                     var item = (treeItem).Parent as TreeViewItem;
 
-                    //TODO Recursive?
                     var parent = item?.Parent as TreeViewItem;
                     if (parent?.Tag != null && parent.Tag.GetType() == typeof(DatabaseInfo))
                     {

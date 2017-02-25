@@ -124,6 +124,9 @@
     <Compile Include="..\SqlCe35Toolbox\Commands\ScopesMenuCommandsHandler.cs">
       <Link>Commands\ScopesMenuCommandsHandler.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Commands\SqlServerDatabaseMenuCommandsHandler.cs">
+      <Link>Commands\SqlServerDatabaseMenuCommandsHandler.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Commands\SubscriptionsMenuCommands.cs">
       <Link>Commands\SubscriptionsMenuCommands.cs</Link>
     </Compile>

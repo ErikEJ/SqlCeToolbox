@@ -10,7 +10,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
     {
         public SqlServerDatabaseContextMenu(DatabaseMenuCommandParameters databaseMenuCommandParameters, ExplorerToolWindow parent)
         {
-            var dcmd = new DatabasesMenuCommandsHandler(parent);
+            var dcmd = new SqlServerDatabaseMenuCommandsHandler(parent);
             var dbcmd = new DatabaseMenuCommandsHandler(parent);
             var isSqlCe40Installed = DataConnectionHelper.IsV40Installed();
             
@@ -59,7 +59,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildScriptDatabaseGraphMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd)
+            SqlServerDatabaseMenuCommandsHandler dcmd)
         {
             var scriptGraphCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.GenerateServerDgmlFiles);
@@ -193,7 +193,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 #if VS2010
 #else
         private MenuItem BuildScriptEfPocoDacPacMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd)
+            SqlServerDatabaseMenuCommandsHandler dcmd)
         {
             var scriptEfDacPacCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.GenerateEfPocoFromDacPacInProject);
@@ -209,7 +209,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 #endif
         private MenuItem BuildExportServerMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd, bool isSqlCe40Installed)
+            SqlServerDatabaseMenuCommandsHandler dcmd, bool isSqlCe40Installed)
         {
             var exportServerCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.ExportServerDatabaseTo40);
@@ -226,7 +226,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildExportServerToLiteMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd)
+            SqlServerDatabaseMenuCommandsHandler dcmd)
         {
             var exportServerToLiteCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.ExportServerDatabaseToSqlite);
