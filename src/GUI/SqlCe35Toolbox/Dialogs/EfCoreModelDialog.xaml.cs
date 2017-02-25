@@ -51,6 +51,19 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 txtNameSpace.Text = value;
             }
         }
+
+        public string OutputPath
+        {
+            get
+            {
+                return txtOutputPath.Text;
+            }
+            set
+            {
+                txtOutputPath.Text = value;
+            }
+        }
+
         #endregion
 
         private void button1_Click(object sender, RoutedEventArgs e)

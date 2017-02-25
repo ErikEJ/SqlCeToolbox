@@ -545,7 +545,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var bw = new BackgroundWorker();
                 var parameters = new List<object> {databaseInfo.DatabaseInfo, targetInfo};
 
-                bw.DoWork += bw_DoWork;
+                bw.DoWork += bw_DoExportWork;
                 bw.RunWorkerCompleted += (s, ea) =>
                 {
                     try
@@ -568,7 +568,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
             }
         }
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        private void bw_DoExportWork(object sender, DoWorkEventArgs e)
         {
             var parameters = e.Argument as List<object>;
             if (parameters == null) return;
@@ -1219,6 +1219,138 @@ namespace ErikEJ.SqlCeToolbox.Commands
             return paths.FirstOrDefault(path => File.Exists(path));
         }
 
+#if VS2010
+#else
+        public async void GenerateEfPocoFromDacPacInProject(object sender, ExecutedRoutedEventArgs e)
+        {
+            EnvDteHelper.LaunchUrl("https://github.com/sjh37/EntityFramework-Reverse-POCO-Code-First-Generator");
+
+            var databaseInfo = ValidateMenuInfo(sender);
+            if (databaseInfo == null) return;
+
+            var isEf6 = SqlCeToolboxPackage.VsSupportsEf6();
+            try
+            {
+                var dte = package?.GetServiceHelper(typeof(DTE)) as DTE;
+                if (dte == null) return;
+                if (dte.Mode == vsIDEMode.vsIDEModeDebug)
+                {
+                    EnvDteHelper.ShowError("Cannot generate code while debugging");
+                    return;
+                }
+
+                var dteH = new EnvDteHelper();
+
+                var project = dteH.GetProject(dte);
+                if (project == null)
+                {
+                    EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the generated code to be placed");
+                    return;
+                }
+                if (dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateNotStarted)
+                {
+                    EnvDteHelper.ShowError("Please build the project before proceeding");
+                    return;
+                }
+                if (isEf6)
+                {
+                    if (!dteH.ContainsEf6Reference(project))
+                    {
+                        EnvDteHelper.ShowError("Please add the EntityFramework 6.x NuGet package to the project");
+                        return;
+                    }
+                }
+                if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
+                {
+                    EnvDteHelper.ShowError("The selected project type does not support Entity Framework (please let me know if I am wrong)");
+                    return;
+                }
+
+                if (project.Properties.Item("TargetFrameworkMoniker") == null)
+                {
+                    EnvDteHelper.ShowError("The selected project type does not have a TargetFrameworkMoniker");
+                    return;
+                }
+                if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
+                {
+                    EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                    return;
+                }
+
+                var ofd = new OpenFileDialog
+                {
+                    Filter = "Dacpac (*.dacpac)|*.dacpac|All Files(*.*)|*.*",
+                    CheckFileExists = true,
+                    Multiselect = false,
+                    ValidateNames = true
+                };
+                if (ofd.ShowDialog() != true) return;
+
+                var dacPacFileName = ofd.FileName;
+
+                var connectionStringBuilder = new SqlConnectionStringBuilder
+                {
+                    DataSource = @"(localdb)\mssqllocaldb",
+                    InitialCatalog = Path.GetFileNameWithoutExtension(dacPacFileName),
+                    IntegratedSecurity = true
+                };
+
+                var dacFxHelper = new DacFxHelper(package);
+                await dacFxHelper.RunDacPackageAsync(connectionStringBuilder, dacPacFileName);
+
+                var prefix = "App";
+                var configPath = Path.Combine(Path.GetTempPath(), prefix + ".config");
+
+                var item = dteH.GetProjectConfig(project);
+                if (item == null)
+                {
+                    //Add app.config file to project
+                    var cfgSb = new StringBuilder();
+                    cfgSb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
+                    cfgSb.AppendLine("<configuration>");
+                    cfgSb.AppendLine("</configuration>");
+                    File.WriteAllText(configPath, cfgSb.ToString(), Encoding.UTF8);
+                    item = project.ProjectItems.AddFromFileCopy(configPath);
+                }
+                if (item != null)
+                {
+                    AppConfigHelper.WriteConnectionStringToAppConfig("MyDbContext", connectionStringBuilder.ConnectionString, project.FullName, "System.Data.SqlClient", prefix, item.Name);
+                }
+
+                var dte2 = (DTE2)package.GetServiceHelper(typeof(DTE));
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                var solution2 = dte2.Solution as Solution2;
+
+                var projectItemTemplate = solution2?.GetProjectItemTemplate("EntityFramework Reverse POCO Code First Generator", "CSharp");
+                if (!string.IsNullOrEmpty(projectItemTemplate))
+                {
+                    var projectItem = dteH.GetProjectDataContextClass(project, "Database.tt".ToLowerInvariant());
+                    if (projectItem == null)
+                    {
+                        project.ProjectItems.AddFromTemplate(projectItemTemplate, "Database.tt");
+                        EnvDteHelper.ShowMessage("Please run Custom Tool with the Database.tt file");
+                    }
+                    else
+                    {
+                        EnvDteHelper.ShowMessage("Database.tt already exists, please run Custom Tool with existing Database.tt file");
+                    }
+                }
+                DataConnectionHelper.LogUsage("DatabaseCreateEFPOCODacpac");
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() == typeof(FileNotFoundException))
+                {
+                    EnvDteHelper.ShowMessage("Unable to find the EF Reverse POCO Template, is it installed?");
+                }
+                else
+                {
+                    DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
+                }
+            }
+        }
+#endif
+
         public void GenerateEfCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
@@ -1269,8 +1401,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString()
                 };
                 var result = modelDialog.ShowModal();
-                if (!result.HasValue || result.Value != true || string.IsNullOrWhiteSpace(modelDialog.ModelName))
+                if (!result.HasValue || result.Value != true)
                     return;
+
+                //TODO Validate required values!
+                //|| string.IsNullOrWhiteSpace(modelDialog.ModelName)
 
                 var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
@@ -1281,6 +1416,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     ContextClassName = modelDialog.ModelName,
                     DatabaseType = (EFCoreReverseEngineer.DatabaseType)dbType,
                     ProjectPath = projectPath,
+                    OutputPath = modelDialog.OutputPath,
                     ProjectRootNamespace = modelDialog.NameSpace,
                     Tables = ptd.Tables
                 };
@@ -1290,6 +1426,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 foreach (var filePath in revEngResult.FilePaths)
                 {
                     project.ProjectItems.AddFromFile(filePath);
+                }
+                if (revEngResult.FilePaths.Count > 0)
+                {
+                    dte.ItemOperations.OpenFile(revEngResult.FilePaths.Last());
                 }
 
                 ReportRevEngErrors(revEngResult);
@@ -1321,6 +1461,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             EnvDteHelper.ShowMessage(errors.ToString());
         }
 #endif
+
         public void GenerateModelCodeInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
@@ -1656,11 +1797,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
         }
 
 #endregion
-
-        private static string Remove(string s, IEnumerable<char> chars)
-        {
-            return new string(s.Where(c => !chars.Contains(c)).ToArray());
-        }
 
         private static DatabaseMenuCommandParameters ValidateMenuInfo(object sender)
         {
