@@ -49,6 +49,7 @@ namespace EFCoreReverseEngineer
             {
                 ConnectionString = reverseEngineerOptions.ConnectionString,
                 ProjectPath = reverseEngineerOptions.ProjectPath,
+                OutputPath = reverseEngineerOptions.OutputPath,
                 ProjectRootNamespace = reverseEngineerOptions.ProjectRootNamespace,
                 OverwriteFiles = true,
                 UseFluentApiOnly = reverseEngineerOptions.UseFluentApiOnly,
