@@ -19,7 +19,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var scriptDatabaseRootMenuItem = new MenuItem
             {
-                Header = "Script SQL Server Database",
+                Header = "Script Database",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
             };
 
@@ -65,7 +65,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dcmd.GenerateServerDgmlFiles);
             var scriptDatabaseGraphMenuItem = new MenuItem
             {
-                Header = "Create SQL Server Database Graph (DGML)...",
+                Header = "Create Database Graph (DGML)...",
                 Icon = ImageHelper.GetImageFromResource("../resources/Diagram_16XLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
@@ -79,7 +79,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaMenuItem = new MenuItem
             {
-                Header = "Script SQL Server Database Schema...",
+                Header = "Script Database Schema...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -95,7 +95,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseDataMenuItem = new MenuItem
             {
-                Header = "Script SQL Server Database Data...",
+                Header = "Script Database Data...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -111,7 +111,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaDataMenuItem = new MenuItem
             {
-                Header = "Script SQL Server Database Schema and Data...",
+                Header = "Script Database Schema and Data...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -128,7 +128,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaDataSqLiteMenuItem = new MenuItem
             {
-                Header = "Script SQL Server Database Schema and Data for SQLite...",
+                Header = "Script Database Schema and Data for SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -145,7 +145,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaSqLiteMenuItem = new MenuItem
             {
-                Header = "Script SQL Server Database Schema for SQLite...",
+                Header = "Script Database Schema for SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -161,7 +161,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaDataBlobMenuItem = new MenuItem
             {
-                Header = "Script SQL Server Database Schema and Data with BLOBs...",
+                Header = "Script Database Schema and Data with BLOBs...",
                 ToolTip = toolTip,
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -215,7 +215,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dcmd.ExportServerDatabaseTo40);
             var exportServerMenuItem = new MenuItem
             {
-                Header = "Export SQL Server to SQL Server Compact 4.0...",
+                Header = "Migrate to SQL Server Compact 4.0...",
                 Icon = ImageHelper.GetImageFromResource("../resources/ExportReportData_10565.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters
@@ -232,7 +232,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dcmd.ExportServerDatabaseToSqlite);
             var exportServerToLiteMenuItem = new MenuItem
             {
-                Header = "Export SQL Server to SQLite...",
+                Header = "Migrate to SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/ExportReportData_10565.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters
