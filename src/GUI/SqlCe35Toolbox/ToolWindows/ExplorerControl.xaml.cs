@@ -873,7 +873,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             var image = NewQuery.Content as Image;
             if (image != null) image.Opacity = 0.5;
             var dbInfo = TryGetDatabaseInfo(TreeView1);
-            if (dbInfo != null)
+            if (dbInfo != null && dbInfo.DatabaseType != DatabaseType.SQLServer)
             {
                 NewQuery.IsEnabled = true;
                 NewQuery.Tag = dbInfo;                
