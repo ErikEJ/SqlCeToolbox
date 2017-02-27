@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using ErikEJ.SqlCeToolbox.ToolWindows;
-using ErikEJ.SqlCeScripting;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {

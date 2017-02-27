@@ -33,6 +33,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
+                if (!DataConnectionHelper.IsMsReportViewer10Installed())
+                {
+                    EnvDteHelper.ShowError("Microsoft Report Viewer 2010 not installed, please download and install to use this feature  http://www.microsoft.com/en-us/download/details.aspx?id=6442");
+                    return;
+                }
                 using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
@@ -60,11 +65,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                 }
                 DataConnectionHelper.LogUsage("TableReport");
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-                EnvDteHelper.ShowError("Microsoft Report Viewer 2010 not installed, please download and install to use this feature  http://www.microsoft.com/en-us/download/details.aspx?id=6442");
-                return;
             }
             catch (Exception ex)
             {
