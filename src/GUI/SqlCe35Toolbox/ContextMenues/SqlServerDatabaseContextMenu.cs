@@ -190,6 +190,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return efCoreModelMenuItem;
         }
 #endif
+
 #if VS2010
 #else
         private MenuItem BuildScriptEfPocoDacPacMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
