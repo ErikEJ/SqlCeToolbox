@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox
 {
     [Guid(GuidList.GuidPageGeneral)]
@@ -40,6 +41,7 @@ namespace ErikEJ.SqlCeToolbox
         DisplayName(@"Show null values as NULL"),
         Description("If true, will show NULL values as 'NULL'"),
         DefaultValue(true)]
+        // ReSharper disable once InconsistentNaming
         public bool ShowNullValuesAsNULL { get; set; }
 
         [Category("Query Editor"),
@@ -76,6 +78,7 @@ namespace ErikEJ.SqlCeToolbox
         DisplayName(@"Prefer Server Explorer"),
         Description("Use the Visual Studio Connection dialog and save connections in Server Explorer, if possible"),
         DefaultValue(true)]
+        // ReSharper disable once InconsistentNaming
         public bool PreferDDEX { get; set; }
 
         [Category("Object Tree"),

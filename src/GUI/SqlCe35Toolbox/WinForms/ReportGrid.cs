@@ -25,14 +25,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 DataSet.DataSetName = TableName;
 
-                var rdlc = RdlcHelper.BuildRDLCStream(
+                var rdlc = RdlcHelper.BuildRdlcStream(
                     DataSet, TableName, Resources.report);
 
                 //Fix for VS "15" permission issue
                 var permissionSet = new PermissionSet(PermissionState.Unrestricted);
-                var fIOPermission = new FileIOPermission(PermissionState.None);
-                fIOPermission.AllLocalFiles = FileIOPermissionAccess.Read;
-                permissionSet.AddPermission(fIOPermission);
+                var fIoPermission = new FileIOPermission(PermissionState.None);
+                fIoPermission.AllLocalFiles = FileIOPermissionAccess.Read;
+                permissionSet.AddPermission(fIoPermission);
                 permissionSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
                 reportView.LocalReport.SetBasePermissionsForSandboxAppDomain(permissionSet);
 

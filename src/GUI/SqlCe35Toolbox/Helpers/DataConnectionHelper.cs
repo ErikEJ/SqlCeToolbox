@@ -813,9 +813,13 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             try
             {
                 var asm35 = Assembly.Load("System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                var fvi = FileVersionInfo.GetVersionInfo(asm35.Location);
-                var version =  new Version(fvi.FileVersion);
-                return version >= new Version(3, 5, 8080);
+                if (asm35 != null && asm35.Location != null)
+                {
+                    var fvi = FileVersionInfo.GetVersionInfo(asm35.Location);
+                    var version =  new Version(fvi.FileVersion);
+                    return version >= new Version(3, 5, 8080);
+                }
+                return false;
             }
             catch (FileNotFoundException)
             {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox
 {
     public abstract class BindableBase : INotifyPropertyChanged

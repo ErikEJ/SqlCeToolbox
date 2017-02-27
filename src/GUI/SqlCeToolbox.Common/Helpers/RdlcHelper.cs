@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 using System.Data;
 using System.Xml;
 using System.Xml.Xsl;
@@ -11,7 +7,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     public class RdlcHelper
     {
-        public static Stream BuildRDLCStream(
+        public static Stream BuildRdlcStream(
             DataSet data, string name, string reportResource)
         {
             using (MemoryStream schemaStream = new MemoryStream())
@@ -23,7 +19,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 // load it into a Document and set the Name variable
                 XmlDocument xmlDomSchema = new XmlDocument();
                 xmlDomSchema.Load(schemaStream);
-                xmlDomSchema.DocumentElement.SetAttribute("Name", data.DataSetName);
+                if (xmlDomSchema.DocumentElement != null)
+                    xmlDomSchema.DocumentElement.SetAttribute("Name", data.DataSetName);
 
                 // Prepare XSL transformation
                 using (var sr = new StringReader(reportResource))

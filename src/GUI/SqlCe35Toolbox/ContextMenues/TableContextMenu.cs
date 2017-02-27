@@ -256,6 +256,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         // ReSharper disable once InconsistentNaming
+        // ReSharper disable once UnusedMember.Local
         private void CreateScriptAsSQLCLRSampleMenuItem(TableMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
         {
             var scriptCommandBinding = new CommandBinding(TableMenuCommands.TableCommand, tcmd.ScriptAsSQLCLRSample);

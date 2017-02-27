@@ -5,11 +5,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
     {
         Table,
         View,
-        SP,
+        Sp,
         Function,
         Manage,
-        FK,
-        PK
+        Fk,
+        Pk
     }
 
     public class MenuCommandParameters

@@ -8,9 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EFCoreReverseEngineer
 {
-    public class EFCoreReverseEngineer
+    public class EfCoreReverseEngineer
     {
-        public EFCoreReverseEngineerResult GenerateFiles(ReverseEngineerOptions reverseEngineerOptions)
+        public EfCoreReverseEngineerResult GenerateFiles(ReverseEngineerOptions reverseEngineerOptions)
         {
             // Add base services for scaffolding
             var serviceCollection = new ServiceCollection()
@@ -63,7 +63,7 @@ namespace EFCoreReverseEngineer
 
             var errors = model.Scaffolding().EntityTypeErrors;
 
-            var result = new EFCoreReverseEngineerResult
+            var result = new EfCoreReverseEngineerResult
             {
                 EntityErrors = errors,
                 FilePaths = filePaths.EntityTypeFiles,

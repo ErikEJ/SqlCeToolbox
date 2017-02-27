@@ -24,11 +24,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
-                    if (menuInfo.MenuItemType == MenuType.FK)
+                    if (menuInfo.MenuItemType == MenuType.Fk)
                     { 
                         generator.GenerateForeignKey(menuInfo.Name, menuInfo.Description);
                     }
-                    if (menuInfo.MenuItemType == MenuType.PK)
+                    if (menuInfo.MenuItemType == MenuType.Pk)
                     {
                         generator.GeneratePrimaryKeys(menuInfo.Name);
                     }
@@ -53,11 +53,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
-                    if (menuInfo.MenuItemType == MenuType.FK)
+                    if (menuInfo.MenuItemType == MenuType.Fk)
                     {
                         generator.GenerateForeignKeyDrop(menuInfo.Name, menuInfo.Description);
                     }
-                    if (menuInfo.MenuItemType == MenuType.PK)
+                    if (menuInfo.MenuItemType == MenuType.Pk)
                     {
                         var pk = new PrimaryKey { KeyName = menuInfo.Description };
                         generator.GeneratePrimaryKeyDrop(pk, menuInfo.Name);

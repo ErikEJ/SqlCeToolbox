@@ -701,7 +701,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var res = ptd.ShowModal();
                 if (!res.HasValue || !res.Value) return;
 
-                var revEng = new EFCoreReverseEngineer.EFCoreReverseEngineer();
+                var revEng = new EFCoreReverseEngineer.EfCoreReverseEngineer();
 
                 var classBasis = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
                 if (dbType == DatabaseType.SQLServer)
@@ -756,7 +756,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        private void ReportRevEngErrors(EFCoreReverseEngineerResult revEngResult, string missingProviderPackage)
+        private void ReportRevEngErrors(EfCoreReverseEngineerResult revEngResult, string missingProviderPackage)
         {
             var errors = new StringBuilder();
             foreach (var entityError in revEngResult.EntityErrors)

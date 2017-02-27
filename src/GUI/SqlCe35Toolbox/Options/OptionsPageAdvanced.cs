@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox
 {
     [Guid(GuidList.GuidPageAdvanced)]
@@ -57,6 +58,7 @@ namespace ErikEJ.SqlCeToolbox
         DisplayName(@"Make SQLite datetime read-only"),
         Description("Work around the inability to edit SQLite datetime columns"),
         DefaultValue(false)]
+        // ReSharper disable once InconsistentNaming
         public bool MakeSQLiteDatetimeReadOnly { get; set; }
 
         [Category("Documentation"),
@@ -87,6 +89,7 @@ namespace ErikEJ.SqlCeToolbox
         DisplayName(@"Truncate SQLite string values"),
         Description("Enabling this option will truncate SQLite strings, that are longer than the defined size, when exporting to SQL Server. Truncations will be logged to: %temp%\\SQLiteTruncates.log"),
         DefaultValue(false)]
+        // ReSharper disable once InconsistentNaming
         public bool TruncateSQLiteStrings { get; set; }
 
         protected override void OnApply(PageApplyEventArgs e)

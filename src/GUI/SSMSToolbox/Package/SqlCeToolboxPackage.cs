@@ -2,12 +2,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using EnvDTE;
-using EnvDTE80;
-using ErikEJ.SqlCeToolbox.Helpers;
-using ErikEJ.SqlCeToolbox.SSMSEngine;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
