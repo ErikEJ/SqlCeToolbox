@@ -127,6 +127,7 @@
     <Compile Include="Commands\ColumnMenuCommands.cs" />
     <Compile Include="Commands\ColumnMenuCommandsHandler.cs" />
     <Compile Include="Commands\CommandHandlerBase.cs" />
+    <Compile Include="Commands\SqlCeDatabaseMenuCommandsHandler.cs" />
     <Compile Include="Commands\SqlServerDatabaseMenuCommandsHandler.cs" />
     <Compile Include="Commands\TriggerMenuCommandsHandler.cs" />
     <Compile Include="Commands\ViewMenuCommandsHandler.cs" />

@@ -14,6 +14,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var isSqlCe = dbType == DatabaseType.SQLCE35
                 || dbType == DatabaseType.SQLCE40;
             var dcmd = new DatabaseMenuCommandsHandler(parent);
+            var cecmd = new SqlCeDatabaseMenuCommandsHandler(parent);
 
             Items.Add(BuildShowSqlEditorMenuItem(databaseMenuCommandParameters, dcmd));
 
@@ -61,7 +62,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Icon = ImageHelper.GetImageFromResource("../resources/Hammer_Builder_16xLG.png"),
             };
 
-            maintenanceMenuItem.Items.Add(BuildPwdMenuItem(databaseMenuCommandParameters, dcmd));
+            maintenanceMenuItem.Items.Add(BuildPwdMenuItem(databaseMenuCommandParameters, cecmd));
 
             var shrinkMenuItem = BuildShrinkMenuItem(databaseMenuCommandParameters, dcmd);
             maintenanceMenuItem.Items.Add(shrinkMenuItem);
@@ -69,13 +70,13 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var compactMenuItem = BuildCompactMenuItem(databaseMenuCommandParameters, dcmd);
             maintenanceMenuItem.Items.Add(compactMenuItem);
 
-            maintenanceMenuItem.Items.Add(BuildVerifyMenuItem(databaseMenuCommandParameters, dcmd));
+            maintenanceMenuItem.Items.Add(BuildVerifyMenuItem(databaseMenuCommandParameters, cecmd));
 
-            maintenanceMenuItem.Items.Add(BuildRepairDeleteMenuItem(databaseMenuCommandParameters, dcmd));
+            maintenanceMenuItem.Items.Add(BuildRepairDeleteMenuItem(databaseMenuCommandParameters, cecmd));
 
-            maintenanceMenuItem.Items.Add(BuildRepairRecoverAllMenuItem(databaseMenuCommandParameters, dcmd));
+            maintenanceMenuItem.Items.Add(BuildRepairRecoverAllMenuItem(databaseMenuCommandParameters, cecmd));
 
-            maintenanceMenuItem.Items.Add(BuildRepairRecoverPossibleMenuItem(databaseMenuCommandParameters, dcmd));
+            maintenanceMenuItem.Items.Add(BuildRepairRecoverPossibleMenuItem(databaseMenuCommandParameters, cecmd));
 
             if (isSqlCe)
             {
@@ -100,7 +101,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             if (dbType == DatabaseType.SQLCE35 
                 && DataConnectionHelper.IsV40Installed())
             {
-                Items.Add(BuildScriptUpgradeMenuItem(databaseMenuCommandParameters, dcmd));
+                Items.Add(BuildScriptUpgradeMenuItem(databaseMenuCommandParameters, cecmd));
             }
 
             Items.Add(new Separator());
@@ -130,7 +131,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 #if SSMS
 #else
             var scriptDcCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                            dcmd.GenerateDataContextInProject);
+                            cecmd.GenerateDataContextInProject);
 
             if (isSqlCe) generateCodeRootMenuItem.Items.Add(BuildScriptDcMenuItem(databaseMenuCommandParameters, scriptDcCommandBinding));
 
@@ -146,13 +147,13 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var isSyncFxInstalled = DataConnectionHelper.IsSyncFx21Installed();
 
-            syncFxRootMenuItem.Items.Add(BuildSyncFxProvisionMenuItem(databaseMenuCommandParameters, dcmd, dbType, isSyncFxInstalled));
+            syncFxRootMenuItem.Items.Add(BuildSyncFxProvisionMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
 
-            syncFxRootMenuItem.Items.Add(BuildSyncFxDeprovisionMenuItem(databaseMenuCommandParameters, dcmd, dbType, isSyncFxInstalled));
+            syncFxRootMenuItem.Items.Add(BuildSyncFxDeprovisionMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
 
-            syncFxRootMenuItem.Items.Add(BuildSyncFxGenerateSnapshotMenuItem(databaseMenuCommandParameters, dcmd, dbType, isSyncFxInstalled));
+            syncFxRootMenuItem.Items.Add(BuildSyncFxGenerateSnapshotMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
 
-            if (isSqlCe) generateCodeRootMenuItem.Items.Add(BuildSyncFxMenuItem(databaseMenuCommandParameters, dcmd, dbType, isSyncFxInstalled));
+            if (isSqlCe) generateCodeRootMenuItem.Items.Add(BuildSyncFxMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
             if (isSqlCe) generateCodeRootMenuItem.Items.Add(syncFxRootMenuItem);
 
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(generateCodeRootMenuItem);
@@ -163,7 +164,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(BuildGenerateInfoMenuItem(databaseMenuCommandParameters, dcmd));
             Items.Add(new Separator());
 
-            Items.Add(BuildCopyCeConnectionMenuItem(databaseMenuCommandParameters, dcmd));
+            Items.Add(BuildCopyConnectionMenuItem(databaseMenuCommandParameters, cecmd));
 
             if (!databaseMenuCommandParameters.DatabaseInfo.FromServerExplorer)
             {
@@ -329,7 +330,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildPwdMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
+            SqlCeDatabaseMenuCommandsHandler dcmd)
         {
             var setPwdCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SetPassword);
@@ -380,7 +381,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildVerifyMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
+            SqlCeDatabaseMenuCommandsHandler dcmd)
         {
             var verifyCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.VerifyDatabase);
@@ -397,7 +398,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildRepairDeleteMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
+            SqlCeDatabaseMenuCommandsHandler dcmd)
         {
             var repairDeleteCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.RepairDatabaseDeleteCorruptedRows);
@@ -414,7 +415,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private static MenuItem BuildRepairRecoverAllMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
+            SqlCeDatabaseMenuCommandsHandler dcmd)
         {
             var repairRecoverAllCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.RepairDatabaseRecoverAllOrFail);
@@ -431,7 +432,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildRepairRecoverPossibleMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
+            SqlCeDatabaseMenuCommandsHandler dcmd)
         {
             var repairRecoverPossibleCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.RepairDatabaseRecoverAllPossibleRows);
@@ -466,7 +467,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildScriptUpgradeMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
+            SqlCeDatabaseMenuCommandsHandler dcmd)
         {
             var scriptUpgradeCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.UpgradeTo40);
@@ -608,7 +609,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildSyncFxProvisionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
+            SqlCeDatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
         {
             var syncFxProvisionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SyncFxProvisionScope);
@@ -627,7 +628,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildSyncFxDeprovisionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
+            SqlCeDatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
         {
             var syncFxDeprovisionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SyncFxDeprovisionDatabase);
@@ -647,7 +648,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildSyncFxGenerateSnapshotMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
+            SqlCeDatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
         {
             var syncFxGenerateSnapshotCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SyncFxGenerateSnapshot);
@@ -667,7 +668,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildSyncFxMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
+            SqlCeDatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
         {
             var syncFxCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.SyncFxGenerateSyncCodeInProject);
@@ -718,8 +719,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return generateInfoMenuItem;
         }
 
-        private static MenuItem BuildCopyCeConnectionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
+        private static MenuItem BuildCopyConnectionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
+            SqlCeDatabaseMenuCommandsHandler dcmd)
         {
             var copyCeConnectionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.CopyCeDatabase);
