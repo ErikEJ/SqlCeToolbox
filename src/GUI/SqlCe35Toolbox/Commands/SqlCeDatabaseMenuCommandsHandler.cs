@@ -158,30 +158,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
+
 #endregion
-        private void SpawnSqlEditorWindow(DatabaseInfo databaseInfo,  string sqlScript)
-        {
-            try
-            {
-                if (databaseInfo == null) return;
-                if (package == null) return;
-                Debug.Assert(package != null, "Package property of the Explorere Tool Window should never be null, have you tried to create it manually and not through FindToolWindow()?");
-
-                var sqlEditorWindow = package.CreateWindow<SqlEditorWindow>();
-                var editorControl = sqlEditorWindow.Content as SqlEditorControl;
-                Debug.Assert(editorControl != null);
-                editorControl.DatabaseInfo = databaseInfo;
-                editorControl.ExplorerControl = _parentWindow.Content as ExplorerControl;
-                editorControl.SqlText = sqlScript;
-                DataConnectionHelper.LogUsage("DatabaseOpenEditor");
-                Debug.Assert(editorControl != null, "The SqlEditorWindow *should* have a editorControl with content.");
-            }
-            catch (Exception ex)
-            {
-                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
-            }
-
-        }
 
         public void UpgradeTo40(object sender, ExecutedRoutedEventArgs e)
         {

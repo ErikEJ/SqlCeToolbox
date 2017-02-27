@@ -1,7 +1,5 @@
-﻿using System.Data.EntityClient;
-using System.IO;
+﻿using System.IO;
 using System.Configuration;
-using System.Xml;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
