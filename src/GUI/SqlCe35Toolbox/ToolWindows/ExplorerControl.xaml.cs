@@ -112,6 +112,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             try
             {
                 BuildDatabaseTree(false);
+                // ReSharper disable once RedundantAssignment
                 var product = "addin35";
 #if SSMS
                 product = "ssmsaddin";                
@@ -745,7 +746,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var display = primaryKey.KeyName;
                     var keyItem = TreeViewHelper.CreateTreeViewItemWithImage(display, "../Resources/KeyDown_8461.png", false);
                     if (database.Value.DatabaseType != DatabaseType.SQLite)
-                        keyItem.ContextMenu = new KeyContextMenu(new MenuCommandParameters {Description = primaryKey.KeyName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.PK}, _parentWindow);
+                        keyItem.ContextMenu = new KeyContextMenu(new MenuCommandParameters {Description = primaryKey.KeyName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Pk}, _parentWindow);
                     keyItem.ToolTip = primaryKey.KeyName;
                     keysItem.Items.Add(keyItem);
                     oldName = primaryKey.KeyName;
@@ -756,7 +757,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var display = fk.ConstraintName;
                     var keyItem = TreeViewHelper.CreateTreeViewItemWithImage(display, "../Resources/KeyDownFk_8461.png", false);
                     if (database.Value.DatabaseType != DatabaseType.SQLite)
-                        keyItem.ContextMenu = new KeyContextMenu(new MenuCommandParameters {Description = fk.ConstraintName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.FK}, _parentWindow);
+                        keyItem.ContextMenu = new KeyContextMenu(new MenuCommandParameters {Description = fk.ConstraintName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Fk}, _parentWindow);
                     keyItem.ToolTip = fk.ConstraintName;
                     keysItem.Items.Add(keyItem);
                 }

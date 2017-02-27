@@ -2,7 +2,7 @@
 
 namespace EFCoreReverseEngineer
 {
-    public class EFCoreReverseEngineerResult
+    public class EfCoreReverseEngineerResult
     {
         public IList<string> FilePaths { get; set; }
         public IDictionary<string, string> EntityErrors { get; set; }

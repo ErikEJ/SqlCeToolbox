@@ -104,6 +104,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 DisplayValue = string.Format("{0} ({1})", value.TableName, value.ColumnName);
             }
 
+            // ReSharper disable once UnusedAutoPropertyAccessor.Global
             public PrimaryKey Value { get; set; }
             public String DisplayValue { get; set; }
         }

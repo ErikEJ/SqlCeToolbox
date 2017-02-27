@@ -7,6 +7,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
     {
         public string NewName { get; set; }
 
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool DbRename { get; set; }
 
         public RenameDialog(string tableName)

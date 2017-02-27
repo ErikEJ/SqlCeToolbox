@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
-using EnvDTE;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Kent.Boogaart.KBCsv;
 #if SSMS
+using EnvDTE;
 using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
 #endif
 

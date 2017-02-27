@@ -37,10 +37,13 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             txtStatus.Text = "SQL Server Compact 4.0 in GAC - ";
             try
             {
-                Assembly asm4 = Assembly.Load("System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm4.Location); 
-                string version = fvi.FileVersion;
-                txtStatus.Text += string.Format("Yes - {0}\n", version);
+                var asm4 = Assembly.Load("System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                if (asm4 != null && asm4.Location != null)
+                {
+                    var fvi = FileVersionInfo.GetVersionInfo(asm4.Location); 
+                    string version = fvi.FileVersion;
+                    txtStatus.Text += string.Format("Yes - {0}\n", version);
+                }
             }
             catch (FileNotFoundException)
             {
@@ -115,8 +118,11 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             try
             {
                 var asm35 = Assembly.Load("System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                var fvi = FileVersionInfo.GetVersionInfo(asm35.Location);
-                sqlce35Ver = new Version(fvi.FileVersion);
+                if (asm35 != null && asm35.Location != null)
+                {
+                    var fvi = FileVersionInfo.GetVersionInfo(asm35.Location);
+                    sqlce35Ver = new Version(fvi.FileVersion);
+                }
                 txtStatus.Text += string.Format("Yes - {0}\n", sqlce35Ver);
             }
             catch (FileNotFoundException)

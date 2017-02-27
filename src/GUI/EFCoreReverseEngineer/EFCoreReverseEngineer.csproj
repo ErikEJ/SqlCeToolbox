@@ -204,7 +204,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EFCoreReverseEngineer.cs" />
+    <Compile Include="EfCoreReverseEngineer.cs" />
     <Compile Include="EFCoreReverseEngineerResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatabaseType.cs" />

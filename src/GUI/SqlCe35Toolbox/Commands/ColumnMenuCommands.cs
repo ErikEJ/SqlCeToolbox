@@ -11,6 +11,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public static RoutedUICommand ColumnCommand
         {
+            // ReSharper disable once UnusedAutoPropertyAccessor.Global
             get;
             private set;
         }

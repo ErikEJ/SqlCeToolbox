@@ -42,17 +42,14 @@ namespace ErikEJ.SqlCeToolbox.DDEX4
 				}
 				var conn = Connection;
 				Debug.Assert(conn != null, "Invalid provider object.");
-				if (conn != null)
-				{
-					try
-					{
-                        return System.IO.Path.GetFileName(conn.Database);
-					}
-					catch (DbException)
-					{
-						// We let the base class apply default behavior
-					}
-				}
+			    try
+			    {
+			        return System.IO.Path.GetFileName(conn.Database);
+			    }
+			    catch (DbException)
+			    {
+			        // We let the base class apply default behavior
+			    }
 			}
 			return base.RetrieveValue(propertyName);
 		}

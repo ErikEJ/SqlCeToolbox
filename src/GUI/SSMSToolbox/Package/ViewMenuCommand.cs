@@ -9,6 +9,7 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox.ToolWindows
 {
     /// <summary>

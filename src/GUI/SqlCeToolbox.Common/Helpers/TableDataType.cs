@@ -4,12 +4,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     public class TableDataType
     {
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string Name { get; set; }
         public bool FixedLength { get; set; }
         public short MinLength { get; set; }
         public short MaxLength { get; set; }
         public short DefaultLength { get; set; }
         public bool FixedAllowNulls { get; set; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool FixedIdentity { get; set; }
 
         static TableDataType()

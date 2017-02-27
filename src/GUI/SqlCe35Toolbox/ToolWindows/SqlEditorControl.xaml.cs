@@ -340,6 +340,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     var dataset = await Task.Run(()
+                        // ReSharper disable once AccessToDisposedClosure
                         => repository.ExecuteSql(sql, out showPlan));
 
                     sw.Stop();
@@ -550,6 +551,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     sw.Start();
 
                     var dataset = await Task.Run(()
+                        // ReSharper disable once AccessToDisposedClosure
                         => repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors));
                     sw.Stop();
                     FormatTime(sw);
