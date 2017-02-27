@@ -721,9 +721,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (!result.HasValue || result.Value != true)
                     return;
 
-                //TODO Validate required values!
-                //|| string.IsNullOrWhiteSpace(modelDialog.ModelName)
-
                 var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
                 var options = new ReverseEngineerOptions
@@ -769,7 +766,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             if (revEngResult.EntityErrors.Count == 0)
             {
-                errors.Insert(0, "Model generated successfully" + Environment.NewLine);
+                errors.Insert(0, "Model generated successfully." + Environment.NewLine);
             }
             else
             {
@@ -779,9 +776,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (!string.IsNullOrEmpty(missingProviderPackage))
             {
                 errors.AppendLine();
-                errors.AppendFormat("The {0} NuGet package was not found", missingProviderPackage);
-                errors.AppendLine();
-                errors.Append("You must install it in order to build");
+                errors.AppendFormat("The \"{0}\" NuGet package was not found in the project - it must be installed in order to build.", missingProviderPackage);
             }
 
             EnvDteHelper.ShowMessage(errors.ToString());
