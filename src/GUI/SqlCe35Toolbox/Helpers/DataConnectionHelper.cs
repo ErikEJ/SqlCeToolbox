@@ -778,6 +778,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 var dontTrack = ex.GetType().Name == "SqlCeException"
                     || ex.GetType().Name == "SqlCeInvalidDatabaseFormatException"
                     || ex is SqlException
+                    || ex is DBConcurrencyException
                     || ex is SQLiteException;
 
                 if (!dontTrack && report)
@@ -850,6 +851,19 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             try
             {
                 Assembly.Load("Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        internal static bool IsMsReportViewer10Installed()
+        {
+            try
+            {
+                Assembly.Load("Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
             }
             catch
             {
