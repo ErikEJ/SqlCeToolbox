@@ -68,6 +68,16 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(txtNameSpace.Text))
+            {
+                EnvDteHelper.ShowMessage("Namespace is required");
+                return;
+            }
+            if (string.IsNullOrEmpty(textBox1.Text))
+            {
+                EnvDteHelper.ShowMessage("Context name is required");
+                return;
+            }
             DialogResult = true;
             Close();
         }
