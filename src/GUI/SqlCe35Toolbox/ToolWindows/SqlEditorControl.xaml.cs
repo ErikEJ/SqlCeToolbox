@@ -763,7 +763,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     dataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
                     ApplicationCommands.Copy.Execute(null, dataGrid);
                     dataGrid.UnselectAllCells();
-                    File.WriteAllText(sfd.FileName, (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
+                    File.WriteAllText(sfd.FileName, (string)Clipboard.GetData(DataFormats.CommaSeparatedValue));
                     Clipboard.Clear();
                     return;
                 }
