@@ -312,7 +312,6 @@ GO";
             }
         }
 
-
         [Test]
         public void TestGraphSortServer()
         {
@@ -419,6 +418,28 @@ GO";
         }
 
         [Test]
+        public void TestServerDataGenWithGeography()
+        {
+            using (IRepository sourceRepository = new ServerDBRepository4(@"Data Source=.\SQL2016DEV;Initial Catalog=AW2014Geo;Integrated Security=true;"))
+            {
+                var generator = new Generator4(sourceRepository);
+                generator.GenerateTableContent("Address", false);
+                var script = generator.GeneratedScript;
+            }
+        }
+
+        [Test]
+        public void TestServerTableGenWithGeography()
+        {
+            using (IRepository sourceRepository = new ServerDBRepository4(@"Data Source=.\SQL2016DEV;Initial Catalog=AW2014Geo;Integrated Security=true;"))
+            {
+                var generator = new Generator4(sourceRepository);
+                generator.GenerateTableCreate("Address");
+                var script = generator.GeneratedScript;
+            }
+        }
+
+    [Test]
         public void TestSQLiteDateQuirk()
         {
             //cloud_service_product_infos
