@@ -31,7 +31,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
     {
         public DatabaseInfo DatabaseInfo
         {
-            get { return _dbInfo; }
+            private get { return _dbInfo; }
             set
             {
                 if (value != null)
@@ -61,11 +61,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             LoadDefaultOptions();
         }
 
-        public ExplorerControl ExplorerControl { get; set; }
+        public ExplorerControl ExplorerControl { private get; set; }
 
         public string SqlText
         {
-            get { return SqlTextBox.Text; }
+            private get { return SqlTextBox.Text; }
             set
             {
                 if (!string.IsNullOrEmpty(value))
@@ -90,7 +90,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         public bool IsDirty
         {
             get { return _isDirty; }
-            set
+            private set
             {
                 _isDirty = value;
                 if (_isDirty)
@@ -132,15 +132,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             catch (Exception ex)
             {
                 DataConnectionHelper.SendError(ex,
-                    DatabaseInfo != null ? DatabaseInfo.DatabaseType : DatabaseType.SQLServer);
+                    DatabaseInfo?.DatabaseType ?? DatabaseType.SQLServer);
             }
         }
 
         private void SetEditorFont()
         {
             var package = _parentWindow.Package as SqlCeToolboxPackage;
-            if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+            var dte = package?.GetServiceHelper(typeof(DTE)) as DTE;
             if (dte == null) return;
             var properties = dte.Properties["FontsAndColors", "TextEditor"];
 
@@ -266,8 +265,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             finally
             {
-                if (ms != null)
-                    ms.Dispose();
+                ms?.Dispose();
             }
         }
 
@@ -392,8 +390,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 else
                 {
                     PlanPanel.Children.Clear();
-                    var formsHost = new WindowsFormsHost();
-                    formsHost.Child = new QueryPlanUserControl();
+                    var formsHost = new WindowsFormsHost {Child = new QueryPlanUserControl()};
                     PlanPanel.Children.Add(formsHost);
 
                     var qpControl = (QueryPlanUserControl) formsHost.Child;
@@ -416,10 +413,12 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
                 {
-                    var textBox = new TextBox();
-                    textBox.FontFamily = _fontFamiliy;
-                    textBox.FontSize = _fontSize;
-                    string sql = GetSqlFromSqlEditorTextBox();
+                    var textBox = new TextBox
+                    {
+                        FontFamily = _fontFamiliy,
+                        FontSize = _fontSize
+                    };
+                    var sql = GetSqlFromSqlEditorTextBox();
                     repository.ParseSql(sql);
                     textBox.Text = "Statement(s) in script parsed and seems OK!";
                     ClearResults();
@@ -483,7 +482,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private void FormatTime(Stopwatch sw)
         {
             var ts = new TimeSpan(sw.ElapsedTicks);
-            txtTime.Text = string.Format("Duration: {0:00}:{1:00}.{2:000}", ts.Minutes, ts.Seconds, ts.Milliseconds);
+            txtTime.Text = $"Duration: {ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}";
         }
 
         public void OpenScript()
@@ -509,8 +508,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             if (promptForName || string.IsNullOrEmpty(_savedFileName))
             {
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "SQL Server Compact Script (*.sqlce;*.sql)|*.sqlce;*.sql|All Files(*.*)|*.*";
+                SaveFileDialog sfd = new SaveFileDialog
+                {
+                    Filter = "SQL Server Compact Script (*.sqlce;*.sql)|*.sqlce;*.sql|All Files(*.*)|*.*"
+                };
                 if (DatabaseInfo.DatabaseType == DatabaseType.SQLite)
                 {
                     sfd.Filter = "SQLite Script (*.sql)|*.sql|All Files(*.*)|*.*";
@@ -558,10 +559,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     if (dataset == null) return;
                     ParseDataSetResultsToResultsBox(dataset);
                     if (!schemaChanged) return;
-                    if (ExplorerControl != null)
-                    {
-                        ExplorerControl.RefreshTables(DatabaseInfo);
-                    }
+                    ExplorerControl?.RefreshTables(DatabaseInfo);
                 }
             }
             catch (Exception sqlException)
@@ -607,11 +605,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         private void ParseSqlErrorToResultsBox(string sqlException)
         {
             ClearResults();
-            var textBox = new TextBox();
-            textBox.Foreground = Brushes.Red;
-            textBox.FontFamily = _fontFamiliy;
-            textBox.FontSize = _fontSize;
-            textBox.Text = sqlException;
+            var textBox = new TextBox
+            {
+                Foreground = Brushes.Red,
+                FontFamily = _fontFamiliy,
+                FontSize = _fontSize,
+                Text = sqlException
+            };
             Resultspanel.Children.Add(textBox);
             tab1.Visibility = Visibility.Collapsed;
             resultsTabControl.SelectedIndex = 1;
@@ -624,14 +624,16 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             foreach (DataTable table in dataset.Tables)
             {
                 txtTime.Text = txtTime.Text + " / " + table.Rows.Count + " rows ";
-                var textBox = new TextBox();
-                textBox.FontFamily = _fontFamiliy;
-                textBox.FontSize = _fontSize;
-                textBox.Foreground = Brushes.Black;
+                var textBox = new TextBox
+                {
+                    FontFamily = _fontFamiliy,
+                    FontSize = _fontSize,
+                    Foreground = Brushes.Black
+                };
                 DockPanel.SetDock(textBox, Dock.Top);
                 if (table.Rows.Count == 0)
                 {
-                    textBox.Text = string.Format("{0} rows affected", table.MinimumCapacity);
+                    textBox.Text = $"{table.MinimumCapacity} rows affected";
                     Resultspanel.Children.Add(textBox);
                     resultsTabControl.SelectedIndex = 1;
                 }
@@ -647,8 +649,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         }
                         else
                         {
-                            var grid = new ExtEditControl();
-                            grid.SourceTable = table;
+                            var grid = new ExtEditControl {SourceTable = table};
                             DockPanel.SetDock(grid, Dock.Top);
                             GridPanel.Children.Add(grid);
                         }
@@ -673,14 +674,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                             {
                                 if (item == DBNull.Value)
                                 {
-                                    if (_showNullValuesAsNull)
-                                    {
-                                        results.Append("NULL\t");
-                                    }
-                                    else
-                                    {
-                                        results.Append("\t");
-                                    }
+                                    results.Append(_showNullValuesAsNull ? "NULL\t" : "\t");
                                 }
                                 //This formatting is optional (causes perf degradation)
                                 else if (item.GetType() == typeof(byte[]) && _showBinaryValuesInResult)
@@ -758,36 +752,34 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 {
                     var dataGrid = FindDataGrid();
                     if (dataGrid == null) return;
-                    var sfd = new SaveFileDialog();
-                    sfd.Filter = "CSV file (*.csv)|*.csv|All Files(*.*)|*.*";
-                    sfd.ValidateNames = true;
-                    sfd.Title = "Save result as CSV";
-                    if (sfd.ShowDialog() == true)
+                    var sfd = new SaveFileDialog
                     {
-                        dataGrid.SelectAllCells();
-                        dataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-                        ApplicationCommands.Copy.Execute(null, dataGrid);
-                        dataGrid.UnselectAllCells();
-                        var result = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-                        Clipboard.Clear();
-                        File.WriteAllText(sfd.FileName, result);
-                    }
+                        Filter = "CSV file (*.csv)|*.csv|All Files(*.*)|*.*",
+                        ValidateNames = true,
+                        Title = "Save result as CSV"
+                    };
+                    if (sfd.ShowDialog() != true) return;
+                    dataGrid.SelectAllCells();
+                    dataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                    ApplicationCommands.Copy.Execute(null, dataGrid);
+                    dataGrid.UnselectAllCells();
+                    File.WriteAllText(sfd.FileName, (string)Clipboard.GetData(DataFormats.CommaSeparatedValue));
+                    Clipboard.Clear();
                     return;
                 }
-                if (Resultspanel.Children.Count > 0)
+                if (Resultspanel.Children.Count <= 0) return;
                 {
                     var textBox = Resultspanel.Children[0] as TextBox;
                     if (textBox == null) return;
-                    var sfd = new SaveFileDialog();
-                    sfd.Filter = "CSV file (*.csv)|*.csv|All Files(*.*)|*.*";
-                    sfd.ValidateNames = true;
-                    sfd.Title = "Save result as CSV";
-                    if (sfd.ShowDialog() == true)
+                    var sfd = new SaveFileDialog
                     {
-                        var separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
-                        var result = textBox.Text.Replace("\t", separator);
-                        File.WriteAllText(sfd.FileName, result);
-                    }
+                        Filter = "CSV file (*.csv)|*.csv|All Files(*.*)|*.*",
+                        ValidateNames = true,
+                        Title = "Save result as CSV"
+                    };
+                    if (sfd.ShowDialog() != true) return;
+                    var separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+                    File.WriteAllText(sfd.FileName, textBox.Text.Replace("\t", separator));
                 }
             }
             catch (Exception ex)
@@ -804,10 +796,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 return dataGrid;
             }
             var control = GridPanel.Children[0] as ExtEditControl;
-            if (control == null) return null;
-            var grid = control.FindName("masterGrid") as Grid;
-            if (grid == null) return null;
-            return grid.Children[0] as DataGrid;
+            var grid = control?.FindName("masterGrid") as Grid;
+            return grid?.Children[0] as DataGrid;
         }
 
         public void OpenSqlEditorToolWindow()
