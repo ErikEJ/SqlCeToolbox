@@ -758,19 +758,16 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         ValidateNames = true,
                         Title = "Save result as CSV"
                     };
-                    if (sfd.ShowDialog() == true)
-                    {
-                        dataGrid.SelectAllCells();
-                        dataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-                        ApplicationCommands.Copy.Execute(null, dataGrid);
-                        dataGrid.UnselectAllCells();
-                        var result = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-                        Clipboard.Clear();
-                        File.WriteAllText(sfd.FileName, result);
-                    }
+                    if (sfd.ShowDialog() != true) return;
+                    dataGrid.SelectAllCells();
+                    dataGrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                    ApplicationCommands.Copy.Execute(null, dataGrid);
+                    dataGrid.UnselectAllCells();
+                    File.WriteAllText(sfd.FileName, (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
+                    Clipboard.Clear();
                     return;
                 }
-                if (Resultspanel.Children.Count > 0)
+                if (Resultspanel.Children.Count <= 0) return;
                 {
                     var textBox = Resultspanel.Children[0] as TextBox;
                     if (textBox == null) return;
@@ -780,12 +777,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         ValidateNames = true,
                         Title = "Save result as CSV"
                     };
-                    if (sfd.ShowDialog() == true)
-                    {
-                        var separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
-                        var result = textBox.Text.Replace("\t", separator);
-                        File.WriteAllText(sfd.FileName, result);
-                    }
+                    if (sfd.ShowDialog() != true) return;
+                    var separator = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+                    File.WriteAllText(sfd.FileName, textBox.Text.Replace("\t", separator));
                 }
             }
             catch (Exception ex)
