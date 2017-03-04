@@ -298,34 +298,34 @@ namespace ErikEJ.SqlCeScripting
                 throw new ArgumentNullException(nameof(saveImageFiles), "outFile must be specified in the Generator constructor when using saveImageFiles");
             }
 
-            int identityOrdinal = _repository.GetIdentityOrdinal(tableName);
-            bool hasIdentity = (identityOrdinal > -1);
+            var identityOrdinal = _repository.GetIdentityOrdinal(tableName);
+            var hasIdentity = (identityOrdinal > -1);
             if (ignoreIdentity)
             {
                 hasIdentity = false;
             }
-            string unicodePrefix = "N";
+            var unicodePrefix = "N";
             if (_sqlite)
                 unicodePrefix = string.Empty;
             // Skip rowversion column
             var rowVersionOrdinal = _repository.GetRowVersionOrdinal(tableName);
             if (_sqlite) rowVersionOrdinal = -1;
-            List<Column> columns = _allColumns.Where(c => c.TableName == tableName).OrderBy(c => c.Ordinal).ToList();
+            var columns = _allColumns.Where(c => c.TableName == tableName).OrderBy(c => c.Ordinal).ToList();
             var nvarcharSizes = columns.Where(x => x.DataType == "nvarchar" && x.CharacterMaxLength > 0)
                 .ToDictionary(x => x.ColumnName, x => x.CharacterMaxLength);
-            using (IDataReader rdr = _repository.GetDataFromReader(tableName, columns, _allPrimaryKeys.Where(p => p.TableName == tableName).ToList(), whereClause))
+            using (var rdr = _repository.GetDataFromReader(tableName, columns, _allPrimaryKeys.Where(p => p.TableName == tableName).ToList(), whereClause))
             {
-                bool firstRun = true;
-                int rowCount = 0;
+                var firstRun = true;
+                var rowCount = 0;
                 var fields = new List<string>();
-                for (int iColumn = 0; iColumn < rdr.FieldCount; iColumn++)
+                for (var iColumn = 0; iColumn < rdr.FieldCount; iColumn++)
                 {
                     fields.Add(rdr.GetName(iColumn));
                 }
-                string scriptPrefix = GetInsertScriptPrefix(tableName, fields, rowVersionOrdinal, identityOrdinal, ignoreIdentity);
+                var scriptPrefix = GetInsertScriptPrefix(tableName, fields, rowVersionOrdinal, identityOrdinal, ignoreIdentity);
 
-                string prefix = "{ts '";
-                string postfix = "'}";
+                var prefix = "{ts '";
+                var postfix = "'}";
                 if (_sqlite)
                 {
                     prefix = "'";
@@ -350,11 +350,12 @@ namespace ErikEJ.SqlCeScripting
                     _sbScript.Append(scriptPrefix);
                     _sbScript.Append(Environment.NewLine);
                     
-                    for (int iColumn = 0; iColumn < rdr.FieldCount; iColumn++)
+                    for (var iColumn = 0; iColumn < rdr.FieldCount; iColumn++)
                     {
                         var fieldType = rdr.GetFieldType(iColumn);
                         //Skip rowversion column
-                        if (rowVersionOrdinal == iColumn || rdr.GetName(iColumn).StartsWith("__sys", StringComparison.OrdinalIgnoreCase))
+                        if (rowVersionOrdinal == iColumn 
+                            || rdr.GetName(iColumn).StartsWith("__sys", StringComparison.OrdinalIgnoreCase))
                         {
                             continue;
                         }
@@ -366,7 +367,7 @@ namespace ErikEJ.SqlCeScripting
                         {
                             _sbScript.Append("NULL");
                         }
-                        else if (fieldType == typeof(String))
+                        else if (fieldType == typeof(string))
                         {
                             var stringValue = rdr.GetString(iColumn).Replace("'", "''");
                             if (TruncateSQLiteStrings && !string.IsNullOrEmpty(stringValue))
@@ -396,7 +397,7 @@ namespace ErikEJ.SqlCeScripting
                         else if (fieldType == typeof(DateTime))
                         {
                             // see http://msdn.microsoft.com/en-us/library/ms180878.aspx#BackwardCompatibilityforDownlevelClients
-                            Column column = _allColumns.Where(c => c.TableName == tableName && c.ColumnName == rdr.GetName(iColumn)).Single();
+                            var column = _allColumns.Single(c => c.TableName == tableName && c.ColumnName == rdr.GetName(iColumn));
                             //Being careful here due to issues with the sqlite ADO.NET provider
                             DateTime? date;
                             try
@@ -407,7 +408,7 @@ namespace ErikEJ.SqlCeScripting
                             {
                                 throw new Exception(ex.Message + " - Value: '" + rdr.GetString(iColumn) + "' in " + tableName + ":" + column.ColumnName);
                             }
-                            DateFormat format = column.DateFormat;
+                            var format = column.DateFormat;
                             //Work item: 17681
                             if (!_preserveDateAndDateTime2)
                                 format = DateFormat.DateTime;
@@ -440,7 +441,7 @@ namespace ErikEJ.SqlCeScripting
                         }
                         else if (fieldType == typeof(DateTimeOffset))
                         {
-                            DateTimeOffset dto = (DateTimeOffset)rdr.GetValue(iColumn);
+                            var dto = (DateTimeOffset)rdr.GetValue(iColumn);
                             if (_preserveDateAndDateTime2)
                             {
                                 _sbScript.Append(unicodePrefix + "'");
@@ -463,7 +464,7 @@ namespace ErikEJ.SqlCeScripting
                         }
                         else if (fieldType == typeof(byte[]))
                         {
-                            var buffer = (Byte[])rdr.GetValue(iColumn);
+                            var buffer = (byte[])rdr.GetValue(iColumn);
                             if (saveImageFiles)
                             {
                                 var id = Guid.NewGuid().ToString("N") + ".blob";
@@ -479,23 +480,14 @@ namespace ErikEJ.SqlCeScripting
                                 }
                                 finally
                                 {
-                                    if (bw != null)
-                                        bw.Close();
-                                    if (fs != null)
-                                        fs.Close();
+                                    bw?.Close();
+                                    fs?.Close();
                                 }
                             }
                             else
                             {
-                                if (_sqlite)
-                                {
-                                    _sbScript.Append("X'");
-                                }
-                                else
-                                {
-                                    _sbScript.Append("0x");
-                                }
-                                for (int i = 0; i < buffer.Length; i++)
+                                _sbScript.Append(_sqlite ? "X'" : "0x");
+                                for (var i = 0; i < buffer.Length; i++)
                                 {
                                     _sbScript.Append(buffer[i].ToString("X2", CultureInfo.InvariantCulture));
                                 }
@@ -507,12 +499,12 @@ namespace ErikEJ.SqlCeScripting
                         }
                         else if (fieldType == typeof(double))
                         {
-                            string intString = rdr.GetDouble(iColumn).ToString("R", CultureInfo.InvariantCulture);
+                            var intString = rdr.GetDouble(iColumn).ToString("R", CultureInfo.InvariantCulture);
                             _sbScript.Append(intString);
                         }
                         else if (fieldType == typeof(float))
                         {
-                            string intString = rdr.GetFloat(iColumn).ToString("R", CultureInfo.InvariantCulture);
+                            var intString = rdr.GetFloat(iColumn).ToString("R", CultureInfo.InvariantCulture);
                             _sbScript.Append(intString);
                         }
                         else if (fieldType == typeof(byte) || fieldType == typeof(short) || fieldType == typeof(int) ||
@@ -523,7 +515,7 @@ namespace ErikEJ.SqlCeScripting
                         }
                         else if (fieldType == typeof(bool))
                         {
-                            bool boolVal = (bool)rdr.GetValue(iColumn);
+                            var boolVal = (bool)rdr.GetValue(iColumn);
                             if (boolVal)
                             { _sbScript.Append("1"); }
                             else
@@ -532,7 +524,7 @@ namespace ErikEJ.SqlCeScripting
                         else
                         {
                             //Decimal point globalization
-                            string value = Convert.ToString(rdr.GetValue(iColumn), CultureInfo.InvariantCulture);
+                            var value = Convert.ToString(rdr.GetValue(iColumn), CultureInfo.InvariantCulture);
                             _sbScript.AppendFormat("'{0}'", value.Replace("'", "''"));
                         }
                         _sbScript.Append(",");
@@ -570,7 +562,6 @@ namespace ErikEJ.SqlCeScripting
                             GenerateSqliteSuffix();
                         }
 #endif
-
                         _fileCounter++;
                         Helper.WriteIntoFile(_sbScript.ToString(), _outFile, _fileCounter, _sqlite);
                         _sbScript.Remove(0, _sbScript.Length);
@@ -1639,7 +1630,7 @@ namespace ErikEJ.SqlCeScripting
                         "[{0}] {1}({2}) {3}{4}"
                         , col.ColumnName
                         , col.DataType
-                        , col.CharacterMaxLength
+                        , col.CharacterMaxLength == -1 ? 4000 : col.CharacterMaxLength
                         , colDefault
                         , colNull
                         );

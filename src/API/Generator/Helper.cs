@@ -169,9 +169,9 @@ namespace ErikEJ.SqlCeScripting
                 case "xml":
                     return "ntext";
                 case "geography":
-                    return "image";
+                    return "nvarchar";
                 case "geometry":
-                    return "image";
+                    return "nvarchar";
                 case "hierarchyid":
                     return "varbinary";
 

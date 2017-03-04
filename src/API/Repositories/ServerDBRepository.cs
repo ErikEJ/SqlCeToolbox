@@ -8,13 +8,14 @@ using DbUp.Support.SqlServer;
 namespace ErikEJ.SqlCeScripting
 {
 #if V40
+    // ReSharper disable once InconsistentNaming
     public class ServerDBRepository4 : IRepository
 #else
     public sealed class ServerDBRepository : IRepository
 #endif
     {
         private SqlConnection _cn;
-        private readonly bool _keepSchemaName = false;
+        private readonly bool _keepSchemaName;
 
         private readonly List<string> _sqlCeFunctions = new List<string>()
         {
@@ -629,7 +630,7 @@ namespace ErikEJ.SqlCeScripting
         {
             try
             {
-                using (SqlCommand cmd = new SqlCommand())
+                using (var cmd = new SqlCommand())
                 {
                     cmd.Connection = _cn;
                     cmd.CommandText = sql;
@@ -644,7 +645,7 @@ namespace ErikEJ.SqlCeScripting
 
         private string FormatSqlException(SqlException ex, string sql)
         {
-            return ex.Message + Environment.NewLine + sql;
+            return Helper.ShowErrors(ex) + Environment.NewLine + sql;
         }
 
         public string ParseSql(string script)
@@ -698,16 +699,13 @@ namespace ErikEJ.SqlCeScripting
     {
         public static bool ContainsAll(this string str, params string[] values)
         {
-            if (!string.IsNullOrEmpty(str) || values.Length > 0)
+            if (string.IsNullOrEmpty(str) && values.Length <= 0) return false;
+            foreach (var value in values)
             {
-                foreach (string value in values)
-                {
-                    if (!str.Contains(value))
-                        return false;
-                }
-                return true;
+                if (str != null && !str.Contains(value))
+                    return false;
             }
-            return false;
+            return true;
         }
 
         public static bool ContainsAny(this string str, params string[] values)

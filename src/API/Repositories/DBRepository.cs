@@ -13,28 +13,33 @@ namespace ErikEJ.SqlCeScripting
     /// Implementation of the <see cref="IRepository"/> interface for SQL Server Compact 3.1/3.5
     /// </summary>
 #if V40
+    // ReSharper disable once InconsistentNaming
     public class DB4Repository : IRepository
 #else
     public sealed class DBRepository : IRepository
 #endif
     {
-        private SqlCeConnection cn;
+        private SqlCeConnection _cn;
         private delegate void AddToListDelegate<T>(ref List<T> list, SqlCeDataReader dr);
-        private string showPlan = string.Empty;
-        private bool schemaHasChanged = false;
+        private string _showPlan = string.Empty;
+        private bool _schemaHasChanged;
 
+#if V40
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DB4Repository"/> class.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        public DB4Repository(string connectionString)
+#else
         /// <summary>
         /// Initializes a new instance of the <see cref="DBRepository"/> class.
         /// </summary>
         /// <param name="connectionString">The connection string.</param>
-#if V40
-        public DB4Repository(string connectionString)
-#else
         public DBRepository(string connectionString)
 #endif
         {
-            cn = new SqlCeConnection(connectionString);
-            cn.Open();
+            _cn = new SqlCeConnection(connectionString);
+            _cn.Open();
         }
 
         /// <summary>
@@ -42,16 +47,16 @@ namespace ErikEJ.SqlCeScripting
         /// </summary>
         public void Dispose()
         {
-            if (cn != null)
+            if (_cn != null)
             {
-                cn.Close();
-                cn = null;
+                _cn.Close();
+                _cn = null;
             }
         }
 
         public string GetRunTimeVersion()
         {
-            return cn.ServerVersion;
+            return _cn.ServerVersion;
         }
 
         private static void AddToListString(ref List<string> list, SqlCeDataReader dr)
@@ -69,17 +74,17 @@ namespace ErikEJ.SqlCeScripting
                     , IsNullable = (YesNoOption)Enum.Parse(typeof(YesNoOption), dr.GetString(1))
                     , DataType = dr.GetString(2)
                     , CharacterMaxLength = (dr.IsDBNull(3) ? 0 : dr.GetInt32(3))
-                    , NumericPrecision = (dr.IsDBNull(4) ? 0 : Convert.ToInt32(dr[4], System.Globalization.CultureInfo.InvariantCulture))
+                    , NumericPrecision = (dr.IsDBNull(4) ? 0 : Convert.ToInt32(dr[4], CultureInfo.InvariantCulture))
 #if V31
 #else
-                    , AutoIncrementBy = (dr.IsDBNull(5) ? 0 : Convert.ToInt64(dr[5], System.Globalization.CultureInfo.InvariantCulture))
-                    , AutoIncrementSeed = (dr.IsDBNull(6) ? 0 : Convert.ToInt64(dr[6], System.Globalization.CultureInfo.InvariantCulture))
-                    , AutoIncrementNext = (dr.IsDBNull(12) ? 0 : Convert.ToInt64(dr[12], System.Globalization.CultureInfo.InvariantCulture))
+                    , AutoIncrementBy = (dr.IsDBNull(5) ? 0 : Convert.ToInt64(dr[5], CultureInfo.InvariantCulture))
+                    , AutoIncrementSeed = (dr.IsDBNull(6) ? 0 : Convert.ToInt64(dr[6], CultureInfo.InvariantCulture))
+                    , AutoIncrementNext = (dr.IsDBNull(12) ? 0 : Convert.ToInt64(dr[12], CultureInfo.InvariantCulture))
 #endif
                     , ColumnHasDefault = (dr.IsDBNull(7) ? false : dr.GetBoolean(7))
                     , ColumnDefault = (dr.IsDBNull(8) ? string.Empty : dr.GetString(8).Trim())
                     , RowGuidCol = (dr.IsDBNull(9) ? false : dr.GetInt32(9) == 378 || dr.GetInt32(9) == 282)
-                    , NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], System.Globalization.CultureInfo.InvariantCulture))
+                    , NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], CultureInfo.InvariantCulture))
                     , TableName = dr.GetString(11)
                     , Ordinal = dr.GetInt32(13)
                 });
@@ -128,15 +133,15 @@ namespace ErikEJ.SqlCeScripting
             });
         }
 
-        private List<T> ExecuteReader<T>(string commandText, AddToListDelegate<T> AddToListMethod)
+        private List<T> ExecuteReader<T>(string commandText, AddToListDelegate<T> addToListMethod)
         {
             List<T> list = new List<T>();
-            using (var cmd = new SqlCeCommand(commandText, cn))
+            using (var cmd = new SqlCeCommand(commandText, _cn))
             {
                 using (var dr = cmd.ExecuteReader())
                 {
                     while (dr.Read())
-                        AddToListMethod(ref list, dr);
+                        addToListMethod(ref list, dr);
                 }
             }
             return list;
@@ -144,7 +149,7 @@ namespace ErikEJ.SqlCeScripting
 
         private IDataReader ExecuteDataReader(string commandText, CommandType commandType)
         {
-            using (var cmd = new SqlCeCommand(commandText, cn))
+            using (var cmd = new SqlCeCommand(commandText, _cn))
             {
                 cmd.CommandType = commandType;
                 return cmd.ExecuteReader();
@@ -157,8 +162,8 @@ namespace ErikEJ.SqlCeScripting
             try
             {
                 dt = new DataTable();
-                dt.Locale = System.Globalization.CultureInfo.InvariantCulture;
-                using (var cmd = new SqlCeCommand(commandText, cn))
+                dt.Locale = CultureInfo.InvariantCulture;
+                using (var cmd = new SqlCeCommand(commandText, _cn))
                 {
                     using (var da = new SqlCeDataAdapter(cmd))
                     {
@@ -178,7 +183,7 @@ namespace ErikEJ.SqlCeScripting
         private object ExecuteScalar(string commandText)
         {
             object val;
-            using (var cmd = new SqlCeCommand(commandText, cn))
+            using (var cmd = new SqlCeCommand(commandText, _cn))
             {
                 val = cmd.ExecuteScalar();
             }
@@ -187,7 +192,7 @@ namespace ErikEJ.SqlCeScripting
 
         private void ExecuteNonQuery(string commandText)
         {
-            using (var cmd = new SqlCeCommand(commandText, cn))
+            using (var cmd = new SqlCeCommand(commandText, _cn))
             {
                 cmd.ExecuteNonQuery();
             }
@@ -195,16 +200,16 @@ namespace ErikEJ.SqlCeScripting
 
         private List<KeyValuePair<string, string>> GetSqlCeInfo()
         {
-            List<KeyValuePair<string, string>> valueList = new List<KeyValuePair<string, string>>();
+            List<KeyValuePair<string, string>> valueList;
 #if V31
 #else
-            valueList = cn.GetDatabaseInfo();
+            valueList = _cn.GetDatabaseInfo();
 #endif
-            valueList.Add(new KeyValuePair<string,string>("Database", cn.Database));
-            valueList.Add(new KeyValuePair<string, string>("ServerVersion", cn.ServerVersion));
-            if (System.IO.File.Exists(cn.Database))
+            valueList.Add(new KeyValuePair<string,string>("Database", _cn.Database));
+            valueList.Add(new KeyValuePair<string, string>("ServerVersion", _cn.ServerVersion));
+            if (System.IO.File.Exists(_cn.Database))
             { 
-                System.IO.FileInfo fi = new System.IO.FileInfo(cn.Database);
+                System.IO.FileInfo fi = new System.IO.FileInfo(_cn.Database);
                 valueList.Add(new KeyValuePair<string, string>("DatabaseSize",  RepositoryHelper.GetSizeReadable(fi.Length)));
                 valueList.Add(new KeyValuePair<string, string>("SpaceAvailable", RepositoryHelper.GetSizeReadable(4294967296 - fi.Length)));
                 valueList.Add(new KeyValuePair<string, string>("Created", fi.CreationTime.ToShortDateString() + " " + fi.CreationTime.ToShortTimeString()));
@@ -333,18 +338,19 @@ namespace ErikEJ.SqlCeScripting
         /// </summary>
         /// <param name="tableName">Name of the table.</param>
         /// <param name="tableColumns">The columns.</param>
+        /// <param name="tablePrimaryKeys"></param>
         /// <returns></returns>
         public DataTable GetDataFromTable(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys)
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder(200);
+            var sb = new StringBuilder(200);
             sb.Append("SELECT ");
             foreach (Column col in tableColumns)
             {
-                sb.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
             }
             sb.Remove(sb.Length - 2, 2);
 
-            sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, " From [{0}]", tableName);
+            sb.AppendFormat(CultureInfo.InvariantCulture, " From [{0}]", tableName);
 
             sb.Append(SortSelect(tablePrimaryKeys));
             return ExecuteDataTable(sb.ToString());
@@ -374,19 +380,19 @@ namespace ErikEJ.SqlCeScripting
 
         public IDataReader GetDataFromReader(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys, string whereClause = null)
         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder(200);
+            var sb = new StringBuilder(200);
             sb.Append("SELECT ");
             foreach (Column col in tableColumns)
             {
-                sb.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
+                sb.Append(string.Format(CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
             }
             sb.Remove(sb.Length - 2, 2);
 
-            sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, " FROM [{0}]", tableName);
+            sb.AppendFormat(CultureInfo.InvariantCulture, " FROM [{0}]", tableName);
 
             if (!string.IsNullOrEmpty(whereClause))
             {
-                sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, " WHERE {0}", whereClause);
+                sb.AppendFormat(CultureInfo.InvariantCulture, " WHERE {0}", whereClause);
             }
 
             sb.Append(SortSelect(tablePrimaryKeys));
@@ -396,7 +402,6 @@ namespace ErikEJ.SqlCeScripting
         /// <summary>
         /// Gets the primary keys from table.
         /// </summary>
-        /// <param name="tableName">Name of the table.</param>
         /// <returns></returns>
         public List<PrimaryKey> GetAllPrimaryKeys()
         {
@@ -499,7 +504,7 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="newName">The new name.</param>
         public void RenameTable(string oldName, string newName)
         {
-            ExecuteNonQuery(string.Format(System.Globalization.CultureInfo.InvariantCulture, "sp_rename '{0}', '{1}';", oldName, newName));            
+            ExecuteNonQuery(string.Format(CultureInfo.InvariantCulture, "sp_rename '{0}', '{1}';", oldName, newName));            
         }
 
         /// <summary>
@@ -523,19 +528,19 @@ namespace ErikEJ.SqlCeScripting
                 {
                     using (SqlCeCommand cmd = new SqlCeCommand())
                     {
-                        cmd.Connection = cn;
+                        cmd.Connection = _cn;
                         foreach (var table in tables)
                         {
-                            string strSQL = "SELECT * FROM [" + table + "] WHERE 1 = 0";
+                            string strSql = "SELECT * FROM [" + table + "] WHERE 1 = 0";
 
-                            using (SqlCeCommand cmdSet = new SqlCeCommand(strSQL, cn))
+                            using (SqlCeCommand cmdSet = new SqlCeCommand(strSql, _cn))
                             {
                                 using (SqlCeDataAdapter adapter1 = new SqlCeDataAdapter(cmdSet))
                                 {
                                     adapter1.FillSchema(schemaSet, SchemaType.Source, table);
 
                                     //Fill the table in the dataset 
-                                    cmd.CommandText = strSQL;
+                                    cmd.CommandText = strSql;
                                     adapter.SelectCommand = cmd;
                                     adapter.Fill(schemaSet, table);
                                 }
@@ -581,13 +586,13 @@ namespace ErikEJ.SqlCeScripting
 
         public DataSet ExecuteSql(string script, out bool schemaChanged)
         {
-            schemaHasChanged = false;
+            _schemaHasChanged = false;
             DataSet ds = null;
             try
             {
                 ds = new DataSet();
                 RunCommands(ds, script, false, false);
-                schemaChanged = schemaHasChanged;
+                schemaChanged = _schemaHasChanged;
             }
             catch
             {
@@ -603,7 +608,7 @@ namespace ErikEJ.SqlCeScripting
             using (DataSet ds = new DataSet())
             {
                 RunCommands(ds, script, true, false);
-                return showPlan;
+                return _showPlan;
             }
         }
 
@@ -614,7 +619,7 @@ namespace ErikEJ.SqlCeScripting
             {
                 ds = new DataSet();
                 RunCommands(ds, script, false, true);
-                showPlanString = showPlan;
+                showPlanString = _showPlan;
             }
             catch
             {
@@ -627,13 +632,13 @@ namespace ErikEJ.SqlCeScripting
 
         public DataSet ExecuteSql(string script, out bool schemaChanged, bool ignoreDdlErrors)
         {
-            schemaHasChanged = false;
+            _schemaHasChanged = false;
             DataSet ds = null;
             try
             {
                 ds = new DataSet();
                 RunCommands(ds, script, false, false, ignoreDdlErrors);
-                schemaChanged = schemaHasChanged;
+                schemaChanged = _schemaHasChanged;
             }
             catch
             {
@@ -649,47 +654,64 @@ namespace ErikEJ.SqlCeScripting
             throw new NotImplementedException();
         }
 
-        internal void RunCommands(string scriptPath)
+        private void RunCommands(string scriptPath)
         {
             if (!System.IO.File.Exists(scriptPath))
                 return;
 
-            using (System.IO.StreamReader sr = System.IO.File.OpenText(scriptPath))
+            using (var sr = System.IO.File.OpenText(scriptPath))
             {
-                StringBuilder sb = new StringBuilder(10000);
+                var sb = new StringBuilder(10000);
                 while (!sr.EndOfStream)
                 {
-                    string line = sr.ReadLine().Trim();
-                    if (line.Equals("GO", StringComparison.OrdinalIgnoreCase))
+                    var readLine = sr.ReadLine();
+                    if (readLine != null)
                     {
-                        RunCommand(sb.ToString());
-                        sb.Clear();
-                    }
-                    else
-                    {
-                        sb.Append(line);
-                        sb.Append(Environment.NewLine);
+                        var line = readLine.Trim();
+                        if (line.Equals("GO", StringComparison.OrdinalIgnoreCase))
+                        {
+                            RunCommand(sb.ToString());
+                            sb.Clear();
+                        }
+                        else
+                        {
+                            sb.Append(line);
+                            sb.Append(Environment.NewLine);
+                        }
                     }
                 }
             }
         }
 
-        internal void RunCommand(string sql)
+        private void RunCommand(string sql)
         {
-            using (SqlCeCommand cmd = new SqlCeCommand())
+            try
             {
-                cmd.Connection = cn;
-                cmd.CommandText = sql;
-                cmd.ExecuteNonQuery();
+                using (var cmd = new SqlCeCommand())
+                {
+                    cmd.Connection = _cn;
+                    cmd.CommandText = sql;
+                    cmd.ExecuteNonQuery();
+                }
             }
+            catch (SqlCeException ex)
+            {
+                throw new Exception(FormatSqlCeException(ex, sql));
+            }
+
         }
 
-        internal void RunCommands(DataSet dataset, string script, bool checkSyntax, bool includePlan, bool ignoreDDLErrors = false)
+        private string FormatSqlCeException(SqlCeException ex, string sql)
+        {
+            return Helper.ShowErrors(ex) + Environment.NewLine + sql;
+        }
+
+        private void RunCommands(DataSet dataset, string script, bool checkSyntax, bool includePlan, bool ignoreDdlErrors = false)
         {
             dataset.EnforceConstraints = false;
             using (SqlCeCommand cmd = new SqlCeCommand())
             {
-                cmd.Connection = cn;
+                cmd.Connection = _cn;
                 if (checkSyntax)
                 {
                     cmd.CommandText = "SET SHOWPLAN_XML ON;";
@@ -707,7 +729,7 @@ namespace ErikEJ.SqlCeScripting
                     var commandText = reader.ReadCommand();
                     while (!string.IsNullOrWhiteSpace(commandText))
                     {
-                        RunCommand(commandText, dataset, ignoreDDLErrors);
+                        RunCommand(commandText, dataset, ignoreDdlErrors);
                         commandText = reader.ReadCommand();
                     }
                 }
@@ -716,9 +738,10 @@ namespace ErikEJ.SqlCeScripting
                 {
                     cmd.CommandText = "SELECT @@SHOWPLAN;";
                     
-                    object obj = cmd.ExecuteScalar();
-                    if (obj.GetType() == typeof(System.String))
-                        showPlan = (string)obj;
+                    var obj = cmd.ExecuteScalar();
+                    var s = obj as string;
+                    if (s != null)
+                        _showPlan = s;
 
                     cmd.CommandText = "SET SHOWPLAN_XML OFF;";
                     cmd.ExecuteNonQuery();
@@ -728,9 +751,10 @@ namespace ErikEJ.SqlCeScripting
                 {
                     cmd.CommandText = "SELECT @@SHOWPLAN;";
 
-                    object obj = cmd.ExecuteScalar();
-                    if (obj.GetType() == typeof(System.String))
-                        showPlan = (string)obj;
+                    var obj = cmd.ExecuteScalar();
+                    var s = obj as string;
+                    if (s != null)
+                        _showPlan = s;
 
                     cmd.CommandText = "SET STATISTICS XML OFF;";
                     cmd.ExecuteNonQuery();
@@ -738,12 +762,12 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        private void RunCommand(string commandText, DataSet dataSet, bool ignoreDDLErrors)
+        private void RunCommand(string commandText, DataSet dataSet, bool ignoreDdlErrors)
         {
             using (SqlCeCommand cmd = new SqlCeCommand())
             {
                 cmd.CommandText = commandText;
-                cmd.Connection = cn;
+                cmd.Connection = _cn;
 
                 CommandExecute execute = RepositoryHelper.FindExecuteType(commandText);
 
@@ -763,7 +787,7 @@ namespace ErikEJ.SqlCeScripting
                     if (execute == CommandExecute.NonQuery || execute == CommandExecute.NonQuerySchemaChanged)
                     {
                         if (execute == CommandExecute.NonQuerySchemaChanged)
-                            schemaHasChanged = true;
+                            _schemaHasChanged = true;
                         DataTable table = null;
                         try
                         {
@@ -776,7 +800,7 @@ namespace ErikEJ.SqlCeScripting
                         {
                             if (table != null)
                                 table.Dispose();
-                            if (ignoreDDLErrors && execute == CommandExecute.NonQuerySchemaChanged)
+                            if (ignoreDdlErrors && execute == CommandExecute.NonQuerySchemaChanged)
                             {}
                             else
                             {
@@ -795,16 +819,14 @@ namespace ErikEJ.SqlCeScripting
         /// <returns></returns>
         public DateTime GetLastSuccessfulSyncTime(string publication)
         {
-            SqlCeCommand cmd = null;
-
             string[] vals = publication.Split(':');
 
             if (vals.Length != 3)
                 return DateTime.MinValue;
 
-            using (cmd = cn.CreateCommand())
+            using ( var cmd = _cn.CreateCommand())
             {
-                cmd.Connection = cn;
+                cmd.Connection = _cn;
 
                 cmd.CommandText = "SELECT table_name FROM information_schema.tables WHERE TABLE_NAME = @table";
                 cmd.Parameters.Add("@table", SqlDbType.NVarChar, 4000);
@@ -834,9 +856,6 @@ namespace ErikEJ.SqlCeScripting
                     return ((DateTime)obj);
             }
         }
-
-
         #endregion
-
     }
 }
