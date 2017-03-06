@@ -1,14 +1,12 @@
 # SQLite & SQL Server Compact Toolbox
 
-[![Join the chat at https://gitter.im/SqlCeToolbox](https://badges.gitter.im/SqlCEToolbox/Lobby.svg)](https://gitter.im/SqlCeToolbox/Lobby)  [![AppVeyor](https://ci.appveyor.com/api/projects/status/r3pv323quuaoqw4f?svg=true)](https://ci.appveyor.com/project/ErikEJ/sqlcetoolbox/branch/master) [My tools and utilities for embedded database development](http://erikej.github.io/SqlCeToolbox/)
+[![Twitter Follow](https://img.shields.io/twitter/follow/ErikEJ.svg?style=social&label=Follow)](http://twitter.com/ErikEJ) [![Join the chat at https://gitter.im/SqlCeToolbox](https://badges.gitter.im/SqlCEToolbox/Lobby.svg)](https://gitter.im/SqlCeToolbox/Lobby)  [![AppVeyor](https://ci.appveyor.com/api/projects/status/r3pv323quuaoqw4f?svg=true)](https://ci.appveyor.com/project/ErikEJ/sqlcetoolbox/branch/master) 
 
-Visual Studio & SSMS 2016 extension, standalone app and command line tools, for managing all aspects of your SQL Server Compact/SQLite database files data and schema, including generation of code, database diagrams and database documentation.
+[My tools and utilities for embedded database development](http://erikej.github.io/SqlCeToolbox/)
+
+Visual Studio & SSMS 2016 extension, standalone app and command line tools, for managing all aspects of your SQL Server Compact/SQLite database files' data and schema, including generation of code, database diagrams and database documentation.
 
 If you use my free tools, I would be very grateful for a [rating or review here](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details)
-
-Follow me on Twitter for Data Development and EF/ADO.NET tweets: [@ErikEJ](http://twitter.com/ErikEJ)
-
-[Get an overview of my tools and utilities for embedded database development](http://erikej.github.io/SqlCeToolbox/)
 
 # Documentation
 
