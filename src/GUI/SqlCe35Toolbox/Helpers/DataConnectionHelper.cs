@@ -354,13 +354,13 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
-        internal static void SaveDataConnection(SqlCeToolboxPackage package, string connectionString, string testString, DatabaseType dbType, Guid provider, bool encryptedString = true)
+        internal static void SaveDataConnection(SqlCeToolboxPackage package, string encryptedConnectionString, DatabaseType dbType, Guid provider)
         {
             var dataExplorerConnectionManager = package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) as IVsDataExplorerConnectionManager;
             if (dataExplorerConnectionManager != null)
             {
-                var savedName = GetFileName(testString, dbType);
-                dataExplorerConnectionManager.AddConnection(savedName, provider, connectionString, encryptedString);
+                var savedName = GetFileName(DataProtection.DecryptString(encryptedConnectionString), dbType);
+                dataExplorerConnectionManager.AddConnection(savedName, provider, encryptedConnectionString, true);
             }
         }
 
@@ -390,11 +390,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
             if (package.VsSupportsSimpleDdex35Provider() && dbType == DatabaseType.SQLCE35)
             {
-                SaveDataConnection(package, connectionString, connectionString, dbType, new Guid(Resources.SqlCompact35PrivateProvider), false);
+                SaveDataConnection(package, DataProtection.EncryptString(connectionString), dbType, new Guid(Resources.SqlCompact35PrivateProvider));
             }
             if (package.VsSupportsSimpleDdex4Provider() && dbType == DatabaseType.SQLCE40)
             {
-                SaveDataConnection(package, connectionString, connectionString, dbType, new Guid(Resources.SqlCompact40PrivateProvider), false);
+                SaveDataConnection(package, DataProtection.EncryptString(connectionString), dbType, new Guid(Resources.SqlCompact40PrivateProvider));
             }
         }
 
