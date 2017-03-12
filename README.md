@@ -10,11 +10,11 @@ If you use my free tools, I would be very grateful for a [rating or review here]
 
 # Documentation
 
-[Getting started](https://github.com/ErikEJ/SqlCeToolbox/wiki)
+[Getting started guide](https://github.com/ErikEJ/SqlCeToolbox/wiki)
 
-[Known issues](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
+[Known issues with workarounds](https://github.com/ErikEJ/SqlCeToolbox/wiki/Known-issues)
 
-[Release notes](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
+[Release notes for released versions and daily builds](https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes)
 
 [Command line tools](https://github.com/ErikEJ/SqlCeToolbox/wiki/Command-line-tools)
 
