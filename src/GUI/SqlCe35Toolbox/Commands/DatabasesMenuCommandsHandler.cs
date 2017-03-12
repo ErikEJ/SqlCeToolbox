@@ -82,7 +82,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 if (objIVsDataConnectionDialog.ShowDialog() && objIVsDataConnectionDialog.SelectedProvider == new Guid(Resources.SqlCompact35Provider))
                 {
-                    DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, objIVsDataConnectionDialog.DisplayConnectionString, DatabaseType.SQLCE35, new Guid(Resources.SqlCompact35Provider));
+                    DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, DatabaseType.SQLCE35, new Guid(Resources.SqlCompact35Provider));
                     var control = _parentWindow.Content as ExplorerControl;
                     control?.BuildDatabaseTree();
                     DataConnectionHelper.LogUsage("DatabasesAddCe35Database");
@@ -109,7 +109,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 if (objIVsDataConnectionDialog.ShowDialog() && objIVsDataConnectionDialog.SelectedProvider == new Guid(Resources.SqlServerDotNetProvider))
                 {
-                    DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, objIVsDataConnectionDialog.DisplayConnectionString, DatabaseType.SQLServer, new Guid(Resources.SqlServerDotNetProvider));
+                    DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, DatabaseType.SQLServer, new Guid(Resources.SqlServerDotNetProvider));
                     var control = _parentWindow.Content as ExplorerControl;
                     control?.BuildDatabaseTree();
                     DataConnectionHelper.LogUsage("DatabasesAddSqlServerDatabase");
@@ -142,7 +142,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                     if (objIVsDataConnectionDialog.ShowDialog() && objIVsDataConnectionDialog.SelectedProvider == new Guid(Resources.SqlCompact40Provider))
                     {
-                        DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, objIVsDataConnectionDialog.DisplayConnectionString, DatabaseType.SQLCE40, new Guid(Resources.SqlCompact40Provider));
+                        DataConnectionHelper.SaveDataConnection(_package, objIVsDataConnectionDialog.EncryptedConnectionString, DatabaseType.SQLCE40, new Guid(Resources.SqlCompact40Provider));
                         var control = _parentWindow.Content as ExplorerControl;
                         control?.BuildDatabaseTree();
                         DataConnectionHelper.LogUsage("DatabasesAddCe40Database");
