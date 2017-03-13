@@ -15,6 +15,8 @@ using Microsoft.Win32;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Text;
+using Microsoft.VisualStudio.ComponentModelHost;
+using NuGet.VisualStudio;
 #if SSMS
 #else
 using EFCoreReverseEngineer;
@@ -698,10 +700,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
                 }
+
                 var res = ptd.ShowModal();
                 if (!res.HasValue || !res.Value) return;
 
-                var revEng = new EFCoreReverseEngineer.EfCoreReverseEngineer();
+                var revEng = new EfCoreReverseEngineer();
 
                 var classBasis = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
                 if (dbType == DatabaseType.SQLServer)
@@ -710,9 +713,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
 
                 var model = revEng.GenerateClassName(classBasis) + "Context";
+                var packageResult = dteH.ContainsEfCoreReference(project, dbType);
 
                 var modelDialog = new EfCoreModelDialog
                 {
+                    InstallNuGetPackage = !packageResult.Item1,
                     ModelName = model,
                     ProjectName = project.Name,
                     NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString()
@@ -720,6 +725,13 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var result = modelDialog.ShowModal();
                 if (!result.HasValue || result.Value != true)
                     return;
+
+                if (modelDialog.InstallNuGetPackage)
+                {
+                    var componentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
+                    var nuGetInstaller = componentModel.GetService<IVsPackageInstaller>();
+                    nuGetInstaller?.InstallPackage(null, project, packageResult.Item2, (Version)null, false);
+                }
 
                 var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
@@ -737,16 +749,21 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 var revEngResult = revEng.GenerateFiles(options);
 
-                foreach (var filePath in revEngResult.FilePaths)
+                if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 2)
                 {
-                    project.ProjectItems.AddFromFile(filePath);
+                    foreach (var filePath in revEngResult.EntityTypeFilePaths)
+                    {
+                        project.ProjectItems.AddFromFile(filePath);
+                    }
                 }
-                if (revEngResult.FilePaths.Count > 0)
+                if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 1)
                 {
-                    dte.ItemOperations.OpenFile(revEngResult.FilePaths.Last());
+                    project.ProjectItems.AddFromFile(revEngResult.ContextFilePath);
+                    dte.ItemOperations.OpenFile(revEngResult.ContextFilePath);
                 }
 
-                ReportRevEngErrors(revEngResult, dteH.ContainsEfCoreReference(project, dbType));
+                packageResult = dteH.ContainsEfCoreReference(project, dbType);
+                ReportRevEngErrors(revEngResult, packageResult.Item1 ? null : packageResult.Item2);
 
                 DataConnectionHelper.LogUsage("DatabaseCreateEfCoreModel");
             }
