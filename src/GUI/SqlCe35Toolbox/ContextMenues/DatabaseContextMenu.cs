@@ -119,7 +119,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
 #if SSMS
 #else
-            if (dbType != DatabaseType.SQLCE35)
+            if (dbType != DatabaseType.SQLCE35 && SqlCeToolboxPackage.VsSupportsEfCore())
                 generateCodeRootMenuItem.Items.Add(BuildEfCoreModelMenuItem(databaseMenuCommandParameters, dcmd));
 #endif
             if (dbType == DatabaseType.SQLite)
