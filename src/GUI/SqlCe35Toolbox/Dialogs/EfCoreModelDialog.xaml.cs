@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using ErikEJ.SqlCeToolbox.Helpers;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
@@ -64,6 +65,20 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             }
         }
 
+        public bool InstallNuGetPackage
+        {
+            get
+            {
+                return chkInstallNuGet.IsChecked.HasValue && chkInstallNuGet.IsChecked.Value;
+            }
+            set
+            {
+                chkInstallNuGet.IsChecked = value;
+            }
+        }
+
+        public int SelectedTobeGenerated => cmbLanguage.SelectedIndex;
+
         #endregion
 
         private void button1_Click(object sender, RoutedEventArgs e)
@@ -90,6 +105,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             textBox1.Focus();
+            cmbLanguage.ItemsSource = new List<string> { "EntityTypes & DbContext", "DbContext only", "EntityTypes only" };
+            cmbLanguage.SelectedIndex = 0;
         }
     }
 }
