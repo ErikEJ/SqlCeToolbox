@@ -15,11 +15,11 @@ using Microsoft.Win32;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Text;
-using Microsoft.VisualStudio.ComponentModelHost;
 using NuGet.VisualStudio;
 #if SSMS
 #else
 using EFCoreReverseEngineer;
+using Microsoft.VisualStudio.ComponentModelHost;
 #endif
 
 namespace ErikEJ.SqlCeToolbox.Commands
