@@ -55,6 +55,8 @@ namespace ErikEJ.SqlCeToolbox
 
         public static bool VsSupportsEf6() => false;
 
+        public static bool VsSupportsEfCore() => false;
+
         public bool VsSupportsDdex40() => false;
 
         public bool VsSupportsDdex35() => false;

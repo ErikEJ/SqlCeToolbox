@@ -23,6 +23,7 @@ namespace ErikEJ.SqlCeToolbox
     [ProvideOptionPage(typeof(OptionsPageGeneral), "SQLite/SQLCE Toolbox", "General", 100, 101, true)]
     [ProvideOptionPage(typeof(OptionsPageAdvanced), "SQLite/SQLCE Toolbox", "Advanced", 100, 102, true)]
     [Guid(GuidList.guidSqlCeToolboxPkgString)]
+
     public sealed class SqlCeToolboxPackage : Package
     {
         /// <summary>
@@ -193,6 +194,11 @@ namespace ErikEJ.SqlCeToolbox
         public static bool VsSupportsEf6()
         {
             return VisualStudioVersion >= new Version(11, 0);
+        }
+
+        public static bool VsSupportsEfCore()
+        {
+            return VisualStudioVersion >= new Version(14, 0);
         }
 
         public bool VsSupportsSimpleDdex4Provider()

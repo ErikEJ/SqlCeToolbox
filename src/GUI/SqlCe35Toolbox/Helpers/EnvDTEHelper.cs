@@ -73,7 +73,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
-        public string ContainsEfCoreReference(Project project, DatabaseType dbType)
+        public Tuple<bool, string> ContainsEfCoreReference(Project project, DatabaseType dbType)
         {
             var providerPackage = "Microsoft.EntityFrameworkCore.SqlServer";
             if (dbType == DatabaseType.SQLCE40)
@@ -90,10 +90,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 if (vsProject.References.Item(i).Name.Equals(providerPackage))
                 {
-                    return null;
+                    return new Tuple<bool, string>(true, providerPackage);
                 }
             }
-            return providerPackage;
+            return new Tuple<bool, string>(false, providerPackage);
         }
 
         public bool ContainsEfSqlCeReference(Project project)
