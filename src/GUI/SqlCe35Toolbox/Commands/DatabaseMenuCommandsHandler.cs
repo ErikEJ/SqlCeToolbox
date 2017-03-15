@@ -15,11 +15,9 @@ using Microsoft.Win32;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Text;
-using NuGet.VisualStudio;
 #if SSMS
 #else
 using EFCoreReverseEngineer;
-using Microsoft.VisualStudio.ComponentModelHost;
 #endif
 
 namespace ErikEJ.SqlCeToolbox.Commands
@@ -670,7 +668,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
 #if SSMS
 #else
-        public void GenerateEfCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
+        public async void GenerateEfCoreModelInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
@@ -726,13 +724,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (!result.HasValue || result.Value != true)
                     return;
 
-                if (modelDialog.InstallNuGetPackage)
-                {
-                    var componentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
-                    var nuGetInstaller = componentModel.GetService<IVsPackageInstaller>();
-                    nuGetInstaller?.InstallPackage(null, project, packageResult.Item2, (Version)null, false);
-                }
-
                 var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
                 var options = new ReverseEngineerOptions
@@ -764,6 +755,14 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 packageResult = dteH.ContainsEfCoreReference(project, dbType);
                 ReportRevEngErrors(revEngResult, packageResult.Item1 ? null : packageResult.Item2);
+
+                if (modelDialog.InstallNuGetPackage)
+                {
+                    package.SetStatus("Installing EF Core provider package");
+                    var nuGetHelper  = new NuGetHelper();
+                    await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
+                    package.SetStatus(null);
+                }
 
                 DataConnectionHelper.LogUsage("DatabaseCreateEfCoreModel");
             }
