@@ -173,6 +173,7 @@
     </Compile>
     <Compile Include="Helpers\CheckListItem.cs" />
     <Compile Include="Helpers\DacFxHelper.cs" />
+    <Compile Include="Helpers\NuGetHelper.cs" />
     <Compile Include="Helpers\TelemetryStub.cs" />
     <Compile Include="Options\OptionsPageAdvanced.cs">
       <SubType>Component</SubType>

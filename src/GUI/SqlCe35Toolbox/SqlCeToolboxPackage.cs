@@ -15,7 +15,7 @@ namespace ErikEJ.SqlCeToolbox
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "4.7", IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(ExplorerToolWindow), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Left)]
+    [ProvideToolWindow(typeof(ExplorerToolWindow), Style = VsDockStyle.Float, Orientation = ToolWindowOrientation.Left)]
     [ProvideToolWindow(typeof(SqlEditorWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
     [ProvideToolWindow(typeof(DataGridViewWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
     [ProvideToolWindow(typeof(ReportWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
@@ -47,10 +47,18 @@ namespace ErikEJ.SqlCeToolbox
                 statusBar.IsFrozen(out frozen);
                 if (!Convert.ToBoolean(frozen))
                 {
-                    statusBar.SetText(message);
+                    if (message == null)
+                    {
+                        statusBar.Clear();
+                    }
+                    else
+                    {
+                        statusBar.SetText(message);
+                    }
                 }
             }
-            OutputStringInGeneralPane(message);
+            if (message != null)
+                OutputStringInGeneralPane(message);
         }
 
         private void OutputStringInGeneralPane(string text)
@@ -93,25 +101,25 @@ namespace ErikEJ.SqlCeToolbox
             }
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            //DockWindowIfFloating(windowFrame);
+            DockWindowIfFloating(windowFrame);
         }
 
-        ///// <summary>
-        ///// Docks the specified frame window if it is currently floating.
-        ///// </summary>
-        ///// <param name="frame">The frame.</param>
-        //private static void DockWindowIfFloating(IVsWindowFrame frame)
-        //{
-        //    // Get the current tool window frame mode.
-        //    object currentFrameMode;
-        //    frame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out currentFrameMode);
+        /// <summary>
+        /// Docks the specified frame window if it is currently floating.
+        /// </summary>
+        /// <param name="frame">The frame.</param>
+        private static void DockWindowIfFloating(IVsWindowFrame frame)
+        {
+            // Get the current tool window frame mode.
+            object currentFrameMode;
+            frame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out currentFrameMode);
 
-        //    // If currently floating, switch to dock mode.
-        //    if ((VSFRAMEMODE)currentFrameMode == VSFRAMEMODE.VSFM_Float)
-        //    {
-        //        frame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_Dock);
-        //    }
-        //}
+            // If currently floating, switch to dock mode.
+            if ((VSFRAMEMODE)currentFrameMode == VSFRAMEMODE.VSFM_Float)
+            {
+                frame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_Dock);
+            }
+        }
 
         /// <summary>
         /// Support method for finding an existing or creating a new tool window based on type and _id.
