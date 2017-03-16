@@ -754,20 +754,27 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
 
                 packageResult = dteH.ContainsEfCoreReference(project, dbType);
-                ReportRevEngErrors(revEngResult, packageResult.Item1 ? null : packageResult.Item2);
+
+                var missingProviderPackage = packageResult.Item1 ? null : packageResult.Item2;
+                if (modelDialog.InstallNuGetPackage)
+                {
+                    missingProviderPackage = null;
+                }
+
+                ReportRevEngErrors(revEngResult, missingProviderPackage);
 
                 if (modelDialog.InstallNuGetPackage)
                 {
                     package.SetStatus("Installing EF Core provider package");
                     var nuGetHelper  = new NuGetHelper();
                     await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
-                    package.SetStatus(null);
                 }
 
                 DataConnectionHelper.LogUsage("DatabaseCreateEfCoreModel");
             }
             catch (Exception ex)
             {
+                package.SetStatus(null);
                 DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
             }
         }
