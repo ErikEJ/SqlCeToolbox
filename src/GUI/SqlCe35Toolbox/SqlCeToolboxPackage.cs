@@ -15,7 +15,7 @@ namespace ErikEJ.SqlCeToolbox
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "4.7", IconResourceID = 400)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(ExplorerToolWindow), Style = VsDockStyle.Float, Orientation = ToolWindowOrientation.Left)]
+    [ProvideToolWindow(typeof(ExplorerToolWindow), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Left, Window = EnvDTE.Constants.vsWindowKindServerExplorer)]
     [ProvideToolWindow(typeof(SqlEditorWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
     [ProvideToolWindow(typeof(DataGridViewWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
     [ProvideToolWindow(typeof(ReportWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]
@@ -101,24 +101,6 @@ namespace ErikEJ.SqlCeToolbox
             }
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            DockWindowIfFloating(windowFrame);
-        }
-
-        /// <summary>
-        /// Docks the specified frame window if it is currently floating.
-        /// </summary>
-        /// <param name="frame">The frame.</param>
-        private static void DockWindowIfFloating(IVsWindowFrame frame)
-        {
-            // Get the current tool window frame mode.
-            object currentFrameMode;
-            frame.GetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, out currentFrameMode);
-
-            // If currently floating, switch to dock mode.
-            if ((VSFRAMEMODE)currentFrameMode == VSFRAMEMODE.VSFM_Float)
-            {
-                frame.SetProperty((int)__VSFPROPID.VSFPROPID_FrameMode, VSFRAMEMODE.VSFM_Dock);
-            }
         }
 
         /// <summary>
