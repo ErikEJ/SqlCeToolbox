@@ -8,7 +8,6 @@ using System.Xml;
 using ErikEJ.SqlCeScripting;
 using Microsoft.VisualStudio.Data.Core;
 using Microsoft.VisualStudio.Data.Services;
-using Microsoft.Win32;
 #if SSMS
 using Microsoft.Data.ConnectionUI;
 using ErikEJ.SqlCeToolbox.SSMSEngine;
@@ -586,125 +585,27 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
-        private const string Ddex35Dll = "SqlCeToolbox.DDEX35.dll";
-        private const string Ddex40Dll = "SqlCeToolbox.DDEX4.dll";
-
-        public static void RegisterDdexProviders(bool force)
+        public static void RegisterDdexProviders()
         {
-            if (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0))
-            {
-                RegisterDdex4Provider(force);
-                RegisterDdex35Provider(force);
-            }
-            if (SqlCeToolboxPackage.VisualStudioVersion == new Version(11, 0))
-            {
-                RegisterDdex35Provider(force);
-            }
-        }
-
-        private static void RegisterDdex4Provider(bool force)
-        {
-            string ver = SqlCeToolboxPackage.VisualStudioVersion.ToString(1);
+            //TODO Consider removing this
             try
             {
-                if (force)
+                var ver = SqlCeToolboxPackage.VisualStudioVersion.ToString(1);
+
+                if (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0))
                 {
                     DdexRegistry.AddDdex4Registrations(ver);
+                    DdexRegistry.AddDdex35Registrations(ver);
                 }
-                else
-                {
-                    //Check if provider keys exists
-                    using (var key = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32))
-                    {
-                        var ddexKey = key.OpenSubKey(string.Format(@"SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}", ver));
-                        if (ddexKey == null)
-                        {
-                            DdexRegistry.AddDdex4Registrations(ver);
-                        }
-                    }
-                }
-                var ddexDllPath = DdexDllPath(Ddex40Dll);
-                if (!string.IsNullOrEmpty(ddexDllPath))
-                {
-                    Registry.SetValue(
-                        string.Format(
-                            @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}",
-                            ver),
-                        "Codebase",
-                        ddexDllPath,
-                        RegistryValueKind.String);
-                }
-            }
-            catch (Exception ex)
-            {
-                SendError(ex, DatabaseType.SQLServer);
-            }
-        }
-
-        private static void RegisterDdex35Provider(bool force)
-        {
-            string ver = SqlCeToolboxPackage.VisualStudioVersion.ToString(1);
-            try
-            {
-                if (force)
+                if (SqlCeToolboxPackage.VisualStudioVersion == new Version(11, 0))
                 {
                     DdexRegistry.AddDdex35Registrations(ver);
                 }
-                else
-                {
-                    //Check if provider keys exists
-                    using (var key = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32))
-                    {
-                        var ddexKey = key.OpenSubKey(string.Format(@"SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver));
-                        if (ddexKey == null)
-                        {
-                            DdexRegistry.AddDdex35Registrations(ver);
-                        }
-                    }
-                }
-                var ddexDllPath = DdexDllPath(Ddex35Dll);
-                if (!string.IsNullOrEmpty(ddexDllPath))
-                {
-                    Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver),
-                        "Codebase",
-                        ddexDllPath,
-                        RegistryValueKind.String);
-                }
             }
             catch (Exception ex)
             {
                 SendError(ex, DatabaseType.SQLServer);
             }
-        }
-
-        // ReSharper disable once UnusedMember.Local
-        private static void RegisterDdex35Vs10DebugProvider()
-        {
-            try
-            {
-                DdexRegistry.AddDdex35Vs10DebugRegistrations();
-                var ddexDllPath = DdexDllPath(Ddex35Dll); 
-                if (!string.IsNullOrEmpty(ddexDllPath))
-                {
-                    Registry.SetValue(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\10.0Exp_Config\DataProviders\{303D8BB1-D62A-4560-9742-79C93E828222}",
-                        "Codebase",
-                        ddexDllPath,
-                        RegistryValueKind.String);
-                }
-            }
-            catch (Exception ex)
-            {
-                SendError(ex, DatabaseType.SQLServer);
-            }
-        }
-
-        private static string DdexDllPath(string ddexDllName)
-        {
-            var location = Assembly.GetExecutingAssembly().Location;
-            var path = Path.GetDirectoryName(location);
-            if (string.IsNullOrEmpty(path)) return null;
-            var ddexDllPath = Path.Combine(path, ddexDllName);
-            return !File.Exists(ddexDllPath) ? null : ddexDllPath;
         }
 
         public static bool CheckVersion(string lookingFor)

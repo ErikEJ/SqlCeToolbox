@@ -217,6 +217,9 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\Model.cs">
       <Link>Helpers\Model.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\SqlCe35ProviderRegistration.cs">
+      <Link>Helpers\SqlCe35ProviderRegistration.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\SyncFxHelper.cs">
       <Link>Helpers\SyncFxHelper.cs</Link>
     </Compile>
