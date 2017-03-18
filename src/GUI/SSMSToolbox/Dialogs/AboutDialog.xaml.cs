@@ -45,7 +45,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                     txtStatus.Text += string.Format("Yes - {0}\n", version);
                 }
             }
-            catch (FileNotFoundException)
+            catch
             {
                 txtStatus.Text += "No\n";
             }
@@ -56,11 +56,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 System.Data.Common.DbProviderFactories.GetFactory(SqlCeToolbox.Resources.SqlCompact40InvariantName);
                 txtStatus.Text += "Yes\n";
             }
-            catch (System.Configuration.ConfigurationException)
-            {
-                txtStatus.Text += "No\n";
-            }
-            catch (ArgumentException)
+            catch
             {
                 txtStatus.Text += "No\n";
             }
@@ -125,7 +121,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 }
                 txtStatus.Text += string.Format("Yes - {0}\n", sqlce35Ver);
             }
-            catch (FileNotFoundException)
+            catch
             {
                 txtStatus.Text += "No\n";
             }
@@ -140,11 +136,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 System.Data.Common.DbProviderFactories.GetFactory(SqlCeToolbox.Resources.SqlCompact35InvariantName);
                 txtStatus.Text += "Yes\n";
             }
-            catch (System.Configuration.ConfigurationException)
-            {
-                txtStatus.Text += "No\n";
-            }
-            catch (ArgumentException)
+            catch
             {
                 txtStatus.Text += "No\n";
             }
@@ -210,7 +202,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 Assembly asm = Assembly.Load("System.Data.SQLite");
                 txtStatus.Text += string.Format("{0}\n", asm.GetName().Version);
             }
-            catch (FileNotFoundException)
+            catch
             {
                 txtStatus.Text += "No\n";
             }
@@ -267,7 +259,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void DDEXButton_Click(object sender, RoutedEventArgs e)
         {
-            DataConnectionHelper.RegisterDdexProviders(true);
+            DataConnectionHelper.RegisterDdexProviders();
             EnvDteHelper.ShowMessage("Providers registered, you may have to restart Visual Studio");
         }
 
