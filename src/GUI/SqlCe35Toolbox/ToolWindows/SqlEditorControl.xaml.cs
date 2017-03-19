@@ -481,7 +481,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void FormatTime(Stopwatch sw)
         {
-            var ts = new TimeSpan(sw.ElapsedTicks);
+            var ts = new TimeSpan(0,0,0,0, (int)sw.ElapsedMilliseconds);
             txtTime.Text = $"Duration: {ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}";
         }
 
@@ -577,6 +577,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             pBar.Visibility = Visibility.Visible;
             pBar.IsIndeterminate = true;
+            FormatTime(new Stopwatch());
             ExecuteButton.IsEnabled = false;
             ExecuteWithPlanButton.IsEnabled = false;
         }
