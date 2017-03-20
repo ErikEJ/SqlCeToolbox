@@ -6,11 +6,15 @@
         Title="Select Tables to Script" ShowInTaskbar="False" Height="411" Width="420" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Grid>
         <StackPanel>
-            <CheckBox x:Name="chkClear" Content="Tables" IsChecked="True" Click="chkClear_Click" Margin="16,9" IsThreeState="False" ></CheckBox>
+            <StackPanel Orientation="Horizontal" Margin="6" >
+                <CheckBox x:Name="chkClear" Content="Tables" IsChecked="True" Click="chkClear_Click" Margin="6,10,0,0"  BorderThickness="2" IsThreeState="False" ></CheckBox>
+                <dw:DialogButton Margin="20,10, 0, 0" x:Name="BtnSaveSelection"  Content="Save Selection" Click="BtnSaveSelection_OnClick" ></dw:DialogButton>
+                <dw:DialogButton Margin="20,10, 0, 0" x:Name="BtnLoadSelection"  Content="Load Selection" Click="BtnLoadSelection_OnClick" ></dw:DialogButton>
+            </StackPanel>
             <extToolkit:CheckListBox x:Name="chkTables" Margin="12,0" DisplayMemberPath="Label" SelectedMemberPath="IsChecked" Height="285" />
             <StackPanel Orientation="Horizontal">
-                <dw:DialogButton Content="OK" IsDefault="True" Grid.Row="5" Margin="230,13,13,12" Name="button1" TabIndex="6" Click="button1_Click" Width="75" />
-                <dw:DialogButton Content="Cancel" IsCancel="True" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,12,12" Name="button2" TabIndex="7" SnapsToDevicePixels="False" Click="button2_Click" Height="23" VerticalAlignment="Bottom" />
+                <dw:DialogButton Content="OK" IsDefault="True" Grid.Row="5" Margin="230,12,12,12" Name="button1" TabIndex="6" Click="button1_Click" Width="75" />
+                <dw:DialogButton Content="Cancel" IsCancel="True" Grid.Row="5" HorizontalAlignment="Right" Margin="0,12,12,12" Name="button2" TabIndex="7" SnapsToDevicePixels="False" Click="button2_Click" Height="23" VerticalAlignment="Bottom" />
            </StackPanel>
         </StackPanel>
     </Grid>

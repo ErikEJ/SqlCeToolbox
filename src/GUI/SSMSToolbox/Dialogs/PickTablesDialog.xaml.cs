@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Windows;
 using ErikEJ.SqlCeToolbox.Helpers;
+using Microsoft.Win32;
+using System.Linq;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
@@ -68,6 +73,48 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                         item.IsChecked = false;
                     }
                 }
+            }
+            chkTables.ItemsSource = null;
+            chkTables.ItemsSource = items;
+        }
+
+        private void BtnSaveSelection_OnClick(object sender, RoutedEventArgs e)
+        {
+            var tableList = string.Empty;
+            foreach (var item in chkTables.Items)
+            {
+                var checkItem = (CheckListItem)item;
+                if ((checkItem.IsChecked))
+                {
+                    tableList += checkItem.Label + Environment.NewLine;
+                }
+            }
+
+            var sfd = new SaveFileDialog
+            {
+                Filter = "Text file (*.txt)|*.txt|All Files(*.*)|*.*",
+                ValidateNames = true,
+                Title = "Save list of tables as"
+            };
+            if (sfd.ShowDialog() != true) return;
+            File.WriteAllText(sfd.FileName, tableList, Encoding.UTF8);
+        }
+
+        private void BtnLoadSelection_OnClick(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog
+            {
+                Filter = "Text file (*.txt)|*.txt|All Files(*.*)|*.*",
+                CheckFileExists = true,
+                Multiselect = false,
+                Title = "Select list of tables to load"
+            };
+            if (ofd.ShowDialog() != true) return;
+
+            var lines = File.ReadAllLines(ofd.FileName);
+            foreach (var item in items)
+            {
+                item.IsChecked = lines.Contains(item.Label);
             }
             chkTables.ItemsSource = null;
             chkTables.ItemsSource = items;
