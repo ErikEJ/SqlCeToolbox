@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using EnvDTE;
-using Microsoft.Win32;
+using System.Globalization;
+using System.IO;
 using System.Windows.Forms;
+using EnvDTE;
+using ErikEJ.SqlCeToolbox.Properties;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Win32;
+using VSLangProj;
+using Constants = EnvDTE.Constants;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
@@ -57,13 +63,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public static void AddReference(Project project, string reference)
         {
-            VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
-            vsProject.References.Add(reference);
+            var vsProject = project.Object as VSProject;
+            vsProject?.References.Add(reference);
         }
 
         public bool ContainsEf6Reference(Project project)
         {
-            var vsProject = (VSLangProj.VSProject)project.Object;
+            var vsProject = project.Object as VSProject;
+            if (vsProject == null) return false;
             for (var i = 1; i < vsProject.References.Count + 1; i++)
             {
                 if (vsProject.References.Item(i).Name.Equals("EntityFramework.SqlServer")
@@ -85,7 +92,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 providerPackage = "Microsoft.EntityFrameworkCore.Sqlite";
             }
 
-            var vsProject = (VSLangProj.VSProject)project.Object;
+            var vsProject = project.Object as VSProject;
+            if (vsProject == null) return new Tuple<bool, string>(false, providerPackage);
             for (var i = 1; i < vsProject.References.Count + 1; i++)
             {
                 if (vsProject.References.Item(i).Name.Equals(providerPackage))
@@ -98,8 +106,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public bool ContainsEfSqlCeReference(Project project)
         {
-            VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
-            for (int i = 1; i < vsProject.References.Count + 1; i++)
+            var vsProject = project.Object as VSProject;
+            if (vsProject == null) return false;
+            for (var i = 1; i < vsProject.References.Count + 1; i++)
             {
                 if (vsProject.References.Item(i).Name.StartsWith("EntityFramework.SqlServerCompact")
                     && new Version(vsProject.References.Item(i).Version) >= new Version(6, 0, 0, 0))
@@ -127,7 +136,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             if (!dte.Solution.IsOpen)
                 return null;
-            return System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+            return Path.GetDirectoryName(dte.Solution.FullName);
         }
 
         private void GetSqlCeFilesInProject(Project project, HashSet<string> list)
@@ -143,12 +152,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
             foreach (ProjectItem item in projectItems)
             {
-                if (item.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFile)
+                if (item.Kind == Constants.vsProjectItemKindPhysicalFile)
                 {
                     string path = item.Properties.Item("FullPath").Value.ToString();
                     foreach (var extension in GetFileExtensions())
                     {
-                        if (path.EndsWith(extension, true, System.Globalization.CultureInfo.InvariantCulture))
+                        if (path.EndsWith(extension, true, CultureInfo.InvariantCulture))
                         {
                             if (!list.Contains(path))
                                 list.Add(path);
@@ -169,12 +178,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         private List<string> GetFileExtensions()
         {
             var list = new List<string>();
-            var sdfExtensions = Properties.Settings.Default.FileFilterSqlCe.Split(new Char[] { ';' });
+            var sdfExtensions = Settings.Default.FileFilterSqlCe.Split(';');
             foreach (var ext in sdfExtensions)
             {
                 list.Add(ext.Replace("*", string.Empty));
             }
-            var sqliteExtensions = Properties.Settings.Default.FileFilterSqlite.Split(new Char[] { ';' });
+            var sqliteExtensions = Settings.Default.FileFilterSqlite.Split(';');
             foreach (var ext in sqliteExtensions)
             {
                 list.Add(ext.Replace("*", string.Empty));
@@ -184,8 +193,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public bool ContainsEfSqlCeLegacyReference(Project project)
         {
-            VSLangProj.VSProject vsProject = (VSLangProj.VSProject)project.Object;
-            for (int i = 1; i < vsProject.References.Count + 1; i++)
+            var vsProject = project.Object as VSProject;
+            if (vsProject == null) return false;
+            for (var i = 1; i < vsProject.References.Count + 1; i++)
             {
                 if (vsProject.References.Item(i).Name == "EntityFramework.SqlServerCompact.Legacy"
                     && new Version(vsProject.References.Item(i).Version) >= new Version(6, 0, 0, 0))
@@ -198,7 +208,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             get
             {
-                return new List<Guid>() 
+                return new List<Guid>
                 {
                     new Guid("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"),
                     new Guid("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}")
@@ -210,7 +220,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public static void LaunchUrl(string url)
         {
-            var dte = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(DTE)) as DTE;
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             if (dte != null)
             {
                 dte.ItemOperations.Navigate(url);
@@ -223,7 +233,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
             get
             {
-                return new List<Guid>() 
+                return new List<Guid>
                 {
                     //Windows (C#) 
                     new Guid("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"),
@@ -249,7 +259,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             get
             {
-                return new List<Guid>() 
+                return new List<Guid>
                 {
                     new Guid("{349C5851-65DF-11DA-9384-00065B846F21}"),
                     new Guid("{E24C65DC-7377-472B-9ABA-BC803B73C61A}")                    
@@ -322,7 +332,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             OLEMSGDEFBUTTON defaultButton, OLEMSGICON messageIcon)
         {
             var result = 0;
-            var uiShell = (IVsUIShell)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsUIShell));
+            var uiShell = (IVsUIShell)Package.GetGlobalService(typeof(SVsUIShell));
 
             if (uiShell != null)
             {
