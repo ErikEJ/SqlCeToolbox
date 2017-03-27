@@ -2,6 +2,7 @@
 using System;
 using System.Data.SqlServerCe;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 // ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeScripting
@@ -176,10 +177,9 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-
         public string PathFromConnectionString(string connectionString)
         {
-            SqlCeConnectionStringBuilder sb = new SqlCeConnectionStringBuilder(GetFullConnectionString(connectionString));
+            SqlCeConnectionStringBuilder sb = new SqlCeConnectionStringBuilder(connectionString);
             return sb.DataSource;
         }
 
@@ -262,6 +262,12 @@ namespace ErikEJ.SqlCeScripting
                     return false;
                 if (assembly.GetName().Version.ToString(2) != "3.5")
                     return false;
+                if (assembly.Location != null)
+                {
+                    var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                    var version = new Version(fvi.FileVersion);
+                    return version >= new Version(3, 5, 8080);
+                }
             }
             catch
             {

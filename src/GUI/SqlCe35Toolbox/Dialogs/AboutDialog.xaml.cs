@@ -45,7 +45,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                     txtStatus.Text += string.Format("Yes - {0}\n", version);
                 }
             }
-            catch (FileNotFoundException)
+            catch
             {
                 txtStatus.Text += "No\n";
             }
@@ -93,20 +93,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             catch
             {
                 txtStatus.Text += "No\n";
-            }
-
-            var tempFile40 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            var tempFile35 = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            try
-            {
-                var helper = DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLCE40);
-                var conn40 = string.Format("Data Source={0}", tempFile40);
-                helper.CreateDatabase(conn40);
-                txtStatus.Text += "SQL Server Compact 4.0 Engine test: PASS!\n";
-            }
-            catch
-            {
-                txtStatus.Text += "SQL Server Compact 4.0 Engine test: FAIL!\n";
             }
 
             txtStatus.Text += "\n\nSQL Server Compact 3.5 in GAC - ";
@@ -174,17 +160,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             {
                 txtStatus.Text += "No\n";
             }
-            try
-            {
-                var helper = DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLCE35);
-                var conn35 = string.Format("Data Source={0}", tempFile35);
-                helper.CreateDatabase(conn35);
-                txtStatus.Text += "SQL Server Compact 3.5 Engine test: PASS!\n";
-            }
-            catch
-            {
-                txtStatus.Text += "SQL Server Compact 3.5Engine test: FAIL!\n";
-            }
 
             txtStatus.Text += "\n\nSync Framework 2.1 SqlCe 3.5 provider - ";
             if (DataConnectionHelper.IsSyncFx21Installed())
@@ -226,14 +201,14 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
             try
             {
-                if (File.Exists(tempFile40))
-                {
-                    File.Delete(tempFile40);
-                }
-                if (File.Exists(tempFile35))
-                {
-                    File.Delete(tempFile35);
-                }
+                //if (File.Exists(tempFile40))
+                //{
+                //    File.Delete(tempFile40);
+                //}
+                //if (File.Exists(tempFile35))
+                //{
+                //    File.Delete(tempFile35);
+                //}
             }
             catch
             {
