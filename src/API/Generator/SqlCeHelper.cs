@@ -2,6 +2,7 @@
 using System;
 using System.Data.SqlServerCe;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 // ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeScripting
