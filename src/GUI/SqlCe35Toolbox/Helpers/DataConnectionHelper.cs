@@ -745,12 +745,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal static bool IsV40Installed()
         {
-            return new SqlCeHelper4().IsV40Installed();
+            return new SqlCeHelper4().IsV40Installed() != null;
         }
 
         internal static bool IsV35Installed()
         {
-            return new SqlCeHelper().IsV35Installed();
+            return new SqlCeHelper().IsV35Installed() != null;
         }
 
         internal static bool IsV40DbProviderInstalled()

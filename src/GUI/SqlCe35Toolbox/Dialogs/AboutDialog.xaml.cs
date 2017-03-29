@@ -4,13 +4,12 @@ using System.Windows;
 using System;
 using System.ComponentModel;
 using ErikEJ.SqlCeToolbox.Helpers;
-using System.IO;
+using ErikEJ.SqlCeScripting;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     public partial class AboutDialog
     {
-
         public AboutDialog()
         {
             InitializeComponent();
@@ -37,12 +36,14 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             txtStatus.Text = "SQL Server Compact 4.0 in GAC - ";
             try
             {
-                var asm4 = Assembly.Load("System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                if (asm4 != null && asm4.Location != null)
+                var version = new SqlCeHelper4().IsV40Installed();
+                if (version != null)
                 {
-                    var fvi = FileVersionInfo.GetVersionInfo(asm4.Location); 
-                    string version = fvi.FileVersion;
                     txtStatus.Text += string.Format("Yes - {0}\n", version);
+                }
+                else
+                {
+                    txtStatus.Text += "No\n";
                 }
             }
             catch
@@ -96,24 +97,21 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             }
 
             txtStatus.Text += "\n\nSQL Server Compact 3.5 in GAC - ";
-            var sqlce35Ver = new Version(0,0,0);
             try
             {
-                var asm35 = Assembly.Load("System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                if (asm35 != null && asm35.Location != null)
+                var version = new SqlCeHelper().IsV35Installed();
+                if (version != null)
                 {
-                    var fvi = FileVersionInfo.GetVersionInfo(asm35.Location);
-                    sqlce35Ver = new Version(fvi.FileVersion);
+                    txtStatus.Text += string.Format("Yes - {0}\n", version);
                 }
-                txtStatus.Text += string.Format("Yes - {0}\n", sqlce35Ver);
+                else
+                {
+                    txtStatus.Text += "No\n";
+                }
             }
             catch
             {
                 txtStatus.Text += "No\n";
-            }
-            if (sqlce35Ver > new Version(0,0,0) && sqlce35Ver < new Version(3, 5, 8080))
-            {
-                txtStatus.Text += "(Too old version installed, update to 3.5 SP2)\n";
             }
 
             txtStatus.Text += "SQL Server Compact 3.5 DbProvider - ";
@@ -131,23 +129,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             try
             {
                 if (DataConnectionHelper.DdexProviderIsInstalled(new Guid(SqlCeToolbox.Resources.SqlCompact35Provider)))
-                {
-                    txtStatus.Text += "Yes\n";
-                }
-                else
-                {
-                    txtStatus.Text += "No\n";
-                }
-            }
-            catch
-            {
-                txtStatus.Text += "No\n";
-            }
-
-            txtStatus.Text += "SQL Server Compact 3.5 Simple DDEX provider - ";
-            try
-            {
-                if (DataConnectionHelper.DdexProviderIsInstalled(new Guid(SqlCeToolbox.Resources.SqlCompact35PrivateProvider)))
                 {
                     txtStatus.Text += "Yes\n";
                 }
@@ -197,22 +178,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             catch
             {
                 txtStatus.Text += "No\n";
-            }
-
-            try
-            {
-                //if (File.Exists(tempFile40))
-                //{
-                //    File.Delete(tempFile40);
-                //}
-                //if (File.Exists(tempFile35))
-                //{
-                //    File.Delete(tempFile35);
-                //}
-            }
-            catch
-            {
-                // ignored
             }
         }
 

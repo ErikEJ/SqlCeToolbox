@@ -88,12 +88,12 @@ namespace ErikEJ.SqlCeScripting
             throw new NotImplementedException();
         }
 
-        public bool IsV35Installed()
+        public Version IsV35Installed()
         {
             throw new NotImplementedException();
         }
 
-        public bool IsV40Installed()
+        public Version IsV40Installed()
         {
             throw new NotImplementedException();
         }
