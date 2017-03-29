@@ -28,8 +28,16 @@ namespace ErikEJ.SqlCeScripting
         string PathFromConnectionString(string connectionString);
         void UpgradeTo40(string connectionString);
         SQLCEVersion DetermineVersion(string fileName);
-        bool IsV35Installed();
-        bool IsV40Installed();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>null if not installed</returns>
+        Version IsV35Installed();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>null if not installed</returns>
+        Version IsV40Installed();
         bool IsV35DbProviderInstalled();
         bool IsV40DbProviderInstalled();
 

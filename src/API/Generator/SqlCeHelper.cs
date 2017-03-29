@@ -3,6 +3,8 @@ using System;
 using System.Data.SqlServerCe;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
+using Microsoft.Win32;
 
 // ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeScripting
@@ -223,23 +225,6 @@ namespace ErikEJ.SqlCeScripting
             throw new ApplicationException("Unable to determine database file version");
         }
 
-        public bool IsV40Installed()
-        {
-            try
-            {
-                var assembly = System.Reflection.Assembly.Load("System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                if (!assembly.GlobalAssemblyCache)
-                    return false;
-                if (assembly.GetName().Version.ToString(2) != "4.0")
-                    return false;
-            }
-            catch 
-            {
-                return false;
-            }
-            return true;
-        }
-
         public bool IsV40DbProviderInstalled()
         {
             try
@@ -253,27 +238,60 @@ namespace ErikEJ.SqlCeScripting
             return true;
         }
 
-        public bool IsV35Installed()
+        public Version IsV40Installed()
+        {
+            try
+            {
+                var assembly = System.Reflection.Assembly.Load("System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                if (!assembly.GlobalAssemblyCache)
+                    return null;
+                if (assembly.GetName().Version.ToString(2) != "4.0")
+                    return null;
+
+                using (
+                    var rk =
+                        Registry.LocalMachine.OpenSubKey(
+                            @"SOFTWARE\Microsoft\Microsoft SQL Server Compact Edition\v4.0",
+                            RegistryKeyPermissionCheck.ReadSubTree))
+                {
+                    var value = rk?.GetValue("NativeDir");
+                    if (value != null)
+                    {
+                        var path = Path.Combine(value.ToString(), "sqlceme40.dll");
+                        if (!File.Exists(path))
+                        {
+                            return null;
+                        }
+                    }
+                }
+                if (assembly.Location == null) return null;
+                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                return new Version(fvi.FileVersion);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public Version IsV35Installed()
         {
             try
             {
                 var assembly = System.Reflection.Assembly.Load("System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
                 if (!assembly.GlobalAssemblyCache)
-                    return false;
+                    return null;
                 if (assembly.GetName().Version.ToString(2) != "3.5")
-                    return false;
-                if (assembly.Location != null)
-                {
-                    var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                    var version = new Version(fvi.FileVersion);
-                    return version >= new Version(3, 5, 8080);
-                }
+                    return null;
+                if (assembly.Location == null) return null;
+                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                var version = new Version(fvi.FileVersion);
+                return version >= new Version(3, 5, 8080) ? version : null;
             }
             catch
             {
-                return false;
+                return null;
             }
-            return true;
         }
 
         public bool IsV35DbProviderInstalled()

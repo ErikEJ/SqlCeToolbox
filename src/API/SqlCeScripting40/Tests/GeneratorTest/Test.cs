@@ -439,7 +439,7 @@ GO";
             }
         }
 
-    [Test]
+        [Test]
         public void TestSQLiteDateQuirk()
         {
             //cloud_service_product_infos
@@ -463,6 +463,16 @@ GO";
                 generator.GenerateTableCreate("Artist");
                 Assert.IsTrue(generator.GeneratedScript.Contains("INTEGER"));
             }
+        }
+
+        [Test]
+        public void Ce4VersionChek()
+        {
+            var helper = new SqlCeHelper4();
+
+            var result = helper.IsV40Installed();
+            
+            Assert.AreEqual(null, result);
         }
 
         //[Test]
