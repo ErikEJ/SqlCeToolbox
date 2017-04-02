@@ -408,11 +408,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             string path = CreateEngineHelper(dbType).PathFromConnectionString(connectionString);
             helper.SaveDataConnection(CreateStore(storeDbType), connectionString, path, dbType.GetHashCode());
 
-            if (package.VsSupportsSimpleDdex35Provider() && dbType == DatabaseType.SQLCE35)
-            {
-                SaveDataConnection(package, DataProtection.EncryptString(connectionString), dbType,
-                    new Guid(Resources.SqlCompact35PrivateProvider));
-            }
             if (package.VsSupportsSimpleDdex4Provider() && dbType == DatabaseType.SQLCE40)
             {
                 SaveDataConnection(package, DataProtection.EncryptString(connectionString), dbType,
