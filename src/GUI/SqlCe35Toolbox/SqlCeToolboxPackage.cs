@@ -200,14 +200,6 @@ namespace ErikEJ.SqlCeToolbox
                 && (DataConnectionHelper.IsV40DbProviderInstalled());
         }
 
-        public bool VsSupportsSimpleDdex35Provider()
-        {
-            return VsSupportsEf6()
-                && (DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35PrivateProvider)))
-                && (DataConnectionHelper.IsV35Installed())
-                && (DataConnectionHelper.IsV35DbProviderInstalled());
-        }
-
         public static bool IsVsExtension => true;
         /////////////////////////////////////////////////////////////////////////////
         // Overriden Package Implementation

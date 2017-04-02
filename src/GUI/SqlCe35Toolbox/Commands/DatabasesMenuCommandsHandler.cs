@@ -45,10 +45,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     dialog.InitialPath = path;                
                 }
                 dialog.DbType = dbType;
-                dialog.ShowDdexInfo = _package.VsSupportsSimpleDdex4Provider() || _package.VsSupportsSimpleDdex35Provider();
+                dialog.ShowDdexInfo = _package.VsSupportsSimpleDdex4Provider() && dbType == DatabaseType.SQLCE40;
                 dialog.CouldSupportPrivateProvider =
-                    (dbType == DatabaseType.SQLCE40 && (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0)) )
-                    || (dbType == DatabaseType.SQLCE35 && SqlCeToolboxPackage.VsSupportsEf6());
+                   dbType == DatabaseType.SQLCE40 && (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0));
                 var result = dialog.ShowModal();
                 if (!result.HasValue || result.Value != true) return;
                 if (string.IsNullOrWhiteSpace(dialog.ConnectionString)) return;
