@@ -140,6 +140,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             if (item != null)
             {
                 item.Length = TableDataType.GetDefaultLength(item.DataType);
+                item.Precision = TableDataType.GetDefaultPrecision(item.DataType);
+                item.Scale = TableDataType.GetDefaultScale(item.DataType);
             }
         }
 
