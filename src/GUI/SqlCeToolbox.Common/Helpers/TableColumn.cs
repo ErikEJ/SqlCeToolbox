@@ -199,6 +199,25 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 {
                     return "Only a single Identity column allowed";
                 }
+                if (item.DataType == "numeric")
+                {
+                    if (item.Precision < 1)
+                    {
+                        return string.Format("numeric precision of column {0} must be at least 1", item.Name);
+                    }
+                    if (item.Scale > item.Precision)
+                    {
+                        return string.Format("numeric scale of column {0} cannot be higher than the precision", item.Name);
+                    }
+                    if (item.Precision > 38)
+                    {
+                        return string.Format("numeric precision of column {0} cannot be higher than 38", item.Name);
+                    }
+                    if (item.Scale > 38)
+                    {
+                        return string.Format("numeric scale of column {0} cannot be higher than 38", item.Name);
+                    }
+                }
             }
             return string.Empty;
         }

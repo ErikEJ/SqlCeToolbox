@@ -10,6 +10,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         public short MinLength { get; set; }
         public short MaxLength { get; set; }
         public short DefaultLength { get; set; }
+        public byte? DefaultPrecision { get; set; }
+        public byte? DefaultScale { get; set; }
         public bool FixedAllowNulls { get; set; }
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool FixedIdentity { get; set; }
@@ -28,7 +30,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 { "money", new TableDataType { Name = "money", DefaultLength = 8, FixedLength = true, FixedAllowNulls = false, FixedIdentity = true } },
 { "nchar", new TableDataType { Name = "nchar", DefaultLength = 100, FixedLength = false, MinLength = 1, MaxLength = 4000, FixedAllowNulls = false, FixedIdentity = true } },
 { "ntext", new TableDataType { Name = "ntext", DefaultLength = 16, FixedLength = true, FixedAllowNulls = false, FixedIdentity = true } },
-{ "numeric", new TableDataType { Name = "numeric", DefaultLength = 19, FixedLength = true, FixedAllowNulls = false, FixedIdentity = true } },
+{ "numeric", new TableDataType { Name = "numeric", DefaultLength = 19, FixedLength = true, FixedAllowNulls = false, FixedIdentity = true, DefaultPrecision = 18, DefaultScale = 2 } },
 { "nvarchar", new TableDataType { Name = "nvarchar", DefaultLength = 100, FixedLength = false, MinLength = 1, MaxLength = 4000, FixedAllowNulls = false, FixedIdentity = true } },
 { "real", new TableDataType { Name = "real", DefaultLength = 4, FixedLength = true, FixedAllowNulls = false, FixedIdentity = true } },
 { "rowversion", new TableDataType { Name = "rowversion", DefaultLength = 8, FixedLength = true, FixedAllowNulls = true, FixedIdentity = true } },
@@ -65,6 +67,26 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             if (string.IsNullOrEmpty(dataType))
                 return 1;
             return GetAll.ContainsKey(dataType) ? GetAll[dataType].DefaultLength : (short) 1;
+        }
+
+        public static byte GetDefaultPrecision(string dataType)
+        {
+            if (string.IsNullOrEmpty(dataType))
+                return 0;
+            var precision = GetAll[dataType].DefaultPrecision;
+            if (precision != null)
+                return GetAll.ContainsKey(dataType) ? precision.Value : (byte)0;
+            return 0;
+        }
+
+        public static byte GetDefaultScale(string dataType)
+        {
+            if (string.IsNullOrEmpty(dataType))
+                return 0;
+            var scale = GetAll[dataType].DefaultScale;
+            if (scale != null)
+                return GetAll.ContainsKey(dataType) ? scale.Value : (byte)0;
+            return 0;
         }
 
         public static short GetMaxLength(string dataType)
