@@ -175,8 +175,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (databaseInfo == null) return;
                 if (package == null) return;
                 Debug.Assert(package != null, "Package property of the Explorere Tool Window should never be null, have you tried to create it manually and not through FindToolWindow()?");
-
                 var sqlEditorWindow = package.CreateWindow<SqlEditorWindow>();
+                if (sqlEditorWindow == null) return;
                 var editorControl = sqlEditorWindow.Content as SqlEditorControl;
                 Debug.Assert(editorControl != null);
                 editorControl.DatabaseInfo = databaseInfo;
@@ -196,17 +196,19 @@ namespace ErikEJ.SqlCeToolbox.Commands
         {
             try
             {
+                string sqlScript = null;
                 var databaseInfo = ValidateMenuInfo(sender);
+
                 if (databaseInfo == null) return;
                 if (package == null) return;
                 Debug.Assert(package != null, "Package property of the Explorere Tool Window should never be null, have you tried to create it manually and not through FindToolWindow()?");
-
                 var sqlEditorWindow = package.CreateWindow<SqlEditorWindow>();
+                if (sqlEditorWindow == null) return;
                 var editorControl = sqlEditorWindow.Content as SqlEditorControl;
                 Debug.Assert(editorControl != null);
                 editorControl.DatabaseInfo = databaseInfo.DatabaseInfo;
                 editorControl.ExplorerControl = _parentWindow.Content as ExplorerControl;
-                editorControl.SqlText = null;
+                editorControl.SqlText = sqlScript;
                 DataConnectionHelper.LogUsage("DatabaseOpenEditor");
                 Debug.Assert(editorControl != null, "The SqlEditorWindow *should* have a editorControl with content.");
             }
