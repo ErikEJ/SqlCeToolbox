@@ -97,6 +97,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (dbName != null)
                 {
                     var window = pkg.CreateWindow<ReportWindow>(Math.Abs(menuInfo.Name.GetHashCode() - dbName.GetHashCode()));
+                    if (window == null) return;
                     window.Caption = menuInfo.Name + " (" + dbName + ")";
                     pkg.ShowWindow(window);
 

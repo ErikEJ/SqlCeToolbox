@@ -66,6 +66,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     menuInfo.Name = "Add";
                 }
                 var subsWindow = pkg.CreateWindow<SubscriptionWindow>(Math.Abs(menuInfo.DatabaseInfo.ConnectionString.GetHashCode() - menuInfo.Name.GetHashCode()));
+                if (subsWindow == null) return;
                 var control = subsWindow.Content as SubscriptionControl;
                 if (control != null)
                 {

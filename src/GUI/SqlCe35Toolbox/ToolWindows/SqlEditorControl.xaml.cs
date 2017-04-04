@@ -811,6 +811,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 var pkg = _parentWindow.Package as SqlCeToolboxPackage;
                 Debug.Assert(pkg != null, "Package property of the Explorere Tool Window should never be null, have you tried to create it manually and not through FindToolWindow()?");
                 var sqlEditorWindow = pkg.CreateWindow<SqlEditorWindow>();
+                if (sqlEditorWindow == null) return;
                 var control = sqlEditorWindow.Content as SqlEditorControl;
                 if (control != null)
                 {
