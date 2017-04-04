@@ -1,3 +1,4 @@
+
 # SQLite & SQL Server Compact Toolbox
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/ErikEJ.svg?style=social&label=Follow)](http://twitter.com/ErikEJ) [![Join the chat at https://gitter.im/SqlCeToolbox](https://badges.gitter.im/SqlCEToolbox/Lobby.svg)](https://gitter.im/SqlCeToolbox/Lobby)  [![AppVeyor](https://ci.appveyor.com/api/projects/status/r3pv323quuaoqw4f?svg=true)](https://ci.appveyor.com/project/ErikEJ/sqlcetoolbox/branch/master) 
@@ -44,6 +45,10 @@ If you need the Visual Studio 2010 extension, please contact me, and I can provi
 **Daily build**
 
 You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/d6c77c32-fe4b-4f6d-ad5d-f7b755212760/extension.vsix)
+
+If you have trouble installing the SSMS extension, try the following command line:
+
+`"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
