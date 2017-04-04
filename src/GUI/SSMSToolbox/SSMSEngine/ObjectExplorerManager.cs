@@ -66,7 +66,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
         private List<Tuple<string, string>> GetDatabaseNames(SqlConnectionStringBuilder builder)
         {
             var sql = @"SELECT @@servername AS ServerName, name AS DatabaseName FROM sys.databases
-                WHERE state = 0 AND name NOT IN('master', 'model', 'tempdb', 'msdb', 'Resource') AND collation_name IS NOT NULL;";
+                WHERE state = 0 AND name NOT IN ('master', 'model', 'tempdb', 'msdb', 'Resource');";
             var result = new List<Tuple<string, string>>();
             builder.InitialCatalog = "master";
             using (var conn = new SqlConnection(builder.ConnectionString))
