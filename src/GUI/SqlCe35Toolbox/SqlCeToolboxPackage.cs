@@ -39,6 +39,21 @@ namespace ErikEJ.SqlCeToolbox
         //    //Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
         //}
 
+        public void SetProgress(string label, uint progress, uint total)
+        {
+            var statusBar = (IVsStatusbar)GetService(typeof(SVsStatusbar));
+            uint cookie = 0;
+
+            if (label == null)
+            {
+                // Clear the progress bar.
+                statusBar.Clear();
+                return;
+            }
+            // Display incremental progress.
+            statusBar.Progress(ref cookie, 1, label, progress, total);
+        }
+
         public void SetStatus(string message)
         {
             var statusBar = GetService(typeof(SVsStatusbar)) as IVsStatusbar;
