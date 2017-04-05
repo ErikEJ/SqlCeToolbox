@@ -7,6 +7,7 @@ using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using ErikEJ.SqlCeToolbox.SSMSEngine;
 
 // ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox
@@ -28,7 +29,9 @@ namespace ErikEJ.SqlCeToolbox
         /// <summary>
         /// ExplorerToolWindowPackage GUID string.
         /// </summary>
-        public const string PackageGuidString = "9b80f327-181a-496f-93d9-dcf03d56a792";
+        private const string PackageGuidString = "9b80f327-181a-496f-93d9-dcf03d56a792";
+
+        private ObjectExplorerManager _objectExplorerManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExplorerToolWindow"/> class.
@@ -183,6 +186,8 @@ namespace ErikEJ.SqlCeToolbox
         {
             OtherWindowsCommand.Initialize(this);
             ViewMenuCommand.Initialize(this);
+            _objectExplorerManager = new ObjectExplorerManager(this);
+            _objectExplorerManager.SetObjectExplorerEventProvider();
             base.Initialize();            
         }
     }
