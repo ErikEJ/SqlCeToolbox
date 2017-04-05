@@ -69,19 +69,42 @@ namespace ErikEJ.SqlCeToolbox
         //TODO Make this dynamic!
         public static Version TelemetryVersion => new Version(130, 0, 0, 0);
 
+        public void SetProgress(string label, uint progress, uint total)
+        {
+            var statusBar = (IVsStatusbar)GetService(typeof(SVsStatusbar));
+            uint cookie = 0;
+
+            if (label == null)
+            {
+                // Clear the progress bar.
+                statusBar.Clear();
+                return;
+            }
+            // Display incremental progress.
+            statusBar.Progress(ref cookie, 1, label, progress, total);
+        }
+
         public void SetStatus(string message)
         {
-            int frozen;
-            IVsStatusbar statusBar = GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+            var statusBar = GetService(typeof(SVsStatusbar)) as IVsStatusbar;
             if (statusBar != null)
             {
+                int frozen;
                 statusBar.IsFrozen(out frozen);
                 if (!Convert.ToBoolean(frozen))
                 {
-                    statusBar.SetText(message);
+                    if (message == null)
+                    {
+                        statusBar.Clear();
+                    }
+                    else
+                    {
+                        statusBar.SetText(message);
+                    }
                 }
             }
-            OutputStringInGeneralPane(message);
+            if (message != null)
+                OutputStringInGeneralPane(message);
         }
 
         private void OutputStringInGeneralPane(string text)

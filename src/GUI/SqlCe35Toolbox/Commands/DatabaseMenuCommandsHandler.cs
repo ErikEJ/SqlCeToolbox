@@ -464,18 +464,37 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                     else // possibly multiple files - tmp2BB9.tmp_0.sqlce
                     {
+                        var count = Directory.GetFiles(Path.GetDirectoryName(scriptRoot), Path.GetFileName(scriptRoot) + "*", SearchOption.AllDirectories).Count();
                         for (var i = 0; i < 400; i++)
                         {
+                            package.SetProgress(null, 0, 0);
                             var testFile = string.Format("{0}_{1}{2}", scriptRoot, i.ToString("D4"), ".sqltb");
                             if (File.Exists(testFile))
                             {
                                 serverRepository.ExecuteSqlFile(testFile);
-                                package.SetStatus(string.Format("Exporting to server...{0}", i + 1));
+                                package.SetProgress("Exporting to server...", (uint)i + 1, (uint)count - 1);
+                                TryDeleteFile(testFile);
                             }
                         }
+                        package.SetStatus(null);
                     }
                     package.SetStatus("Export complete");
                 }
+            }
+        }
+
+        private void TryDeleteFile(string path)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch
+            {
+                //Ignored
             }
         }
 

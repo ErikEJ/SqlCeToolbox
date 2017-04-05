@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Text;
 using ErikEJ.SQLiteScripting;
+using System.Linq;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -372,22 +373,41 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     if (File.Exists(tempScript)) // Single file
                     {
                         dbRepository.ExecuteSqlFile(tempScript);
+                        TryDeleteFile(tempScript);
                     }
                     else // possibly multiple files - tmp2BB9.tmp_0.sqlce
                     {
+                        var count = Directory.GetFiles(Path.GetDirectoryName(scriptRoot),  Path.GetFileName(scriptRoot) + "*", SearchOption.AllDirectories).Count();
                         for (var i = 0; i < 400; i++)
                         {
                             var testFile = string.Format("{0}_{1}{2}", scriptRoot, i.ToString("D4"), ".sqlce");
                             if (File.Exists(testFile))
                             {
                                 dbRepository.ExecuteSqlFile(testFile);
-                                _package.SetStatus(string.Format("Importing data...{0}", i + 1));
+                                _package.SetProgress("Importing data...", (uint)i + 1, (uint)count - 1);
+                                TryDeleteFile(testFile);
                             }
                         }
+                        _package.SetStatus(null);
                     }
                 }
             }
             _package.SetStatus("Import complete");
+        }
+
+        private void TryDeleteFile(string path)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch
+            {
+                //Ignored
+            }
         }
 
         public void GenerateServerDgmlFiles(object sender, ExecutedRoutedEventArgs e)
