@@ -26,8 +26,7 @@ If you use my free tools, I would be very grateful for a [rating or review here]
 ## Visual Studio Extension
 
 **Release**
-
-Download the latest version of the Visual Studio extension (for both 3.5, 4.0 and SQLite) from  [Visual Studio MarketPlace]
+Download the latest version of the Visual Studio extension (for both 3.5, 4.0 and SQLite) from [Visual Studio MarketPlace]
 (https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox)
 
 Or just install from Tools, Extensions and Updates in Visual Studio! ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/ext.png)
