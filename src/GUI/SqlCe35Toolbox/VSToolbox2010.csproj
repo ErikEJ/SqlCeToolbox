@@ -549,10 +549,6 @@
       <Project>{C6031278-5612-429F-A485-5169392DB51C}</Project>
       <Name>SqlCeToolbox.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SqlCeToolbox.DDEX35\SqlCeToolbox.DDEX35.csproj">
-      <Project>{3D2F4C65-6423-450C-8398-A00B9AF50ED6}</Project>
-      <Name>SqlCeToolbox.DDEX35</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SqlCeToolbox.DDEX4\SqlCeToolbox.DDEX4.csproj">
       <Project>{42939E33-FC72-459C-9403-B62AB074635E}</Project>
       <Name>SqlCeToolbox.DDEX4</Name>
