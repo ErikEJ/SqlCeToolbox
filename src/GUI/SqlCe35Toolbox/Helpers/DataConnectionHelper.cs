@@ -626,11 +626,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 if (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0))
                 {
                     DdexRegistry.AddDdex4Registrations(ver);
-                    DdexRegistry.AddDdex35Registrations(ver);
-                }
-                if (SqlCeToolboxPackage.VisualStudioVersion == new Version(11, 0))
-                {
-                    DdexRegistry.AddDdex35Registrations(ver);
                 }
             }
             catch (Exception ex)

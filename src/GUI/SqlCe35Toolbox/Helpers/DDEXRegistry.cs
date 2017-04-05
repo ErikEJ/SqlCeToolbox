@@ -38,36 +38,5 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{2A7AD6AD-5D61-4817-B45F-681F8D29ECF7}}\SupportingProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}", ver), "Description", "Provider_Description, ErikEJ.SqlCeToolbox.DDEX4.Properties.Resources");
             Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{2A7AD6AD-5D61-4817-B45F-681F8D29ECF7}}\SupportingProviders\{{673BE80C-CB41-47A7-B0F3-9872B6DDE5E5}}", ver), "DisplayName", "Provider_DisplayName, ErikEJ.SqlCeToolbox.DDEX4.Properties.Resources");
         }
-       
-        public static void AddDdex35Registrations(string ver)
-        {
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "", "SQL Server Compact 3.5 Provider (Simple by ErikEJ)");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "AssociatedSource", "{F0905790-4262-4019-910D-CF4F06F58F6E}");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "Description", "Provider_Description, ErikEJ.SqlCeToolbox.DDEX35.Properties.Resources");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "DisplayName", "Provider_DisplayName, ErikEJ.SqlCeToolbox.DDEX35.Properties.Resources");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "InvariantName", "System.Data.SqlServerCe.3.5");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "PlatformVersion", "2.0");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "ShortDisplayName", "Provider_ShortDisplayName, ErikEJ.SqlCeToolbox.DDEX35.Properties.Resources");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "Technology", "{77AB9A9D-78B9-4ba7-91AC-873F5338F1D2}");
-
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects", ver), null, "");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataConnectionProperties", ver), "", "ErikEJ.SqlCeToolbox.DDEX35.SqlCeConnectionProperties");
-
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataConnectionSupport", ver), "", "Microsoft.VisualStudio.Data.Framework.AdoDotNet.AdoDotNetConnectionSupport");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataConnectionSupport", ver), "Assembly", string.Format("Microsoft.VisualStudio.Data.Framework, Version={0}.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ver));
-
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataObjectSelector", ver), "", "ErikEJ.SqlCeToolbox.DDEX35.SqlCeObjectSelector");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataObjectSupport", ver), "", "Microsoft.VisualStudio.Data.Framework.DataObjectSupport");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataObjectSupport", ver), "Assembly", string.Format("Microsoft.VisualStudio.Data.Framework, Version={0}.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ver));
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataObjectSupport", ver), "XmlResource", "ErikEJ.SqlCeToolbox.DDEX35.SqlCeObjectSupport");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataViewSupport", ver), "", "Microsoft.VisualStudio.Data.Framework.DataViewSupport");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataViewSupport", ver), "Assembly", string.Format("Microsoft.VisualStudio.Data.Framework, Version={0}.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", ver));
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}\SupportedObjects\IVsDataViewSupport", ver), "XmlResource", "ErikEJ.SqlCeToolbox.DDEX35.SqlCeViewSupport");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{F0905790-4262-4019-910D-CF4F06F58F6E}}", ver), "", "SQL Server Compact 3.5 (ErikEJ)");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{F0905790-4262-4019-910D-CF4F06F58F6E}}", ver), "DefaultProvider", "{303D8BB1-D62A-4560-9742-79C93E828222}");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{F0905790-4262-4019-910D-CF4F06F58F6E}}\SupportingProviders", ver), null, "");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{F0905790-4262-4019-910D-CF4F06F58F6E}}\SupportingProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "Description", "Provider_Description, ErikEJ.SqlCeToolbox.DDEX35.Properties.Resources");
-            Registry.SetValue(string.Format(@"HKEY_CURRENT_USER\SOFTWARE\Microsoft\VisualStudio\{0}.0_Config\DataSources\{{F0905790-4262-4019-910D-CF4F06F58F6E}}\SupportingProviders\{{303D8BB1-D62A-4560-9742-79C93E828222}}", ver), "DisplayName", "Provider_DisplayName, ErikEJ.SqlCeToolbox.DDEX35.Properties.Resources");
-        }
     }
 }

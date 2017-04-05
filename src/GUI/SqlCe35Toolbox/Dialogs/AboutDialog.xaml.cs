@@ -200,7 +200,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         private void DDEXButton_Click(object sender, RoutedEventArgs e)
         {
             DataConnectionHelper.RegisterDdexProviders();
-            EnvDteHelper.ShowMessage("Providers registered, you may have to restart Visual Studio");
+            EnvDteHelper.ShowMessage("SQL CE 4.0 Provider registered, you may have to restart Visual Studio");
         }
 
         private void GalleryLink_Click(object sender, RoutedEventArgs e)
