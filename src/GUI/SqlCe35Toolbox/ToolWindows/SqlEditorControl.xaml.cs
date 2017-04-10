@@ -481,8 +481,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void FormatTime(Stopwatch sw)
         {
-            var ts = new TimeSpan(0,0,0,0, (int)sw.ElapsedMilliseconds);
-            txtTime.Text = $"Duration: {ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}";
+            txtTime.Text = $"Duration: {sw.Elapsed.Minutes:00}:{sw.Elapsed.Seconds:00}.{sw.Elapsed.Milliseconds:000}";
         }
 
         public void OpenScript()

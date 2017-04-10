@@ -29,17 +29,21 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
 
         public ToolStripItem[] GetMenuItems()
         {
-            var item = new ToolStripMenuItem("SQLite / SQL Server Compact Toolbox", Resources.data_out_small);
+            var exportImage = SqlCeToolboxPackage.ExportImage;
+            var logo = SqlCeToolboxPackage.Logo;
+            var scriptImage =  SqlCeToolboxPackage.ScriptImage;
 
-            var scriptItem = BuildScriptMenuItem();
+            var item = new ToolStripMenuItem("SQLite / SQL Server Compact Toolbox", logo);
 
-            var exportSqlCeItem = new ToolStripMenuItem("Export SQL Server to SQL Server Compact 4.0...", Resources.ExportReportData_10565);
+            var scriptItem = BuildScriptMenuItem(scriptImage);
+
+            var exportSqlCeItem = new ToolStripMenuItem("Export SQL Server to SQL Server Compact 4.0...", exportImage);
             exportSqlCeItem.Click += ExportSqlCeItem_Click;
 
-            var exportSqliteItem = new ToolStripMenuItem("Export SQL Server to SQLite (beta)...", Resources.ExportReportData_10565);
+            var exportSqliteItem = new ToolStripMenuItem("Export SQL Server to SQLite (beta)...", exportImage);
             exportSqliteItem.Click += ExportSqliteItem_Click;
 
-            var aboutItem = new ToolStripMenuItem("Open Toolbox", Resources.data_out_small);
+            var aboutItem = new ToolStripMenuItem("Open Toolbox", logo);
             aboutItem.Click += AboutItem_Click;
 
             item.DropDownItems.Add(scriptItem);
@@ -54,7 +58,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
         {
             try
             {
-                var menuItem = BuildMenuItemForCommandHandler() ?? BuildMenuItemForCommandHandler();
+                var menuItem = BuildMenuItemForCommandHandler();
                 _handler.ExportServerDatabaseToSqlite(menuItem, null);
             }
             catch (Exception ex)
@@ -67,7 +71,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
         {
             try
             {
-                var menuItem = BuildMenuItemForCommandHandler() ?? BuildMenuItemForCommandHandler();
+                var menuItem = BuildMenuItemForCommandHandler();
                 _handler.ExportServerDatabaseTo40(menuItem, null);
             }
             catch (Exception ex)
@@ -98,7 +102,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             }
             try
             {
-                var menuItem = BuildMenuItemForCommandHandler() ?? BuildMenuItemForCommandHandler();
+                var menuItem = BuildMenuItemForCommandHandler();
 
                 if (menuItem != null)
                     menuItem.Tag = scope;
@@ -135,31 +139,31 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             return menuItem;
         }
 
-        private ToolStripMenuItem BuildScriptMenuItem()
-        {
-            var scriptItem = new ToolStripMenuItem("Script SQL Server Database", Resources.script_16xLG);
+        private ToolStripMenuItem BuildScriptMenuItem(System.Drawing.Bitmap scriptImage)
+        { 
+            var scriptItem = new ToolStripMenuItem("Script SQL Server Database", scriptImage);
 
-            var scriptItem3 = new ToolStripMenuItem("Script SQL Server Database Schema (SQLite)...", Resources.script_16xLG);
+            var scriptItem3 = new ToolStripMenuItem("Script SQL Server Database Schema (SQLite)...", scriptImage);
             scriptItem3.Tag = Scope.SchemaSQLite;
             scriptItem3.Click += item_Click;
 
-            var scriptItem4 = new ToolStripMenuItem("Script SQL Server Database Schema and Data (SQLite)...", Resources.script_16xLG);
+            var scriptItem4 = new ToolStripMenuItem("Script SQL Server Database Schema and Data (SQLite)...", scriptImage);
             scriptItem4.Tag = Scope.SchemaDataSQLite;
             scriptItem4.Click += item_Click;
 
-            var scriptItem0 = new ToolStripMenuItem("Script SQL Server Database Schema (SQLCE)...", Resources.script_16xLG);
+            var scriptItem0 = new ToolStripMenuItem("Script SQL Server Database Schema (SQLCE)...", scriptImage);
             scriptItem0.Tag = Scope.Schema;
             scriptItem0.Click += item_Click;
 
-            var scriptItem1 = new ToolStripMenuItem("Script SQL Server Database Data (SQLCE)...", Resources.script_16xLG);
+            var scriptItem1 = new ToolStripMenuItem("Script SQL Server Database Data (SQLCE)...", scriptImage);
             scriptItem1.Tag = Scope.DataOnly;
             scriptItem1.Click += item_Click;
 
-            var scriptItem2 = new ToolStripMenuItem("Script SQL Server Database Schema and Data (SQLCE)...", Resources.script_16xLG);
+            var scriptItem2 = new ToolStripMenuItem("Script SQL Server Database Schema and Data (SQLCE)...", scriptImage);
             scriptItem2.Tag = Scope.SchemaData;
             scriptItem2.Click += item_Click;
 
-            var scriptItem5 = new ToolStripMenuItem("Script SQL Server Database Schema and Data with BLOBs (SQLCE)...", Resources.script_16xLG);
+            var scriptItem5 = new ToolStripMenuItem("Script SQL Server Database Schema and Data with BLOBs (SQLCE)...", scriptImage);
             scriptItem5.Tag = Scope.SchemaDataBlobs;
             scriptItem5.Click += item_Click;
 
