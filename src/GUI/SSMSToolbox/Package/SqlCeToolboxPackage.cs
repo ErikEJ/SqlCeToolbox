@@ -199,6 +199,10 @@ namespace ErikEJ.SqlCeToolbox
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
+        public static System.Drawing.Bitmap Logo { get; private set; }
+        public static System.Drawing.Bitmap ExportImage { get; private set; }
+        public static System.Drawing.Bitmap ScriptImage { get; private set; }
+
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -207,6 +211,11 @@ namespace ErikEJ.SqlCeToolbox
         {
             OtherWindowsCommand.Initialize(this);
             ViewMenuCommand.Initialize(this);
+
+            ExportImage = Resources.ExportReportData_10565;
+            Logo = Resources.data_out_small;
+            ScriptImage = Resources.script_16xLG;
+
             _objectExplorerManager = new ObjectExplorerManager(this);
             _objectExplorerManager.SetObjectExplorerEventProvider();
             base.Initialize();            
