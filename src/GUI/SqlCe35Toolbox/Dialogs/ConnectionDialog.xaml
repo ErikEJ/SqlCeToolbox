@@ -7,7 +7,7 @@
         xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit.PropertyGrid;assembly=Xceed.Wpf.Toolkit"
         xmlns:extToolkit2="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         Icon="../Resources/gear_16xLG.png"
-        Title="Add SQL Server Compact/SQLite Connection" 
+        Title="Add SQL Server Compact Connection" 
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize" 
