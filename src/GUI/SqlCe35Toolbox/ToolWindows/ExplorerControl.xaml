@@ -23,6 +23,9 @@
                 <Button x:Name="AddSqliteDb" Click="AddSqliteDb_OnClick" ToolTip="Add SQLite Connection" Padding="0,0,0,0" >
                     <Image Height="20" Width="20" Stretch="None" Source="../Resources/AddDatabase_16x.png" />
                 </Button>
+                <Button x:Name="AddSqlCeDb" Click="AddSqlCeDb_Click" ToolTip="Add SQL CE 4.0 Connection" Padding="0,0,0,0" >
+                    <Image Height="20" Width="20" Stretch="None" Source="../Resources/AddDatabase_16x.png" />
+                </Button>
                 <Button x:Name="NewQuery" Click="NewQuery_OnClick" ToolTip="New Query" Padding="0,0,0,0" >
                     <Image Height="20" Width="20" Stretch="None" Source="../Resources/NewQuery.png" IsEnabled="False" >
                         <Image.Style>

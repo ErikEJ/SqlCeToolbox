@@ -1047,6 +1047,17 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             dbsCommandHandler.AddSqLiteDatabase(null, null);
         }
 
+        private void AddSqlCeDb_Click(object sender, RoutedEventArgs e)
+        {
+            if (!DataConnectionHelper.IsV40Installed())
+            {
+                EnvDteHelper.ShowMessage("The SQL Server Compact 4.0 runtime must be installed in order to add connections");
+                return;
+            }
+            var dbsCommandHandler = new DatabasesMenuCommandsHandler(_parentWindow);
+            dbsCommandHandler.AddPrivateCe40Database(null, null);
+        }
+
         private void NewQuery_OnClick(object sender, RoutedEventArgs e)
         {
             var dbCommandHandler = new DatabaseMenuCommandsHandler(_parentWindow);
