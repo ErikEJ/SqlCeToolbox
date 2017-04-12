@@ -1,3 +1,5 @@
+extern alias v130;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +29,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             {
                 if (ssmsVersion == "13")
                 {
-                    var servers = new List<Microsoft.SqlServer.Management.Common.SqlConnectionInfo>();
+                    var servers = new List<v130::Microsoft.SqlServer.Management.Common.SqlConnectionInfo>();
 
                     foreach (var srvHerarchy in GetExplorerHierarchies())
                     {
@@ -36,7 +38,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
 
                         if (provider == null) continue;
                         var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
-                        if (containedItem != null) servers.Add(containedItem.Connection as Microsoft.SqlServer.Management.Common.SqlConnectionInfo);
+                        if (containedItem != null) servers.Add(containedItem.Connection as v130::Microsoft.SqlServer.Management.Common.SqlConnectionInfo);
                     }
 
                     foreach (var sqlConnectionInfo in servers)
