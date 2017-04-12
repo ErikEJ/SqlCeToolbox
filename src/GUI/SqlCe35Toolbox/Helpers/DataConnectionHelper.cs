@@ -141,11 +141,15 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             try
             {
                 var objectExplorerManager = new ObjectExplorerManager(package);
-                var list = objectExplorerManager.GetAllServerUserDatabases();
-                foreach (var item in list)
+                var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+                if (dte.RegistryRoot.Contains("13.0"))
                 {
-                    if (!databaseList.ContainsKey(item.Key))
-                        databaseList.Add(item.Key, item.Value);
+                    var list = objectExplorerManager.GetAllServerUserDatabases("13");
+                    foreach (var item in list)
+                    {
+                        if (!databaseList.ContainsKey(item.Key))
+                            databaseList.Add(item.Key, item.Value);
+                    }
                 }
             }
             //TODO Make SSMS 14.x (17) work with above method!

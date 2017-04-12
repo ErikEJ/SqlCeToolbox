@@ -1,3 +1,5 @@
+extern alias v130;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -5,7 +7,6 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Reflection;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
 
 namespace ErikEJ.SqlCeToolbox.SSMSEngine
@@ -21,38 +22,50 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             _package = package;
         }
 
-        public Dictionary<string, DatabaseInfo> GetAllServerUserDatabases()
+        public Dictionary<string, DatabaseInfo> GetAllServerUserDatabases(string ssmsVersion)
         {
             var result = new Dictionary<string, DatabaseInfo>();
             try
             {
-                var servers = new List<SqlConnectionInfo>();
-
-                foreach (var srvHerarchy in GetExplorerHierarchies())
+                if (ssmsVersion == "13")
                 {
-                    // ReSharper disable once SuspiciousTypeConversion.Global
-                    var provider = srvHerarchy.Root as IServiceProvider;
+                    var servers = new List<v130::Microsoft.SqlServer.Management.Common.SqlConnectionInfo>();
 
-                    if (provider == null) continue;
-                    var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
-                    if (containedItem != null) servers.Add(containedItem.Connection as SqlConnectionInfo);
-                }
-
-                foreach (var sqlConnectionInfo in servers)
-                {
-                    var builder = new SqlConnectionStringBuilder(sqlConnectionInfo.ConnectionString);
-                    var databaseNames = GetDatabaseNames(builder);
-                    foreach (var databaseName in databaseNames)
+                    foreach (var srvHerarchy in GetExplorerHierarchies())
                     {
-                        builder.InitialCatalog = databaseName.Item2;
-                        var databaseInfo = new DatabaseInfo
-                        {
-                            Caption = databaseName.Item1 + "." + databaseName.Item2,
-                            ConnectionString = builder.ConnectionString,
-                            DatabaseType = DatabaseType.SQLServer,
-                            FromServerExplorer = true
-                        };
-                        result.Add(builder.ConnectionString, databaseInfo);
+                        // ReSharper disable once SuspiciousTypeConversion.Global
+                        var provider = srvHerarchy.Root as IServiceProvider;
+
+                        if (provider == null) continue;
+                        var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
+                        if (containedItem != null) servers.Add(containedItem.Connection as v130::Microsoft.SqlServer.Management.Common.SqlConnectionInfo);
+                    }
+
+                    foreach (var sqlConnectionInfo in servers)
+                    {
+                        var builder = new SqlConnectionStringBuilder(sqlConnectionInfo.ConnectionString);
+                        AddToList(result, builder);
+                    }
+                }
+                if (ssmsVersion == "14")
+                {
+                    //TODO Use v140 ref!
+                    var servers = new List<v130::Microsoft.SqlServer.Management.Common.SqlConnectionInfo>();
+
+                    foreach (var srvHerarchy in GetExplorerHierarchies())
+                    {
+                        // ReSharper disable once SuspiciousTypeConversion.Global
+                        var provider = srvHerarchy.Root as IServiceProvider;
+
+                        if (provider == null) continue;
+                        var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
+                        if (containedItem != null) servers.Add(containedItem.Connection as v130::Microsoft.SqlServer.Management.Common.SqlConnectionInfo);
+                    }
+
+                    foreach (var sqlConnectionInfo in servers)
+                    {
+                        var builder = new SqlConnectionStringBuilder(sqlConnectionInfo.ConnectionString);
+                        AddToList(result, builder);
                     }
                 }
             }
@@ -61,6 +74,23 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
                 Telemetry.TrackException(ex);
             }
             return result;
+        }
+
+        private void AddToList(Dictionary<string, DatabaseInfo> result, SqlConnectionStringBuilder builder)
+        {
+            var databaseNames = GetDatabaseNames(builder);
+            foreach (var databaseName in databaseNames)
+            {
+                builder.InitialCatalog = databaseName.Item2;
+                var databaseInfo = new DatabaseInfo
+                {
+                    Caption = databaseName.Item1 + "." + databaseName.Item2,
+                    ConnectionString = builder.ConnectionString,
+                    DatabaseType = DatabaseType.SQLServer,
+                    FromServerExplorer = true
+                };
+                result.Add(builder.ConnectionString, databaseInfo);
+            }
         }
 
         private List<Tuple<string, string>> GetDatabaseNames(SqlConnectionStringBuilder builder)
