@@ -52,7 +52,7 @@ namespace ErikEJ.SqlCeToolbox
 
         [Category("Query Editor"),
         DisplayName(@"Use classic (plain) grid"),
-        Description("If true, will use the classic grid for results, else use the advanced grib with sorting and grouping"),
+        Description("If true, will use the classic grid for results, else use the advanced grid with sorting and grouping"),
         DefaultValue(true)]
         public bool UseClassicGrid { get; set; }
 
