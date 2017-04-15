@@ -201,7 +201,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     var info = new DatabaseInfo();
                     try
                     {
-                        info.Caption = Path.GetFileName(row[0].ToString());
+                        info.Caption = GetFileName(row[1].ToString(), foundType);
                     }
                     catch (ArgumentException)
                     {
@@ -726,6 +726,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal static bool IsMissing(DatabaseInfo info)
         {
+            if (info.DatabaseType == DatabaseType.SQLServer)
+            {
+                return false;
+            }
             try
             {
                 var path = GetFilePath(info.ConnectionString, info.DatabaseType);

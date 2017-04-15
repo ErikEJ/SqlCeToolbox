@@ -32,7 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CopyVsixExtensionFiles>True</CopyVsixExtensionFiles>
-    <CopyVsixExtensionLocation>C:\Program Files %28x86%29\Microsoft SQL Server\130\Tools\Binn\ManagementStudio\Extensions\SqlCeToolbox</CopyVsixExtensionLocation>
+    <CopyVsixExtensionLocation>C:\Program Files %28x86%29\Microsoft SQL Server\140\Tools\Binn\ManagementStudio\Extensions\SqlCeToolbox</CopyVsixExtensionLocation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -856,6 +856,9 @@
     <Resource Include="..\SqlCe35Toolbox\Resources\CopyLongTextToClipboard_16x.png">
       <Link>Resources\CopyLongTextToClipboard_16x.png</Link>
     </Resource>
+    <Resource Include="..\SqlCe35Toolbox\Resources\SQLDatabase_16x.png">
+      <Link>Resources\SQLDatabase_16x.png</Link>
+    </Resource>
     <Content Include="Resources\data_out.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -941,16 +944,16 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="solveAliasProblem" >
+  <Target Name="solveAliasProblem">
     <ConvertToAbsolutePath Paths="..\lib\v130\Microsoft.SqlServer.ConnectionInfo.dll">
       <Output TaskParameter="AbsolutePaths" PropertyName="FullPathOriginal" />
     </ConvertToAbsolutePath>
     <ItemGroup>
-       <ReferencePath Remove="$(FullPathOriginal)"/>
-       <ReferencePath Include="$(FullPathOriginal)">
-         <Aliases>v130</Aliases>
-       </ReferencePath>
-     </ItemGroup>
+      <ReferencePath Remove="$(FullPathOriginal)" />
+      <ReferencePath Include="$(FullPathOriginal)">
+        <Aliases>v130</Aliases>
+      </ReferencePath>
+    </ItemGroup>
   </Target>
   <PropertyGroup>
     <CoreCompileDependsOn>solveAliasProblem;$(PrepareResourcesDependsOn)</CoreCompileDependsOn>

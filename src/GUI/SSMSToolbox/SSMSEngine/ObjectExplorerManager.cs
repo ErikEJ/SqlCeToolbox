@@ -108,6 +108,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
         {
             var mi = GetType().GetMethod("Provider_SelectionChanged", BindingFlags.NonPublic | BindingFlags.Instance);
             var objectExplorer = GetObjectExplorer();
+            if (objectExplorer == null) return;
             var t = Assembly.Load("Microsoft.SqlServer.Management.SqlStudio.Explorer").GetType("Microsoft.SqlServer.Management.SqlStudio.Explorer.ObjectExplorerService");
 
             int nodeCount;
