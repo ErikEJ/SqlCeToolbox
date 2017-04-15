@@ -22,6 +22,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(BuildAddSqLiteDatabaseMenuItem(databaseMenuCommandParameters, dcmd));
 
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildAddSqlServerDatabaseMenuItem(databaseMenuCommandParameters, dcmd));
+            if (!SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildAddPrivateSqlServerDatabaseMenuItem(databaseMenuCommandParameters, dcmd));
 
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildAddFromSolutionMenuItem(databaseMenuCommandParameters, dcmd, ver40IsInstalled, ver35IsInstalled));
 
@@ -117,7 +118,23 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var addSqlServerDatabaseMenuItem = new MenuItem
             {
                 Header = "Add SQL Server Connection...",
-                Icon = ImageHelper.GetImageFromResource("../resources/AddDatabase_16x.png"),
+                Icon = ImageHelper.GetImageFromResource("../resources/SQLDatabase_16x.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters,
+            };
+            addSqlServerDatabaseMenuItem.CommandBindings.Add(addSqlServerDatabaseCommandBinding);
+            return addSqlServerDatabaseMenuItem;
+        }
+
+        private MenuItem BuildAddPrivateSqlServerDatabaseMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
+                DatabasesMenuCommandsHandler dcmd)
+        {
+            var addSqlServerDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                dcmd.AddPrivateSqlServerDatabase);
+            var addSqlServerDatabaseMenuItem = new MenuItem
+            {
+                Header = "Add SQL Server Connection...",
+                Icon = ImageHelper.GetImageFromResource("../resources/SQLDatabase_16x.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
             };

@@ -1058,6 +1058,12 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             dbsCommandHandler.AddPrivateCe40Database(null, null);
         }
 
+        private void AddSqlServerDb_Click(object sender, RoutedEventArgs e)
+        {
+            var dbsCommandHandler = new DatabasesMenuCommandsHandler(_parentWindow);
+            dbsCommandHandler.AddPrivateSqlServerDatabase(null, null);
+        }
+
         private void NewQuery_OnClick(object sender, RoutedEventArgs e)
         {
             var dbCommandHandler = new DatabaseMenuCommandsHandler(_parentWindow);

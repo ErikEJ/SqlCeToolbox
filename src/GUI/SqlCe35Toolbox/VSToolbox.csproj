@@ -482,6 +482,7 @@
     <Resource Include="Resources\ResultsToTextFile.png" />
     <Resource Include="Resources\Run.png" />
     <Resource Include="Resources\RunOutline.png" />
+    <Resource Include="Resources\SQLDatabase_16x.png" />
     <Content Include="Resources\toolbox2.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

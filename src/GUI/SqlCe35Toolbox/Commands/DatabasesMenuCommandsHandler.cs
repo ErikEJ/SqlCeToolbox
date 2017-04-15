@@ -34,6 +34,23 @@ namespace ErikEJ.SqlCeToolbox.Commands
             AddCeDatabase(DatabaseType.SQLCE40);
         }
 
+        public void AddPrivateSqlServerDatabase(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var serverConnectionString = DataConnectionHelper.PromptForConnectionString(_package);
+                if (string.IsNullOrEmpty(serverConnectionString)) return;
+                DataConnectionHelper.SaveDataConnection(serverConnectionString, DatabaseType.SQLServer, _package);
+                var control = _parentWindow.Content as ExplorerControl;
+                if (control != null) control.BuildDatabaseTree();
+                DataConnectionHelper.LogUsage("DatabasesAddCeDatabase");
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
+            }
+        }
+
         private void AddCeDatabase(DatabaseType dbType)
         {
             try
