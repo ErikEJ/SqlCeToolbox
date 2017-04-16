@@ -27,6 +27,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
     {
         private static string separator = Environment.NewLine + "GO" + Environment.NewLine;
 
+        //TODO Update this when SQLite provider is updated!
+        private static string SqliteEngineVersion = "3.15";
+
         internal static Dictionary<string, DatabaseInfo> GetDataConnections(SqlCeToolboxPackage package,
             bool includeServerConnections, bool serverConnectionsOnly)
         {
@@ -108,8 +111,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                 info.Caption = connection.DisplayName;
                                 info.FromServerExplorer = true;
                                 info.DatabaseType = dbType;
-                                //TODO Update this when SQLite provider is updated!
-                                info.ServerVersion = "3.15";
+                                info.ServerVersion = SqliteEngineVersion;
                                 info.ConnectionString = sConnectionString;
                                 info.FileIsMissing = IsMissing(info);
                                 if (!databaseList.ContainsKey(sConnectionString))
@@ -140,11 +142,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 #if SSMS
             try
             {
-                var objectExplorerManager = new ObjectExplorerManager(package);
-                var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-                if (dte.RegistryRoot.Contains("13.0"))
+                //TODO Use 14.0 when SSMS 17 is RTW
+                if (package.TelemetryVersion().Major == 130)
                 {
-                    var list = objectExplorerManager.GetAllServerUserDatabases("13");
+                    var objectExplorerManager = new ObjectExplorerManager(package);
+                    var list = objectExplorerManager.GetAllServerUserDatabases();
                     foreach (var item in list)
                     {
                         if (!databaseList.ContainsKey(item.Key))
@@ -152,7 +154,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                 }
             }
-            //TODO Make SSMS 14.x (17) work with above method!
             catch (MissingMethodException)
             {
             }
@@ -215,8 +216,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     if (foundType == DatabaseType.SQLCE35)
                         info.ServerVersion = "3.5.1.0";
                     if (foundType == DatabaseType.SQLite)
-                        //TODO Update this when SQLite provider is updated!
-                        info.ServerVersion = "3.15";
+                        info.ServerVersion = SqliteEngineVersion;
                     info.FileIsMissing = IsMissing(info);
                     if (!databaseList.ContainsKey(key) && !info.FileIsMissing)
                     {

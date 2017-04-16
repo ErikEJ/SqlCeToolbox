@@ -1,5 +1,3 @@
-extern alias v130;
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +6,7 @@ using System.Diagnostics;
 using System.Reflection;
 using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
+using Microsoft.SqlServer.Management.Common;
 
 namespace ErikEJ.SqlCeToolbox.SSMSEngine
 {
@@ -22,34 +21,27 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             _package = package;
         }
 
-        public Dictionary<string, DatabaseInfo> GetAllServerUserDatabases(string ssmsVersion)
+        public Dictionary<string, DatabaseInfo> GetAllServerUserDatabases()
         {
             var result = new Dictionary<string, DatabaseInfo>();
             try
             {
-                if (ssmsVersion == "13")
+                var servers = new List<SqlConnectionInfo>();
+
+                foreach (var srvHerarchy in GetExplorerHierarchies())
                 {
-                    var servers = new List<v130::Microsoft.SqlServer.Management.Common.SqlConnectionInfo>();
+                    // ReSharper disable once SuspiciousTypeConversion.Global
+                    var provider = srvHerarchy.Root as IServiceProvider;
 
-                    foreach (var srvHerarchy in GetExplorerHierarchies())
-                    {
-                        // ReSharper disable once SuspiciousTypeConversion.Global
-                        var provider = srvHerarchy.Root as IServiceProvider;
-
-                        if (provider == null) continue;
-                        var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
-                        if (containedItem != null) servers.Add(containedItem.Connection as v130::Microsoft.SqlServer.Management.Common.SqlConnectionInfo);
-                    }
-
-                    foreach (var sqlConnectionInfo in servers)
-                    {
-                        var builder = new SqlConnectionStringBuilder(sqlConnectionInfo.ConnectionString);
-                        AddToList(result, builder);
-                    }
+                    if (provider == null) continue;
+                    var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
+                    if (containedItem != null) servers.Add(containedItem.Connection as SqlConnectionInfo);
                 }
-                if (ssmsVersion == "14")
+
+                foreach (var sqlConnectionInfo in servers)
                 {
-                    //TODO Use v140 ref!
+                    var builder = new SqlConnectionStringBuilder(sqlConnectionInfo.ConnectionString);
+                    AddToList(result, builder);
                 }
             }
             catch (Exception ex)

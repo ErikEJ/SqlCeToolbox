@@ -64,8 +64,21 @@ namespace ErikEJ.SqlCeToolbox
 
         public static Version VisualStudioVersion => new Version(0, 0, 0, 0);
 
-        //TODO Make this dynamic!
-        public static Version TelemetryVersion => new Version(130, 0, 0, 0);
+        public Version TelemetryVersion()
+        {
+            //TODO Update when support for newer SSMS version is addded
+            var dte = GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            if (dte == null) return new Version(130, 0, 0, 0);
+            if (dte.RegistryRoot.Contains("13.0"))
+            {
+                return new Version(130, 0, 0, 0);
+            }
+            if (dte.RegistryRoot.Contains("14.0"))
+            {
+                return new Version(140, 0, 0, 0);
+            }
+            return new Version(130, 0, 0, 0);
+        }
 
         public void SetProgress(string label, uint progress, uint total)
         {

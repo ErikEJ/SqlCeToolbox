@@ -438,7 +438,6 @@
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=13.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\lib\v130\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
-      <Aliases>v130</Aliases>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Dac">
       <HintPath>..\lib\Microsoft.SqlServer.Dac.dll</HintPath>
@@ -944,18 +943,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="solveAliasProblem">
-    <ConvertToAbsolutePath Paths="..\lib\v130\Microsoft.SqlServer.ConnectionInfo.dll">
-      <Output TaskParameter="AbsolutePaths" PropertyName="FullPathOriginal" />
-    </ConvertToAbsolutePath>
-    <ItemGroup>
-      <ReferencePath Remove="$(FullPathOriginal)" />
-      <ReferencePath Include="$(FullPathOriginal)">
-        <Aliases>v130</Aliases>
-      </ReferencePath>
-    </ItemGroup>
-  </Target>
-  <PropertyGroup>
-    <CoreCompileDependsOn>solveAliasProblem;$(PrepareResourcesDependsOn)</CoreCompileDependsOn>
-  </PropertyGroup>
 </Project>
