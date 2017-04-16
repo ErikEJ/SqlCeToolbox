@@ -193,7 +193,7 @@ namespace ErikEJ.SqlCeToolbox
             }
         }
 
-        public static Version TelemetryVersion => VisualStudioVersion;
+        public Version TelemetryVersion() => VisualStudioVersion;
 
         public bool VsSupportsDdex40()
         {
