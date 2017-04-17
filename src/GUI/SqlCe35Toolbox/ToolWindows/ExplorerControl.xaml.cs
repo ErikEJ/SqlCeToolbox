@@ -301,10 +301,24 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 return databaseTreeViewItem;
             }
 
-            databaseTreeViewItem.ContextMenu = new DatabaseContextMenu(new DatabaseMenuCommandParameters
+            if (database.Value.DatabaseType == DatabaseType.SQLCE35 
+                || database.Value.DatabaseType == DatabaseType.SQLCE40)
             {
-                ExplorerControl = this, DatabaseInfo = database.Value
-            }, _parentWindow);
+                databaseTreeViewItem.ContextMenu = new SqlCeDatabaseContextMenu(new DatabaseMenuCommandParameters
+                {
+                    ExplorerControl = this,
+                    DatabaseInfo = database.Value
+                }, _parentWindow);
+            }
+
+            if (database.Value.DatabaseType == DatabaseType.SQLite)
+            {
+                databaseTreeViewItem.ContextMenu = new SqliteDatabaseContextMenu(new DatabaseMenuCommandParameters
+                {
+                    ExplorerControl = this,
+                    DatabaseInfo = database.Value
+                }, _parentWindow);
+            }
 
             databaseTreeViewItem.Items.Clear();
 

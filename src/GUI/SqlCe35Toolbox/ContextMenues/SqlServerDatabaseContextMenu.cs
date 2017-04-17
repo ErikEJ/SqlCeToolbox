@@ -13,6 +13,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var dcmd = new SqlServerDatabaseMenuCommandsHandler(parent);
             var dbcmd = new DatabaseMenuCommandsHandler(parent);
             var isSqlCe40Installed = DataConnectionHelper.IsV40Installed();
+            if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType != DatabaseType.SQLServer)
+                return;
             
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildScriptDatabaseGraphMenuItem(databaseMenuCommandParameters, dcmd));
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
@@ -56,6 +58,13 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(BuildExportServerMenuItem(databaseMenuCommandParameters, dcmd, isSqlCe40Installed));
 
             Items.Add(BuildExportServerToLiteMenuItem(databaseMenuCommandParameters, dcmd));
+
+            Items.Add(new Separator());
+
+            if (!databaseMenuCommandParameters.DatabaseInfo.FromServerExplorer)
+            {
+                Items.Add(BuildRemoveConnectionMenuItem(databaseMenuCommandParameters, dbcmd));
+            }
         }
 
         private MenuItem BuildScriptDatabaseGraphMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
@@ -240,6 +249,22 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             exportServerToLiteMenuItem.CommandBindings.Add(exportServerToLiteCommandBinding);
             return exportServerToLiteMenuItem;
+        }
+
+        private MenuItem BuildRemoveConnectionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
+              DatabaseMenuCommandsHandler dcmd)
+        {
+            var removeConnectionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                dcmd.RemoveDatabaseConnection);
+            var removeConnectionMenuItem = new MenuItem
+            {
+                Header = "Remove Connection",
+                Icon = ImageHelper.GetImageFromResource("../resources/action_Cancel_16xLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters
+            };
+            removeConnectionMenuItem.CommandBindings.Add(removeConnectionCommandBinding);
+            return removeConnectionMenuItem;
         }
     }
 }
