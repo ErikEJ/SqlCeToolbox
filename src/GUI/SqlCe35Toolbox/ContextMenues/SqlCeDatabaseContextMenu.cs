@@ -12,9 +12,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var itemBuilder = new DatabaseContextMenuItems();
             var dbType = databaseMenuCommandParameters.DatabaseInfo.DatabaseType;
-            var isSqlCe = dbType == DatabaseType.SQLCE35
-                || dbType == DatabaseType.SQLCE40;
-            if (!isSqlCe)
+            if (!(dbType == DatabaseType.SQLCE35
+                || dbType == DatabaseType.SQLCE40))
                 return;
 
             var dcmd = new DatabaseMenuCommandsHandler(parent);
@@ -31,30 +30,30 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
             };
 
+            var toolTip = new ToolTip
+            {
+                Content = "Generate a SQL Server Compact/SQLite compatible database script"
+            };
+
             // Database scripting items
-            var scriptDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                                                    dcmd.ScriptDatabase);
+            var scriptDatabaseCommandBinding = 
+                new CommandBinding(DatabaseMenuCommands.DatabaseCommand, dcmd.ScriptDatabase);
 
-            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
-            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
-            if (isSqlCe)
-                scriptDatabaseRootMenuItem.Items.Add(BuildScriptAzureSchemaDataMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(BuildScriptAzureSchemaDataMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
 
-            if (isSqlCe)
-                scriptDatabaseRootMenuItem.Items.Add(BuildScriptSqliteSchemaDataMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataSqLiteMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
-            if (isSqlCe)
-                scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseSchemaDataBlobMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataBlobMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
-            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseDataMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseDataMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
-            if (isSqlCe)
-                scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseDataForServerMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseDataForServerMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
 
-            if (isSqlCe)
-                scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseDiffMenuItem(databaseMenuCommandParameters, dcmd));
+            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseDiffMenuItem(databaseMenuCommandParameters, dcmd));
 
             //End Database scripting items
             Items.Add(scriptDatabaseRootMenuItem);
@@ -111,7 +110,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             if (dbType != DatabaseType.SQLCE35 && SqlCeToolboxPackage.VsSupportsEfCore())
                 generateCodeRootMenuItem.Items.Add(itemBuilder.BuildEfCoreModelMenuItem(databaseMenuCommandParameters, dcmd));
 #endif
-            if (isSqlCe && SqlCeToolboxPackage.VsSupportsEf6())
+            if (SqlCeToolboxPackage.VsSupportsEf6())
                 generateCodeRootMenuItem.Items.Add(BuildScriptEfPocoMenuItem(databaseMenuCommandParameters, dcmd));
 
 #if SSMS
@@ -119,10 +118,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var scriptDcCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                             cecmd.GenerateDataContextInProject);
 
-            if (isSqlCe) generateCodeRootMenuItem.Items.Add(BuildScriptDcMenuItem(databaseMenuCommandParameters, scriptDcCommandBinding));
+            generateCodeRootMenuItem.Items.Add(BuildScriptDcMenuItem(databaseMenuCommandParameters, scriptDcCommandBinding));
 
-            if (isSqlCe) generateCodeRootMenuItem.Items.Add(BuildScriptWpdcMenuItem(databaseMenuCommandParameters, scriptDcCommandBinding, dbType));
-            if (isSqlCe) generateCodeRootMenuItem.Items.Add(new Separator());
+            generateCodeRootMenuItem.Items.Add(BuildScriptWpdcMenuItem(databaseMenuCommandParameters, scriptDcCommandBinding, dbType));
+            generateCodeRootMenuItem.Items.Add(new Separator());
 #endif
 
             var syncFxRootMenuItem = new MenuItem
@@ -139,13 +138,13 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             syncFxRootMenuItem.Items.Add(BuildSyncFxGenerateSnapshotMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
 
-            if (isSqlCe) generateCodeRootMenuItem.Items.Add(BuildSyncFxMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
-            if (isSqlCe) generateCodeRootMenuItem.Items.Add(syncFxRootMenuItem);
+            generateCodeRootMenuItem.Items.Add(BuildSyncFxMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
+            generateCodeRootMenuItem.Items.Add(syncFxRootMenuItem);
 
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(generateCodeRootMenuItem);
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
-            if (isSqlCe) Items.Add(BuildAddDescriptionMenuItem(databaseMenuCommandParameters, dcmd));
+            Items.Add(BuildAddDescriptionMenuItem(databaseMenuCommandParameters, dcmd));
 
             Items.Add(itemBuilder.BuildGenerateInfoMenuItem(databaseMenuCommandParameters, dcmd));
             Items.Add(new Separator());
@@ -157,7 +156,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Items.Add(itemBuilder.BuildRenameConnectionMenuItem(databaseMenuCommandParameters, dcmd));
             }
 
-            Items.Add(itemBuilder.BuildRemoveCeConnectionMenuItem(databaseMenuCommandParameters, dcmd));
+            Items.Add(itemBuilder.BuildRemoveConnectionMenuItem(databaseMenuCommandParameters, dcmd));
         }
 
         private MenuItem BuildCreateTableMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
@@ -189,36 +188,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             scriptAzureSchemaDataMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
             return scriptAzureSchemaDataMenuItem;
-        }
-
-        private MenuItem BuildScriptSqliteSchemaDataMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            CommandBinding scriptDatabaseCommandBinding)
-        {
-            var scriptSqliteSchemaDataMenuItem = new MenuItem
-            {
-                Header = "Script Database Schema and Data for SQLite...",
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.SchemaDataSQLite
-            };
-            scriptSqliteSchemaDataMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            return scriptSqliteSchemaDataMenuItem;
-        }
-
-        private MenuItem BuildScriptDatabaseSchemaDataBlobMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            CommandBinding scriptDatabaseCommandBinding)
-        {
-            var scriptDatabaseSchemaDataBlobMenuItem = new MenuItem
-            {
-                Header = "Script Database Schema and Data with BLOBs...",
-                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.SchemaDataBlobs
-            };
-            scriptDatabaseSchemaDataBlobMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
-            return scriptDatabaseSchemaDataBlobMenuItem;
         }
 
         private MenuItem BuildScriptDatabaseDataForServerMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
