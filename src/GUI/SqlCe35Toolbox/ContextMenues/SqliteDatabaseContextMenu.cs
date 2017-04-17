@@ -27,15 +27,20 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
             };
 
+            var toolTip = new ToolTip
+            {
+                Content = "Generate a SQL Server Compact/SQLite compatible database script"
+            };
+
             // Database scripting items
             var scriptDatabaseCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                                                     dcmd.ScriptDatabase);
 
-            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
-            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
-            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseDataMenuItem(databaseMenuCommandParameters, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseDataMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
             //End Database scripting items
             Items.Add(scriptDatabaseRootMenuItem);
@@ -96,7 +101,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Items.Add(itemBuilder.BuildRenameConnectionMenuItem(databaseMenuCommandParameters, dcmd));
             }
 
-            Items.Add(itemBuilder.BuildRemoveCeConnectionMenuItem(databaseMenuCommandParameters, dcmd));
+            Items.Add(itemBuilder.BuildRemoveConnectionMenuItem(databaseMenuCommandParameters, dcmd));
         }
 
         private MenuItem BuildScriptModelMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,

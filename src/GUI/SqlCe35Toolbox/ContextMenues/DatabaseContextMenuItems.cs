@@ -40,12 +40,13 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         public MenuItem BuildScriptDatabaseSchemaMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            CommandBinding scriptDatabaseCommandBinding)
+            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
         {
             var scriptDatabaseSchemaMenuItem = new MenuItem
             {
                 Header = "Script Database Schema...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
+                ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.Schema
@@ -55,12 +56,13 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         public MenuItem BuildScriptDatabaseSchemaDataMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            CommandBinding scriptDatabaseCommandBinding)
+            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
         {
             var scriptDatabaseSchemaDataMenuItem = new MenuItem
             {
                 Header = "Script Database Schema and Data...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
+                ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.SchemaData
@@ -70,12 +72,13 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         public MenuItem BuildScriptDatabaseDataMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            CommandBinding scriptDatabaseCommandBinding)
+            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
         {
             var scriptDatabaseDataMenuItem = new MenuItem
             {
                 Header = "Script Database Data...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
+                ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
                 Tag = SqlCeScripting.Scope.DataOnly
@@ -83,6 +86,40 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptDatabaseDataMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
             return scriptDatabaseDataMenuItem;
         }
+
+        public MenuItem BuildScriptDatabaseSchemaDataBlobMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
+            ToolTip toolTip, CommandBinding scriptDatabaseCommandBinding)
+        {
+            var scriptDatabaseSchemaDataBlobMenuItem = new MenuItem
+            {
+                Header = "Script Database Schema and Data with BLOBs...",
+                ToolTip = toolTip,
+                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters,
+                Tag = SqlCeScripting.Scope.SchemaDataBlobs
+            };
+            scriptDatabaseSchemaDataBlobMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            return scriptDatabaseSchemaDataBlobMenuItem;
+        }
+
+        public MenuItem BuildScriptDatabaseSchemaDataSqLiteMenuItem(
+            DatabaseMenuCommandParameters databaseMenuCommandParameters, ToolTip toolTip,
+            CommandBinding scriptDatabaseCommandBinding)
+        {
+            var scriptDatabaseSchemaDataSqLiteMenuItem = new MenuItem
+            {
+                Header = "Script Database Schema and Data for SQLite...",
+                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
+                ToolTip = toolTip,
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters,
+                Tag = SqlCeScripting.Scope.SchemaDataSQLite
+            };
+            scriptDatabaseSchemaDataSqLiteMenuItem.CommandBindings.Add(scriptDatabaseCommandBinding);
+            return scriptDatabaseSchemaDataSqLiteMenuItem;
+        }
+
 
         public MenuItem BuildShrinkMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabaseMenuCommandsHandler dcmd)
@@ -201,7 +238,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return renameConnectionMenuItem;
         }
 
-        public MenuItem BuildRemoveCeConnectionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
+        public MenuItem BuildRemoveConnectionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabaseMenuCommandsHandler dcmd)
         {
             var removeCeConnectionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
