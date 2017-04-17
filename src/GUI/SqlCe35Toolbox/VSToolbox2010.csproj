@@ -153,13 +153,15 @@
     <Compile Include="Commands\MenuCommands.cs" />
     <Compile Include="Commands\TableMenuCommandsHandler.cs" />
     <Compile Include="ContextMenues\ColumnContextMenu.cs" />
+    <Compile Include="ContextMenues\DatabaseContextMenuItems.cs" />
+    <Compile Include="ContextMenues\SqlCeDatabaseContextMenu.cs" />
+    <Compile Include="ContextMenues\SqliteDatabaseContextMenu.cs" />
     <Compile Include="ContextMenues\SqlServerDatabaseContextMenu.cs" />
     <Compile Include="ContextMenues\TriggerContextMenu.cs" />
     <Compile Include="ContextMenues\ViewContextMenu.cs" />
     <Compile Include="ContextMenues\ScopesContextMenu.cs" />
     <Compile Include="ContextMenues\KeyContextMenu.cs" />
     <Compile Include="ContextMenues\SubscriptionsContextMenu.cs" />
-    <Compile Include="ContextMenues\DatabaseContextMenu.cs" />
     <Compile Include="ContextMenues\DatabasesContextMenu.cs" />
     <Compile Include="ContextMenues\IndexContextMenu.cs" />
     <Compile Include="ContextMenues\TableContextMenu.cs" />

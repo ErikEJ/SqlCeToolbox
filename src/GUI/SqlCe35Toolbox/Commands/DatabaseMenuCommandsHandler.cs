@@ -33,7 +33,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             package = _parentWindow.Package as SqlCeToolboxPackage;
         }
 
-        public void RemoveCeDatabase(object sender, ExecutedRoutedEventArgs e)
+        public void RemoveDatabaseConnection(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
