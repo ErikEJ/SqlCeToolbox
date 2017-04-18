@@ -19,6 +19,7 @@ using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
+using System.Linq;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
@@ -672,21 +673,19 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             try
             {
-                var reader =
-                    XmlReader.Create(
+                var reader = XmlReader.Create(
                         "http://sqlcompact.dk/vsgallerycounter/downloadfeed.axd?extensionId=0e313dfd-be80-4afb-b5e9-6e74d369f7a1");
                 var feed = SyndicationFeed.Load(reader);
-                if (feed != null)
-                    foreach (var item in feed.Items)
-                    {
-                        return string.Format("- {0:0,0} downloads", double.Parse(item.Summary.Text));
-                    }
+                if (feed != null && feed.Items.Count() > 0)
+                {
+                    return string.Format("- {0:0,0} downloads", double.Parse(feed.Items.First().Summary.Text) + 78000d);
+                }
             }
             catch
             {
                 // ignored
             }
-            return string.Format("- more than {0:0,0} downloads", 610000d);
+            return string.Format("- more than {0:0,0} downloads", 700000d);
         }
 
         public static string GetSqlCeFileFilter()
