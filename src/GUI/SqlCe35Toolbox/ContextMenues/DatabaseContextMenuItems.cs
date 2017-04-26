@@ -262,7 +262,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dcmd.GenerateEfCoreModelInProject);
             var efCoreModelMenuItem = new MenuItem
             {
-                Header = "Add Entity Framework Core Model to current Project... (beta)",
+                Header = "Add EF Core Model to current Project... (beta)",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters
