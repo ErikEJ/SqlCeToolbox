@@ -14,7 +14,6 @@ namespace ErikEJ.SqlCeToolbox
             ShowResultInGrid = Properties.Settings.Default.ShowResultInGrid;
             DisplayDescriptionTable = Properties.Settings.Default.DisplayDescriptionTable;
             DisplayObjectProperties = Properties.Settings.Default.DisplayObjectProperties;
-            RemoveInvalidConnectionsOnStart = Properties.Settings.Default.ValidateConnectionsOnStart;
             PreferDDEX = Properties.Settings.Default.PreferDDEX;
             PromptToSaveChangedScript = Properties.Settings.Default.PromptToSaveChangedScript;
             FileFilterSqlCe = Properties.Settings.Default.FileFilterSqlCe;
@@ -69,12 +68,6 @@ namespace ErikEJ.SqlCeToolbox
         public bool DisplayObjectProperties { get; set; }
 
         [Category("Object Tree"),
-        DisplayName(@"Remove invalid connections on launch"),
-        Description("If true, will remove invalid connections on startup"),
-        DefaultValue(true)]
-        public bool RemoveInvalidConnectionsOnStart { get; set; }
-
-        [Category("Object Tree"),
         DisplayName(@"Prefer Server Explorer"),
         Description("Use the Visual Studio Connection dialog and save connections in Server Explorer, if possible"),
         DefaultValue(true)]
@@ -105,7 +98,6 @@ namespace ErikEJ.SqlCeToolbox
             Properties.Settings.Default.ShowResultInGrid = ShowResultInGrid;
             Properties.Settings.Default.DisplayDescriptionTable = DisplayDescriptionTable;
             Properties.Settings.Default.DisplayObjectProperties = DisplayObjectProperties;
-            Properties.Settings.Default.ValidateConnectionsOnStart = RemoveInvalidConnectionsOnStart;
             Properties.Settings.Default.PreferDDEX = PreferDDEX;
             Properties.Settings.Default.PromptToSaveChangedScript = PromptToSaveChangedScript;
             Properties.Settings.Default.FileFilterSqlCe = FileFilterSqlCe;

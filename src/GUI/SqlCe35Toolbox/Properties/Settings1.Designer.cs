@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ErikEJ.SqlCeToolbox.Properties {
+namespace ErikEJ.SqlCeToolbox {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
