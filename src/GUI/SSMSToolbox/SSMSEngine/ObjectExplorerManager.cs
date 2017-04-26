@@ -34,8 +34,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
                     var provider = srvHerarchy.Root as IServiceProvider;
 
                     if (provider == null) continue;
-                    var containedItem = provider.GetService(typeof(INodeInformation)) as INodeInformation;
-                    if (containedItem != null) servers.Add(containedItem.Connection as SqlConnectionInfo);
+                    if (provider.GetService(typeof(INodeInformation)) is INodeInformation containedItem) servers.Add(containedItem.Connection as SqlConnectionInfo);
                 }
 
                 foreach (var sqlConnectionInfo in servers)
@@ -56,10 +55,10 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             var databaseNames = GetDatabaseNames(builder);
             foreach (var databaseName in databaseNames)
             {
-                builder.InitialCatalog = databaseName.Item2;
+                builder.InitialCatalog = databaseName;
                 var databaseInfo = new DatabaseInfo
                 {
-                    Caption = databaseName.Item1 + "." + databaseName.Item2,
+                    Caption = builder.DataSource + "." + databaseName,
                     ConnectionString = builder.ConnectionString,
                     DatabaseType = DatabaseType.SQLServer,
                     FromServerExplorer = true
@@ -68,11 +67,11 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             }
         }
 
-        private List<Tuple<string, string>> GetDatabaseNames(SqlConnectionStringBuilder builder)
+        private List<string> GetDatabaseNames(SqlConnectionStringBuilder builder)
         {
-            var sql = @"SELECT @@servername AS ServerName, name AS DatabaseName FROM sys.databases
+            var sql = @"SELECT name AS DatabaseName FROM sys.databases
                 WHERE state = 0 AND name NOT IN ('master', 'model', 'tempdb', 'msdb', 'Resource');";
-            var result = new List<Tuple<string, string>>();
+            var result = new List<string>();
             builder.InitialCatalog = "master";
             using (var conn = new SqlConnection(builder.ConnectionString))
             {
@@ -83,8 +82,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
                     var reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        result.Add(new Tuple<string, string>(
-                            reader[0].ToString(), reader[1].ToString()));
+                        result.Add(reader[0].ToString());
                     }
                 }
             }
@@ -103,14 +101,11 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             if (objectExplorer == null) return;
             var t = Assembly.Load("Microsoft.SqlServer.Management.SqlStudio.Explorer").GetType("Microsoft.SqlServer.Management.SqlStudio.Explorer.ObjectExplorerService");
 
-            int nodeCount;
-            INodeInformation[] nodes;
-            objectExplorer.GetSelectedNodes(out nodeCount, out nodes);
+            objectExplorer.GetSelectedNodes(out int nodeCount, out INodeInformation[] nodes);
 
             var piContainer = t.GetProperty("Container", BindingFlags.Public | BindingFlags.Instance);
             var objectExplorerContainer = piContainer.GetValue(objectExplorer, null);
             var piContextService = objectExplorerContainer.GetType().GetProperty("Components", BindingFlags.Public | BindingFlags.Instance);
-            //object[] indexArgs = { 1 };
             var objectExplorerComponents = piContextService.GetValue(objectExplorerContainer, null) as ComponentCollection;
             object contextService = null;
 
@@ -156,8 +151,8 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
 
         private object GetTreeControl()
         {
-            Type t = GetObjectExplorer().GetType();
-            PropertyInfo treeProperty = t.GetProperty("Tree", BindingFlags.Instance | BindingFlags.NonPublic);
+            var t = GetObjectExplorer().GetType();
+            var treeProperty = t.GetProperty("Tree", BindingFlags.Instance | BindingFlags.NonPublic);
             var objectTreeControl = treeProperty.GetValue(GetObjectExplorer(), null);
             return objectTreeControl;
         }
