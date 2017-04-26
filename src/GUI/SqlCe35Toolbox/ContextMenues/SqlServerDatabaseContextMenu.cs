@@ -96,7 +96,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dcmd.GenerateEfPocoFromDacPacInProject);
             var scriptEfPocoDacPacMenuItem = new MenuItem
             {
-                Header = "Add Entity Data Model (Code Based from Dacpac) to current Project... (alpha)",
+                Header = "Add EF 6 DbContext (Code Based from Dacpac) to current Project... (alpha)",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,

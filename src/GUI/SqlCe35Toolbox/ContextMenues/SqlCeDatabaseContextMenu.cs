@@ -334,7 +334,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var scriptEfPocoMenuItem = new MenuItem
             {
-                Header = "Add Entity Data Model (Code First from Database) to current Project... (beta)",
+                Header = "Add EF 6 DbContext (Code First from Database) to current Project... (beta)",
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
