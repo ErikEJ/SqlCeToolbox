@@ -149,8 +149,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 #if SSMS
             try
             {
-                //TODO Use 14.0 when SSMS 17 is RTW
-                if (package.TelemetryVersion().Major == 130)
+                if (package.TelemetryVersion().Major == 140)
                 {
                     var objectExplorerManager = new ObjectExplorerManager(package);
                     var list = objectExplorerManager.GetAllServerUserDatabases();
@@ -316,9 +315,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     if (ex.GetType().Name == "SqlCeException"
                         || ex.GetType().Name == "SqlCeInvalidDatabaseFormatException")
                     {
-#if DEBUG
-                        Debug.WriteLine(ex.Message);
-#endif
                         RemoveDataConnection(item.Value.ConnectionString);
                     }
                     throw;
