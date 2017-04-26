@@ -97,11 +97,9 @@ namespace ErikEJ.SqlCeToolbox
 
         public void SetStatus(string message)
         {
-            var statusBar = GetService(typeof(SVsStatusbar)) as IVsStatusbar;
-            if (statusBar != null)
+            if (GetService(typeof(SVsStatusbar)) is IVsStatusbar statusBar)
             {
-                int frozen;
-                statusBar.IsFrozen(out frozen);
+                statusBar.IsFrozen(out int frozen);
                 if (!Convert.ToBoolean(frozen))
                 {
                     if (message == null)
@@ -124,7 +122,6 @@ namespace ErikEJ.SqlCeToolbox
             const int doNotClearWithSolution = 0;
 
             IVsOutputWindow outputWindow;
-            IVsOutputWindowPane outputWindowPane;
             int hr;
 
             // Get the output window
@@ -137,7 +134,7 @@ namespace ErikEJ.SqlCeToolbox
                 ErrorHandler.ThrowOnFailure(hr);
 
                 // Get the pane
-                hr = outputWindow.GetPane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, out outputWindowPane);
+                hr = outputWindow.GetPane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, out IVsOutputWindowPane outputWindowPane);
                 ErrorHandler.ThrowOnFailure(hr);
 
                 // Output the text

@@ -90,12 +90,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                     DataProtection.DecryptString(connection.EncryptedConnectionString);
                                 if (!sConnectionString.Contains("Mobile Device"))
                                 {
-                                    DatabaseInfo info = new DatabaseInfo();
-                                    info.Caption = connection.DisplayName;
-                                    info.FromServerExplorer = true;
-                                    info.DatabaseType = dbType;
-                                    info.ServerVersion = serverVersion;
-                                    info.ConnectionString = sConnectionString;
+                                    DatabaseInfo info = new DatabaseInfo()
+                                    {
+                                        Caption = connection.DisplayName,
+                                        FromServerExplorer = true,
+                                        DatabaseType = dbType,
+                                        ServerVersion = serverVersion,
+                                        ConnectionString = sConnectionString
+                                    };
                                     info.FileIsMissing = IsMissing(info);
                                     if (!databaseList.ContainsKey(sConnectionString))
                                         databaseList.Add(sConnectionString, info);
@@ -108,12 +110,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
                                 var sConnectionString =
                                     DataProtection.DecryptString(connection.EncryptedConnectionString);
-                                DatabaseInfo info = new DatabaseInfo();
-                                info.Caption = connection.DisplayName;
-                                info.FromServerExplorer = true;
-                                info.DatabaseType = dbType;
-                                info.ServerVersion = SqliteEngineVersion;
-                                info.ConnectionString = sConnectionString;
+                                DatabaseInfo info = new DatabaseInfo()
+                                {
+                                    Caption = connection.DisplayName,
+                                    FromServerExplorer = true,
+                                    DatabaseType = dbType,
+                                    ServerVersion = SqliteEngineVersion,
+                                    ConnectionString = sConnectionString
+                                };
                                 info.FileIsMissing = IsMissing(info);
                                 if (!databaseList.ContainsKey(sConnectionString))
                                     databaseList.Add(sConnectionString, info);
@@ -122,12 +126,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         if (includeServerConnections && objProviderGuid == new Guid(Resources.SqlServerDotNetProvider))
                         {
                             var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
-                            var info = new DatabaseInfo();
-                            info.Caption = connection.DisplayName;
-                            info.FromServerExplorer = true;
-                            info.DatabaseType = DatabaseType.SQLServer;
-                            info.ServerVersion = string.Empty;
-                            info.ConnectionString = sConnectionString;
+                            var info = new DatabaseInfo()
+                            {
+                                Caption = connection.DisplayName,
+                                FromServerExplorer = true,
+                                DatabaseType = DatabaseType.SQLServer,
+                                ServerVersion = string.Empty,
+                                ConnectionString = sConnectionString
+                            };
                             if (!databaseList.ContainsKey(sConnectionString))
                                 databaseList.Add(sConnectionString, info);
                         }
@@ -230,11 +236,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal static bool DdexProviderIsInstalled(Guid id)
         {
-            IVsDataProvider provider;
             var objIVsDataProviderManager =
                 Package.GetGlobalService(typeof(IVsDataProviderManager)) as IVsDataProviderManager;
             return objIVsDataProviderManager != null &&
-                   objIVsDataProviderManager.Providers.TryGetValue(id, out provider);
+                objIVsDataProviderManager.Providers.TryGetValue(id, out IVsDataProvider provider);
         }
 
         internal void ValidateConnections(SqlCeToolboxPackage package)
@@ -356,9 +361,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                     else
                     {
-                        var dbInfo = new DatabaseInfo();
-                        dbInfo.DatabaseType = DatabaseType.SQLite;
-                        dbInfo.ConnectionString = connectionString;
+                        var dbInfo = new DatabaseInfo()
+                        {
+                            DatabaseType = DatabaseType.SQLite,
+                            ConnectionString = connectionString
+                        };
                         try
                         {
                             using (var repo = CreateRepository(dbInfo))
@@ -379,9 +386,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         internal static void SaveDataConnection(SqlCeToolboxPackage package, string encryptedConnectionString,
             DatabaseType dbType, Guid provider)
         {
-            var dataExplorerConnectionManager =
-                package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) as IVsDataExplorerConnectionManager;
-            if (dataExplorerConnectionManager != null)
+            if (package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) is IVsDataExplorerConnectionManager dataExplorerConnectionManager)
             {
                 var savedName = GetFileName(DataProtection.DecryptString(encryptedConnectionString), dbType);
                 dataExplorerConnectionManager.AddConnection(savedName, provider, encryptedConnectionString, true);
@@ -437,9 +442,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         internal static void RemoveDataConnection(SqlCeToolboxPackage package, string connectionString, Guid provider)
         {
             var removals = new List<IVsDataExplorerConnection>();
-            var dataExplorerConnectionManager =
-                package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) as IVsDataExplorerConnectionManager;
-            if (dataExplorerConnectionManager != null)
+            if (package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) is IVsDataExplorerConnectionManager dataExplorerConnectionManager)
             {
                 foreach (var connection in dataExplorerConnectionManager.Connections.Values)
                 {
