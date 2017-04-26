@@ -138,17 +138,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
                 if (package == null) return;
-                if (Properties.Settings.Default.ValidateConnectionsOnStart)
-                {
-                    try
-                    {
-                        new DataConnectionHelper().ValidateConnections(package);
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
                 databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
                 foreach (var info in DataConnectionHelper.GetOwnDataConnections())
                 {

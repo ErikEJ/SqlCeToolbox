@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ErikEJ.SqlCeToolbox.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ErikEJ.SqlCeToolbox" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="DropTargetTables" Type="System.Boolean" Scope="User">
@@ -27,9 +27,6 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="KeepSchemaNames" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="ValidateConnectionsOnStart" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MaxColumnWidth" Type="System.Int32" Scope="User">
