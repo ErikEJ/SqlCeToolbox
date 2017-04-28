@@ -62,10 +62,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             Items.Add(BuildExportServerToLiteMenuItem(databaseMenuCommandParameters, dcmd));
 
-            Items.Add(new Separator());
-
             if (!databaseMenuCommandParameters.DatabaseInfo.FromServerExplorer)
             {
+                Items.Add(new Separator());
                 Items.Add(itemBuilder.BuildRemoveConnectionMenuItem(databaseMenuCommandParameters, dbcmd));
             }
         }
