@@ -117,7 +117,7 @@ namespace ErikEJ.SQLiteScripting
 
                 col.CharacterMaxLength = (int)dt.Rows[i]["CHARACTER_MAXIMUM_LENGTH"];
                 col.ColumnHasDefault = (bool)dt.Rows[i]["COLUMN_HASDEFAULT"];
-                col.ColumnDefault = dt.Rows[i]["COLUMN_DEFAULT"].GetType() != typeof(DBNull) ? null : dt.Rows[i]["COLUMN_DEFAULT"].ToString();
+                col.ColumnDefault = dt.Rows[i]["COLUMN_DEFAULT"].GetType() == typeof(DBNull) ? null : dt.Rows[i]["COLUMN_DEFAULT"].ToString();
                 if (col.ColumnDefault == null)
                 {
                     col.ColumnHasDefault = false;
