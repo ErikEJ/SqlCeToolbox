@@ -53,6 +53,19 @@ public class SQLiteScriptingTests
         Assert.IsTrue(list[0].DataType == "integer");
     }
 
+    //[Test]
+    //public void TestGetAllColumnsWithDefault()
+    //{
+    //    var list = new List<Column>();
+    //    using (IRepository repo = new SQLiteRepository(@"data source = C:\temp\schemaless.db"))
+    //    {
+    //        list = repo.GetAllColumns();
+    //    }
+    //    Assert.IsTrue(list.Count == 64);
+    //    Assert.IsTrue(list[0].DataType == "integer");
+    //}
+
+
     [Test]
     public void TestGetAllColumns2()
     {
