@@ -12,6 +12,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var isSqlCe = menuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35
                 || menuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40;
+            var isSqlite = menuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLite;
 
             var tcmd = new TableMenuCommandsHandler(parent);
             //Edit menu
@@ -28,7 +29,10 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             }
             CreateScriptAsCreateMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDropMenuItem(tcmd, menuCommandParameters);
-            CreateScriptAsDropAndCreateMenuItem(tcmd, menuCommandParameters);
+            if (!isSqlite)
+            {
+                CreateScriptAsDropAndCreateMenuItem(tcmd, menuCommandParameters);
+            }
             Items.Add(new Separator());
             CreateScriptAsSelectMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsInsertMenuItem(tcmd, menuCommandParameters);
