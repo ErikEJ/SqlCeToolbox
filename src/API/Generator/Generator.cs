@@ -252,10 +252,22 @@ namespace ErikEJ.SqlCeScripting
         {
             GenerateTableCreate(tableName, false);
             if (!_sqlite)
+            {
                 GeneratePrimaryKeys(tableName);
+            }
             GenerateIndex(tableName);
             if (!_sqlite)
+            {
                 GenerateForeignKeys(tableName);
+            }
+            if (_sqlite)
+            {
+                var triggers = _allTriggers.Where(t => t.TableName == tableName).ToList();
+                foreach (var trigger in triggers)
+                {
+                    GenerateTrigger(trigger);
+                }
+            }
         }
 
         /// <summary>
@@ -1427,7 +1439,7 @@ namespace ErikEJ.SqlCeScripting
                         GenerateTableContent(false);
                     }
                     GenerateIndex();
-                    GenerateTriggers();
+                    GenerateTriggers(_allTriggers);
                     GenerateViews();                    
                 }
                 GenerateSqliteSuffix();
@@ -2007,7 +2019,6 @@ namespace ErikEJ.SqlCeScripting
             return sb.ToString();
         }
 
-
         private void GenerateSingleIndex(string tableName, string uniqueIndexName)
         {
             List<Index> tableIndexes;
@@ -2098,15 +2109,20 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        private void GenerateTriggers()
+        private void GenerateTriggers(List<Trigger> triggers)
         {
-            foreach (var trigger in _allTriggers)
+            foreach (var trigger in triggers)
             {
                 if (!_tableNames.Contains(trigger.TableName)) continue;
-                _sbScript.Append(trigger.Definition);
-                _sbScript.Append(";" + Environment.NewLine);
-                _sbScript.Append(_sep);
+                GenerateTrigger(trigger);
             }
+        }
+
+        private void GenerateTrigger(Trigger trigger)
+        {
+            _sbScript.Append(trigger.Definition);
+            _sbScript.Append(";" + Environment.NewLine);
+            _sbScript.Append(_sep);
         }
         #endregion
     }
