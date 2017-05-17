@@ -1,4 +1,9 @@
+set ORIGINAL_DIR=%CD% 
+
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\vsvars32.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\vsdevcmd.bat"
+
+chdir /d %ORIGINAL_DIR% 
 
 msbuild Export2SQLCE.sln /t:Rebuild /p:Configuration=Release
 copy bin\Release\*.dll ..\..\..\
