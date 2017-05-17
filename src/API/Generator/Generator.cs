@@ -216,7 +216,7 @@ namespace ErikEJ.SqlCeScripting
                     GenerateAllAndSave(true, false, false, false);
                     break;
                 case Scope.SchemaDataBlobs:
-                    GenerateAllAndSave(true, true,false, false);
+                    GenerateAllAndSave(true, true, false, false);
                     break;
                 case Scope.SchemaDataAzure:
                     _batchForAzure = true;
@@ -252,10 +252,22 @@ namespace ErikEJ.SqlCeScripting
         {
             GenerateTableCreate(tableName, false);
             if (!_sqlite)
+            {
                 GeneratePrimaryKeys(tableName);
+            }
             GenerateIndex(tableName);
             if (!_sqlite)
+            {
                 GenerateForeignKeys(tableName);
+            }
+            if (_sqlite)
+            {
+                var triggers = _allTriggers.Where(t => t.TableName == tableName).ToList();
+                foreach (var trigger in triggers)
+                {
+                    GenerateTrigger(trigger);
+                }
+            }
         }
 
         /// <summary>
@@ -349,12 +361,12 @@ namespace ErikEJ.SqlCeScripting
                     }
                     _sbScript.Append(scriptPrefix);
                     _sbScript.Append(Environment.NewLine);
-                    
+
                     for (var iColumn = 0; iColumn < rdr.FieldCount; iColumn++)
                     {
                         var fieldType = rdr.GetFieldType(iColumn);
                         //Skip rowversion column
-                        if (rowVersionOrdinal == iColumn 
+                        if (rowVersionOrdinal == iColumn
                             || rdr.GetName(iColumn).StartsWith("__sys", StringComparison.OrdinalIgnoreCase))
                         {
                             continue;
@@ -452,7 +464,7 @@ namespace ErikEJ.SqlCeScripting
                             {
                                 _sbScript.Append(prefix);
                                 _sbScript.Append(dto.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
-                                _sbScript.Append(postfix);                                
+                                _sbScript.Append(postfix);
                             }
                         }
                         else if (fieldType == typeof(TimeSpan))
@@ -625,7 +637,7 @@ namespace ErikEJ.SqlCeScripting
             {
                 _sbScript.Append("SELECT ");
 
-                columns.ForEach(delegate(Column col)
+                columns.ForEach(delegate (Column col)
                 {
                     if (_sqlite && col.DataType == "datetime" && editableInSqlite)
                     {
@@ -663,7 +675,7 @@ namespace ErikEJ.SqlCeScripting
                 _sbScript.AppendFormat(CultureInfo.InvariantCulture, Environment.NewLine);
                 _sbScript.Append("           (");
 
-                columns.ForEach(delegate(Column col)
+                columns.ForEach(delegate (Column col)
                 {
                     _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                         "[{0}]{1}           ,"
@@ -674,7 +686,7 @@ namespace ErikEJ.SqlCeScripting
                 // Remove the last comma
                 _sbScript.Remove(_sbScript.Length - 14, 14);
                 _sbScript.AppendFormat("){0}     VALUES{1}           (", Environment.NewLine, Environment.NewLine);
-                columns.ForEach(delegate(Column col)
+                columns.ForEach(delegate (Column col)
                 {
                     _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                         "<{0}, {1}>{2}           ,"
@@ -717,7 +729,7 @@ namespace ErikEJ.SqlCeScripting
                 foreach (string field in fields)
                 {
                     _sbScript.AppendFormat(CultureInfo.InvariantCulture,
-                        "[{0}],", field);                
+                        "[{0}],", field);
                 }
                 // Remove the last comma
                 _sbScript.Remove(_sbScript.Length - 1, 1);
@@ -769,7 +781,7 @@ namespace ErikEJ.SqlCeScripting
                 sbScript.Append("'");
                 if (!_sqlite) sbScript.Append("}");
             }
-            else if (column.DataType == "bigint" 
+            else if (column.DataType == "bigint"
                 || column.DataType == "int"
                 || column.DataType == "float"
                 || column.DataType == "money"
@@ -780,7 +792,7 @@ namespace ErikEJ.SqlCeScripting
                 || column.DataType == "smallint")
             {
                 string val = Convert.ToString(value, CultureInfo.InvariantCulture);
-                sbScript.Append(val);                
+                sbScript.Append(val);
             }
             else if (column.DataType == "bit")
             {
@@ -827,11 +839,11 @@ namespace ErikEJ.SqlCeScripting
             string wrongColumns = string.Empty;
 
             List<string> cols = (from a in _allColumns
-                                where a.TableName == tableName
-                                select a.ColumnName.ToUpperInvariant()).ToList();
+                                 where a.TableName == tableName
+                                 select a.ColumnName.ToUpperInvariant()).ToList();
 
             var upperColumns = columns.Select(i => i.ToUpperInvariant()).ToList();
-            
+
             foreach (var name in upperColumns)
             {
                 if (!cols.Contains(name))
@@ -866,7 +878,7 @@ namespace ErikEJ.SqlCeScripting
                 _sbScript.AppendFormat(CultureInfo.InvariantCulture, Environment.NewLine);
                 _sbScript.Append("   SET ");
 
-                columns.ForEach(delegate(Column col)
+                columns.ForEach(delegate (Column col)
                 {
                     _sbScript.AppendFormat(CultureInfo.InvariantCulture,
                         "[{0}] = <{1}, {2}>{3}      ,"
@@ -890,7 +902,7 @@ namespace ErikEJ.SqlCeScripting
         public void GenerateTableDelete(string tableName)
         {
             _sbScript.AppendFormat("DELETE FROM [{0}]{1}", tableName, Environment.NewLine);
-            _sbScript.AppendFormat("WHERE <Search Conditions,,>;{0}", Environment.NewLine); 
+            _sbScript.AppendFormat("WHERE <Search Conditions,,>;{0}", Environment.NewLine);
             _sbScript.Append(_sep);
         }
 
@@ -1090,7 +1102,7 @@ namespace ErikEJ.SqlCeScripting
         public void GeneratePrimaryKeys(string tableName)
         {
             List<PrimaryKey> primaryKeys = _allPrimaryKeys.Where(p => p.TableName == tableName).ToList();
-            
+
             //_repository.GetPrimaryKeysFromTable(tableName);
 
             if (primaryKeys.Count > 0)
@@ -1103,7 +1115,7 @@ namespace ErikEJ.SqlCeScripting
                 {
                     _sbScript.AppendFormat("ALTER TABLE [{0}] ADD CONSTRAINT [{1}] PRIMARY KEY (", tableName, primaryKeys[0].KeyName);
                 }
-                primaryKeys.ForEach(delegate(PrimaryKey column)
+                primaryKeys.ForEach(delegate (PrimaryKey column)
                 {
                     _sbScript.AppendFormat("[{0}]", column.ColumnName);
                     _sbScript.Append(",");
@@ -1222,14 +1234,14 @@ namespace ErikEJ.SqlCeScripting
             else
             {
                 _sbScript.AppendFormat("ALTER TABLE [{0}] DROP CONSTRAINT [{1}];{2}", tableName, indexName, Environment.NewLine);
-                _sbScript.Append(_sep);                
+                _sbScript.Append(_sep);
             }
         }
 
         public void GenerateIndexOnlyDrop(string tableName, string indexName)
         {
             _sbScript.AppendFormat("DROP INDEX [{0}].[{1}];{2}", tableName, indexName, Environment.NewLine);
-            _sbScript.Append(_sep);            
+            _sbScript.Append(_sep);
         }
 
         /// <summary>
@@ -1282,7 +1294,7 @@ namespace ErikEJ.SqlCeScripting
         /// <returns></returns>
         public List<string> GenerateTableColumns(string tableName)
         {
-            return  (from a in _allColumns
+            return (from a in _allColumns
                     where a.TableName == tableName
                     select a.ColumnName).ToList();
         }
@@ -1402,13 +1414,13 @@ namespace ErikEJ.SqlCeScripting
         {
             _sbScript.AppendLine("SELECT 1;");
             _sbScript.AppendLine("PRAGMA foreign_keys=OFF;");
-            _sbScript.AppendLine("BEGIN TRANSACTION;");            
+            _sbScript.AppendLine("BEGIN TRANSACTION;");
         }
 
         public void GenerateSqliteSuffix()
         {
             _sbScript.AppendLine("COMMIT;");
-        }        
+        }
 
         public void GenerateAllAndSave(bool includeData, bool saveImages, bool dataOnly, bool forServer)
         {
@@ -1427,8 +1439,8 @@ namespace ErikEJ.SqlCeScripting
                         GenerateTableContent(false);
                     }
                     GenerateIndex();
-                    GenerateTriggers();
-                    GenerateViews();                    
+                    GenerateTriggers(_allTriggers);
+                    GenerateViews();
                 }
                 GenerateSqliteSuffix();
             }
@@ -1461,12 +1473,12 @@ namespace ErikEJ.SqlCeScripting
             Helper.WriteIntoFile(GeneratedScript, _outFile, FileCounter, _sqlite);
         }
 
-        public IList<string> GeneratedFiles 
-        { 
-            get 
-            { 
-                return Helper.FinalFiles.Replace(", ", ",").Split(','); 
-            } 
+        public IList<string> GeneratedFiles
+        {
+            get
+            {
+                return Helper.FinalFiles.Replace(", ", ",").Split(',');
+            }
         }
 
         public int FileCounter
@@ -1567,7 +1579,7 @@ namespace ErikEJ.SqlCeScripting
                         _sbScript.AppendFormat("{0}{1}, ", line.Trim(), Environment.NewLine);
                 }
                 // Remove the last comma
-                _sbScript.Remove(_sbScript.Length - 2, 2);                
+                _sbScript.Remove(_sbScript.Length - 2, 2);
                 if (!_sqlite)
                 {
                     _sbScript.AppendFormat(");{0}", Environment.NewLine);
@@ -1596,7 +1608,7 @@ namespace ErikEJ.SqlCeScripting
         {
             if (!_repository.IsServer() || _keepSchema)
                 return table;
- 
+
             int index = table.IndexOf('.');
             if (index >= 0)
                 return (table.Substring(index + 1));
@@ -1723,7 +1735,7 @@ namespace ErikEJ.SqlCeScripting
 
             indentWriter.Indent = 0;
             indentWriter.WriteLine("using SQLite;");
-            indentWriter.WriteLine("using System;"); 
+            indentWriter.WriteLine("using System;");
             indentWriter.WriteLine(string.Empty);
             indentWriter.WriteLine("namespace " + nameSpace);
             indentWriter.WriteLine("{");
@@ -1756,7 +1768,7 @@ namespace ErikEJ.SqlCeScripting
             indentWriter.WriteLine("}");
             indentWriter.Indent = 2;
             indentWriter.WriteLine("}");
-            indentWriter.Indent = 1;            
+            indentWriter.Indent = 1;
             indentWriter.WriteLine("}");
             var viewNames = _repository.GetAllViews().Select(v => v.ViewName).ToList();
             foreach (var tableName in _tableNames.Concat(viewNames).ToList())
@@ -1809,7 +1821,7 @@ namespace ErikEJ.SqlCeScripting
 
                     if (clrType.FullName == "System.String" && column.CharacterMaxLength > 0 && column.CharacterMaxLength < int.MaxValue)
                     {
-                        maxAttribute = "MaxLength(" + column.CharacterMaxLength.ToString(CultureInfo.InvariantCulture) +")";
+                        maxAttribute = "MaxLength(" + column.CharacterMaxLength.ToString(CultureInfo.InvariantCulture) + ")";
                     }
 
                     if (column.IsNullable == YesNoOption.NO && string.IsNullOrEmpty(pkAttribute))
@@ -1847,7 +1859,7 @@ namespace ErikEJ.SqlCeScripting
             }
             indentWriter.Indent = 0;
             indentWriter.WriteLine("}");
-            
+
             _sbScript.Append(baseTextWriter);
         }
 
@@ -2007,7 +2019,6 @@ namespace ErikEJ.SqlCeScripting
             return sb.ToString();
         }
 
-
         private void GenerateSingleIndex(string tableName, string uniqueIndexName)
         {
             List<Index> tableIndexes;
@@ -2098,15 +2109,20 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        private void GenerateTriggers()
+        private void GenerateTriggers(List<Trigger> triggers)
         {
-            foreach (var trigger in _allTriggers)
+            foreach (var trigger in triggers)
             {
                 if (!_tableNames.Contains(trigger.TableName)) continue;
-                _sbScript.Append(trigger.Definition);
-                _sbScript.Append(";" + Environment.NewLine);
-                _sbScript.Append(_sep);
+                GenerateTrigger(trigger);
             }
+        }
+
+        private void GenerateTrigger(Trigger trigger)
+        {
+            _sbScript.Append(trigger.Definition);
+            _sbScript.Append(";" + Environment.NewLine);
+            _sbScript.Append(_sep);
         }
         #endregion
     }
