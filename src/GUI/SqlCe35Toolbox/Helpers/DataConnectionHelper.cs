@@ -29,7 +29,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         private static string separator = Environment.NewLine + "GO" + Environment.NewLine;
 
         //TODO Update this when SQLite provider is updated!
-        private static string SqliteEngineVersion = "3.15";
+        private static string SqliteEngineVersion = "3.18";
 
         internal static Dictionary<string, DatabaseInfo> GetDataConnections(SqlCeToolboxPackage package,
             bool includeServerConnections, bool serverConnectionsOnly)
