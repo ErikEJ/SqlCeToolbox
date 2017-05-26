@@ -210,7 +210,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     {
                         info.Caption = GetFileName(row[1].ToString(), foundType);
                     }
-                    catch (ArgumentException)
+                    catch
                     {
                         info.Caption = row[0].ToString();
                     }
