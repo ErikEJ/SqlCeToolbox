@@ -61,11 +61,20 @@ namespace ErikEJ.SqlCeToolbox.DDEX4.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this to connect to a SQL Server Compact 4.0 database file. A Simple Provider supplied by ErikEJ. Does not support Data Source Configuration Wizard.
+        ///   Looks up a localized string similar to Use this to connect to a SQL Server Compact 4.0 database file. A Simple Provider supplied by ErikEJ. Does not support Data Source Configuration Wizard, only EF6.
         /// </summary>
         internal static string Provider_Description {
             get {
                 return ResourceManager.GetString("Provider_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this to connect the EF 6 Tools to a SQLite database file. A Simple Provider supplied by ErikEJ. Does not support Data Source Configuration Wizard, only EF6.
+        /// </summary>
+        internal static string Provider_DescriptionSqlite {
+            get {
+                return ResourceManager.GetString("Provider_DescriptionSqlite", resourceCulture);
             }
         }
         
@@ -79,11 +88,29 @@ namespace ErikEJ.SqlCeToolbox.DDEX4.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SQLite Provider (Simple for EF6 by ErikEJ).
+        /// </summary>
+        internal static string Provider_DisplayNameSqlite {
+            get {
+                return ResourceManager.GetString("Provider_DisplayNameSqlite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SQL Server Compact 4.0 (Simple by ErikEJ).
         /// </summary>
         internal static string Provider_ShortDisplayName {
             get {
                 return ResourceManager.GetString("Provider_ShortDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SQLite Provider (Simple for EF6 by ErikEJ).
+        /// </summary>
+        internal static string Provider_ShortDisplayNameSqlite {
+            get {
+                return ResourceManager.GetString("Provider_ShortDisplayNameSqlite", resourceCulture);
             }
         }
     }

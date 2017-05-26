@@ -229,6 +229,7 @@
     <Compile Include="Helpers\CheckListItem.cs" />
     <Compile Include="Helpers\NuGetHelper.cs" />
     <Compile Include="Helpers\DacFxHelper.cs" />
+    <Compile Include="Helpers\SqliteProviderRegistration.cs" />
     <Compile Include="Helpers\SqlCe40ProviderRegistration.cs" />
     <Compile Include="Helpers\Telemetry.cs" />
     <Compile Include="Options\OptionsPageAdvanced.cs">
@@ -612,7 +613,7 @@
       <Name>SqlCeToolbox.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\SqlCeToolbox.DDEX4\SqlCeToolbox.DDEX4.csproj">
-      <Project>{42939E33-FC72-459C-9403-B62AB074635E}</Project>
+      <Project>{42939e33-fc72-459c-9403-b62ab074635e}</Project>
       <Name>SqlCeToolbox.DDEX4</Name>
     </ProjectReference>
   </ItemGroup>

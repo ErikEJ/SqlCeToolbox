@@ -118,12 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Provider_Description" xml:space="preserve">
-    <value>Use this to connect to a SQL Server Compact 4.0 database file. A Simple Provider supplied by ErikEJ. Does not support Data Source Configuration Wizard</value>
+    <value>Use this to connect to a SQL Server Compact 4.0 database file. A Simple Provider supplied by ErikEJ. Does not support Data Source Configuration Wizard, only EF6</value>
+  </data>
+  <data name="Provider_DescriptionSqlite" xml:space="preserve">
+    <value>Use this to connect the EF 6 Tools to a SQLite database file. A Simple Provider supplied by ErikEJ. Does not support Data Source Configuration Wizard, only EF6</value>
   </data>
   <data name="Provider_DisplayName" xml:space="preserve">
     <value>SQL Server Compact 4.0 (Simple by ErikEJ)</value>
   </data>
+  <data name="Provider_DisplayNameSqlite" xml:space="preserve">
+    <value>SQLite Provider (Simple for EF6 by ErikEJ)</value>
+  </data>
   <data name="Provider_ShortDisplayName" xml:space="preserve">
     <value>SQL Server Compact 4.0 (Simple by ErikEJ)</value>
+  </data>
+  <data name="Provider_ShortDisplayNameSqlite" xml:space="preserve">
+    <value>SQLite Provider (Simple for EF6 by ErikEJ)</value>
   </data>
 </root>
