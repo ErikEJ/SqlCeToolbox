@@ -63,10 +63,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
             Guid provider35 = new Guid(Resources.SqlCompact35Provider);
             Guid provider40 = new Guid(Resources.SqlCompact40Provider);
+            Guid provider40Private = new Guid(Resources.SqlCompact40PrivateProvider);
             Guid providerSqLite = new Guid(Resources.SQLiteProvider);
 
             bool isV35Installed = IsV35Installed() && DdexProviderIsInstalled(provider35);
-            bool isV40Installed = IsV40Installed() && DdexProviderIsInstalled(provider40);
+            bool isV40Installed = IsV40Installed() && 
+                (DdexProviderIsInstalled(provider40) || DdexProviderIsInstalled(provider40Private));
             if (dataExplorerConnectionManager != null)
             {
                 foreach (var connection in dataExplorerConnectionManager.Connections.Values)
@@ -77,7 +79,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         if (!serverConnectionsOnly)
                         {
                             if ((objProviderGuid == provider35 && isV35Installed) ||
-                                (objProviderGuid == provider40 && isV40Installed))
+                                (objProviderGuid == provider40 && isV40Installed) ||
+                                (objProviderGuid == provider40Private && isV40Installed))
                             {
                                 DatabaseType dbType = DatabaseType.SQLCE40;
                                 if (objProviderGuid == provider35)
