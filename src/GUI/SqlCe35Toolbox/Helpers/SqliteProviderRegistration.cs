@@ -18,7 +18,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 providerKey.SetValue("AssociatedSource", $"{{{DataSourceGuid}}}");
                 providerKey.SetValue("Description", "Provider_DescriptionSqlite, ErikEJ.SqlCeToolbox.DDEX4.Properties.Resources");
                 providerKey.SetValue("DisplayName", "Provider_DisplayNameSqlite, ErikEJ.SqlCeToolbox.DDEX4.Properties.Resources");
-                providerKey.SetValue("InvariantName", "System.Data.SQLite.EF6");
+                providerKey.SetValue("InvariantName", Resources.SQLiteEF6InvariantName);
                 providerKey.SetValue("PlatformVersion", "2.0");
                 providerKey.SetValue("ShortDisplayName", "Provider_ShortDisplayNameSqlite, ErikEJ.SqlCeToolbox.DDEX4.Properties.Resources");
                 providerKey.SetValue("Technology", "{77AB9A9D-78B9-4ba7-91AC-873F5338F1D2}");
