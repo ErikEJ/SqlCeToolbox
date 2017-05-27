@@ -65,6 +65,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Guid provider40 = new Guid(Resources.SqlCompact40Provider);
             Guid provider40Private = new Guid(Resources.SqlCompact40PrivateProvider);
             Guid providerSqLite = new Guid(Resources.SQLiteProvider);
+            Guid providerSqlitePrivate = new Guid(Resources.SqlitePrivateProvider);
 
             bool isV35Installed = IsV35Installed() && DdexProviderIsInstalled(provider35);
             bool isV40Installed = IsV40Installed() && 
@@ -107,7 +108,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                 }
                             }
 
-                            if (objProviderGuid == providerSqLite)
+                            if (objProviderGuid == providerSqLite
+                                || objProviderGuid == providerSqlitePrivate)
                             {
                                 DatabaseType dbType = DatabaseType.SQLite;
 

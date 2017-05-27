@@ -218,10 +218,11 @@ namespace ErikEJ.SqlCeToolbox {
         ///
         ///
         ///-- A: Configuration Region
+        ///
         ///-- Uncomment and run below statements if the SQL Server database is not configured for the SQLCLR feature
         ///-- Replace &quot;MyDatabase&quot; with the name of your database
         ///
-        ///--ALTER DATABASE [MyDatabase] S [rest of string was truncated]&quot;;.
+        ///--ALTER DATABASE [MyDatabase] [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string InstallSqlClr {
             get {
@@ -497,6 +498,15 @@ namespace ErikEJ.SqlCeToolbox {
         internal static string SQLiteInvariantName {
             get {
                 return ResourceManager.GetString("SQLiteInvariantName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 687EA40E-7B91-472A-9A58-2A3D43DE1ACE.
+        /// </summary>
+        internal static string SqlitePrivateProvider {
+            get {
+                return ResourceManager.GetString("SqlitePrivateProvider", resourceCulture);
             }
         }
         

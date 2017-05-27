@@ -332,4 +332,7 @@ Storage size varies. It is the length of the value in bytes.</value>
   <data name="InstallSqlClr" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\InstallSqlClr.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="SqlitePrivateProvider" xml:space="preserve">
+    <value>687EA40E-7B91-472A-9A58-2A3D43DE1ACE</value>
+  </data>
 </root>

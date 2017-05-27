@@ -15,7 +15,7 @@ namespace ErikEJ.SqlCeToolbox
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "4.7", IconResourceID = 400)]
     [SqlCe40ProviderRegistration]
-    //[SqliteProviderRegistration]
+    [SqliteProviderRegistration]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(ExplorerToolWindow), Style = VsDockStyle.Tabbed, Orientation = ToolWindowOrientation.Left, Window = EnvDTE.Constants.vsWindowKindServerExplorer)]
     [ProvideToolWindow(typeof(SqlEditorWindow), Style = VsDockStyle.MDI, MultiInstances = true, Transient = true)]

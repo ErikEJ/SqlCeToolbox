@@ -441,6 +441,15 @@ namespace ErikEJ.SqlCeToolbox {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 687EA40E-7B91-472A-9A58-2A3D43DE1ACE.
+        /// </summary>
+        internal static string SqlitePrivateProvider {
+            get {
+                return ResourceManager.GetString("SqlitePrivateProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 0ebaab6e-ca80-4b4a-8ddf-cbe6bf058c70.
         /// </summary>
         internal static string SQLiteProvider {
