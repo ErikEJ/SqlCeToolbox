@@ -293,6 +293,10 @@ namespace ErikEJ.SqlCeToolbox.WinForms
                     }
                 }
             }
+            catch (DBConcurrencyException)
+            {
+                //Ignored
+            }
             catch (Exception ex)
             {
                 DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
