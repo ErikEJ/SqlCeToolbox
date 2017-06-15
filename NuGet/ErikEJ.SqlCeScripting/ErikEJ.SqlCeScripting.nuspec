@@ -2,11 +2,11 @@
 <package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>ErikEJ.SqlCeScripting</id>
-    <version>3.5.2.64</version>
+    <version>3.5.2.68</version>
     <authors>ErikEJ</authors>
     <owners>ErikEJ</owners>
-    <licenseUrl>http://exportsqlce.codeplex.com/license</licenseUrl>
-    <projectUrl>http://exportsqlce.codeplex.com/</projectUrl>
+    <licenseUrl>https://github.com/ErikEJ/SqlCeToolbox/license</licenseUrl>
+    <projectUrl>https://github.com/ErikEJ/SqlCeToolbox</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>For SQL Server Compact, for easy inclusion of database scripting in your own application</description>
     <tags>sqlce sql compact script scripting</tags>
@@ -15,10 +15,10 @@
     </dependencies>
   </metadata>
   <files>
-	  <file src="..\..\SqlCeScripting40.dll" target="lib\net40" />
-	  <file src="..\..\ISqlCeScripting.dll" target="lib\net40" />
-      <file src="..\..\QuickGraph.Data.dll" target="lib\net40" />
-	  <file src="..\..\QuickGraph.dll" target="lib\net40" />
-	  <file src="..\..\QuickGraph.Graphviz.dll" target="lib\net40" />	  
+	  <file src="..\..\..\SqlCeScripting40.dll" target="lib\net40" />
+	  <file src="..\..\..\ISqlCeScripting.dll" target="lib\net40" />
+      <file src="..\..\..\QuickGraph.Data.dll" target="lib\net40" />
+	  <file src="..\..\..\QuickGraph.dll" target="lib\net40" />
+	  <file src="..\..\..\QuickGraph.Graphviz.dll" target="lib\net40" />	  
   </files>
 </package>
