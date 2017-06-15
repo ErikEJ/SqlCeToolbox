@@ -1,0 +1,1 @@
+..\.nuget\nuget pack C:\Code\SqlCeToolbox\NuGet\ErikEJ.SqlCeScripting\ErikEJ.SqlCeScripting.nuspec

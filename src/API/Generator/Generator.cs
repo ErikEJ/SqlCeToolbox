@@ -228,6 +228,9 @@ namespace ErikEJ.SqlCeScripting
                 case Scope.DataOnlyForSqlServer:
                     GenerateAllAndSave(true, false, true, true);
                     break;
+                case Scope.DataOnlyForSqlServerIgnoreIdentity:
+                    GenerateAllAndSave(true, false, true, true, true);
+                    break;
                 case Scope.SchemaDataSQLite:
                     _sqlite = true;
                     _sep = string.Empty;
@@ -1422,7 +1425,7 @@ namespace ErikEJ.SqlCeScripting
             _sbScript.AppendLine("COMMIT;");
         }
 
-        public void GenerateAllAndSave(bool includeData, bool saveImages, bool dataOnly, bool forServer)
+        public void GenerateAllAndSave(bool includeData, bool saveImages, bool dataOnly, bool forServer, bool ignoreIdentity = false)
         {
             if (_sqlite)
             {
@@ -1448,8 +1451,11 @@ namespace ErikEJ.SqlCeScripting
             {
                 if (dataOnly)
                 {
-                    GenerateTableContent(false);
-                    GenerateIdentityResets(forServer);
+                    GenerateTableContent(false, ignoreIdentity);
+                    if (!ignoreIdentity)
+                    {
+                        GenerateIdentityResets(forServer);
+                    }
                 }
                 else
                 {
@@ -1718,11 +1724,11 @@ namespace ErikEJ.SqlCeScripting
             return line;
         }
 
-        internal void GenerateTableContent(bool saveImageFiles)
+        public void GenerateTableContent(bool saveImageFiles, bool ignoreIdentity = false)
         {
-            foreach (string tableName in _tableNames)
+            foreach (var tableName in _tableNames)
             {
-                GenerateTableContent(tableName, saveImageFiles);
+                GenerateTableContent(tableName, saveImageFiles, ignoreIdentity);
             }
         }
 

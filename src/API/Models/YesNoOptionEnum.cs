@@ -15,7 +15,8 @@
         DataOnly,
         DataOnlyForSqlServer,
         SchemaDataSQLite,
-        SchemaSQLite
+        SchemaSQLite,
+        DataOnlyForSqlServerIgnoreIdentity
     }
 
     public enum CommandExecute
