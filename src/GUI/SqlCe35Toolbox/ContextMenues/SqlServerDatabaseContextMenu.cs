@@ -17,7 +17,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType != DatabaseType.SQLServer)
                 return;
             
-            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildScriptServerDatabaseGraphMenuItem(databaseMenuCommandParameters, dbcmd));
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildScriptServerDatabaseGraphMenuItem(databaseMenuCommandParameters, dcmd));
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
             var scriptDatabaseRootMenuItem = new MenuItem
