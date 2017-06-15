@@ -258,12 +258,12 @@ GO";
         [Test]
         public void TestServerDgml()
         {
-            using (IRepository sourceRepository = new  ServerDBRepository4(serverAWConnectionString))
+            using (IRepository sourceRepository = new  ServerDBRepository4(serverAWConnectionString, true))
             {
                 var exclusions = new List<string>();
                 exclusions.Add("dbo.BuildVersion");
                 exclusions.Add("dbo.ErrorLog");
-                var generator = new Generator4(sourceRepository, @"C:\temp\test2.dgml");
+                var generator = new Generator4(sourceRepository, @"C:\temp\test2.dgml", false, false, false, true);
                 generator.GenerateSchemaGraph(serverConnectionString, exclusions);
             }
         }
