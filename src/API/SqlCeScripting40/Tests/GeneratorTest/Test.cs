@@ -29,7 +29,7 @@ using System.Text.RegularExpressions;
         private const string sdfConnectionString = @"Data Source=C:\data\sqlce\test\ams40.sdf;Max Database Size=512";
         private const string sdfConnectionString2 = @"Data Source=C:\data\sqlce\test\PFIZER_DB40.sdf";
         private const string serverConnectionString = @"data source=.;Initial Catalog=AdventureWorksLT2012;Integrated Security=true";
-        private const string serverAWConnectionString = @"data source=.;Initial Catalog=AdventureWorks2014;Integrated Security=true";
+        private const string serverAWConnectionString = @"data source=(localdb)\Mssqllocaldb;Initial Catalog=AdventureWorks2014;Integrated Security=true";
         private const string serverHIDConnectionString = @"data source=.;Initial Catalog=HID;Integrated Security=true";
         private const string serverApiTestConnectionString = @"data source=.;Initial Catalog=SqlCeApiTester;Integrated Security=true";
         private const string BaseballTestConnectionString = @"data source=.;Initial Catalog=BaseballStats;Integrated Security=true";
@@ -258,7 +258,7 @@ GO";
         [Test]
         public void TestServerDgml()
         {
-            using (IRepository sourceRepository = new  ServerDBRepository4(serverConnectionString))
+            using (IRepository sourceRepository = new  ServerDBRepository4(serverAWConnectionString))
             {
                 var exclusions = new List<string>();
                 exclusions.Add("dbo.BuildVersion");
