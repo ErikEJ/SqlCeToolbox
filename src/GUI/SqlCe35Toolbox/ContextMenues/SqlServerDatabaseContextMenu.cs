@@ -17,7 +17,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType != DatabaseType.SQLServer)
                 return;
             
-            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(itemBuilder.BuildScriptDatabaseGraphMenuItem(databaseMenuCommandParameters, dbcmd));
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildScriptServerDatabaseGraphMenuItem(databaseMenuCommandParameters, dbcmd));
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
             var scriptDatabaseRootMenuItem = new MenuItem
@@ -67,6 +67,23 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Items.Add(new Separator());
                 Items.Add(itemBuilder.BuildRemoveConnectionMenuItem(databaseMenuCommandParameters, dbcmd));
             }
+        }
+
+        public MenuItem BuildScriptServerDatabaseGraphMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
+            SqlServerDatabaseMenuCommandsHandler dcmd)
+        {
+            var scriptGraphCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
+                dcmd.GenerateServerDgmlFiles);
+
+            var scriptDatabaseGraphMenuItem = new MenuItem
+            {
+                Header = "Create Database Graph (DGML)...",
+                Icon = ImageHelper.GetImageFromResource("../resources/Diagram_16XLG.png"),
+                Command = DatabaseMenuCommands.DatabaseCommand,
+                CommandParameter = databaseMenuCommandParameters,
+            };
+            scriptDatabaseGraphMenuItem.CommandBindings.Add(scriptGraphCommandBinding);
+            return scriptDatabaseGraphMenuItem;
         }
 
         private MenuItem BuildScriptDatabaseSchemaSqLiteMenuItem(
