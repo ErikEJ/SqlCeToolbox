@@ -65,14 +65,21 @@ namespace ErikEJ.SqlCeScripting
             var builder = new SqlConnection(connectionString);
             string server;
             var database = builder.Database;
-            using (var cmd = new SqlCommand(connectionString))
+            if (builder.DataSource.ToLowerInvariant().StartsWith("(localdb)"))
             {
-                using (var conn = new SqlConnection(connectionString))
+                server = builder.DataSource;
+            }
+            else
+            {
+                using (var cmd = new SqlCommand(connectionString))
                 {
-                    cmd.Connection = conn;
-                    cmd.CommandText = "SELECT SERVERPROPERTY('ServerName')";
-                    conn.Open();
-                    server = (string)cmd.ExecuteScalar();
+                    using (var conn = new SqlConnection(connectionString))
+                    {
+                        cmd.Connection = conn;
+                        cmd.CommandText = "SELECT SERVERPROPERTY('ServerName')";
+                        conn.Open();
+                        server = (string)cmd.ExecuteScalar();
+                    }
                 }
             }
             return server + "." + database;
