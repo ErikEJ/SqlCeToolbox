@@ -13,6 +13,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var tcmd = new TriggerMenuCommandsHandler(parent);
             CreateScriptAsCreateMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDropMenuItem(tcmd, menuCommandParameters);
+            CreateScriptAsDropAndCreateMenuItem(tcmd, menuCommandParameters);
         }
 
         private void CreateScriptAsCreateMenuItem(TriggerMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
@@ -43,5 +44,18 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(scriptMenuItem);
         }
 
+        private void CreateScriptAsDropAndCreateMenuItem(TriggerMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
+        {
+            var scriptCommandBinding = new CommandBinding(IndexMenuCommands.IndexCommand, tcmd.ScriptAsDropAndCreate);
+            var scriptMenuItem = new MenuItem
+            {
+                Header = "Script as DROP and CREATE",
+                Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
+                Command = IndexMenuCommands.IndexCommand,
+                CommandParameter = menuCommandParameters
+            };
+            scriptMenuItem.CommandBindings.Add(scriptCommandBinding);
+            Items.Add(scriptMenuItem);
+        }
     }
 }
