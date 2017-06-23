@@ -437,6 +437,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 #pragma warning disable 618
             SearchPanel sPanel = new SearchPanel();
             if (SqlTextBox != null) sPanel.Attach(SqlTextBox.TextArea);
+            sPanel.Open();
 #pragma warning restore 618
         }
 

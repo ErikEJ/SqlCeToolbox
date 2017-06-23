@@ -47,5 +47,25 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
             }
         }
+
+        public void ScriptAsDropAndCreate(object sender, ExecutedRoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem == null) return;
+            var menuInfo = menuItem.CommandParameter as MenuCommandParameters;
+            if (menuInfo == null) return;
+            try
+            {
+                var script = string.Format("DROP TRIGGER [{0}]" + _separator, menuInfo.Name);
+                script = script + string.Format("{0}" + _separator, menuInfo.Description);
+
+                OpenSqlEditorToolWindow(menuInfo, script);
+                Helpers.DataConnectionHelper.LogUsage("TriggerScriptAsDropAndCreate");
+            }
+            catch (Exception ex)
+            {
+                Helpers.DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+            }
+        }
     }
 }

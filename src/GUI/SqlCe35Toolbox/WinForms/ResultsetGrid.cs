@@ -341,6 +341,10 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             {
                 _adapter.Update(_table);
             }
+            catch (DBConcurrencyException)
+            {
+                //Ignored
+            }
             catch (Exception ex)
             {
                 DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
