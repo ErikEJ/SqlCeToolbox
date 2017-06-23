@@ -3,7 +3,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 
@@ -60,6 +59,28 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var sql = string.Format("DROP VIEW [{0}]" + separator, menuInfo.Name);
                 sql += string.Format("CREATE VIEW [{0}] AS {1}" + separator, menuInfo.Name, menuInfo.Description);
                 OpenSqlEditorToolWindow(menuInfo, sql);
+                DataConnectionHelper.LogUsage("ViewScriptAsDropAndCreate");
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, menuInfo.DatabaseInfo.DatabaseType, false);
+            }
+        }
+
+        public void ScriptAsSelect(object sender, ExecutedRoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            var menuInfo = menuItem?.CommandParameter as MenuCommandParameters;
+            if (menuInfo == null) return;
+            try
+            {
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                {
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    generator.GenerateViewSelect(menuInfo.Name);
+                    OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
+                    DataConnectionHelper.LogUsage("ViewScriptAsSelect");
+                }
             }
             catch (Exception ex)
             {
@@ -84,7 +105,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     sqlText = string.Format(Environment.NewLine + "SELECT * FROM [{0}]", menuInfo.Name)
                         + Environment.NewLine + "GO";

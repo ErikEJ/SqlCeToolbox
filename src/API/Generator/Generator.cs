@@ -34,6 +34,7 @@ namespace ErikEJ.SqlCeScripting
         private List<PrimaryKey> _allPrimaryKeys;
         private List<Index> _allIndexes;
         private List<View> _allViews;
+        private List<Column> _allViewColumns;
         private List<Trigger> _allTriggers;
         private bool _batchForAzure;
         private bool _sqlite;
@@ -100,6 +101,7 @@ namespace ErikEJ.SqlCeScripting
             _allPrimaryKeys = repository.GetAllPrimaryKeys();
             _allTriggers = repository.GetAllTriggers();
             _allViews = repository.GetAllViews();
+            _allViewColumns = repository.GetAllViewColumns();
             if (!repository.IsServer())
                 _allIndexes = repository.GetAllIndexes();
 
@@ -622,7 +624,6 @@ namespace ErikEJ.SqlCeScripting
             return GenerateInserOrUpdate(tableName, false, row);
         }
 
-
         public void GenerateTableSelect(string tableName)
         {
             GenerateTableSelect(tableName, false);
@@ -661,6 +662,32 @@ namespace ErikEJ.SqlCeScripting
                 // Remove the last comma and spaces
                 _sbScript.Remove(_sbScript.Length - 7, 7);
                 _sbScript.AppendFormat("  FROM [{0}];{1}", tableName, Environment.NewLine);
+                _sbScript.Append(_sep);
+            }
+        }
+
+        /// <summary>
+        /// Generates the view select statement.
+        /// </summary>
+        /// <param name="viewName">Name of the view.</param>
+        public void GenerateViewSelect(string viewName)
+        {
+            List<Column> columns =  _allViewColumns.Where(c => c.TableName == viewName).ToList();
+            if (columns.Count > 0)
+            {
+                _sbScript.Append("SELECT ");
+
+                columns.ForEach(delegate (Column col)
+                {
+                    _sbScript.AppendFormat(CultureInfo.InvariantCulture,
+                        "[{0}]{1}      ,"
+                        , col.ColumnName
+                        , Environment.NewLine);
+                });
+
+                // Remove the last comma and spaces
+                _sbScript.Remove(_sbScript.Length - 7, 7);
+                _sbScript.AppendFormat("  FROM [{0}];{1}", viewName, Environment.NewLine);
                 _sbScript.Append(_sep);
             }
         }
