@@ -16,6 +16,7 @@ namespace ErikEJ.SqlCeScripting
         string GeneratedScript { get; }
         IList<string> GeneratedFiles { get; }
         void GenerateTableSelect(string tableName);
+        void GenerateViewSelect(string tableName);
         void GenerateTableSelect(string tableName, bool editableInSqlite);
         void GenerateTableInsert(string tableName);
         void GenerateTableUpdate(string tableName);
