@@ -18,11 +18,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (SqlCeToolboxPackage.VisualStudioVersion < new Version(11, 0))
-            {
-                DDEXButton.Visibility = Visibility.Collapsed;
-            }
-            BackgroundWorker bw = new BackgroundWorker();
+            var bw = new BackgroundWorker();
             bw.DoWork += bw_DoWork;
             bw.RunWorkerCompleted += (s, ea) =>
             {
@@ -197,15 +193,16 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             EnvDteHelper.LaunchUrl("https://github.com/ErikEJ/SqlCeToolbox");
         }
 
-        private void DDEXButton_Click(object sender, RoutedEventArgs e)
-        {
-            DataConnectionHelper.RegisterDdexProviders();
-            EnvDteHelper.ShowMessage("SQL CE 4.0 Provider registered, you may have to restart Visual Studio");
-        }
-
         private void GalleryLink_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details");
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var text = txtStatus.Text.Replace("\n", Environment.NewLine);
+            Clipboard.SetText(Version.Text + Environment.NewLine + Environment.NewLine + text);
+            MessageBox.Show("About info copied to clipboard");
         }
     }
 }

@@ -233,7 +233,6 @@
     <Compile Include="Guids.cs" />
     <Compile Include="Helpers\AppConfigHelper.cs" />
     <Compile Include="Helpers\DataConnectionHelper.cs" />
-    <Compile Include="Helpers\DDEXRegistry.cs" />
     <Compile Include="Helpers\DescriptionHelper.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
     <None Include="packages.config" />

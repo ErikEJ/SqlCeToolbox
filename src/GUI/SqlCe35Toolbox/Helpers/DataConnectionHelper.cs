@@ -625,24 +625,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
-        public static void RegisterDdexProviders()
-        {
-            //TODO Consider removing this
-            try
-            {
-                var ver = SqlCeToolboxPackage.VisualStudioVersion.ToString(1);
-
-                if (SqlCeToolboxPackage.VisualStudioVersion >= new Version(12, 0))
-                {
-                    DdexRegistry.AddDdex4Registrations(ver);
-                }
-            }
-            catch (Exception ex)
-            {
-                SendError(ex, DatabaseType.SQLServer);
-            }
-        }
-
         public static bool CheckVersion(string lookingFor)
         {
             try

@@ -31,8 +31,8 @@
         </TextBlock>
         <TextBlock Name="Version" VerticalAlignment="Center" Margin="5,69,5,366" Height="16">Version:</TextBlock>
 
-        <dw:DialogButton IsCancel="True" IsDefault="True" Name="OKButton" Click="OKButton_Click" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,12">OK</dw:DialogButton>
-        <dw:DialogButton Name="DDEXButton" Click="DDEXButton_Click"  Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,5,12">Register DDEX Providers</dw:DialogButton>
+        <dw:DialogButton IsCancel="True" IsDefault="True" Name="OKButton" Click="OKButton_Click" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,12,12">OK</dw:DialogButton>
+        <dw:DialogButton Name="SaveButton" Click="SaveButton_Click" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="12,0,0,12.2" Width="30">Copy</dw:DialogButton>
         <TextBlock Height="374" Margin="5,186,5,10" Name="txtStatus" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.RowSpan="2"></TextBlock>
     </Grid>
 </dw:DialogWindow>

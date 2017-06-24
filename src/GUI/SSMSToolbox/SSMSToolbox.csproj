@@ -217,9 +217,6 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\DataConnectionHelper.cs">
       <Link>Helpers\DataConnectionHelper.cs</Link>
     </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Helpers\DDEXRegistry.cs">
-      <Link>Helpers\DDEXRegistry.cs</Link>
-    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\DescriptionHelper.cs">
       <Link>Helpers\DescriptionHelper.cs</Link>
     </Compile>
