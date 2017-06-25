@@ -142,18 +142,24 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             var dte = package?.GetServiceHelper(typeof(DTE)) as DTE;
             if (dte == null) return;
             var properties = dte.Properties["FontsAndColors", "TextEditor"];
-
             _fontFamiliy = GetFontFamily(properties, _fontSize);
             SqlTextBox.FontFamily = _fontFamiliy;
-            _fontSize = Convert.ToSingle(properties.Item("FontSize").Value) * (float)1.333333;
-            SqlTextBox.FontSize = _fontSize;
+            try
+            {
+                _fontSize = Convert.ToSingle(properties.Item("FontSize").Value) * (float)1.333333;
+                SqlTextBox.FontSize = _fontSize;
+            }
+            catch
+            {
+                //Ignored
+            }
         }
 
         private FontFamily GetFontFamily(EnvDTE.Properties properties, float fontSize)
         {
-            var fontName = properties.Item("FontFamily").Value.ToString();
             try
             {
+                var fontName = properties.Item("FontFamily").Value.ToString();
                 using (var fontTester = new Font(
                     new System.Drawing.FontFamily(fontName),
                     fontSize, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel))
