@@ -281,7 +281,7 @@ namespace ErikEJ.SQLiteScripting
             rows = dt.AsEnumerable()
                 .Where(row => row.Field<bool>("PRIMARY_KEY"))
                 .OrderBy(row => row.Field<String>("TABLE_NAME")).ThenBy(row => row.Field<int>("ORDINAL_POSITION"));
-            dt = rows.Any() ? rows.CopyToDataTable() : indexes.Clone();
+            dt = rows.Any() ? rows.CopyToDataTable() : dt.Clone();
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
