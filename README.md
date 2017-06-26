@@ -67,4 +67,10 @@ You can download the latest 3.5 daily build [from AppVeyor here](https://ci.appv
 
 You can download the latest release of the command line tools from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
 
+# How do I contribute
+
+If you encounter a bug or have a feature request, please use the [Issue Tracker](https://github.com/ErikEJ/SqlCeToolbox/issues/new)
+
+The Toolbox is open source and welcomes any contribution. There are a number of issues in the [Backlog](https://github.com/ErikEJ/SqlCeToolbox/issues?q=is%3Aissue+milestone%3ABacklog+is%3Aclosed) that the project needs help with!
+
 ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/toolbox1.png)
