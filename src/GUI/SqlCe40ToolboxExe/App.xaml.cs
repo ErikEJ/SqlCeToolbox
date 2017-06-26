@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Reflection;
 using ErikEJ.SqlCeToolbox.Helpers;
-using ErikEJ.SqlCeScripting;
-using System.IO;
 
 namespace SqlCeToolboxExe
 {
@@ -47,8 +42,7 @@ namespace SqlCeToolboxExe
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            if (DataConnectionHelper.Monitor != null)
-                DataConnectionHelper.Monitor.Stop();
+            Telemetry.Flush();
         }
     }
 }

@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ErikEJ.SqlCeToolbox.ToolWindows;
-using SqlCeToolboxExe;
-using ErikEJ.SqlCeToolbox.Helpers;
-using ErikEJ.SqlCeScripting;
+﻿using ErikEJ.SqlCeToolbox;
 using ErikEJ.SqlCeToolbox.Dialogs;
-using ErikEJ.SqlCeToolbox;
+using ErikEJ.SqlCeToolbox.Helpers;
+using ErikEJ.SqlCeToolbox.ToolWindows;
+
+using System;
+using System.Linq;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Input;
 
 namespace SqlCeToolbox
 {
@@ -26,8 +16,6 @@ namespace SqlCeToolbox
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-
         private bool _loaded;
         private ExplorerControl _explorerControl;
 
@@ -40,8 +28,8 @@ namespace SqlCeToolbox
         {
             if (!_loaded)
             {
-                DataConnectionHelper.Monitor = EQATEC.Analytics.Monitor.AnalyticsMonitorFactory.CreateMonitor("C244D8923C7C4235A1A24AB1127BD521");
-                DataConnectionHelper.Monitor.Start();
+                Telemetry.Initialize(Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                    "d4881a82-2247-42c9-9272-f7bc8aa29315");
 
                 ExtractDll("QuickGraph.dll");
                 ExtractDll("QuickGraph.Data.dll");

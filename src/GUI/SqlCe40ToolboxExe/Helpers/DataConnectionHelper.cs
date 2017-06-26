@@ -9,7 +9,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
     public class DataConnectionHelper
     {
         public static string Argument { get; set; }
-        public static EQATEC.Analytics.Monitor.IAnalyticsMonitor Monitor { get; set; }
         internal static SortedDictionary<string, string> GetDataConnections()
         {
                 SortedDictionary<string, string> databaseList = new SortedDictionary<string, string>();
@@ -125,7 +124,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 #else
             ISqlCeHelper sqlCeHelper = new SqlCeHelper4();
 #endif
-            Monitor.TrackException(ex);
+            Telemetry.TrackException(ex);
             return sqlCeHelper.FormatError(ex);
         }
 
