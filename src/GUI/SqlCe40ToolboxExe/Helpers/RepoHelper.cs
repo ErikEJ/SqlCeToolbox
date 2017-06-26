@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ErikEJ.SqlCeScripting;
+﻿using ErikEJ.SqlCeScripting;
 
 namespace ErikEJ.SqlCeToolbox
 {

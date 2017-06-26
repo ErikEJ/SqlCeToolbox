@@ -73,10 +73,6 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="EQATEC.Analytics.Monitor">
-      <HintPath>..\lib\EQATEC.Analytics.Monitor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="FabTab">
       <HintPath>..\lib\FabTab.dll</HintPath>
       <Private>False</Private>
@@ -95,6 +91,10 @@
     </Reference>
     <Reference Include="Kent.Boogaart.KBCsv">
       <HintPath>..\lib\Kent.Boogaart.KBCsv.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights">
+      <HintPath>..\lib\Microsoft.ApplicationInsights.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Data.ConnectionUI, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -202,6 +202,7 @@
     <Compile Include="Helpers\DDEXRegistry.cs" />
     <Compile Include="Helpers\DescriptionHelper.cs" />
     <Compile Include="Helpers\RepoHelper.cs" />
+    <Compile Include="Helpers\Telemetry.cs" />
     <Compile Include="Helpers\UserOptions.cs" />
     <Compile Include="Properties\Settings1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -491,11 +492,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\lib\EQATEC.Analytics.Monitor.dll">
-      <Link>EQATEC.Analytics.Monitor.dll</Link>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
@@ -731,6 +727,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Office_Excel_Application_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\lib\Microsoft.ApplicationInsights.dll">
+      <Link>Microsoft.ApplicationInsights.dll</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
