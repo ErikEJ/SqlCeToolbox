@@ -138,14 +138,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void SetEditorFont()
         {
-            var package = _parentWindow.Package as SqlCeToolboxPackage;
-            var dte = package?.GetServiceHelper(typeof(DTE)) as DTE;
-            if (dte == null) return;
-            var properties = dte.Properties["FontsAndColors", "TextEditor"];
-            _fontFamiliy = GetFontFamily(properties, _fontSize);
-            SqlTextBox.FontFamily = _fontFamiliy;
             try
             {
+                var package = _parentWindow.Package as SqlCeToolboxPackage;
+                var dte = package?.GetServiceHelper(typeof(DTE)) as DTE;
+                if (dte == null) return;
+                var properties = dte.Properties["FontsAndColors", "TextEditor"];
+                _fontFamiliy = GetFontFamily(properties, _fontSize);
+                SqlTextBox.FontFamily = _fontFamiliy;
                 _fontSize = Convert.ToSingle(properties.Item("FontSize").Value) * (float)1.333333;
                 SqlTextBox.FontSize = _fontSize;
             }
