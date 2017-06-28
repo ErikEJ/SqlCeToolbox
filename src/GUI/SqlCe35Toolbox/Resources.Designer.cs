@@ -378,15 +378,6 @@ namespace ErikEJ.SqlCeToolbox {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 303D8BB1-D62A-4560-9742-79C93E828222.
-        /// </summary>
-        internal static string SqlCompact35PrivateProvider {
-            get {
-                return ResourceManager.GetString("SqlCompact35PrivateProvider", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 7c602b5b-accb-4acd-9dc0-ca66388c1533.
         /// </summary>
         internal static string SqlCompact35Provider {
