@@ -128,9 +128,9 @@ namespace ErikEJ.SqlCeToolbox
         /// <returns>the tool window pane</returns>
         public ToolWindowPane CreateWindow<T>(int windowId)
         {
-            var dte = GetService(typeof(DTE)) as DTE;
-            if (dte == null) return null;
-            if (dte.Mode == vsIDEMode.vsIDEModeDebug) return null;
+            //var dte = GetService(typeof(DTE)) as DTE;
+            //if (dte == null) return null;
+            //if (dte.Mode == vsIDEMode.vsIDEModeDebug) return null;
 
             //find existing tool window based on _id
             var window = FindToolWindow(typeof(T), windowId, false);
@@ -157,9 +157,9 @@ namespace ErikEJ.SqlCeToolbox
         /// <returns>the tool window pane</returns>
         public ToolWindowPane CreateWindow<T>()
         {
-            var dte = GetService(typeof(DTE)) as DTE;
-            if (dte == null) return null;
-            if (dte.Mode == vsIDEMode.vsIDEModeDebug) return null;
+            //var dte = GetService(typeof(DTE)) as DTE;
+            //if (dte == null) return null;
+            //if (dte.Mode == vsIDEMode.vsIDEModeDebug) return null;
 
             _id++;
             //create a new window with explicit tool window _id
