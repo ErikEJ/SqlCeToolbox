@@ -449,7 +449,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 {
                     var objProviderGuid = connection.Provider;
                     if ((objProviderGuid == new Guid(Resources.SqlCompact35Provider)) ||
-                        (objProviderGuid == new Guid(Resources.SqlCompact40Provider)))
+                        (objProviderGuid == new Guid(Resources.SqlCompact40Provider)) ||
+                        (objProviderGuid == new Guid(Resources.SqlCompact40PrivateProvider)) ||
+                        (objProviderGuid == new Guid(Resources.SqlitePrivateProvider))
+                        )
                     {
                         if (DataProtection.DecryptString(connection.EncryptedConnectionString) == connectionString)
                         {

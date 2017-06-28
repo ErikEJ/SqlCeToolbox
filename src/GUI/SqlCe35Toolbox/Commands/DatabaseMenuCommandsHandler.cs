@@ -42,15 +42,32 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 if (databaseInfo.DatabaseInfo.FromServerExplorer)
                 {
+                    bool providerInstalled = true;
                     var provider = new Guid(Resources.SqlCompact40Provider);
                     if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35)
                     {
                         provider = new Guid(Resources.SqlCompact35Provider);
                     }
-                    if (!DataConnectionHelper.DdexProviderIsInstalled(provider))
+                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
                     {
-                        EnvDteHelper.ShowError("The DDEX provider is not installed, cannot remove connection");
-                        return;
+                        provider = new Guid(Resources.SqlitePrivateProvider);
+                    }
+
+                    providerInstalled = DataConnectionHelper.DdexProviderIsInstalled(provider);
+
+                    if (!providerInstalled)
+                    {
+                        if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40)
+                        {
+                            provider = new Guid(Resources.SqlCompact40PrivateProvider);
+                            providerInstalled = DataConnectionHelper.DdexProviderIsInstalled(provider);
+                        }
+
+                        if (!providerInstalled)
+                        {
+                            EnvDteHelper.ShowError("The DDEX provider is not installed, cannot remove connection");
+                            return;
+                        }
                     }            
                     DataConnectionHelper.RemoveDataConnection(package, databaseInfo.DatabaseInfo.ConnectionString, provider);
                 }
