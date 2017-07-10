@@ -33,7 +33,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var toolTipSqlite = new ToolTip
             {
-                Content = "Generate a SQLite Compact compatible database script from SQL Server"
+                Content = "Generate a SQLite compatible database script from SQL Server"
             };
 
             // Database scripting items
