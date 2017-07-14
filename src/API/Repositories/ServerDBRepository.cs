@@ -618,9 +618,14 @@ namespace ErikEJ.SqlCeScripting
             using (SqlCommandReaderStreamed sr = new SqlCommandReaderStreamed(scriptPath))
             {
                 var commandText = sr.ReadCommand();
+                int i = 1;
+                Console.WriteLine("Running script commands " + i);
                 while (!string.IsNullOrWhiteSpace(commandText))
                 {
                     RunCommand(commandText);
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    i++;
+                    Console.WriteLine("Running script commands " + i);
                     commandText = sr.ReadCommand();
                 }
             }
