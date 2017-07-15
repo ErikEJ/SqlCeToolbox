@@ -156,7 +156,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 CommandParameter = databaseMenuCommandParameters,
             };
             addFromSolutionMenuItem.CommandBindings.Add(addFromSolutionCommandBinding);
-            addFromSolutionMenuItem.IsEnabled = ver40IsInstalled || ver35IsInstalled;
             return addFromSolutionMenuItem;
         }
 
