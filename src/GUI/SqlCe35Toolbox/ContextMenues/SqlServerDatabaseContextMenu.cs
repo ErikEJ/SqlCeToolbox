@@ -28,7 +28,12 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var toolTip = new ToolTip
             {
-                Content = "Generate a SQL Server Compact compatible database script from SQL Server 2005+"
+                Content = "Generate a SQL Server Compact compatible database script from SQL Server"
+            };
+
+            var toolTipSqlite = new ToolTip
+            {
+                Content = "Generate a SQLite compatible database script from SQL Server"
             };
 
             // Database scripting items
@@ -41,9 +46,9 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
-            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataSqLiteMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataSqLiteMenuItem(databaseMenuCommandParameters, toolTipSqlite, scriptDatabaseCommandBinding));
 
-            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseSchemaSqLiteMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
+            scriptDatabaseRootMenuItem.Items.Add(BuildScriptDatabaseSchemaSqLiteMenuItem(databaseMenuCommandParameters, toolTipSqlite, scriptDatabaseCommandBinding));
 
             scriptDatabaseRootMenuItem.Items.Add(itemBuilder.BuildScriptDatabaseSchemaDataBlobMenuItem(databaseMenuCommandParameters, toolTip, scriptDatabaseCommandBinding));
 
