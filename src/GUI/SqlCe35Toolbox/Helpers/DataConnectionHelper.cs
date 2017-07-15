@@ -259,8 +259,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     try
                     {
                         var objProviderGuid = connection.Provider;
-                        if ((objProviderGuid == new Guid(Resources.SqlCompact35Provider) && IsV35Installed()) ||
-                            (objProviderGuid == new Guid(Resources.SqlCompact40Provider) && IsV40Installed()))
+                        if (
+                            (objProviderGuid == new Guid(Resources.SqlCompact35Provider) && IsV35Installed()) ||
+                            (objProviderGuid == new Guid(Resources.SqlCompact40Provider) && IsV40Installed()) ||
+                            (objProviderGuid == new Guid(Resources.SqlCompact40PrivateProvider) && IsV40Installed() ||
+                            (objProviderGuid == new Guid(Resources.SqlitePrivateProvider) &&  IsSqLiteDbProviderInstalled())
+                            ))
                         {
                             connection.Connection.Open();
                             connection.Connection.Close();
@@ -268,6 +272,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                     catch (Exception ex)
                     {
+                        if (ex.GetType() == typeof(SQLiteException))
+                        {
+                            removals.Add(connection);
+                        }
                         if (ex.GetType().Name == "SqlCeException")
                         {
                             removals.Add(connection);
