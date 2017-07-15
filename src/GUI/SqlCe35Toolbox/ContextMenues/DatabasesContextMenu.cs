@@ -24,7 +24,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildAddSqlServerDatabaseMenuItem(databaseMenuCommandParameters, dcmd));
             if (!SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildAddPrivateSqlServerDatabaseMenuItem(databaseMenuCommandParameters, dcmd));
 
-            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildAddFromSolutionMenuItem(databaseMenuCommandParameters, dcmd, ver40IsInstalled, ver35IsInstalled));
+            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildAddFromSolutionMenuItem(databaseMenuCommandParameters, dcmd));
 
             Items.Add(BuildFixConnectionsMenuItem(databaseMenuCommandParameters, dcmd));
             Items.Add(new Separator());
@@ -143,7 +143,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         }
 
         private MenuItem BuildAddFromSolutionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd, bool ver40IsInstalled, bool ver35IsInstalled)
+            DatabasesMenuCommandsHandler dcmd)
         {
             var addFromSolutionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
                 dcmd.ScanConnections);
