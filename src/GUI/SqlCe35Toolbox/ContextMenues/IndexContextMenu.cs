@@ -18,8 +18,11 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var tcmd = new IndexMenuCommandsHandler(parent);
             CreateScriptAsCreateMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDropMenuItem(tcmd, menuCommandParameters);
-            Items.Add(new Separator());
-            if (isSqlCe) CreateScriptAsStatisticsMenuItem(tcmd, menuCommandParameters);
+            if (isSqlCe)
+            {
+                Items.Add(new Separator());
+                CreateScriptAsStatisticsMenuItem(tcmd, menuCommandParameters);
+            } 
         }
 
         private void CreateScriptAsCreateMenuItem(IndexMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)

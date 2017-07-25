@@ -1242,23 +1242,24 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="indexName">Name of the index.</param>
         public void GenerateIndexDrop(string tableName, string indexName)
         {
-            List<Index> tableIndexes;
-            if (_repository.IsServer())
-            {
-                tableIndexes = _repository.GetIndexesFromTable(tableName);
-            }
-            else
-            {
-                tableIndexes = _allIndexes.Where(i => i.TableName == tableName).ToList();
-            }
+            var tableIndexes = _repository.IsServer() 
+                ? _repository.GetIndexesFromTable(tableName) 
+                : _allIndexes.Where(i => i.TableName == tableName).ToList();
 
-            IOrderedEnumerable<Index> indexesByName = from i in tableIndexes
-                                                      where i.IndexName == indexName
-                                                      orderby i.OrdinalPosition
-                                                      select i;
+            var indexesByName = tableIndexes
+                .Where(i => i.IndexName == indexName)
+                .OrderBy(i => i.OrdinalPosition);
+
             if (indexesByName.Any())
             {
-                _sbScript.AppendFormat("DROP INDEX [{0}].[{1}];{2}", tableName, indexName, Environment.NewLine);
+                if (_sqlite)
+                {
+                    _sbScript.AppendFormat("DROP INDEX [{0}];{1}", indexName, Environment.NewLine);
+                }
+                else
+                {
+                    _sbScript.AppendFormat("DROP INDEX [{0}].[{1}];{2}", tableName, indexName, Environment.NewLine);
+                }
                 _sbScript.Append(_sep);
             }
             else
