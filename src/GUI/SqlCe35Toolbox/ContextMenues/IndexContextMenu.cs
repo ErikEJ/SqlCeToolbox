@@ -12,11 +12,14 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
         public IndexContextMenu(MenuCommandParameters menuCommandParameters, ExplorerToolWindow parent)
         {
+            var isSqlCe = menuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35
+                || menuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40;
+
             var tcmd = new IndexMenuCommandsHandler(parent);
             CreateScriptAsCreateMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDropMenuItem(tcmd, menuCommandParameters);
             Items.Add(new Separator());
-            CreateScriptAsStatisticsMenuItem(tcmd, menuCommandParameters);
+            if (isSqlCe) CreateScriptAsStatisticsMenuItem(tcmd, menuCommandParameters);
         }
 
         private void CreateScriptAsCreateMenuItem(IndexMenuCommandsHandler tcmd, MenuCommandParameters menuCommandParameters)
