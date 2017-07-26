@@ -12,24 +12,26 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var isSqlCe = menuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35
                 || menuCommandParameters.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40;
-            
             var tcmd = new TableMenuCommandsHandler(parent);
-            //Edit menu
+
             CreateEditTableDataMenuItem(tcmd, menuCommandParameters);
             ReportDataMenuItem(tcmd, menuCommandParameters);
             AddSqlEditorItem(tcmd, menuCommandParameters);
             Items.Add(new Separator());
+
+            AddColumnMenuItem(tcmd, menuCommandParameters);
+            AddIndexMenuItem(tcmd, menuCommandParameters);
             if (isSqlCe)
             {
-                AddColumnMenuItem(tcmd, menuCommandParameters);
-                AddIndexMenuItem(tcmd, menuCommandParameters);
                 AddFkMenuItem(tcmd, menuCommandParameters);
-                Items.Add(new Separator());
             }
+            Items.Add(new Separator());
+
             CreateScriptAsCreateMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDropMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsDropAndCreateMenuItem(tcmd, menuCommandParameters);
             Items.Add(new Separator());
+
             CreateScriptAsSelectMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsInsertMenuItem(tcmd, menuCommandParameters);
             CreateScriptAsUpdateMenuItem(tcmd, menuCommandParameters);
@@ -42,13 +44,16 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             }
 #endif
             Items.Add(new Separator());
+
             ImportDataMenuItem(tcmd, menuCommandParameters);
             Items.Add(new Separator());
+
             if (isSqlCe)
             {
                 CompareDataMenuItem(tcmd, menuCommandParameters);
                 Items.Add(new Separator());
             }
+
             RenameMenuItem(tcmd, menuCommandParameters);
             if (isSqlCe)
             {
