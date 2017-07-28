@@ -51,10 +51,6 @@ If you have trouble installing the SSMS extension, try the following command lin
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
-**Release**
-
-You can download the latest release of the standalone SQL Server Compact Toolbox from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
-
 **Daily build**
 
 You can download the latest 4.0 daily build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40ToolBox.zip?branch=master)
