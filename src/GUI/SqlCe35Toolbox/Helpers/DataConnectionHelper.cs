@@ -240,10 +240,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal static bool DdexProviderIsInstalled(Guid id)
         {
-            var objIVsDataProviderManager =
-                Package.GetGlobalService(typeof(IVsDataProviderManager)) as IVsDataProviderManager;
-            return objIVsDataProviderManager != null &&
-                objIVsDataProviderManager.Providers.TryGetValue(id, out IVsDataProvider provider);
+            try
+            {
+                var objIVsDataProviderManager =
+                    Package.GetGlobalService(typeof(IVsDataProviderManager)) as IVsDataProviderManager;
+                return objIVsDataProviderManager != null &&
+                    objIVsDataProviderManager.Providers.TryGetValue(id, out IVsDataProvider provider);
+            }
+            catch
+            {
+                //Ignored
+            }
+            return false;
         }
 
         internal void ValidateConnections(SqlCeToolboxPackage package)
