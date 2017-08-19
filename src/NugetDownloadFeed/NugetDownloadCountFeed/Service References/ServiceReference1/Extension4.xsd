@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/VsGallery.WebServices" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/VsGallery.WebServices" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" />
+  <xs:complexType name="ReleaseQueryResult">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" minOccurs="0" name="Releases" nillable="true" type="q1:ArrayOfRelease" />
+      <xs:element minOccurs="0" name="TotalCount" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReleaseQueryResult" nillable="true" type="tns:ReleaseQueryResult" />
+</xs:schema>

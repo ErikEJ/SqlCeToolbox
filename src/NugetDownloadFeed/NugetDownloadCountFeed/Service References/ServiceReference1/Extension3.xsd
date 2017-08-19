@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" />
+  <xs:import schemaLocation="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/VsGallery.WebServices" />
+  <xs:element name="GetCategoryTree">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="categoryId" type="q1:guid" />
+        <xs:element minOccurs="0" name="level" type="xs:int" />
+        <xs:element minOccurs="0" name="projectType" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="templateType" nillable="true" type="xs:string" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="skus" nillable="true" type="q2:ArrayOfstring" />
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="subSkus" nillable="true" type="q3:ArrayOfstring" />
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="templateGroupIds" nillable="true" type="q4:ArrayOfint" />
+        <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="vsVersions" nillable="true" type="q5:ArrayOfint" />
+        <xs:element minOccurs="0" name="cultureName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetCategoryTreeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" minOccurs="0" name="GetCategoryTreeResult" nillable="true" type="q6:IdeCategory" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRootCategories">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="cultureName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRootCategoriesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" minOccurs="0" name="GetRootCategoriesResult" nillable="true" type="q7:ArrayOfIdeCategory" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchReleases">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="searchText" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="whereClause" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="orderByClause" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="locale" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="skip" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="take" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchReleasesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/VsGallery.WebServices" minOccurs="0" name="SearchReleasesResult" nillable="true" type="q8:ReleaseQueryResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRootCategories2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="requestContext" nillable="true" type="q9:ArrayOfKeyValueOfstringstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRootCategories2Response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" minOccurs="0" name="GetRootCategories2Result" nillable="true" type="q10:ArrayOfIdeCategory" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetCategoryTree2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="categoryId" type="q11:guid" />
+        <xs:element minOccurs="0" name="level" type="xs:int" />
+        <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="requestContext" nillable="true" type="q12:ArrayOfKeyValueOfstringstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetCategoryTree2Response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" minOccurs="0" name="GetCategoryTree2Result" nillable="true" type="q13:IdeCategory" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchReleases2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="searchText" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="whereClause" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="orderByClause" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="skip" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="take" nillable="true" type="xs:int" />
+        <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="requestContext" nillable="true" type="q14:ArrayOfKeyValueOfstringstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchReleases2Response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/VsGallery.WebServices" minOccurs="0" name="SearchReleases2Result" nillable="true" type="q15:ReleaseQueryResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetCurrentVersionsForVsixList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q16="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="vsixIds" nillable="true" type="q16:ArrayOfstring" />
+        <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="requestContext" nillable="true" type="q17:ArrayOfKeyValueOfstringstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetCurrentVersionsForVsixListResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetCurrentVersionsForVsixListResult" nillable="true" type="q18:ArrayOfstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

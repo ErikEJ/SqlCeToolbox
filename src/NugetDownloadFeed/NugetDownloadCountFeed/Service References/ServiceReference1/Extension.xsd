@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Galleries.Domain.Model" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd2" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:complexType name="IdeCategory">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Children" nillable="true" type="tns:ArrayOfIdeCategory" />
+      <xs:element minOccurs="0" name="HasMore" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="Parent" nillable="true" type="tns:IdeCategory" />
+      <xs:element minOccurs="0" name="Title" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="IdeCategory" nillable="true" type="tns:IdeCategory" />
+  <xs:complexType name="ArrayOfIdeCategory">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="IdeCategory" nillable="true" type="tns:IdeCategory" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfIdeCategory" nillable="true" type="tns:ArrayOfIdeCategory" />
+  <xs:complexType name="ArrayOfRelease">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Release" nillable="true" type="tns:Release" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRelease" nillable="true" type="tns:ArrayOfRelease" />
+  <xs:complexType name="Release">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DateReleased" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Files" nillable="true" type="tns:ArrayOfReleaseFile" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="IsCurrentRelease" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsDisplayedOnHomePage" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsPublic" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Project" nillable="true" type="tns:Project" />
+      <xs:element minOccurs="0" name="Rating" type="xs:double" />
+      <xs:element minOccurs="0" name="RatingsCount" type="xs:int" />
+      <xs:element minOccurs="0" name="ReviewsCount" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Release" nillable="true" type="tns:Release" />
+  <xs:complexType name="ArrayOfReleaseFile">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ReleaseFile" nillable="true" type="tns:ReleaseFile" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfReleaseFile" nillable="true" type="tns:ArrayOfReleaseFile" />
+  <xs:complexType name="ReleaseFile">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Attachment" nillable="true" type="tns:FileAttachment" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DownloadCount" type="xs:int" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Metadata" nillable="true" type="q1:ArrayOfKeyValueOfstringstring" />
+      <xs:element minOccurs="0" name="Parent" nillable="true" type="tns:Release" />
+      <xs:element minOccurs="0" name="Type" nillable="true" type="tns:ReleaseFileType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReleaseFile" nillable="true" type="tns:ReleaseFile" />
+  <xs:complexType name="FileAttachment">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="FileName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="UploadDate" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FileAttachment" nillable="true" type="tns:FileAttachment" />
+  <xs:complexType name="ReleaseFileType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ReleaseFileType" nillable="true" type="tns:ReleaseFileType" />
+  <xs:complexType name="Project">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AffiliateId" type="xs:int" />
+      <xs:element minOccurs="0" name="Categories" nillable="true" type="tns:ArrayOfCategory" />
+      <xs:element minOccurs="0" name="CreatedDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="CurrentRelease" nillable="true" type="tns:Release" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DiscussionsEnabled" type="xs:boolean" />
+      <xs:element minOccurs="0" name="FileReleaseEnabled" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="InitialProjectName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsPublished" type="xs:boolean" />
+      <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Metadata" nillable="true" type="q2:ArrayOfKeyValueOfstringstring" />
+      <xs:element minOccurs="0" name="ModifiedDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Releases" nillable="true" type="tns:ArrayOfRelease" />
+      <xs:element minOccurs="0" name="SourceCodeBrowsingEnabled" type="xs:boolean" />
+      <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Tags" nillable="true" type="q3:ArrayOfstring" />
+      <xs:element minOccurs="0" name="Title" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="WorkItemTrackingEnabled" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Project" nillable="true" type="tns:Project" />
+  <xs:complexType name="ArrayOfCategory">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Category" nillable="true" type="tns:Category" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCategory" nillable="true" type="tns:ArrayOfCategory" />
+  <xs:complexType name="Category">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Children" nillable="true" type="tns:ArrayOfCategory" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Parent" nillable="true" type="tns:Category" />
+      <xs:element minOccurs="0" name="Title" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Category" nillable="true" type="tns:Category" />
+</xs:schema>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="54be1704-9438-4c0f-9cef-388494e35121" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Extension.xsd" MetadataType="Schema" ID="41d1ccaf-c66f-4d2f-9af4-945786f7f639" SourceId="1" SourceUrl="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd3" />
+    <MetadataFile FileName="Extension.disco" MetadataType="Disco" ID="db189e8c-0bd2-40ec-aed5-04a4769bdd7e" SourceId="1" SourceUrl="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?disco" />
+    <MetadataFile FileName="Extension1.xsd" MetadataType="Schema" ID="0b9c7bd7-f3a4-4e2b-b78a-b60ed3a7c980" SourceId="1" SourceUrl="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd2" />
+    <MetadataFile FileName="Extension.wsdl" MetadataType="Wsdl" ID="a37411aa-deed-4eba-bb76-5e6d07923c96" SourceId="1" SourceUrl="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?wsdl" />
+    <MetadataFile FileName="Extension2.xsd" MetadataType="Schema" ID="6beb03e7-5fe9-4147-9e09-a70feca77a95" SourceId="1" SourceUrl="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd1" />
+    <MetadataFile FileName="Extension3.xsd" MetadataType="Schema" ID="f96045a9-92a6-4e5f-86c9-e1359729ab06" SourceId="1" SourceUrl="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd0" />
+    <MetadataFile FileName="Extension4.xsd" MetadataType="Schema" ID="0a93e54a-6e9b-4446-be6b-e7c6ba016896" SourceId="1" SourceUrl="http://visualstudiogallery.msdn.microsoft.com/Services/v2011/Extension.svc?xsd=xsd4" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

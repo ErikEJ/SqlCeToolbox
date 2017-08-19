@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NugetDownloadCountFeed", "NugetDownloadCountFeed\NugetDownloadCountFeed.csproj", "{F5C9FC8A-4F7A-422E-879A-A3E00434EB3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedHost", "FeedHost\FeedHost.csproj", "{D994F107-9343-4595-8DF2-04869DBE2A9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5C9FC8A-4F7A-422E-879A-A3E00434EB3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5C9FC8A-4F7A-422E-879A-A3E00434EB3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5C9FC8A-4F7A-422E-879A-A3E00434EB3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5C9FC8A-4F7A-422E-879A-A3E00434EB3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D994F107-9343-4595-8DF2-04869DBE2A9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D994F107-9343-4595-8DF2-04869DBE2A9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D994F107-9343-4595-8DF2-04869DBE2A9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D994F107-9343-4595-8DF2-04869DBE2A9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
