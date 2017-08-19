@@ -207,6 +207,7 @@ namespace ErikEJ.SqlCeScripting
             { 0x73616261, SQLCEVersion.SQLCE20 }, 
             { 0x002dd714, SQLCEVersion.SQLCE30},
             { 0x00357b9d, SQLCEVersion.SQLCE35},
+            { 0x00357dd9, SQLCEVersion.SQLCE35},
             { 0x003d0900, SQLCEVersion.SQLCE40}
         };
             int versionLongword;
