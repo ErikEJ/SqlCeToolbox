@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SQL Compact Scripting Utility")]
 [assembly: AssemblyDescription("")]
@@ -12,5 +11,5 @@ using System.Runtime.InteropServices;
 
 [assembly:ComVisible(false)]
 [assembly: AssemblyVersion("3.5.2.15")]
-[assembly: AssemblyFileVersion("3.5.2.71")]
-[assembly: AssemblyInformationalVersion("3.5.2.71")]
+[assembly: AssemblyFileVersion("3.5.2.72")]
+[assembly: AssemblyInformationalVersion("3.5.2.72")]

@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using DbUp.Support.SqlServer;
+using System.IO;
 
 namespace ErikEJ.SqlCeScripting
 {
@@ -612,20 +613,22 @@ namespace ErikEJ.SqlCeScripting
 
         private void RunCommands(string scriptPath)
         {
-            if (!System.IO.File.Exists(scriptPath))
+            if (!File.Exists(scriptPath))
                 return;
+
+            bool isConsoleApp = Console.OpenStandardInput(1) != Stream.Null;
 
             using (SqlCommandReaderStreamed sr = new SqlCommandReaderStreamed(scriptPath))
             {
                 var commandText = sr.ReadCommand();
                 int i = 1;
-                Console.WriteLine("Running script commands " + i);
+                if (isConsoleApp) Console.WriteLine("Running script commands " + i);
                 while (!string.IsNullOrWhiteSpace(commandText))
                 {
                     RunCommand(commandText);
-                    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    if (isConsoleApp) Console.SetCursorPosition(0, Console.CursorTop - 1);
                     i++;
-                    Console.WriteLine("Running script commands " + i);
+                    if (isConsoleApp) Console.WriteLine("Running script commands " + i);
                     commandText = sr.ReadCommand();
                 }
             }
