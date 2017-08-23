@@ -180,7 +180,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptAzureSchemaDataMenuItem = new MenuItem
             {
-                Header = "Script Database Schema and Data for SQL Azure...",
+                Header = "Script Schema and Data for SQL Azure...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
@@ -195,7 +195,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseDataForServerMenuItem = new MenuItem
             {
-                Header = "Script Database Data for SQL Server...",
+                Header = "Script Data for SQL Server...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,
@@ -212,7 +212,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 dcmd.GenerateDiffScript);
             var scriptDatabaseDiffMenuItem = new MenuItem
             {
-                Header = "Script Database Diff...",
+                Header = "Script Diff...",
                 Icon = ImageHelper.GetImageFromResource("../resources/DataCompare_9880.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
                 CommandParameter = databaseMenuCommandParameters,

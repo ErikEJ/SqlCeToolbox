@@ -98,7 +98,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.VerifyDatabase(databaseInfo.DatabaseInfo.ConnectionString);
-                package.SetStatus("Verify Database completed");
+                package.SetStatus("Verify completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainVerify");
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseDeleteCorruptedRows(databaseInfo.DatabaseInfo.ConnectionString);
-                package.SetStatus("Repair Database completed");
+                package.SetStatus("Repair completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
@@ -132,7 +132,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseRecoverAllOrFail(databaseInfo.DatabaseInfo.ConnectionString);
-                package.SetStatus("Repair Database completed");
+                package.SetStatus("Repair completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
@@ -149,7 +149,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseRecoverAllPossibleRows(databaseInfo.DatabaseInfo.ConnectionString);
-                package.SetStatus("Repair Database completed");
+                package.SetStatus("Repair completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
             }
             catch (Exception ex)
