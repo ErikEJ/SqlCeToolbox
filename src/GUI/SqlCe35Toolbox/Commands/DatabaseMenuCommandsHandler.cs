@@ -118,7 +118,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.ShrinkDatabase(databaseInfo.DatabaseInfo.ConnectionString);
-                package.SetStatus("Shrink Database completed");
+                package.SetStatus("Shrink completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainShrink");
             }
             catch (Exception ex)
@@ -135,7 +135,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.CompactDatabase(databaseInfo.DatabaseInfo.ConnectionString);
-                package.SetStatus("Compact Database completed");
+                package.SetStatus("Compact completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainCompact");
             }
             catch (Exception ex)
@@ -283,7 +283,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     var fd = new SaveFileDialog
                     {
-                        Title = "Save generated database script as",
+                        Title = "Save generated script as",
                         Filter =
                             "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*"
                     };

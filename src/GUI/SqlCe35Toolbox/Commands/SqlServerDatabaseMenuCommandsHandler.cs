@@ -61,7 +61,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     var fd = new SaveFileDialog
                     {
-                        Title = "Save generated database script as",
+                        Title = "Save generated script as",
                         Filter =
                             "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*"
                     };

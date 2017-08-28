@@ -28,12 +28,12 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             var toolTip = new ToolTip
             {
-                Content = "Generate a SQL Server Compact compatible database script from SQL Server"
+                Content = "Generate a SQL Server Compact compatible script from SQL Server"
             };
 
             var toolTipSqlite = new ToolTip
             {
-                Content = "Generate a SQLite compatible database script from SQL Server"
+                Content = "Generate a SQLite compatible script from SQL Server"
             };
 
             // Database scripting items
@@ -97,7 +97,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaSqLiteMenuItem = new MenuItem
             {
-                Header = "Script Database Schema for SQLite...",
+                Header = "Script Schema for SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,

@@ -44,7 +44,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaMenuItem = new MenuItem
             {
-                Header = "Script Database Schema...",
+                Header = "Script Schema...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -60,7 +60,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaDataMenuItem = new MenuItem
             {
-                Header = "Script Database Schema and Data...",
+                Header = "Script Schema and Data...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -76,7 +76,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseDataMenuItem = new MenuItem
             {
-                Header = "Script Database Data...",
+                Header = "Script Data...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -92,7 +92,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaDataBlobMenuItem = new MenuItem
             {
-                Header = "Script Database Schema and Data with BLOBs...",
+                Header = "Script Schema and Data with BLOBs...",
                 ToolTip = toolTip,
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 Command = DatabaseMenuCommands.DatabaseCommand,
@@ -109,7 +109,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         {
             var scriptDatabaseSchemaDataSqLiteMenuItem = new MenuItem
             {
-                Header = "Script Database Schema and Data for SQLite...",
+                Header = "Script Schema and Data for SQLite...",
                 Icon = ImageHelper.GetImageFromResource("../resources/script_16xLG.png"),
                 ToolTip = toolTip,
                 Command = DatabaseMenuCommands.DatabaseCommand,
