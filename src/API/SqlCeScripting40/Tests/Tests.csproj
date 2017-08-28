@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Chinook.db" />
+    <None Include="DB21.sqlite" />
     <None Include="dto.db" />
     <None Include="FkMultiKey.db" />
     <None Include="inf2700_orders-1.db" />

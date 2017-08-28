@@ -25,8 +25,10 @@ using System.Text.RegularExpressions;
             @"Data Source={0}dto.db", dbPath);
         private string infoConnectionString = string.Format(
             @"Data Source={0}inf2700_orders-1.db", dbPath);
+        private string db21Conn = string.Format(
+            @"Data Source={0}DB21.sqlite", dbPath);
 
-        private const string sdfConnectionString = @"Data Source=C:\data\sqlce\test\ams40.sdf;Max Database Size=512";
+    private const string sdfConnectionString = @"Data Source=C:\data\sqlce\test\ams40.sdf;Max Database Size=512";
         private const string sdfConnectionString2 = @"Data Source=C:\data\sqlce\test\PFIZER_DB40.sdf";
         private const string serverConnectionString = @"data source=.;Initial Catalog=AdventureWorksLT2012;Integrated Security=true";
         private const string serverAWConnectionString = @"data source=(localdb)\Mssqllocaldb;Initial Catalog=AdventureWorks2014;Integrated Security=true";
@@ -107,6 +109,20 @@ using System.Text.RegularExpressions;
             {
                 var generator = new Generator4(sourceRepository, null, false, false, true);
                 generator.GenerateTableScript("Album");
+                var result = generator.GeneratedScript;
+                var lines = Regex.Split(result, "\r\n|\r|\n");
+                Assert.IsTrue(lines.Length == 11);
+            }
+        }
+
+        [Test]
+        public void TestCreateSqliteUneditableTable()
+        {
+            using (IRepository sourceRepository = new SQLiteRepository(db21Conn))
+            {
+                var generator = new Generator4(sourceRepository, null, false, false, true);
+                var tables = sourceRepository.GetAllTableNames();
+                generator.GenerateTableScript("Users");
                 var result = generator.GeneratedScript;
                 var lines = Regex.Split(result, "\r\n|\r|\n");
                 Assert.IsTrue(lines.Length == 11);

@@ -41,6 +41,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             {
                 dataGridView1.AutoGenerateColumns = true;
                 dataGridView1.DataError += dataGridView1_DataError;
+                dataGridView1.ShowRowErrors = true;
                 _imageContext.Items.Add("Import Image", null, ImportImage);
                 _imageContext.Items.Add("Export Image", null, ExportImage);
                 _imageContext.Items.Add("Delete Image", null, DeleteImage);
@@ -221,6 +222,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
 
         void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
+            dataGridView1.Rows[e.RowIndex].ErrorText = e.Exception.Message;
         }
 
         void ImportImage(object sender, EventArgs e)
@@ -293,10 +295,6 @@ namespace ErikEJ.SqlCeToolbox.WinForms
                     }
                 }
             }
-            catch (DBConcurrencyException)
-            {
-                //Ignored
-            }
             catch (Exception ex)
             {
                 DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
@@ -311,7 +309,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
 
             var current = thisBindingSource?.Current;
             if (current == null) return;
-
+            
             var thisDataRow = ((DataRowView)current).Row;
             if (thisDataRow == _lastDataRow)
             {
@@ -340,10 +338,6 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             try
             {
                 _adapter.Update(_table);
-            }
-            catch (DBConcurrencyException)
-            {
-                //Ignored
             }
             catch (Exception ex)
             {
