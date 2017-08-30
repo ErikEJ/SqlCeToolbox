@@ -175,6 +175,40 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             {
                 txtStatus.Text += "No\n";
             }
+
+            txtStatus.Text += "System.Data.SQLite DDEX provider - ";
+            try
+            {
+                if (DataConnectionHelper.DdexProviderIsInstalled(new Guid(SqlCeToolbox.Resources.SQLiteProvider)))
+                {
+                    txtStatus.Text += "Yes\n";
+                }
+                else
+                {
+                    txtStatus.Text += "No\n";
+                }
+            }
+            catch
+            {
+                txtStatus.Text += "No\n";
+            }
+
+            txtStatus.Text += "SQLite Simple DDEX provider - ";
+            try
+            {
+                if (DataConnectionHelper.DdexProviderIsInstalled(new Guid(SqlCeToolbox.Resources.SqlitePrivateProvider)))
+                {
+                    txtStatus.Text += "Yes\n";
+                }
+                else
+                {
+                    txtStatus.Text += "No\n";
+                }
+            }
+            catch
+            {
+                txtStatus.Text += "No\n";
+            }
         }
 
         void bw_DoWork(object sender, DoWorkEventArgs e)
