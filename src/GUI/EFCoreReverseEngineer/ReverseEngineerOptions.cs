@@ -12,5 +12,6 @@ namespace EFCoreReverseEngineer
         public bool UseFluentApiOnly { get; set; }
         public  string ContextClassName { get; set; }
         public List<string> Tables { get; set; }
+        public bool UseDatabaseNames { get; set; }
     }
 }
