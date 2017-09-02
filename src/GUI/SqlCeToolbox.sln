@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB948C59-C1E1-4CE3-8EC0-B88949C79A56}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox.Common", "SqlCeToolbox.Common\SqlCeToolbox.Common.csproj", "{C6031278-5612-429F-A485-5169392DB51C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox.DDEX4", "SqlCeToolbox.DDEX4\SqlCeToolbox.DDEX4.csproj", "{42939E33-FC72-459C-9403-B62AB074635E}"
@@ -20,6 +18,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCoreReverseEngineer", "EFCoreReverseEngineer\EFCoreReverseEngineer.csproj", "{7E384A05-2677-4F39-82FF-F6B1CD8A9E06}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseEngineer20", "ReverseEngineer20\ReverseEngineer20.csproj", "{4C0F2979-FCD9-4E93-8E4F-2A43055D42FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EF Core Power Tools", "EF Core Power Tools", "{971DE5A9-EEC3-42AB-A00B-5AF8DD21BD27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCorePowerTools", "EFCorePowerTools\EFCorePowerTools.csproj", "{C670BE03-6397-4AC0-9914-AD1BB679778F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3CE39BB8-C857-47C5-A3CB-71CB8E34DABB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,9 +95,25 @@ Global
 		{4C0F2979-FCD9-4E93-8E4F-2A43055D42FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4C0F2979-FCD9-4E93-8E4F-2A43055D42FE}.Release|x86.ActiveCfg = Release|Any CPU
 		{4C0F2979-FCD9-4E93-8E4F-2A43055D42FE}.Release|x86.Build.0 = Release|Any CPU
+		{C670BE03-6397-4AC0-9914-AD1BB679778F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C670BE03-6397-4AC0-9914-AD1BB679778F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C670BE03-6397-4AC0-9914-AD1BB679778F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C670BE03-6397-4AC0-9914-AD1BB679778F}.Debug|x86.Build.0 = Debug|Any CPU
+		{C670BE03-6397-4AC0-9914-AD1BB679778F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C670BE03-6397-4AC0-9914-AD1BB679778F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C670BE03-6397-4AC0-9914-AD1BB679778F}.Release|x86.ActiveCfg = Release|Any CPU
+		{C670BE03-6397-4AC0-9914-AD1BB679778F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C6031278-5612-429F-A485-5169392DB51C} = {3CE39BB8-C857-47C5-A3CB-71CB8E34DABB}
+		{42939E33-FC72-459C-9403-B62AB074635E} = {3CE39BB8-C857-47C5-A3CB-71CB8E34DABB}
+		{DF42BBC7-9733-4FD3-9758-13A1F657CFBB} = {3CE39BB8-C857-47C5-A3CB-71CB8E34DABB}
+		{7E384A05-2677-4F39-82FF-F6B1CD8A9E06} = {3CE39BB8-C857-47C5-A3CB-71CB8E34DABB}
+		{4C0F2979-FCD9-4E93-8E4F-2A43055D42FE} = {971DE5A9-EEC3-42AB-A00B-5AF8DD21BD27}
+		{C670BE03-6397-4AC0-9914-AD1BB679778F} = {971DE5A9-EEC3-42AB-A00B-5AF8DD21BD27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BFF7B9CC-46C9-4547-9FA1-D17E2A89613C}
