@@ -145,7 +145,8 @@ namespace EFCorePowerTools.Handlers
                     }
 
                     _package.Dte2.StatusBar.Text = "Reporting result...";
-                    ReportRevEngErrors(revEngResult, missingProviderPackage);
+                    var errors = ReportRevEngErrors(revEngResult, missingProviderPackage);
+                    EnvDteHelper.ShowMessage(errors);
 
                     if (modelDialog.InstallNuGetPackage)
                     {
@@ -165,7 +166,7 @@ namespace EFCorePowerTools.Handlers
             }
         }
 
-        private void ReportRevEngErrors(EfCoreReverseEngineerResult revEngResult, string missingProviderPackage)
+        private string ReportRevEngErrors(EfCoreReverseEngineerResult revEngResult, string missingProviderPackage)
         {
             var errors = new StringBuilder();
             foreach (var entityError in revEngResult.EntityErrors)
@@ -191,7 +192,7 @@ namespace EFCorePowerTools.Handlers
                 errors.AppendFormat("The \"{0}\" NuGet package was not found in the project - it must be installed in order to build.", missingProviderPackage);
             }
 
-            EnvDteHelper.ShowMessage(errors.ToString());
+            return errors.ToString();
         }
     }
 }
