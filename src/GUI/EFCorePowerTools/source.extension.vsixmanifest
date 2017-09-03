@@ -12,7 +12,7 @@
         <MoreInfo>https://github.com/ErikEJ/SqlCeToolbox/wiki/EF-Core-Power-Tools</MoreInfo>
         <License>Resources\license.txt</License>
         <Icon>db.png</Icon>
-        <!--<PreviewImage>Resources\toolbox2.png</PreviewImage>-->
+        <PreviewImage>Resources\efcreveng2.png</PreviewImage>
         <Tags>sql sqlite sqlce entityframework efcore codegeneration database</Tags>
     </Metadata>
     <Installation>

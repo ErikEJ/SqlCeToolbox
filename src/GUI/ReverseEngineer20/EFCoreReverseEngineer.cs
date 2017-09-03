@@ -65,7 +65,8 @@ namespace EFCoreReverseEngineer
 
             var result = new EfCoreReverseEngineerResult
             {
-                EntityErrors = warnings.Concat(errors).ToList(),
+                EntityErrors = errors,
+                EntityWarnings = warnings,
                 EntityTypeFilePaths = filePaths.EntityTypeFiles,
                 ContextFilePath = filePaths.ContextFile,
             };
