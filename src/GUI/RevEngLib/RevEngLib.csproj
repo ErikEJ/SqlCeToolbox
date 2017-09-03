@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\EFCoreReverseEngineer\DatabaseType.cs" Link="DatabaseType.cs" />
+    <Compile Include="..\EFCoreReverseEngineer\ReverseEngineerOptions.cs" Link="ReverseEngineerOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.0"></PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0"></PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0"></PackageReference>
+    <PackageReference Include="EntityFrameworkCore.SqlServerCompact40" Version="2.0.0">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

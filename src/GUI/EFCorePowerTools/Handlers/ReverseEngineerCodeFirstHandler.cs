@@ -10,8 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace EFCorePowerTools.Handlers
 {
@@ -24,7 +26,7 @@ namespace EFCorePowerTools.Handlers
             _package = package;
         }
 
-        public async void ReverseEngineerCodeFirst(Project project)
+        public  void ReverseEngineerCodeFirst(Project project)
         {
             try
             {
@@ -89,7 +91,7 @@ namespace EFCorePowerTools.Handlers
                     var dteH = new EnvDteHelper();
                     var revEng = new EfCoreReverseEngineer();
 
-                    var model = revEng.GenerateClassName(classBasis) + "Context";
+                    var model = GenerateClassName(classBasis) + "Context";
                     var packageResult = dteH.ContainsEfCoreReference(project, dbType);
 
                     var modelDialog = new EfCoreModelDialog
@@ -152,7 +154,7 @@ namespace EFCorePowerTools.Handlers
                     {
                         _package.Dte2.StatusBar.Text = "Installing EF Core provider package";
                         var nuGetHelper = new NuGetHelper();
-                        await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
+                        //await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
                     }
                     var duration = DateTime.Now - startTime;
                     _package.Dte2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
@@ -193,6 +195,27 @@ namespace EFCorePowerTools.Handlers
             }
 
             return errors.ToString();
+        }
+
+        public string GenerateClassName(string value)
+        {
+            var className = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value);
+            var isValid = System.CodeDom.Compiler.CodeDomProvider.CreateProvider("C#").IsValidIdentifier(className);
+
+            if (!isValid)
+            {
+                // File name contains invalid chars, remove them
+                Regex regex = new Regex(@"[^\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Nl}\p{Mn}\p{Mc}\p{Cf}\p{Pc}\p{Lm}]");
+                className = regex.Replace(className, "");
+
+                // Class name doesn't begin with a letter, insert an underscore
+                if (!char.IsLetter(className, 0))
+                {
+                    className = className.Insert(0, "_");
+                }
+            }
+
+            return className.Replace(" ", string.Empty);
         }
     }
 }
