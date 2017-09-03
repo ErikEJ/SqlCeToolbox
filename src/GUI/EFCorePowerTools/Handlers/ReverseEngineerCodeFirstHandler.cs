@@ -28,7 +28,7 @@ namespace EFCorePowerTools.Handlers
         {
             try
             {
-                if (_package.DTE2.Mode == vsIDEMode.vsIDEModeDebug)
+                if (_package.Dte2.Mode == vsIDEMode.vsIDEModeDebug)
                 {
                     EnvDteHelper.ShowError("Cannot generate code while debugging");
                     return;
@@ -45,12 +45,9 @@ namespace EFCorePowerTools.Handlers
 
                 if (dialogResult != null)
                 {
+                    _package.Dte2.StatusBar.Text = "Loading schema information...";
+                    
                     // Find connection string and provider
-
-                    _package.DTE2.StatusBar.Text = "Loading schema information...";
-
-                    var dteH = new EnvDteHelper();
-
                     var connection = (DbConnection)dialogResult.GetLockedProviderObject();
                     var connectionString = connection.ConnectionString;
                     var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
@@ -66,7 +63,7 @@ namespace EFCorePowerTools.Handlers
                     if (providerInvariant == "System.Data.SqlClient")
                         dbType = DatabaseType.SQLServer;
 
-                    if (dbType == DatabaseType.SQLCE35)
+                    if (dbType == DatabaseType.SQLCE35 || dbType == DatabaseType.SQLCE40)
                     {
                         EnvDteHelper.ShowError($"Unsupported provider: {providerInvariant}");
                         return;
@@ -89,7 +86,9 @@ namespace EFCorePowerTools.Handlers
                         classBasis = new SqlConnectionStringBuilder(connectionString).InitialCatalog;
                     }
 
+                    var dteH = new EnvDteHelper();
                     var revEng = new EfCoreReverseEngineer();
+
                     var model = revEng.GenerateClassName(classBasis) + "Context";
                     var packageResult = dteH.ContainsEfCoreReference(project, dbType);
 
@@ -101,7 +100,7 @@ namespace EFCorePowerTools.Handlers
                         NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString()
                     };
 
-                    _package.DTE2.StatusBar.Text = "Getting options...";
+                    _package.Dte2.StatusBar.Text = "Getting options...";
                     var result = modelDialog.ShowModal();
                     if (!result.HasValue || result.Value != true)
                         return;
@@ -121,7 +120,7 @@ namespace EFCorePowerTools.Handlers
                         Tables = ptd.Tables
                     };
 
-                    _package.DTE2.StatusBar.Text = "Generating code...";
+                    _package.Dte2.StatusBar.Text = "Generating code...";
                     var revEngResult = revEng.GenerateFiles(options);
 
                     if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 2)
@@ -134,7 +133,7 @@ namespace EFCorePowerTools.Handlers
                     if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 1)
                     {
                         project.ProjectItems.AddFromFile(revEngResult.ContextFilePath);
-                        _package.DTE2.ItemOperations.OpenFile(revEngResult.ContextFilePath);
+                        _package.Dte2.ItemOperations.OpenFile(revEngResult.ContextFilePath);
                     }
 
                     packageResult = dteH.ContainsEfCoreReference(project, dbType);
@@ -145,17 +144,17 @@ namespace EFCorePowerTools.Handlers
                         missingProviderPackage = null;
                     }
 
-                    _package.DTE2.StatusBar.Text = "Reporting result...";
+                    _package.Dte2.StatusBar.Text = "Reporting result...";
                     ReportRevEngErrors(revEngResult, missingProviderPackage);
 
                     if (modelDialog.InstallNuGetPackage)
                     {
-                        _package.DTE2.StatusBar.Text = "Installing EF Core provider package";
+                        _package.Dte2.StatusBar.Text = "Installing EF Core provider package";
                         var nuGetHelper = new NuGetHelper();
                         await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
                     }
                     var duration = DateTime.Now - startTime;
-                    _package.DTE2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
+                    _package.Dte2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
                     _package.LogError(revEngResult.EntityErrors, null);
                     _package.LogError(revEngResult.EntityWarnings, null);
                 }  
