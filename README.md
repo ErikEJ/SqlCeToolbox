@@ -49,6 +49,14 @@ If you have trouble installing the SSMS extension, try the following command lin
 
 `"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
 
+## EF Core Power Tools for VS 2017 (alpha) 
+
+**Daily build**
+
+The EF Core Power Tools currently contains a single feature: Reverse Engineering - see the [wiki page](https://github.com/ErikEJ/SqlCeToolbox/wiki/EF-Core-Power-Tools) for more information
+
+You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/f4c4712c-ceae-4803-8e52-0e2049d5de9f/extension.vsix)
+
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
 **Daily build**
