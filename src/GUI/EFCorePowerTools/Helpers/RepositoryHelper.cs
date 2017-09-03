@@ -1,6 +1,5 @@
 ﻿using ErikEJ.SqlCeScripting;
 using ErikEJ.SQLiteScripting;
-using System.IO;
 
 namespace EFCorePowerTools.Helpers
 {
@@ -15,8 +14,7 @@ namespace EFCorePowerTools.Helpers
                 case DatabaseType.SQLCE40:
                     return new DB4Repository(databaseInfo.ConnectionString);
                 case DatabaseType.SQLServer:
-                    return new ServerDBRepository(databaseInfo.ConnectionString,
-                        false);
+                    return new ServerDBRepository(databaseInfo.ConnectionString);
                 case DatabaseType.SQLite:
                     return new SQLiteRepository(databaseInfo.ConnectionString);
                 default:
@@ -28,17 +26,6 @@ namespace EFCorePowerTools.Helpers
         {
             var helper = CreateEngineHelper(dbType);
             return helper.PathFromConnectionString(connectionString);
-        }
-
-        private static string GetFileName(string connectionString, DatabaseType dbType)
-        {
-            if (dbType == DatabaseType.SQLServer)
-            {
-                var helper = new SqlServerHelper();
-                return helper.PathFromConnectionString(connectionString);
-            }
-            var filePath = GetFilePath(connectionString, dbType);
-            return Path.GetFileName(filePath);
         }
 
         public static ISqlCeHelper CreateEngineHelper(DatabaseType databaseType)

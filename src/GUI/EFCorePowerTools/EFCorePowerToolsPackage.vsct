@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h" />
+
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h" />
+
+  <!--The Commands section is where we the commands, menus and menu groups are defined.
+      This section uses a Guid to identify the package that provides the command defined inside it. -->
+  <Commands package="guidDbContextPackagePkg">
+    <Groups>
+      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuGroup" priority="0x0100">
+        <Parent guid="guidDbContextPackageCmdSet" id="IDM_VS_CTXT_PROJNODE" />
+      </Group>
+
+      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" priority="0x0100">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenu" />
+      </Group>
+
+    </Groups>
+
+    <Menus>
+      
+      <Menu guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenu" priority="0x0100" type="Menu">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuGroup" />
+        <Strings>
+          <CommandName>EF Core Power Tools</CommandName>
+          <ButtonText>EF Core Power Tools</ButtonText>
+        </Strings>
+      </Menu>
+
+    </Menus>
+
+    <Buttons>
+
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerCodeFirst" priority="0x0100" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
+        <Icon guid="guidImage5" id="bmpPic5" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidReverseEngineerCodeFirst</CommandName>
+          <ButtonText>Reverse Engineer</ButtonText>
+        </Strings>
+      </Button>
+
+    </Buttons>
+
+    <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
+    <Bitmaps>
+      <Bitmap guid="guidImage5" href="Resources\5.png" usedList="bmpPic5" />
+    </Bitmaps>
+
+  </Commands>
+
+  <CommandPlacements>
+
+    <CommandPlacement guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuGroup" priority="0x100">
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+    </CommandPlacement>
+
+  </CommandPlacements>
+
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="guidDbContextPackagePkg" value="{f4c4712c-ceae-4803-8e52-0e2049d5de9f}" />
+
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="guidDbContextPackageCmdSet" value="{c769a05d-8d51-4919-bfe6-5f35a0eaf27e}">
+
+      <!-- Project Menu Entries -->
+      <IDSymbol name="cmdidReverseEngineerCodeFirst" value="0x0001" />
+      <IDSymbol name="cmdidEdmProjectMenuItemsGroup" value="0x0002" />
+      <IDSymbol name="cmdidEdmProjectMenu" value="0x0003" />
+      <IDSymbol name="cmdidEdmProjectMenuGroup" value="0x0004" />
+      <!--<IDSymbol name="cmdidAddCustomTemplates" value="0x0005" />-->
+
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImage5" value="{146f17c2-c8e3-4cfd-9fe2-49cc07c6d4d3}">
+      <IDSymbol name="bmpPic5" value="1" />
+    </GuidSymbol>
+  </Symbols>
+
+</CommandTable>
