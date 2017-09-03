@@ -137,6 +137,5 @@ namespace EFCorePowerTools
         {
             return (TResult)GetService(typeof(TService));
         }
-
     }
 }
