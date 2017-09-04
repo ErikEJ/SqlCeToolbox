@@ -88,6 +88,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
@@ -95,9 +96,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RevEngLib\RevEngLib.csproj">
-      <Project>{0e48f1c2-1766-4fab-bc8c-f9a3254f665d}</Project>
-      <Name>RevEngLib</Name>
+    <ProjectReference Include="..\ReverseEngineer20\ReverseEngineer20.csproj">
+      <Project>{4c0f2979-fcd9-4e93-8e4f-2a43055d42fe}</Project>
+      <Name>ReverseEngineer20</Name>
     </ProjectReference>
     <ProjectReference Include="..\SqlCeToolbox.DDEX4\SqlCeToolbox.DDEX4.csproj">
       <Project>{42939e33-fc72-459c-9403-b62ab074635e}</Project>
@@ -270,6 +271,10 @@
   <ItemGroup>
     <Content Include="db.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="netstandard.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Command1.png" />
     <Content Include="Resources\license.txt">
