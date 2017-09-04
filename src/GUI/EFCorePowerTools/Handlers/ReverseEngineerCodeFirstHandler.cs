@@ -10,10 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace EFCorePowerTools.Handlers
 {
@@ -91,7 +89,7 @@ namespace EFCorePowerTools.Handlers
                     var dteH = new EnvDteHelper();
                     var revEng = new EfCoreReverseEngineer();
 
-                    var model = GenerateClassName(classBasis) + "Context";
+                    var model = revEng.GenerateClassName(classBasis) + "Context";
                     var packageResult = dteH.ContainsEfCoreReference(project, dbType);
 
                     var modelDialog = new EfCoreModelDialog
@@ -148,18 +146,26 @@ namespace EFCorePowerTools.Handlers
 
                     _package.Dte2.StatusBar.Text = "Reporting result...";
                     var errors = ReportRevEngErrors(revEngResult, missingProviderPackage);
-                    EnvDteHelper.ShowMessage(errors);
 
                     if (modelDialog.InstallNuGetPackage)
                     {
                         _package.Dte2.StatusBar.Text = "Installing EF Core provider package";
                         var nuGetHelper = new NuGetHelper();
-                        //await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
+                        nuGetHelper.InstallPackage(packageResult.Item2, project);
                     }
                     var duration = DateTime.Now - startTime;
                     _package.Dte2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
-                    _package.LogError(revEngResult.EntityErrors, null);
-                    _package.LogError(revEngResult.EntityWarnings, null);
+
+                    EnvDteHelper.ShowMessage(errors);
+
+                    if (revEngResult.EntityErrors.Count > 0)
+                    {
+                        _package.LogError(revEngResult.EntityErrors, null);
+                    }
+                    if (revEngResult.EntityWarnings.Count > 0)
+                    {
+                        _package.LogError(revEngResult.EntityWarnings, null);
+                    }
                 }  
             }
             catch (Exception exception)
@@ -195,27 +201,6 @@ namespace EFCorePowerTools.Handlers
             }
 
             return errors.ToString();
-        }
-
-        public string GenerateClassName(string value)
-        {
-            var className = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value);
-            var isValid = System.CodeDom.Compiler.CodeDomProvider.CreateProvider("C#").IsValidIdentifier(className);
-
-            if (!isValid)
-            {
-                // File name contains invalid chars, remove them
-                Regex regex = new Regex(@"[^\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Nl}\p{Mn}\p{Mc}\p{Cf}\p{Pc}\p{Lm}]");
-                className = regex.Replace(className, "");
-
-                // Class name doesn't begin with a letter, insert an underscore
-                if (!char.IsLetter(className, 0))
-                {
-                    className = className.Insert(0, "_");
-                }
-            }
-
-            return className.Replace(" ", string.Empty);
         }
     }
 }
