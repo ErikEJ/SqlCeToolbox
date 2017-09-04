@@ -9,7 +9,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     public class NuGetHelper
     {
-        private void InstallPackage(string packageId, Project project)
+        public void InstallPackage(string packageId, Project project)
         {
             var componentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
             var nuGetInstaller = componentModel.GetService<IVsPackageInstaller>();
