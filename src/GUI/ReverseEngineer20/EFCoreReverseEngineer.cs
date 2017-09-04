@@ -23,7 +23,9 @@ namespace EFCoreReverseEngineer
 
             // Add base services for scaffolding
             var serviceCollection = new ServiceCollection()
-            .AddScaffolding(reporter);
+                .AddScaffolding(reporter)
+                .AddSingleton<IOperationReporter, OperationReporter>()
+                .AddSingleton<IOperationReportHandler, OperationReportHandler>();
 
             // Add database provider services
             switch (reverseEngineerOptions.DatabaseType)
@@ -47,7 +49,7 @@ namespace EFCoreReverseEngineer
             }
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            var generator = serviceProvider.GetService<ModelScaffolder>();
+            var generator = serviceProvider.GetService<IModelScaffolder>();
 
             var filePaths = generator.Generate(
                 reverseEngineerOptions.ConnectionString,
