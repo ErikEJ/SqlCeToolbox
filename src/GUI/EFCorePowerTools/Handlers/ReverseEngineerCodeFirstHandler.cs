@@ -59,7 +59,7 @@ namespace EFCorePowerTools.Handlers
                     if (providerInvariant == "System.Data.SqlServerCe.4.0")
                         dbType = DatabaseType.SQLCE40;
                     if (providerInvariant == "System.Data.SQLite.EF6")
-                        dbType = DatabaseType.SQLCE40;
+                        dbType = DatabaseType.SQLite;
                     if (providerInvariant == "System.Data.SqlClient")
                         dbType = DatabaseType.SQLServer;
 
