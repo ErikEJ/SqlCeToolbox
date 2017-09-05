@@ -279,6 +279,7 @@
     <Content Include="Resources\Command1.png" />
     <Content Include="Resources\license.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="System.ValueTuple.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
