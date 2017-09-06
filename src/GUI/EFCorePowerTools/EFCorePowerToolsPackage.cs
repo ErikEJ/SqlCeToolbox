@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using EFCorePowerTools.Extensions;
 using EFCorePowerTools.Handlers;
 using EnvDTE;
 using EnvDTE80;
@@ -10,6 +14,8 @@ using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.DbContextPackage;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Design;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace EFCorePowerTools
 {
@@ -25,11 +31,13 @@ namespace EFCorePowerTools
     public sealed class EFCorePowerToolsPackage : Package
     {
         private readonly ReverseEngineerCodeFirstHandler _reverseEngineerCodeFirstHandler;
+        private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
         private DTE2 _dte2;
 
         public EFCorePowerToolsPackage()
         {
             _reverseEngineerCodeFirstHandler = new ReverseEngineerCodeFirstHandler(this);
+            _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
         }
 
         internal DTE2 Dte2 => _dte2;
@@ -56,6 +64,13 @@ namespace EFCorePowerTools
                     OnProjectMenuBeforeQueryStatus, menuCommandId5);
 
                 oleMenuCommandService.AddCommand(menuItem5);
+
+                var menuCommandId6 = new CommandID(GuidList.guidDbContextPackageCmdSet,
+                    (int)PkgCmdIDList.cmdidDebugView);
+                var menuItem6 = new OleMenuCommand(OnItemContextMenuInvokeHandler, null,
+                    OnItemMenuBeforeQueryStatus, menuCommandId6);
+
+                oleMenuCommandService.AddCommand(menuItem6);
             }
         }
 
@@ -77,6 +92,175 @@ namespace EFCorePowerTools
             {
                 _reverseEngineerCodeFirstHandler.ReverseEngineerCodeFirst(project);
             }
+        }
+
+        private void OnItemContextMenuInvokeHandler(object sender, EventArgs e)
+        {
+            var menuCommand = sender as MenuCommand;
+
+            if (menuCommand == null)
+            {
+                return;
+            }
+
+            if (_dte2.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            try
+            {
+                var contextType = DiscoverUserContextType();
+
+                if (contextType != null)
+                {
+                    if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDebugView)
+                    {
+                        _modelAnalyzerHandler.GenerateDebugView(contextType);
+                    }
+                }
+            }
+            catch (TargetInvocationException ex)
+            {
+                var innerException = ex.InnerException;
+
+                var remoteStackTraceString =
+                    typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic)
+                    ?? typeof(Exception).GetField("remote_stack_trace", BindingFlags.Instance | BindingFlags.NonPublic);
+                remoteStackTraceString.SetValue(innerException, innerException.StackTrace + "$$RethrowMarker$$");
+
+                throw innerException;
+            }
+        }
+
+
+        private dynamic DiscoverUserContextType()
+        {
+            var project = _dte2.SelectedItems.Item(1).ProjectItem.ContainingProject;
+
+            if (!project.TryBuild())
+            {
+                _dte2.StatusBar.Text = "Build failed. Unable to discover a DbContext class.";
+
+                return null;
+            }
+
+            DynamicTypeService typeService;
+            IVsSolution solution;
+            using (var serviceProvider = new ServiceProvider((Microsoft.VisualStudio.OLE.Interop.IServiceProvider)_dte2.DTE))
+            {
+                typeService = (DynamicTypeService)serviceProvider.GetService(typeof(DynamicTypeService));
+                solution = (IVsSolution)serviceProvider.GetService(typeof(SVsSolution));
+            }
+
+            IVsHierarchy vsHierarchy;
+            var hr = solution.GetProjectOfUniqueName(_dte2.SelectedItems.Item(1).ProjectItem.ContainingProject.UniqueName, out vsHierarchy);
+
+            if (hr != ProjectExtensions.S_OK)
+            {
+                throw Marshal.GetExceptionForHR(hr);
+            }
+
+            var resolver = typeService.GetTypeResolutionService(vsHierarchy);
+
+            var codeElements = FindClassesInCodeModel(_dte2.SelectedItems.Item(1).ProjectItem.FileCodeModel.CodeElements);
+
+            if (codeElements.Any())
+            {
+                foreach (var codeElement in codeElements)
+                {
+                    var userContextType = resolver.GetType(codeElement.FullName);
+
+                    if (userContextType != null && IsContextType(userContextType))
+                    {
+                        return userContextType;
+                    }
+                }
+            }
+
+            _dte2.StatusBar.Text = "A type deriving from DbContext could not be found in the selected project.";
+
+            return null;
+        }
+
+        private static IEnumerable<CodeElement> FindClassesInCodeModel(CodeElements codeElements)
+        {
+            foreach (CodeElement codeElement in codeElements)
+            {
+                if (codeElement.Kind == vsCMElement.vsCMElementClass)
+                {
+                    yield return codeElement;
+                }
+
+                foreach (var element in FindClassesInCodeModel(codeElement.Children))
+                {
+                    yield return element;
+                }
+            }
+        }
+
+        private static bool IsContextType(Type userContextType)
+        {
+            var systemContextType = GetBaseTypes(userContextType).FirstOrDefault(
+                t => t.FullName == "Microsoft.EntityFrameworkCore.DbContext" 
+                && t.Assembly.GetName().Name == "Microsoft.EntityFrameworkCore");
+
+            return systemContextType != null;
+        }
+
+        private static IEnumerable<Type> GetBaseTypes(Type type)
+        {
+            while (type != typeof(object))
+            {
+                yield return type.BaseType;
+
+                type = type.BaseType;
+            }
+        }
+
+        private void OnItemMenuBeforeQueryStatus(object sender, EventArgs e)
+        {
+            OnItemMenuBeforeQueryStatus(
+                sender,
+                new[] { ".cs" });
+        }
+
+        private void OnItemMenuBeforeQueryStatus(object sender, IEnumerable<string> supportedExtensions)
+        {
+            var menuCommand = sender as MenuCommand;
+
+            if (menuCommand == null)
+            {
+                return;
+            }
+
+            if (_dte2.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            var extensionValue = GetSelectedItemExtension();
+            menuCommand.Visible = supportedExtensions.Contains(extensionValue);
+        }
+
+        private string GetSelectedItemExtension()
+        {
+            var selectedItem = _dte2.SelectedItems.Item(1);
+
+            if ((selectedItem.ProjectItem == null)
+                || (selectedItem.ProjectItem.Properties == null))
+            {
+                return null;
+            }
+
+            var extension = selectedItem.ProjectItem.Properties.Item("Extension");
+
+            if (extension == null)
+            {
+                return null;
+            }
+
+            return (string)extension.Value;
         }
 
         private void OnProjectMenuBeforeQueryStatus(object sender, EventArgs e)

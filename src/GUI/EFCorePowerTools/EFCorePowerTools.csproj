@@ -80,8 +80,10 @@
       <DependentUpon>PickTablesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="EFCorePowerToolsPackage.cs" />
+    <Compile Include="Extensions\ProjectExtensions.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Handlers\ReverseEngineerCodeFirstHandler.cs" />
+    <Compile Include="Handlers\ModelAnalyzerHandler.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
     <Compile Include="Helpers\RepositoryHelper.cs" />
     <Compile Include="PkgCmdID.cs" />
@@ -149,6 +151,10 @@
     <Reference Include="Microsoft.VisualStudio.Shell.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.15.0.15.0.26606\lib\Microsoft.VisualStudio.Shell.15.0.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Design, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.Shell.Design.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Framework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Framework.15.0.26606\lib\net45\Microsoft.VisualStudio.Shell.Framework.dll</HintPath>
