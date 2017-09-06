@@ -61,6 +61,16 @@
         </Strings>
       </Button>
 
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidAbout" priority="0x0200" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
+        <Icon guid="guidImage0" id="bmpPic0" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidAbout</CommandName>
+          <ButtonText>About</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="guidDbContextPackageCmdSet" id="cmdidDebugView" priority="0x0100" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuItemsGroup" />
         <Icon guid="guidImage5" id="bmpPic5" />
@@ -76,6 +86,8 @@
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
       <Bitmap guid="guidImage5" href="Resources\5.png" usedList="bmpPic5" />
+      <Bitmap guid="guidImage2" href="Resources\2.png" usedList="bmpPic2" />
+      <Bitmap guid="guidImage0" href="Resources\h.png" usedList="bmpPic0" />
     </Bitmaps>
 
   </Commands>
@@ -97,7 +109,7 @@
     <GuidSymbol name="guidDbContextPackagePkg" value="{f4c4712c-ceae-4803-8e52-0e2049d5de9f}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidDbContextPackageCmdSet" value="{c769a05d-8d51-4919-bfe6-5f35a0eaf27e}">
+    <GuidSymbol name="guidDbContextPackageCmdSet" value="{c769a05d-8d51-4919-bfe6-5f35a0eaf2ba}">
 
       <!-- Project Item Menu Entries -->
 
@@ -111,11 +123,21 @@
       <IDSymbol name="cmdidEdmProjectMenuItemsGroup" value="0x0002" />
       <IDSymbol name="cmdidEdmProjectMenu" value="0x0003" />
       <IDSymbol name="cmdidEdmProjectMenuGroup" value="0x0004" />
+      <IDSymbol name="cmdidAbout" value="0x0006" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImage5" value="{146f17c2-c8e3-4cfd-9fe2-49cc07c6d4d3}">
+    <GuidSymbol name="guidImage5" value="{146f17c2-c8e3-4cfd-9fe2-49cc07c6d4aa}">
       <IDSymbol name="bmpPic5" value="1" />
     </GuidSymbol>
+
+    <GuidSymbol name="guidImage2" value="{146f17c2-c8e3-4cfd-9fe2-50cc07c6d4ff}">
+      <IDSymbol name="bmpPic2" value="1" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImage0" value="{146f17c2-c8e3-4cfd-9fe2-ffcc07c6d450}">
+      <IDSymbol name="bmpPic0" value="1" />
+    </GuidSymbol>
+    
   </Symbols>
 
 </CommandTable>

@@ -1,14 +1,44 @@
-﻿using System;
-using System.Windows.Forms;
-using EnvDTE;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Data.Core;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.Windows.Forms;
 using VSLangProj;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class EnvDteHelper
     {
+        internal static bool DdexProviderIsInstalled(Guid id)
+        {
+            try
+            {
+                var objIVsDataProviderManager =
+                    Package.GetGlobalService(typeof(IVsDataProviderManager)) as IVsDataProviderManager;
+                return objIVsDataProviderManager != null &&
+                    objIVsDataProviderManager.Providers.TryGetValue(id, out IVsDataProvider provider);
+            }
+            catch
+            {
+                //Ignored
+            }
+            return false;
+        }
+
+        internal static bool IsSqLiteDbProviderInstalled()
+        {
+            try
+            {
+                System.Data.Common.DbProviderFactories.GetFactory("System.Data.SQLite.EF6");
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
         public Project GetProject(DTE dte)
         {
             foreach (SelectedItem item in dte.SelectedItems)
