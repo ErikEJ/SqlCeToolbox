@@ -53,7 +53,7 @@ If you have trouble installing the SSMS extension, try the following command lin
 
 **Daily build**
 
-The EF Core Power Tools currently contains a single feature: Reverse Engineering - see the [wiki page](https://github.com/ErikEJ/SqlCeToolbox/wiki/EF-Core-Power-Tools) for more information
+The EF Core Power Tools contains DbContext design time feature: Reverse Engineering, Model inspection and more to come - see the [wiki page](https://github.com/ErikEJ/SqlCeToolbox/wiki/EF-Core-Power-Tools) for more information
 
 You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/f4c4712c-ceae-4803-8e52-0e2049d5de9f/extension.vsix)
 
