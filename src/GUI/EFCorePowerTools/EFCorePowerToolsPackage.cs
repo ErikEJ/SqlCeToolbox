@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -120,13 +119,13 @@ namespace EFCorePowerTools
 
             try
             {
-                var contextType = DiscoverUserContextType();
+                var context = DiscoverUserContextType();
 
-                if (contextType != null)
+                if (context != null)
                 {
                     if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDebugView)
                     {
-                        _modelAnalyzerHandler.GenerateDebugView(contextType);
+                        _modelAnalyzerHandler.GenerateDebugView(context);
                     }
                 }
             }
@@ -183,7 +182,7 @@ namespace EFCorePowerTools
 
                     if (userContextType != null && IsContextType(userContextType))
                     {
-                        return userContextType;
+                        return Activator.CreateInstance(userContextType);
                     }
                 }
             }
