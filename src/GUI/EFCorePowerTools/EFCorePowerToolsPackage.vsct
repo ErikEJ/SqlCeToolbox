@@ -18,6 +18,14 @@
       <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" priority="0x0100">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenu" />
       </Group>
+      
+      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuGroup" priority="0x0100">
+        <Parent guid="guidDbContextPackageCmdSet" id="IDM_VS_CTXT_ITEMNODE" />
+      </Group>
+
+      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuItemsGroup" priority="0x0200">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmMenu" />
+      </Group>
 
     </Groups>
 
@@ -25,6 +33,14 @@
       
       <Menu guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenu" priority="0x0100" type="Menu">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuGroup" />
+        <Strings>
+          <CommandName>EF Core Power Tools</CommandName>
+          <ButtonText>EF Core Power Tools</ButtonText>
+        </Strings>
+      </Menu>
+      
+      <Menu guid="guidDbContextPackageCmdSet" id="cmdidEdmMenu" priority="0x0100" type="Menu">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuGroup" />
         <Strings>
           <CommandName>EF Core Power Tools</CommandName>
           <ButtonText>EF Core Power Tools</ButtonText>
@@ -45,6 +61,16 @@
         </Strings>
       </Button>
 
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDebugView" priority="0x0100" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuItemsGroup" />
+        <Icon guid="guidImage5" id="bmpPic5" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidDebugView</CommandName>
+          <ButtonText>View DbContext Model as Text</ButtonText>
+        </Strings>
+      </Button>
+          
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -59,6 +85,10 @@
     <CommandPlacement guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuGroup" priority="0x100">
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
     </CommandPlacement>
+    
+    <CommandPlacement guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuGroup" priority="0x100">
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
+    </CommandPlacement>
 
   </CommandPlacements>
 
@@ -69,13 +99,18 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidDbContextPackageCmdSet" value="{c769a05d-8d51-4919-bfe6-5f35a0eaf27e}">
 
+      <!-- Project Item Menu Entries -->
+
+      <IDSymbol name="cmdidDebugView" value="0x0100" />
+      <IDSymbol name="cmdidEdmMenu" value="0x0500" />
+      <IDSymbol name="cmdidEdmMenuGroup" value="0x0600" />
+      <IDSymbol name="cmdidEdmMenuItemsGroup" value="0x0700" />
+      
       <!-- Project Menu Entries -->
       <IDSymbol name="cmdidReverseEngineerCodeFirst" value="0x0001" />
       <IDSymbol name="cmdidEdmProjectMenuItemsGroup" value="0x0002" />
       <IDSymbol name="cmdidEdmProjectMenu" value="0x0003" />
       <IDSymbol name="cmdidEdmProjectMenuGroup" value="0x0004" />
-      <!--<IDSymbol name="cmdidAddCustomTemplates" value="0x0005" />-->
-
     </GuidSymbol>
 
     <GuidSymbol name="guidImage5" value="{146f17c2-c8e3-4cfd-9fe2-49cc07c6d4d3}">
