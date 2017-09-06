@@ -32,12 +32,14 @@ namespace EFCorePowerTools
     {
         private readonly ReverseEngineerCodeFirstHandler _reverseEngineerCodeFirstHandler;
         private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
+        private readonly AboutHandler _aboutHandler;
         private DTE2 _dte2;
 
         public EFCorePowerToolsPackage()
         {
             _reverseEngineerCodeFirstHandler = new ReverseEngineerCodeFirstHandler(this);
             _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
+            _aboutHandler = new AboutHandler(this);
         }
 
         internal DTE2 Dte2 => _dte2;
@@ -62,15 +64,19 @@ namespace EFCorePowerTools
                     (int) PkgCmdIDList.cmdidReverseEngineerCodeFirst);
                 var menuItem5 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
                     OnProjectMenuBeforeQueryStatus, menuCommandId5);
-
                 oleMenuCommandService.AddCommand(menuItem5);
 
                 var menuCommandId6 = new CommandID(GuidList.guidDbContextPackageCmdSet,
                     (int)PkgCmdIDList.cmdidDebugView);
                 var menuItem6 = new OleMenuCommand(OnItemContextMenuInvokeHandler, null,
                     OnItemMenuBeforeQueryStatus, menuCommandId6);
-
                 oleMenuCommandService.AddCommand(menuItem6);
+
+                var menuCommandId7 = new CommandID(GuidList.guidDbContextPackageCmdSet,
+                    (int)PkgCmdIDList.cmdidAbout);
+                var menuItem7 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
+                    OnProjectMenuBeforeQueryStatus, menuCommandId7);
+                oleMenuCommandService.AddCommand(menuItem7);
             }
         }
 
@@ -91,6 +97,10 @@ namespace EFCorePowerTools
             if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
             {
                 _reverseEngineerCodeFirstHandler.ReverseEngineerCodeFirst(project);
+            }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
+            {
+                _aboutHandler.ShowDialog();
             }
         }
 
