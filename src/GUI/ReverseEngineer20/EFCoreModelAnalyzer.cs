@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Reflection;
 
 namespace ReverseEngineer20
 {
@@ -17,6 +18,10 @@ namespace ReverseEngineer20
             try
             {
                 Type type = contextType;
+
+                var test = typeof(DbContext).GetTypeInfo().IsAssignableFrom(type);
+
+                var info = type.GetTypeInfo();
 
                 DbContext dbContext = Activator.CreateInstance(type) as DbContext;
 
