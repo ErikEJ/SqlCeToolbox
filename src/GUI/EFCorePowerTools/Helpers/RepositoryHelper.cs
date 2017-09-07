@@ -1,5 +1,7 @@
 ﻿using ErikEJ.SqlCeScripting;
 using ErikEJ.SQLiteScripting;
+using System.Data.SqlClient;
+using System.IO;
 
 namespace EFCorePowerTools.Helpers
 {
@@ -22,7 +24,39 @@ namespace EFCorePowerTools.Helpers
             }
         }
 
+        public static string GetClassBasis(string connectionString, DatabaseType dbType)
+        {
+            var classBasis = "My";
+            if (dbType == DatabaseType.SQLServer)
+            {
+                var builder = new SqlConnectionStringBuilder(connectionString);
+                classBasis = builder.InitialCatalog;
+
+                if (string.IsNullOrEmpty(classBasis) && !string.IsNullOrEmpty(builder.AttachDBFilename))
+                {
+                    classBasis = Path.GetFileNameWithoutExtension(builder.AttachDBFilename);
+                }
+            }
+            else
+            {
+                var path = GetFilePath(connectionString, dbType);
+                classBasis = Path.GetFileNameWithoutExtension(path);
+            }
+            return classBasis;
+        }
+
         public static string GetFilePath(string connectionString, DatabaseType dbType)
+        {
+            if (dbType == DatabaseType.SQLServer)
+            {
+                var helper = new SqlServerHelper();
+                return helper.PathFromConnectionString(connectionString);
+            }
+            var filePath = GetPath(connectionString, dbType);
+            return Path.GetFileName(filePath);
+        }
+
+        private static string GetPath(string connectionString, DatabaseType dbType)
         {
             var helper = CreateEngineHelper(dbType);
             return helper.PathFromConnectionString(connectionString);

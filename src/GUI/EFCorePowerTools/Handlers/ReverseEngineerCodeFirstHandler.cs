@@ -78,13 +78,7 @@ namespace EFCorePowerTools.Handlers
                     var res = ptd.ShowModal();
                     if (!res.HasValue || !res.Value) return;
 
-                    var caption = RepositoryHelper.GetFilePath(connectionString, dbType);
-
-                    var classBasis = Path.GetFileNameWithoutExtension(caption);
-                    if (dbType == DatabaseType.SQLServer)
-                    {
-                        classBasis = new SqlConnectionStringBuilder(connectionString).InitialCatalog;
-                    }
+                    var classBasis = RepositoryHelper.GetClassBasis(connectionString, dbType);
 
                     var dteH = new EnvDteHelper();
                     var revEng = new EfCoreReverseEngineer();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -62,9 +63,16 @@ namespace ErikEJ.SqlCeScripting
 
         public string PathFromConnectionString(string connectionString)
         {
-            var builder = new SqlConnection(connectionString);
+            var builder = new SqlConnectionStringBuilder(connectionString);
             string server;
-            var database = builder.Database;
+            var database = builder.InitialCatalog;
+            if (string.IsNullOrEmpty(database))
+            {
+                if (!string.IsNullOrEmpty(builder.AttachDBFilename))
+                {
+                    database = Path.GetFileName(builder.AttachDBFilename);
+                }
+            }
             if (builder.DataSource.ToLowerInvariant().StartsWith("(localdb)"))
             {
                 server = builder.DataSource;
