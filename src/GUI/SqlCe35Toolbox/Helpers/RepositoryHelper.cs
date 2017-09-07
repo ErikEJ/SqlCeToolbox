@@ -3,7 +3,7 @@ using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.IO;
 
-namespace EFCorePowerTools.Helpers
+namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal static class RepositoryHelper
     {
@@ -19,6 +19,22 @@ namespace EFCorePowerTools.Helpers
                     return new ServerDBRepository(databaseInfo.ConnectionString);
                 case DatabaseType.SQLite:
                     return new SQLiteRepository(databaseInfo.ConnectionString);
+                default:
+                    return null;
+            }
+        }
+
+        public static ISqlCeHelper CreateEngineHelper(DatabaseType databaseType)
+        {
+            switch (databaseType)
+            {
+                case DatabaseType.SQLCE35:
+                    return new SqlCeHelper();
+                case DatabaseType.SQLCE40:
+                    return new SqlCeHelper4();
+                case DatabaseType.SQLServer:
+                case DatabaseType.SQLite:
+                    return new SqliteHelper();
                 default:
                     return null;
             }
@@ -62,20 +78,41 @@ namespace EFCorePowerTools.Helpers
             return helper.PathFromConnectionString(connectionString);
         }
 
-        public static ISqlCeHelper CreateEngineHelper(DatabaseType databaseType)
+        internal static bool IsMissing(DatabaseInfo info)
         {
-            switch (databaseType)
+            if (info.DatabaseType == DatabaseType.SQLServer)
             {
-                case DatabaseType.SQLCE35:
-                    return new SqlCeHelper();
-                case DatabaseType.SQLCE40:
-                    return new SqlCeHelper4();
-                case DatabaseType.SQLServer:
-                case DatabaseType.SQLite:
-                    return new SqliteHelper();
-                default:
-                    return null;
+                return false;
             }
+            try
+            {
+                var path = GetFilePath(info.ConnectionString, info.DatabaseType);
+                return !File.Exists(path);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal static bool IsV40Installed()
+        {
+            return new SqlCeHelper4().IsV40Installed() != null;
+        }
+
+        internal static bool IsV35Installed()
+        {
+            return new SqlCeHelper().IsV35Installed() != null;
+        }
+
+        internal static bool IsV40DbProviderInstalled()
+        {
+            return new SqlCeHelper4().IsV40DbProviderInstalled();
+        }
+
+        internal static bool IsV35DbProviderInstalled()
+        {
+            return new SqlCeHelper4().IsV35DbProviderInstalled();
         }
     }
 }

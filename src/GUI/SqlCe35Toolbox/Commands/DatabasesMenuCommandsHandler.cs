@@ -352,7 +352,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void CheckCeVersion(object sender, ExecutedRoutedEventArgs e)
         {
-            var helper = DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLCE40);
+            var helper = Helpers.RepositoryHelper.CreateEngineHelper(DatabaseType.SQLCE40);
             var ofd = new OpenFileDialog();
             ofd.Filter = DataConnectionHelper.GetSqlCeFileFilter();
             ofd.CheckFileExists = true;
@@ -393,7 +393,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         private static void SyncFxGetObjectsForSync(SyncFxDialog sfd, DatabaseMenuCommandParameters databaseInfo)
         {
-            using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+            using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
             {
                 sfd.Tables = repository.GetAllTableNames().Where(t => !t.EndsWith("scope_info") && !t.EndsWith("scope_config") && !t.EndsWith("schema_info") && !t.EndsWith("_tracking")).ToList();
                 sfd.Columns = repository.GetAllColumns().Where(t => !t.TableName.EndsWith("scope_info") && !t.TableName.EndsWith("scope_config") && !t.TableName.EndsWith("schema_info") && !t.TableName.EndsWith("_tracking")).ToList();

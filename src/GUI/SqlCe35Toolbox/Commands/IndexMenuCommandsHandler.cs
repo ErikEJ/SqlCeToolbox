@@ -21,7 +21,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateIndexScript(menuInfo.Name, menuInfo.Description);
@@ -43,7 +43,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateIndexDrop(menuInfo.Name, menuInfo.Description);
@@ -65,7 +65,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateIndexStatistics(menuInfo.Name, menuInfo.Description);

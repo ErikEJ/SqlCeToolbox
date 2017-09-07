@@ -87,7 +87,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(itemBuilder.BuildScriptDatabaseExportMenuItem(databaseMenuCommandParameters, dcmd));
 
             if (dbType == DatabaseType.SQLCE35 
-                && DataConnectionHelper.IsV40Installed())
+                && Helpers.RepositoryHelper.IsV40Installed())
             {
                 Items.Add(BuildScriptUpgradeMenuItem(databaseMenuCommandParameters, cecmd));
             }
@@ -355,8 +355,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Tag = true
             };
             scriptDcMenuItem.CommandBindings.Add(scriptDcCommandBinding);
-            scriptDcMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() &&
-                                         DataConnectionHelper.IsV35DbProviderInstalled();
+            scriptDcMenuItem.IsEnabled = Helpers.RepositoryHelper.IsV35Installed() &&
+                                         Helpers.RepositoryHelper.IsV35DbProviderInstalled();
             return scriptDcMenuItem;
         }
 
@@ -372,8 +372,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Tag = false
             };
             scriptWpdcMenuItem.CommandBindings.Add(scriptDcCommandBinding);
-            scriptWpdcMenuItem.IsEnabled = DataConnectionHelper.IsV35Installed() &&
-                                           DataConnectionHelper.IsV35DbProviderInstalled();
+            scriptWpdcMenuItem.IsEnabled = Helpers.RepositoryHelper.IsV35Installed() &&
+                                           Helpers.RepositoryHelper.IsV35DbProviderInstalled();
             if (dbType != DatabaseType.SQLCE35)
             {
                 scriptWpdcMenuItem.IsEnabled = false;

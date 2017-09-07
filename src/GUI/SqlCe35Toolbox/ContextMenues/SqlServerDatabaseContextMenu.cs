@@ -13,7 +13,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             var itemBuilder = new DatabaseContextMenuItems();
             var dcmd = new SqlServerDatabaseMenuCommandsHandler(parent);
             var dbcmd = new DatabaseMenuCommandsHandler(parent);
-            var isSqlCe40Installed = DataConnectionHelper.IsV40Installed();
+            var isSqlCe40Installed = Helpers.RepositoryHelper.IsV40Installed();
             if (databaseMenuCommandParameters.DatabaseInfo.DatabaseType != DatabaseType.SQLServer)
                 return;
             

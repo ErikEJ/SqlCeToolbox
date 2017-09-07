@@ -56,7 +56,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var pwd = new PasswordDialog();
                 pwd.ShowModal();
                 if (!pwd.DialogResult.HasValue || !pwd.DialogResult.Value) return;
-                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 var newConnectionString = helper.ChangeDatabasePassword(databaseInfo.DatabaseInfo.ConnectionString, pwd.Password);
                 if (dbInfo.FromServerExplorer)
                 {
@@ -96,7 +96,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.VerifyDatabase(databaseInfo.DatabaseInfo.ConnectionString);
                 package.SetStatus("Verify completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainVerify");
@@ -113,7 +113,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseDeleteCorruptedRows(databaseInfo.DatabaseInfo.ConnectionString);
                 package.SetStatus("Repair completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
@@ -130,7 +130,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseRecoverAllOrFail(databaseInfo.DatabaseInfo.ConnectionString);
                 package.SetStatus("Repair completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
@@ -147,7 +147,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.RepairDatabaseRecoverAllPossibleRows(databaseInfo.DatabaseInfo.ConnectionString);
                 package.SetStatus("Repair completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainRepair");
@@ -166,7 +166,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 OLEMSGBUTTON.OLEMSGBUTTON_YESNO, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND, OLEMSGICON.OLEMSGICON_QUERY) == System.Windows.Forms.DialogResult.No)
                 return;
 
-            if (!DataConnectionHelper.IsV40Installed())
+            if (!Helpers.RepositoryHelper.IsV40Installed())
             {
                 EnvDteHelper.ShowError("The SQL Server Compact 4.0 runtime is not installed, cannot upgrade. Install the 4.0 runtime.");
                 return;
@@ -243,7 +243,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 return;                
             }
 
-            var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+            var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
             if (!helper.IsV35DbProviderInstalled())
             {
                 EnvDteHelper.ShowError("This feature requires the SQL Server Compact 3.5 SP2 DbProvider to be properly installed");
@@ -308,7 +308,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     var tables = repository.GetAllTableNames();
                     var pks = repository.GetAllPrimaryKeys();
@@ -370,7 +370,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     if (isDesktop && databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40)
                     {
                         var tempFile = Path.GetTempFileName();
-                        using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                        using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                         {
                             var generator = DataConnectionHelper.CreateGenerator(repository, tempFile, databaseInfo.DatabaseInfo.DatabaseType);
                             generator.ScriptDatabaseToFile(Scope.Schema);
@@ -396,7 +396,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                             ConnectionString = "Data Source=" + sdfPath,
                             DatabaseType = DatabaseType.SQLCE35
                         };
-                        using (var repository = DataConnectionHelper.CreateRepository(info))
+                        using (var repository = Helpers.RepositoryHelper.CreateRepository(info))
                         {
                             var script = File.ReadAllText(tempFile);
                             repository.ExecuteSql(script);
@@ -434,7 +434,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                     if (!isDesktop)
                     {
-                        using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                        using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                         {
                             if (dcDialog.CodeLanguage == "VB")
                             {
@@ -517,7 +517,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     // Creates __Version table and adds one row if desired
                     if (dcDialog.AddVersionTable)
                     {
-                        using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                        using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                         {
                             var list = repository.GetAllTableNames();
                             if (!list.Contains("__VERSION"))
@@ -585,7 +585,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 return 0;
 
             var version = 0;
-            using (var repository = DataConnectionHelper.CreateRepository(databaseInfo))
+            using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo))
             {
                 var list = repository.GetAllTableNames();
                 if (list.Contains("__VERSION"))
@@ -798,7 +798,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         private static void AddRowVersionColumns(DatabaseMenuCommandParameters databaseInfo)
         {
-            using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+            using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
             {
                 var list = repository.GetAllTableNames();
                 var allColumns = repository.GetAllColumns();

@@ -74,7 +74,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateViewSelect(menuInfo.Name);
@@ -105,7 +105,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     sqlText = string.Format(Environment.NewLine + "SELECT * FROM [{0}]", menuInfo.Name)
                         + Environment.NewLine + "GO";

@@ -38,7 +38,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     EnvDteHelper.ShowError("Microsoft Report Viewer 2010 not installed, please download and install to use this feature  http://www.microsoft.com/en-us/download/details.aspx?id=6442");
                     return;
                 }
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableSelect(menuInfo.Name);
@@ -78,8 +78,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
         {
             var menuInfo = ValidateMenuInfo(sender);
             if (menuInfo == null) return;
-            var dbProviderPresent = menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 && DataConnectionHelper.IsV35DbProviderInstalled() 
-                                    || menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40 && DataConnectionHelper.IsV40DbProviderInstalled() 
+            var dbProviderPresent = menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 && Helpers.RepositoryHelper.IsV35DbProviderInstalled() 
+                                    || menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40 && Helpers.RepositoryHelper.IsV40DbProviderInstalled() 
                                     || menuInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite;
             if (!dbProviderPresent)
             {
@@ -93,7 +93,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var readOnlyColumns = new List<int>();
 
                 string sqlText;
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var tpks = repository.GetAllPrimaryKeys()
                         .Where(pk => pk.TableName == menuInfo.Name)
@@ -165,7 +165,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var tbd = new TableBuilderDialog(menuInfo.Name, menuInfo.DatabaseInfo.DatabaseType);
                     tbd.Mode = 1;
@@ -189,7 +189,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     IndexDialog idxDlg = new IndexDialog(menuInfo.Name);
                     idxDlg.Columns = repository.GetAllColumns().Where(c => c.TableName == menuInfo.Name).ToList();
@@ -233,7 +233,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var fkDlg = new ForeignKeyDialog(menuInfo.Name);
                     fkDlg.AllColumns = repository.GetAllColumns().ToList();
@@ -257,7 +257,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableScript(menuInfo.Name);
@@ -277,7 +277,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableDrop(menuInfo.Name);
@@ -297,7 +297,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableDrop(menuInfo.Name);
@@ -318,7 +318,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableSelect(menuInfo.Name);
@@ -338,7 +338,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableInsert(menuInfo.Name);
@@ -358,7 +358,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableUpdate(menuInfo.Name);
@@ -378,7 +378,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableDelete(menuInfo.Name);
@@ -398,7 +398,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableContent(menuInfo.Name, false, Properties.Settings.Default.IgnoreIdentityInInsertScript);
@@ -428,7 +428,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (package == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateTableCreate(menuInfo.Name);
@@ -524,9 +524,9 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     editorTarget = source;
                 }
 
-                using (var sourceRepository = DataConnectionHelper.CreateRepository(source.Value))
+                using (var sourceRepository = Helpers.RepositoryHelper.CreateRepository(source.Value))
                 {
-                    using (var targetRepository = DataConnectionHelper.CreateRepository(target.Value))
+                    using (var targetRepository = Helpers.RepositoryHelper.CreateRepository(target.Value))
                     {
                         var generator = DataConnectionHelper.CreateGenerator(targetRepository, target.Value.DatabaseType);
                         try
@@ -570,7 +570,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
 
@@ -617,7 +617,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     
                     var ro = new RenameDialog(menuInfo.Name);
@@ -658,7 +658,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
         {
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var tableDesc = ExplorerControl.DescriptionCache.Where(d => d.Object == name && d.Parent == null).Select(d => d.Description).SingleOrDefault();
                     var ro = new DescriptionDialog(tableDesc) {ColumnsInfo = GetSiblingColumnInfo(repository, name)};

@@ -57,7 +57,7 @@ GO
             if (string.IsNullOrWhiteSpace(description))
                 return;
 
-            using (IRepository repo = DataConnectionHelper.CreateRepository(databaseInfo))
+            using (IRepository repo = Helpers.RepositoryHelper.CreateRepository(databaseInfo))
             {
                 CreateExtPropsTable(repo);
                 string sql = string.Format(InsertScript, 
@@ -75,7 +75,7 @@ GO
                 return;
 
             description = description.Replace("'", "''");
-            using (IRepository repo = DataConnectionHelper.CreateRepository(databaseInfo))
+            using (IRepository repo = Helpers.RepositoryHelper.CreateRepository(databaseInfo))
             {
                 string where = (objectName == null ? "[ObjectName] IS NULL AND " : "[ObjectName] = '" + objectName + "' AND");
                 where += (parentName == null ? "[ParentName] IS NULL AND [Type] = 0" : "[ParentName] = '" + parentName + "' AND [Type] = 0");
@@ -103,7 +103,7 @@ GO
         public List<DbDescription> GetDescriptions(DatabaseInfo databaseInfo)
         {
             var list = new List<DbDescription>();
-            using (IRepository repo = DataConnectionHelper.CreateRepository(databaseInfo))
+            using (IRepository repo = Helpers.RepositoryHelper.CreateRepository(databaseInfo))
             {
                 var tlist = repo.GetAllTableNames();
                 if (tlist.Contains(TableName))
