@@ -140,7 +140,6 @@
     <Compile Include="..\EFCoreReverseEngineer\ReverseEngineerOptions.cs">
       <Link>ReverseEngineerOptions.cs</Link>
     </Compile>
-    <Compile Include="DbContextOperations.cs" />
     <Compile Include="EFCoreModelAnalyzer.cs" />
     <Compile Include="EFCoreReverseEngineer.cs" />
     <Compile Include="EFCoreReverseEngineerResult.cs" />

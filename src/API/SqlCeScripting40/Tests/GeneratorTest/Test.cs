@@ -412,6 +412,16 @@ GO";
         }
 
         [Test]
+        public void TestAttachDbFileName()
+        {
+            string test = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\ErikEjlskovJensen\AzureStorageEmulatorDb51.mdf;Integrated Security=True;Connect Timeout=30";
+            var helper = new SqlServerHelper();
+
+            string path = helper.PathFromConnectionString(test);
+            Assert.AreEqual(path, "(LocalDB)\\MSSQLLocalDB.AzureStorageEmulatorDb51.mdf");
+        }
+    
+        [Test]
         public void TestDataGenWithWhere()
         {
             using (IRepository sourceRepository = new DB4Repository(@"Data Source=c:\tmp\sqlce\Chinook.sdf"))

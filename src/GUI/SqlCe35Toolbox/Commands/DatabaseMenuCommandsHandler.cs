@@ -743,11 +743,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 var revEng = new EfCoreReverseEngineer();
 
-                var classBasis = Path.GetFileNameWithoutExtension(databaseInfo.DatabaseInfo.Caption);
-                if (dbType == DatabaseType.SQLServer)
-                {
-                    classBasis = new SqlConnectionStringBuilder(databaseInfo.DatabaseInfo.ConnectionString).InitialCatalog;
-                }
+                var classBasis = DataConnectionHelper.GetClassBasis(databaseInfo.DatabaseInfo.ConnectionString, dbType);
 
                 var model = revEng.GenerateClassName(classBasis) + "Context";
                 var packageResult = dteH.ContainsEfCoreReference(project, dbType);

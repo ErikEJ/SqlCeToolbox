@@ -410,6 +410,27 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
+        public static string GetClassBasis(string connectionString, DatabaseType dbType)
+        {
+            var classBasis = "My";
+            if (dbType == DatabaseType.SQLServer)
+            {
+                var builder = new SqlConnectionStringBuilder(connectionString);
+                classBasis = builder.InitialCatalog;
+
+                if (string.IsNullOrEmpty(classBasis) && !string.IsNullOrEmpty(builder.AttachDBFilename))
+                {
+                    classBasis = Path.GetFileNameWithoutExtension(builder.AttachDBFilename);
+                }
+            }
+            else
+            {
+                var path = GetFilePath(connectionString, dbType);
+                classBasis = Path.GetFileNameWithoutExtension(path);
+            }
+            return classBasis;
+        }
+
         public static string GetFilePath(string connectionString, DatabaseType dbType)
         {
             var helper = CreateEngineHelper(dbType);
