@@ -67,7 +67,7 @@ namespace EFCorePowerTools.Handlers
                     }
 
                     var ptd = new PickTablesDialog { IncludeTables = true };
-                    using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
+                    using (var repository = RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
                     {
                         ptd.Tables = repository.GetAllTableNamesForExclusion();
                     }
