@@ -212,8 +212,8 @@ namespace ErikEJ.SqlCeToolbox
         {
             return ( VisualStudioVersion >= new Version(12, 0))
                 && (DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40PrivateProvider)))
-                && (DataConnectionHelper.IsV40Installed())
-                && (DataConnectionHelper.IsV40DbProviderInstalled());
+                && (Helpers.RepositoryHelper.IsV40Installed())
+                && (Helpers.RepositoryHelper.IsV40DbProviderInstalled());
         }
 
         public static bool IsVsExtension => true;

@@ -127,11 +127,11 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 {
                     if (!System.IO.File.Exists(dataSourceTextBox.Text))
                     {
-                        var engineHelper = DataConnectionHelper.CreateEngineHelper(DbType);
+                        var engineHelper = Helpers.RepositoryHelper.CreateEngineHelper(DbType);
                         engineHelper.CreateDatabase(_connectionString);
                     }
                 }
-                using (DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = _connectionString, DatabaseType = DbType }))
+                using (Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = _connectionString, DatabaseType = DbType }))
                 {
                     if (showMessage)
                     {

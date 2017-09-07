@@ -135,14 +135,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\EFCoreReverseEngineer\DatabaseType.cs">
-      <Link>DatabaseType.cs</Link>
+      <Link>ReverseEngineer\DatabaseType.cs</Link>
     </Compile>
     <Compile Include="..\EFCoreReverseEngineer\ReverseEngineerOptions.cs">
-      <Link>ReverseEngineerOptions.cs</Link>
+      <Link>ReverseEngineer\ReverseEngineerOptions.cs</Link>
     </Compile>
-    <Compile Include="EFCoreModelAnalyzer.cs" />
-    <Compile Include="EFCoreReverseEngineer.cs" />
-    <Compile Include="EFCoreReverseEngineerResult.cs" />
+    <Compile Include="ModelAnalyzer\EFCoreModelAnalyzer.cs" />
+    <Compile Include="ReverseEngineer\EFCoreReverseEngineer.cs" />
+    <Compile Include="ReverseEngineer\EFCoreReverseEngineerResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

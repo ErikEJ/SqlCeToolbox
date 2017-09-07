@@ -362,7 +362,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 List<string> nameList;
                 try
                 {
-                    using (var repository = DataConnectionHelper.CreateRepository(database.Value))
+                    using (var repository = Helpers.RepositoryHelper.CreateRepository(database.Value))
                     {
                         nameList = repository.GetAllSubscriptionNames();
                     }
@@ -482,7 +482,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 List<View> viewList;
                 try
                 {
-                    using (var repository = DataConnectionHelper.CreateRepository(database.Value))
+                    using (var repository = Helpers.RepositoryHelper.CreateRepository(database.Value))
                     {
                         viewList = repository.GetAllViews();
                     }
@@ -525,7 +525,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 try
                 {
-                    using (var repository = DataConnectionHelper.CreateRepository(database.Value))
+                    using (var repository = Helpers.RepositoryHelper.CreateRepository(database.Value))
                     {
                         repository.ExecuteSql("SELECT 1" + Environment.NewLine + "GO");
                     }
@@ -545,7 +545,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             if (ex != null)
             {
-                var error = DataConnectionHelper.CreateEngineHelper(database.Value.DatabaseType).FormatError(ex);
+                var error = Helpers.RepositoryHelper.CreateEngineHelper(database.Value.DatabaseType).FormatError(ex);
                 if (error.Contains("Minor Err.: 25028"))
                 {
                     var pwd = new PasswordDialog();
@@ -566,7 +566,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 parentItem.Items.Clear();
 
-                using (var repository = DataConnectionHelper.CreateRepository(database.Value))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(database.Value))
                 {
                     DescriptionCache = new Helpers.DescriptionHelper().GetDescriptions(database.Value);
                     var dbdesc = DescriptionCache.Where(dc => dc.Parent == null && dc.Object == null).Select(dc => dc.Description).SingleOrDefault();
@@ -1026,7 +1026,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var databaseInfo = item.Tag as DatabaseInfo;
                     if (databaseInfo != null)
                     {
-                        var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseType);
+                        var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseType);
                         Clipboard.Clear();
                         Clipboard.SetData(DataFormats.FileDrop, new[] {helper.PathFromConnectionString(databaseInfo.ConnectionString)});
                     }
@@ -1052,7 +1052,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void AddSqlCeDb_Click(object sender, RoutedEventArgs e)
         {
-            if (!DataConnectionHelper.IsV40Installed())
+            if (!Helpers.RepositoryHelper.IsV40Installed())
             {
                 EnvDteHelper.ShowMessage("The SQL Server Compact 4.0 runtime must be installed in order to add connections");
                 return;

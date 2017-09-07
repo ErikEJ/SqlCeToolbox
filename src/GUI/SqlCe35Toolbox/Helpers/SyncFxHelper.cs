@@ -59,7 +59,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             bool isProvisioned = false;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo))
                 {
                     isProvisioned = repository.GetAllTableNamesForExclusion().Any(
                              t => t == "scope_info" || t == "scope_config" || t == "schema_info");

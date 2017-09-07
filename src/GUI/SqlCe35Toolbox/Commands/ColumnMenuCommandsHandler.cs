@@ -25,7 +25,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     List<Column> columns = repository.GetAllColumns();
@@ -61,7 +61,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     List<Column> columns = repository.GetAllColumns();
@@ -93,7 +93,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     List<Column> columns = repository.GetAllColumns();
@@ -125,7 +125,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     List<Column> columns = repository.GetAllColumns();
