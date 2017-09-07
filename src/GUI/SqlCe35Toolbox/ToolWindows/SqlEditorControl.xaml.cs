@@ -337,7 +337,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             try
             {
                 StartQuerying();
-                using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
                     string showPlan = string.Empty;
@@ -367,7 +367,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             catch (Exception ex)
             {
                 ParseSqlErrorToResultsBox(
-                    DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
+                    RepositoryHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
             }
             finally
             {
@@ -417,7 +417,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             DataConnectionHelper.LogUsage("EditorParse");
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(DatabaseInfo))
                 {
                     var textBox = new TextBox
                     {
@@ -434,7 +434,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             catch (Exception ex)
             {
-                ParseSqlErrorToResultsBox(DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
+                ParseSqlErrorToResultsBox(Helpers.RepositoryHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(ex));
             }
         }
 
@@ -464,7 +464,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             DataConnectionHelper.LogUsage("EditorShowPlan");
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
+                using (var repository = RepositoryHelper.CreateRepository(DatabaseInfo))
                 {
                     string sql = GetSqlFromSqlEditorTextBox();
                     string showPlan = repository.ParseSql(sql);
@@ -480,7 +480,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             catch (Exception sqlException)
             {
-                ParseSqlErrorToResultsBox(DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
+                ParseSqlErrorToResultsBox(RepositoryHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
             }
         }
 
@@ -543,7 +543,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             try
             {
                 StartQuerying();
-                using (var repository = DataConnectionHelper.CreateRepository(DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(DatabaseInfo))
                 {
                     var sql = GetSqlFromSqlEditorTextBox();
                     var schemaChanged = false;
@@ -571,7 +571,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             catch (Exception sqlException)
             {
                 ParseSqlErrorToResultsBox(
-                    DataConnectionHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
+                    RepositoryHelper.CreateEngineHelper(DatabaseInfo.DatabaseType).FormatError(sqlException));
             }
             finally
             {

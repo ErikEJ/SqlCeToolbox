@@ -11,8 +11,8 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
         public DatabasesContextMenu(DatabaseMenuCommandParameters databaseMenuCommandParameters, ExplorerToolWindow parent)
         {
             var dcmd = new DatabasesMenuCommandsHandler(parent);
-            var ver40IsInstalled = DataConnectionHelper.IsV40Installed();
-            var ver35IsInstalled = DataConnectionHelper.IsV35Installed();
+            var ver40IsInstalled = Helpers.RepositoryHelper.IsV40Installed();
+            var ver35IsInstalled = Helpers.RepositoryHelper.IsV35Installed();
             var pkg = parent.Package as SqlCeToolboxPackage;
 
             Items.Add(BuildAddCeDatabaseMenuItem(databaseMenuCommandParameters, dcmd, pkg, ver40IsInstalled));

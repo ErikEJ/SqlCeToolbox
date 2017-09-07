@@ -47,7 +47,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 {
                     if (!System.IO.File.Exists(_builder.DataSource))
                     {
-                        var engineHelper = DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLite);
+                        var engineHelper = Helpers.RepositoryHelper.CreateEngineHelper(DatabaseType.SQLite);
                         engineHelper.CreateDatabase(_builder.ConnectionString);
                     }
                 }

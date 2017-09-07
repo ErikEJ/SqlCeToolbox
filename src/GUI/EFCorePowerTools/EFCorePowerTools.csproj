@@ -64,6 +64,9 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\NuGetHelper.cs">
       <Link>Helpers\NuGetHelper.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\RepositoryHelper.cs">
+      <Link>Helpers\RepositoryHelper.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\SqlCe40ProviderRegistration.cs">
       <Link>Helpers\SqlCe40ProviderRegistration.cs</Link>
     </Compile>
@@ -89,7 +92,6 @@
     <Compile Include="Handlers\ReverseEngineerCodeFirstHandler.cs" />
     <Compile Include="Handlers\ModelAnalyzerHandler.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
-    <Compile Include="Helpers\RepositoryHelper.cs" />
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">

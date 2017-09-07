@@ -21,7 +21,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     if (menuInfo.MenuItemType == MenuType.Fk)
@@ -50,7 +50,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(menuInfo.DatabaseInfo))
+                using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
                     var generator = Helpers.DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     if (menuInfo.MenuItemType == MenuType.Fk)

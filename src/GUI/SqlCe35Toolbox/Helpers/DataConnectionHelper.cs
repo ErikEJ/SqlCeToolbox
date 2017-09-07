@@ -67,8 +67,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Guid providerSqLite = new Guid(Resources.SQLiteProvider);
             Guid providerSqlitePrivate = new Guid(Resources.SqlitePrivateProvider);
 
-            bool isV35Installed = IsV35Installed() && DdexProviderIsInstalled(provider35);
-            bool isV40Installed = IsV40Installed() && 
+            bool isV35Installed = RepositoryHelper.IsV35Installed() && DdexProviderIsInstalled(provider35);
+            bool isV40Installed = RepositoryHelper.IsV40Installed() && 
                 (DdexProviderIsInstalled(provider40) || DdexProviderIsInstalled(provider40Private));
             if (dataExplorerConnectionManager != null)
             {
@@ -102,7 +102,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                         ServerVersion = serverVersion,
                                         ConnectionString = sConnectionString
                                     };
-                                    info.FileIsMissing = IsMissing(info);
+                                    info.FileIsMissing = RepositoryHelper.IsMissing(info);
                                     if (!databaseList.ContainsKey(sConnectionString))
                                         databaseList.Add(sConnectionString, info);
                                 }
@@ -123,7 +123,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                     ServerVersion = SqliteEngineVersion,
                                     ConnectionString = sConnectionString
                                 };
-                                info.FileIsMissing = IsMissing(info);
+                                info.FileIsMissing = RepositoryHelper.IsMissing(info);
                                 if (!databaseList.ContainsKey(sConnectionString))
                                     databaseList.Add(sConnectionString, info);
                             }
@@ -176,9 +176,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             //Assume 3.5 is installed
             DatabaseType dbType = DatabaseType.SQLCE35;
-            if (!IsV35Installed()) //So 4.0 is installed
+            if (!RepositoryHelper.IsV35Installed()) //So 4.0 is installed
             {
-                if (!IsV40Installed())
+                if (!RepositoryHelper.IsV40Installed())
                 {
                     dbType = DatabaseType.SQLite;
                 }
@@ -195,18 +195,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             var databaseList = new Dictionary<string, DatabaseInfo>();
             var dbType = GetPreferredDatabaseType();
             var dbInfo = new DatabaseInfo {ConnectionString = CreateStore(dbType), DatabaseType = dbType};
-            using (var repository = CreateRepository(dbInfo))
+            using (var repository = Helpers.RepositoryHelper.CreateRepository(dbInfo))
             {
                 var script = "SELECT FileName, Source, CeVersion FROM Databases" + separator;
                 var dataset = repository.ExecuteSql(script);
                 foreach (DataRow row in dataset.Tables[0].Rows)
                 {
                     var foundType = (DatabaseType) int.Parse(row[2].ToString());
-                    if (!IsV35Installed() && foundType == DatabaseType.SQLCE35)
+                    if (!RepositoryHelper.IsV35Installed() && foundType == DatabaseType.SQLCE35)
                     {
                         continue;
                     }
-                    if (!IsV40Installed() && foundType == DatabaseType.SQLCE40)
+                    if (!RepositoryHelper.IsV40Installed() && foundType == DatabaseType.SQLCE40)
                     {
                         continue;
                     }
@@ -228,7 +228,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         info.ServerVersion = "3.5.1.0";
                     if (foundType == DatabaseType.SQLite)
                         info.ServerVersion = SqliteEngineVersion;
-                    info.FileIsMissing = IsMissing(info);
+                    info.FileIsMissing = RepositoryHelper.IsMissing(info);
                     if (!databaseList.ContainsKey(key) && !info.FileIsMissing)
                     {
                         databaseList.Add(key, info);
@@ -268,9 +268,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     {
                         var objProviderGuid = connection.Provider;
                         if (
-                            (objProviderGuid == new Guid(Resources.SqlCompact35Provider) && IsV35Installed()) ||
-                            (objProviderGuid == new Guid(Resources.SqlCompact40Provider) && IsV40Installed()) ||
-                            (objProviderGuid == new Guid(Resources.SqlCompact40PrivateProvider) && IsV40Installed() ||
+                            (objProviderGuid == new Guid(Resources.SqlCompact35Provider) && RepositoryHelper.IsV35Installed()) ||
+                            (objProviderGuid == new Guid(Resources.SqlCompact40Provider) && RepositoryHelper.IsV40Installed()) ||
+                            (objProviderGuid == new Guid(Resources.SqlCompact40PrivateProvider) && RepositoryHelper.IsV40Installed() ||
                             (objProviderGuid == new Guid(Resources.SqlitePrivateProvider) &&  IsSqLiteDbProviderInstalled())
                             ))
                         {
@@ -327,7 +327,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 try
                 {
-                    using (CreateRepository(item.Value))
+                    using (Helpers.RepositoryHelper.CreateRepository(item.Value))
                     {
                     }
                 }
@@ -346,7 +346,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         internal void ScanConnections(SqlCeToolboxPackage package)
         {
             var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
-            var helper = CreateEngineHelper(DatabaseType.SQLCE40);
+            var helper = RepositoryHelper.CreateEngineHelper(DatabaseType.SQLCE40);
             EnvDteHelper dteHelper = new EnvDteHelper();
             var list = dteHelper.GetSqlCeFilesInActiveSolution(dte);
             foreach (var path in list)
@@ -385,7 +385,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         };
                         try
                         {
-                            using (var repo = CreateRepository(dbInfo))
+                            using (var repo = Helpers.RepositoryHelper.CreateRepository(dbInfo))
                             {
                                 repo.GetAllTableNames();
                             }
@@ -410,30 +410,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
-        public static string GetClassBasis(string connectionString, DatabaseType dbType)
-        {
-            var classBasis = "My";
-            if (dbType == DatabaseType.SQLServer)
-            {
-                var builder = new SqlConnectionStringBuilder(connectionString);
-                classBasis = builder.InitialCatalog;
-
-                if (string.IsNullOrEmpty(classBasis) && !string.IsNullOrEmpty(builder.AttachDBFilename))
-                {
-                    classBasis = Path.GetFileNameWithoutExtension(builder.AttachDBFilename);
-                }
-            }
-            else
-            {
-                var path = GetFilePath(connectionString, dbType);
-                classBasis = Path.GetFileNameWithoutExtension(path);
-            }
-            return classBasis;
-        }
-
         public static string GetFilePath(string connectionString, DatabaseType dbType)
         {
-            var helper = CreateEngineHelper(dbType);
+            var helper = RepositoryHelper.CreateEngineHelper(dbType);
             return helper.PathFromConnectionString(connectionString);
         }
 
@@ -452,8 +431,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             SqlCeToolboxPackage package)
         {
             var storeDbType = GetPreferredDatabaseType();
-            var helper = CreateEngineHelper(storeDbType);
-            string path = CreateEngineHelper(dbType).PathFromConnectionString(connectionString);
+            var helper = RepositoryHelper.CreateEngineHelper(storeDbType);
+            string path = RepositoryHelper.CreateEngineHelper(dbType).PathFromConnectionString(connectionString);
 
             if (package.VsSupportsSimpleDdex4Provider() && dbType == DatabaseType.SQLCE40)
             {
@@ -469,14 +448,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         internal static void RemoveDataConnection(string connectionString)
         {
             var storeType = GetPreferredDatabaseType();
-            var helper = CreateEngineHelper(storeType);
+            var helper = RepositoryHelper.CreateEngineHelper(storeType);
             helper.DeleteDataConnnection(CreateStore(storeType), connectionString);
         }
 
         internal static void RenameDataConnection(string connectionString, string description)
         {
             var storeType = GetPreferredDatabaseType();
-            var helper = CreateEngineHelper(storeType);
+            var helper = RepositoryHelper.CreateEngineHelper(storeType);
             helper.UpdateDataConnection(CreateStore(storeType), connectionString, description);
         }
 
@@ -551,7 +530,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 if (storeDbType == DatabaseType.SQLite)
                 {
-                    var helper = CreateEngineHelper(storeDbType);
+                    var helper = RepositoryHelper.CreateEngineHelper(storeDbType);
                     helper.CreateDatabase(connString);
                 }
                 else
@@ -575,7 +554,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
 
             var dbInfo = new DatabaseInfo {DatabaseType = storeDbType, ConnectionString = connString};
-            using (IRepository repository = CreateRepository(dbInfo))
+            using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(dbInfo))
             {
                 var tables = repository.GetAllTableNames();
                 if (!tables.Contains("Databases"))
@@ -607,6 +586,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return fileName;
         }
 
+        public static IGenerator CreateGenerator(IRepository repository, DatabaseType databaseType)
+        {
+            return CreateGenerator(repository, null, databaseType);
+        }
+
         public static IGenerator CreateGenerator(IRepository repository, string outFile, DatabaseType databaseType)
         {
             switch (databaseType)
@@ -624,45 +608,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                         : new Generator4(repository, outFile);
                 case DatabaseType.SQLite:
                     return new Generator(repository, outFile, false, false, true);
-                default:
-                    return null;
-            }
-        }
-
-        public static ISqlCeHelper CreateEngineHelper(DatabaseType databaseType)
-        {
-            switch (databaseType)
-            {
-                case DatabaseType.SQLCE35:
-                    return new SqlCeHelper();
-                case DatabaseType.SQLCE40:
-                    return new SqlCeHelper4();
-                case DatabaseType.SQLServer:
-                case DatabaseType.SQLite:
-                    return new SqliteHelper();
-                default:
-                    return null;
-            }
-        }
-
-        public static IGenerator CreateGenerator(IRepository repository, DatabaseType databaseType)
-        {
-            return CreateGenerator(repository, null, databaseType);
-        }
-
-        public static IRepository CreateRepository(DatabaseInfo databaseInfo)
-        {
-            switch (databaseInfo.DatabaseType)
-            {
-                case DatabaseType.SQLCE35:
-                    return new DBRepository(databaseInfo.ConnectionString);
-                case DatabaseType.SQLCE40:
-                    return new DB4Repository(databaseInfo.ConnectionString);
-                case DatabaseType.SQLServer:
-                    return new ServerDBRepository(databaseInfo.ConnectionString,
-                        Properties.Settings.Default.KeepSchemaNames);
-                case DatabaseType.SQLite:
-                    return new SQLiteRepository(databaseInfo.ConnectionString);
                 default:
                     return null;
             }
@@ -747,41 +692,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 {
                     Telemetry.TrackException(ex);
                 }
-                EnvDteHelper.ShowError(CreateEngineHelper(dbType).FormatError(ex));
+                EnvDteHelper.ShowError(RepositoryHelper.CreateEngineHelper(dbType).FormatError(ex));
             }
             return string.Empty;
-        }
-
-        internal static bool IsMissing(DatabaseInfo info)
-        {
-            if (info.DatabaseType == DatabaseType.SQLServer)
-            {
-                return false;
-            }
-            try
-            {
-                var path = GetFilePath(info.ConnectionString, info.DatabaseType);
-                return !File.Exists(path);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        internal static bool IsV40Installed()
-        {
-            return new SqlCeHelper4().IsV40Installed() != null;
-        }
-
-        internal static bool IsV35Installed()
-        {
-            return new SqlCeHelper().IsV35Installed() != null;
-        }
-
-        internal static bool IsV40DbProviderInstalled()
-        {
-            return new SqlCeHelper4().IsV40DbProviderInstalled();
         }
 
         internal static bool IsSqLiteDbProviderInstalled()
@@ -795,11 +708,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 return false;
             }
             return true;
-        }
-
-        internal static bool IsV35DbProviderInstalled()
-        {
-            return new SqlCeHelper4().IsV35DbProviderInstalled();
         }
 
         internal static bool IsSyncFx21Installed()

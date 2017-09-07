@@ -116,7 +116,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.ShrinkDatabase(databaseInfo.DatabaseInfo.ConnectionString);
                 package.SetStatus("Shrink completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainShrink");
@@ -133,7 +133,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                var helper = DataConnectionHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
+                var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseInfo.DatabaseType);
                 helper.CompactDatabase(databaseInfo.DatabaseInfo.ConnectionString);
                 package.SetStatus("Compact completed");
                 DataConnectionHelper.LogUsage("DatabaseMaintainCompact");
@@ -150,7 +150,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
                     var tbd = new TableBuilderDialog(null, databaseInfo.DatabaseInfo.DatabaseType);
@@ -272,7 +272,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 int totalCount;
                 var ptd = new PickTablesDialog();
-                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
                     totalCount = ptd.Tables.Count;
@@ -295,7 +295,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     fd.ValidateNames = true;
                     var result = fd.ShowDialog();
                     if (!result.HasValue || result.Value != true) return;
-                    using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                    using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                     {
                         var generator = DataConnectionHelper.CreateGenerator(repository, fd.FileName, databaseInfo.DatabaseInfo.DatabaseType);
                         generator.ExcludeTables(ptd.Tables);
@@ -362,10 +362,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     editorTarget = source;
                 }
 
-                using (var sourceRepository = DataConnectionHelper.CreateRepository(source.Value))
+                using (var sourceRepository = Helpers.RepositoryHelper.CreateRepository(source.Value))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(sourceRepository, databaseInfo.DatabaseInfo.DatabaseType);
-                    using (var targetRepository = DataConnectionHelper.CreateRepository(target.Value))
+                    using (var targetRepository = Helpers.RepositoryHelper.CreateRepository(target.Value))
                     {
                         try
                         {
@@ -461,7 +461,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var source = parameters[0] as DatabaseInfo;
             var target = parameters[1] as DatabaseInfo;
             package.SetStatus("Starting export");
-            using (var repository = DataConnectionHelper.CreateRepository(source))
+            using (var repository = Helpers.RepositoryHelper.CreateRepository(source))
             {
                 var scriptRoot = Path.GetTempFileName();
                 var tempScript = scriptRoot + ".sqltb";
@@ -472,7 +472,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     generator.TruncateSQLiteStrings = true;
                 }
                 generator.ScriptDatabaseToFile(Scope.SchemaData);
-                using (var serverRepository = DataConnectionHelper.CreateRepository(target))
+                using (var serverRepository = Helpers.RepositoryHelper.CreateRepository(target))
                 {
                     package.SetStatus("Exporting to server...");
                     //Handles large exports also... 
@@ -536,7 +536,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var fileName = fd.FileName;
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, fileName, databaseInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateSchemaGraph(databaseInfo.DatabaseInfo.Caption, Properties.Settings.Default.IncludeSystemTablesInDocumentation, false);
@@ -563,7 +563,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
             try
             {
-                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateDatabaseInfo();
@@ -733,7 +733,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 var ptd = new PickTablesDialog {IncludeTables = true};
-                using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = databaseInfo.DatabaseInfo.ConnectionString, DatabaseType = databaseInfo.DatabaseInfo.DatabaseType }))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = databaseInfo.DatabaseInfo.ConnectionString, DatabaseType = databaseInfo.DatabaseInfo.DatabaseType }))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
                 }
@@ -743,7 +743,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 var revEng = new EfCoreReverseEngineer();
 
-                var classBasis = DataConnectionHelper.GetClassBasis(databaseInfo.DatabaseInfo.ConnectionString, dbType);
+                var classBasis = Helpers.RepositoryHelper.GetClassBasis(databaseInfo.DatabaseInfo.ConnectionString, dbType);
 
                 var model = revEng.GenerateClassName(classBasis) + "Context";
                 var packageResult = dteH.ContainsEfCoreReference(project, dbType);
@@ -880,7 +880,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     defaultNamespace = project.Properties.Item("DefaultNamespace").Value.ToString();
                 }
                 var projectPath = project.Properties.Item("FullPath").Value.ToString();
-                using (var repository = DataConnectionHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateSqliteNetModel(defaultNamespace);

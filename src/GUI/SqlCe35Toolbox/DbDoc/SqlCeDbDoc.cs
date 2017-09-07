@@ -59,7 +59,7 @@ namespace ErikEJ.SqlCeToolbox
             // Prepare XML document
             var doc = new XmlDocument();
 
-            using (var repository = Helpers.DataConnectionHelper.CreateRepository(info))
+            using (var repository = Helpers.RepositoryHelper.CreateRepository(info))
             {
                 // Get latest descriptions
                 ExplorerControl.DescriptionCache = new Helpers.DescriptionHelper().GetDescriptions(info);

@@ -46,7 +46,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     {
                         try
                         {
-                            using (IRepository repository = Helpers.DataConnectionHelper.CreateRepository(DatabaseInfo))
+                            using (IRepository repository = Helpers.RepositoryHelper.CreateRepository(DatabaseInfo))
                             {
                                 DateTime date = repository.GetLastSuccessfulSyncTime(Publication);
                                 if (date != DateTime.MinValue)
@@ -199,13 +199,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         new Action(
                         delegate
                         {
-                            txtStatus.Text += Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLCE35).FormatError(ca.Exception()) + Environment.NewLine;
+                            txtStatus.Text += Helpers.RepositoryHelper.CreateEngineHelper(DatabaseType.SQLCE35).FormatError(ca.Exception()) + Environment.NewLine;
                         }
                     ));
                 }
                 else
                 {
-                    txtStatus.Text += Helpers.DataConnectionHelper.CreateEngineHelper(DatabaseType.SQLCE35).FormatError(ca.Exception()) + Environment.NewLine;
+                    txtStatus.Text += Helpers.RepositoryHelper.CreateEngineHelper(DatabaseType.SQLCE35).FormatError(ca.Exception()) + Environment.NewLine;
                 }
             }
             else

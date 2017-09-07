@@ -1,5 +1,4 @@
-﻿using EFCorePowerTools.Helpers;
-using EFCoreReverseEngineer;
+﻿using EFCoreReverseEngineer;
 using EnvDTE;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
@@ -9,8 +8,6 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.SqlClient;
-using System.IO;
 using System.Text;
 
 namespace EFCorePowerTools.Handlers
@@ -70,7 +67,7 @@ namespace EFCorePowerTools.Handlers
                     }
 
                     var ptd = new PickTablesDialog { IncludeTables = true };
-                    using (var repository = RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
+                    using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
                     {
                         ptd.Tables = repository.GetAllTableNamesForExclusion();
                     }

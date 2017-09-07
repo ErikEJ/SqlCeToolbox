@@ -50,7 +50,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (string.IsNullOrEmpty(connectionString)) return;
                 var ptd = new PickTablesDialog();
                 int totalCount;
-                using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
                     totalCount = ptd.Tables.Count;
@@ -71,7 +71,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     fd.ValidateNames = true;
                     var result = fd.ShowDialog();
                     if (!result.HasValue || result.Value != true) return;
-                    using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
+                    using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                     {
                         try
                         {
@@ -244,7 +244,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     var ptd = new PickTablesDialog();
                     int totalCount;
-                    using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo
+                    using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo
                     { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                     {
                         ptd.Tables = repository.GetAllTableNamesForExclusion();
@@ -358,7 +358,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var scriptRoot = Path.GetTempFileName();
                 var tempScript = scriptRoot + ".sqlce";
                 _package.SetStatus("Starting import");
-                using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, tempScript, DatabaseType.SQLServer);
                     generator.ExcludeTables(tables);
@@ -367,7 +367,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 }
                 _package.SetStatus("Importing data...");
 
-                using (var dbRepository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = dbConnectionString, DatabaseType = dbType }))
+                using (var dbRepository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = dbConnectionString, DatabaseType = dbType }))
                 {
                     //Handles large exports also... 
                     if (File.Exists(tempScript)) // Single file
@@ -429,7 +429,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
                 if (string.IsNullOrEmpty(connectionString)) return;
                 var ptd = new PickTablesDialog();
-                using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
+                using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
                 }
@@ -447,7 +447,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     if (!result.HasValue || result.Value != true) return;
                     Properties.Settings.Default.KeepSchemaNames = true;
                     var fileName = fd.FileName;
-                    using (var repository = DataConnectionHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
+                    using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                     {
                         try
                         {
