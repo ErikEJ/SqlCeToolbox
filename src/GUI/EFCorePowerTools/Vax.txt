@@ -1,0 +1,915 @@
+﻿Model: 
+  EntityType: Alert
+    Properties: 
+      AlertId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Acknowledged (bool) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      Active (bool) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      AlertText (string) 3 3 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      AlertTime (DateTime) Required 4 4 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      Category (int) Required ValueGenerated.OnAdd 5 5 -1 -1 1
+        Annotations: 
+          Relational:DefaultValueSql: ((0))
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Details (string) 6 6 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Reported (bool) Required 7 7 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      Resolution (int) Required ValueGenerated.OnAdd 8 8 -1 -1 2
+        Annotations: 
+          Relational:DefaultValueSql: ((0))
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      SessionId (long) Required 9 9 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Severity (int) Required 10 10 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Status (int) Required ValueGenerated.OnAdd 11 11 -1 -1 3
+        Annotations: 
+          Relational:DefaultValueSql: ((0))
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      SystemErrorGuid (Guid) Required 12 12 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+    Keys: 
+      AlertId PK
+    Annotations: 
+      Relational:TableName: Alert
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Authorization
+    Properties: 
+      AuthorizationId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Type (string) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Uid (string) 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      UserId (long) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+    Keys: 
+      AuthorizationId PK
+    Annotations: 
+      Relational:TableName: Authorization
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: DefrostStatistics
+    Properties: 
+      DefrostStatisticsId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      AirCooldownTimeMs (int) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      CoilCoolTargetTemp (int) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      CoilCooldownTimeMs (int) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      CoilIceMeltTimeMs (int) Required 4 4 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      CoilMaxTemp (int) Required 5 5 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      CoilStartTemp (int) Required 6 6 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      CoilWarmTargetTemp (int) Required 7 7 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      CoilWarmTimeMs (int) Required 8 8 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      DefrostStart (DateTime) Required 9 9 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      DefrostStatus (int) Required 10 10 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      DefrostStop (DateTime) Required 11 11 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      DripPanMaxTemp (int) Required 12 12 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      DripPanStartTemp (int) Required 13 13 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      DripPanTargetTemp (int) Required 14 14 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      FreezerAirCoolTargetTemp (int) Required 15 15 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      FreezerMaxTemp (int) Required 16 16 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      FreezerStartTemp (int) Required 17 17 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      FridgeMaxTemp (int) Required 18 18 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      FridgeStartTemp (int) Required 19 19 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      MaxAmperage (int) Required 20 20 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      PreWarmTemperature (int) Required 21 21 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      PreWarmTimeMs (int) Required 22 22 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      TotalTimeMs (int) Required 23 23 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+    Keys: 
+      DefrostStatisticsId PK
+    Annotations: 
+      Relational:TableName: DefrostStatistics
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: HardwareState
+    Properties: 
+      HardwareStateId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Enabled (bool) Required Index 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      HardwareElement (string) Index 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+    Keys: 
+      HardwareStateId PK
+    Annotations: 
+      Relational:TableName: HardwareState
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Inventory
+    Properties: 
+      InventoryId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Guid (Guid) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      Name (string) 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Valid (bool) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+    Keys: 
+      InventoryId PK
+    Annotations: 
+      Relational:TableName: Inventory
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: LoadBatch
+    Properties: 
+      LoadBatchId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      LoadTime (DateTime) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      NumReportedIncorrect (int) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Quarantined (bool) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+    Keys: 
+      LoadBatchId PK
+    Annotations: 
+      Relational:TableName: LoadBatch
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Ndc
+    Properties: 
+      NdcId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Doses (int) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      FormFactor (string) Index MaxLength225 2 2 -1 -1 -1
+        Annotations: 
+          MaxLength: 225
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Frozen (bool) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      Name (string) 4 4 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      ProductNdc (string) Index MaxLength225 5 5 -1 -1 -1
+        Annotations: 
+          MaxLength: 225
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      RequiresDiluent (bool) Required 6 6 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      RequiresTallSlip (bool) Required 7 7 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      SpoilDaysAfterPuncture (int) Required 8 8 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      SpoilTimeMinutes (int) Required 9 9 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      UnitOfMeasure (string) 10 10 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      VaccineName (string) 11 11 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      VialNdc (string) 12 12 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+    Navigations: 
+      OrderNdc (<OrderNdc>k__BackingField, ICollection<OrderNdc>) Collection ToDependent OrderNdc Inverse: Ndc 0 -1 1 -1 -1
+    Keys: 
+      NdcId PK
+    Annotations: 
+      Relational:TableName: Ndc
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Order
+    Properties: 
+      OrderId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      OrderIdentifier (string) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      PatientId (long) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      PhysicianInventoryId (long) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+    Navigations: 
+      OrderNdc (<OrderNdc>k__BackingField, ICollection<OrderNdc>) Collection ToDependent OrderNdc Inverse: Order 0 -1 1 -1 -1
+    Keys: 
+      OrderId PK
+    Annotations: 
+      Relational:TableName: Order
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: OrderNdc
+    Properties: 
+      OrderNdcId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Doses (int) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      NdcId (long) Required FK Index 2 2 1 -1 1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      OrderId (long) Required FK Index 3 3 2 -1 2
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+    Navigations: 
+      Ndc (<Ndc>k__BackingField, Ndc) ToPrincipal Ndc Inverse: OrderNdc 0 -1 3 -1 -1
+      Order (<Order>k__BackingField, Order) ToPrincipal Order Inverse: OrderNdc 1 -1 4 -1 -1
+    Keys: 
+      OrderNdcId PK
+    Foreign keys: 
+      OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
+        Annotations: 
+          Relational:Name: FK_dbo.OrderNdc_dbo.Ndc_NdcId
+      OrderNdc {'OrderId'} -> Order {'OrderId'} ToDependent: OrderNdc ToPrincipal: Order
+        Annotations: 
+          Relational:Name: FK_dbo.OrderNdc_dbo.Order_OrderId
+    Annotations: 
+      Relational:TableName: OrderNdc
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: PackageCode
+    Properties: 
+      PackageCodeId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      NdcId (long) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      PackageNdc (string) 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+    Keys: 
+      PackageCodeId PK
+    Annotations: 
+      Relational:TableName: PackageCode
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: ParkingLotItem
+    Properties: 
+      ParkingLotItemId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      DosesRemaining (int) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Expiration (DateTime) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      Guid (Guid) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      LoadBatchId (long) Required 4 4 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Lot (string) 5 5 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Multidose (bool) Required 6 6 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      Name (string) 7 7 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      NdcId (long) Required 8 8 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      PackageNdc (string) 9 9 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      ParkedAt (DateTime) Required 10 10 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      PhysicianInventoryId (long) Required 11 11 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      TransactionId (long) Required 12 12 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      UserId (long) Required 13 13 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      VialPierced (Nullable<DateTime>) 14 14 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+    Keys: 
+      ParkingLotItemId PK
+    Annotations: 
+      Relational:TableName: ParkingLotItem
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: ParkingLotItemDoseTransaction
+    Properties: 
+      ParkingLotItemDoseTransactionId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      DoseTransactionId (long) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      ParkingLotItemId (long) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+    Keys: 
+      ParkingLotItemDoseTransactionId PK
+    Annotations: 
+      Relational:TableName: ParkingLotItemDoseTransaction
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Patient
+    Properties: 
+      PatientId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      BirthDate (Nullable<DateTime>) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      Ehr (string) 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      FirstName (string) 3 3 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Guid (Guid) Required 4 4 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      LastName (string) 5 5 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Ssn (string) 6 6 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+    Keys: 
+      PatientId PK
+    Annotations: 
+      Relational:TableName: Patient
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Physician
+    Properties: 
+      PhysicianId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Guid (Guid) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      Name (string) 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Valid (bool) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+    Keys: 
+      PhysicianId PK
+    Annotations: 
+      Relational:TableName: Physician
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: PhysicianInventory
+    Properties: 
+      PhysicianInventoryId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      InventoryGuid (Guid) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      PhysicianGuid (Guid) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      Valid (bool) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+    Keys: 
+      PhysicianInventoryId PK
+    Annotations: 
+      Relational:TableName: PhysicianInventory
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: QueuedOperation
+    Properties: 
+      QueuedOperationId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Operation (string) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+    Keys: 
+      QueuedOperationId PK
+    Annotations: 
+      Relational:TableName: QueuedOperation
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: RobotOperationStats
+    Properties: 
+      RobotOperationStatsId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      LastRetry (DateTime) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      OperationsSinceLastService (int) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      TotalOperations (int) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+    Keys: 
+      RobotOperationStatsId PK
+    Annotations: 
+      Relational:TableName: RobotOperationStats
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Role
+    Properties: 
+      RoleId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Title (string) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+    Keys: 
+      RoleId PK
+    Annotations: 
+      Relational:TableName: Role
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Session
+    Properties: 
+      SessionId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      SessionEnd (Nullable<DateTime>) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      SessionStart (DateTime) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+    Keys: 
+      SessionId PK
+    Annotations: 
+      Relational:TableName: Session
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Slip
+    Properties: 
+      SlipId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Col (int) Required Index 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Status (string) Index 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Tall (bool) Required Index 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      Tier (int) Required Index 4 4 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Type (string) Index 5 5 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Valid (bool) Required Index 6 6 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+    Keys: 
+      SlipId PK
+    Annotations: 
+      Relational:TableName: Slip
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: TemperatureReading
+    Properties: 
+      TemperatureReadingId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      ChillerCold0 (double) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerCold0Rh (double) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerCold1 (double) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerCold1Rh (double) Required 4 4 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerCold2 (double) Required 5 5 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerCold2Rh (double) Required 6 6 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerWarm0 (double) Required 7 7 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerWarm0Rh (double) Required 8 8 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerWarm1 (double) Required 9 9 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerWarm1Rh (double) Required 10 10 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerWarm2 (double) Required 11 11 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ChillerWarm2Rh (double) Required 12 12 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      Coil (double) Required 13 13 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      CoilInlet (double) Required 14 14 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      DripPan (double) Required 15 15 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      DuctExit (double) Required 16 16 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      Freezer0 (double) Required 17 17 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      Freezer0Rh (double) Required 18 18 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      Freezer1 (double) Required 19 19 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      Freezer1Rh (double) Required 20 20 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ReadingTime (DateTime) Required Index 21 21 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      ThermalBoardAmbient (double) Required 22 22 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+      ThermalBoardAmbientRh (double) Required 23 23 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDoubleTypeMapping
+    Keys: 
+      TemperatureReadingId PK
+    Annotations: 
+      Relational:TableName: TemperatureReading
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Transaction
+    Properties: 
+      TransactionId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      DiluentExpiration (Nullable<DateTime>) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      DiluentLot (string) 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      DiluentNdc (string) 3 3 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Disposition (string) 4 4 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Expiration (DateTime) Required 5 5 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      FormFactor (string) 6 6 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      InventoryGuid (Guid) Required 7 7 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      InventoryName (string) 8 8 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Lot (string) 9 9 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Multidose (bool) Required 10 10 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      NdcId (long) Required 11 11 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      OrderId (long) Required 12 12 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      OrderIdentifier (string) 13 13 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      PackageNdc (string) 14 14 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      ParentTransactionId (long) Required 15 15 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      PatientFirstName (string) 16 16 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      PatientGuid (Guid) Required 17 17 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      PatientId (long) Required 18 18 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      PatientLastName (string) 19 19 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      PhysicianGuid (Guid) Required 20 20 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      PhysicianInventoryId (long) Required 21 21 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      PhysicianName (string) 22 22 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      ProductNdc (string) 23 23 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Quantity (int) Required 24 24 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Remaining (int) Required 25 25 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      TimeStamp (DateTime) Required 26 26 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      UnitOfMeasure (string) 27 27 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      UserId (Guid) Required 28 28 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      UserName (string) 29 29 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      VaccineGuid (Guid) Required 30 30 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      VaccineId (long) Required 31 31 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+    Keys: 
+      TransactionId PK
+    Annotations: 
+      Relational:TableName: Transaction
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: TransactionLog
+    Properties: 
+      TransactionLogId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      BoatAction (string) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Col (int) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      FinalBoatActionStatus (string) 3 3 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      InitialBoatActionStatus (string) 4 4 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Row (int) Required 5 5 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      SlipId (long) Required 6 6 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Source (string) 7 7 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      TimeStamp (DateTime) Required 8 8 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+    Keys: 
+      TransactionLogId PK
+    Annotations: 
+      Relational:TableName: TransactionLog
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: User
+    Properties: 
+      UserId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      Email (string) 1 1 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      FactoryUser (bool) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      FirstName (string) 3 3 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Guid (Guid) Required 4 4 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      IsAllowedPortalAccess (bool) Required 5 5 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      LastName (string) 6 6 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      NewUser (bool) Required 7 7 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      Pending (bool) Required 8 8 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      Roles (string) 9 9 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Valid (bool) Required 10 10 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+    Keys: 
+      UserId PK
+    Annotations: 
+      Relational:TableName: User
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+  EntityType: Vaccine
+    Properties: 
+      VaccineId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      DosesRemaining (int) Required 1 1 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Expiration (DateTime) Required 2 2 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+      Guid (Guid) Required 3 3 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
+      LoadBatchId (long) Required 4 4 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      LoadInsertionFailureCount (int) Required 5 5 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      LoadPickFailureCount (int) Required 6 6 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+      Lot (string) 7 7 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      Multidose (bool) Required 8 8 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
+      Name (string) 9 9 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      NdcId (long) Required 10 10 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      PackageNdc (string) 11 11 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: nvarchar(4000)
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+      PhysicianInventoryId (long) Required 12 12 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      SlipId (long) Required Index 13 13 -1 -1 -1
+        Annotations: 
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
+      VialPierced (Nullable<DateTime>) 14 14 -1 -1 -1
+        Annotations: 
+          Relational:ColumnType: datetime
+          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
+    Keys: 
+      VaccineId PK
+    Annotations: 
+      Relational:TableName: Vaccine
+      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
+Annotations: 
+  ProductVersion: 2.0.0-rtm-26452
+  SqlServer:ValueGenerationStrategy: IdentityColumn
