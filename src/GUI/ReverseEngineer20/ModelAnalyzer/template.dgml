@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+{Nodes}
+  </Nodes>
+  <Links>
+{Links}
+  </Links>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="EntityType" ValueLabel="True">
+      <Condition Expression="HasCategory('EntityType')" />
+      <Setter Property="Background" Value="#FFC0C0C0" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Primary" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Primary')" />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Field Optional" ValueLabel="True">
+      <Condition Expression="HasCategory('Field Optional')" />
+      <Setter Property="Background" Value="#FF808040" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Foreign" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Foreign')" />
+      <Setter Property="Background" Value="#FF8080FF" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property" ValueLabel="True">
+      <Condition Expression="HasCategory('Property')" />
+      <Setter Property="Background" Value="#FFC0A000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Model" ValueLabel="True">
+      <Condition Expression="HasCategory('Model')" />
+      <Setter Property="Background" Value="#FFFFFFFF" />
+    </Style>
+  </Styles>
+  <Properties>
+    <Property Id="Field" Label ="Field" Description="Backing field" Group="Model Properties" DataType="System.String" />
+    <Property Id="Type" Label="Type" Description="CLR data type" Group="Model Properties" DataType="System.String" />
+    <Property Id="ProductVersion" Label="Product Version" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
+    <Property Id="ProviderAnnotations" Label="Provider Annotations" Description="Provider specific annotations" Group="Model Properties" DataType="System.String" />
+    <Property Id="TableName" Label="Table name" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsIndexed" Group="Model Flags" DataType="System.Boolean" />
+    <Property Id="IsRequired" Group="Model Flags" DataType="System.Boolean" />
+    <Property Id="IsPrimaryKey" Group="Model Flags" DataType="System.Boolean" />
+    <Property Id="IsForeignKey" Group="Model Flags" DataType="System.Boolean" />
+    <Property Id="ValueGenerated"  Group="Model Flags" DataType="System.String" />
+  </Properties>
+</DirectedGraph>
