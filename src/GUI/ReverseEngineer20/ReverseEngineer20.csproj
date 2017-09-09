@@ -140,6 +140,9 @@
     <Compile Include="..\EFCoreReverseEngineer\ReverseEngineerOptions.cs">
       <Link>ReverseEngineer\ReverseEngineerOptions.cs</Link>
     </Compile>
+    <Compile Include="ModelAnalyzer\DebugViewParser.cs" />
+    <Compile Include="ModelAnalyzer\DebugViewParserResult.cs" />
+    <Compile Include="ModelAnalyzer\DgmlBuilder.cs" />
     <Compile Include="ModelAnalyzer\EFCoreModelAnalyzer.cs" />
     <Compile Include="ReverseEngineer\EFCoreReverseEngineer.cs" />
     <Compile Include="ReverseEngineer\EFCoreReverseEngineerResult.cs" />
@@ -147,6 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
+    <EmbeddedResource Include="ModelAnalyzer\template.dgml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

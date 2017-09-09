@@ -1,4 +1,7 @@
-﻿namespace ReverseEngineer20
+﻿using System;
+using ReverseEngineer20.ModelAnalyzer;
+
+namespace ReverseEngineer20
 {
     public class EFCoreModelAnalyzer
     {
@@ -9,9 +12,13 @@
 
         public string GenerateDgmlContent(dynamic context)
         {
-            string debugView = CreateDebugView(context);
+            Type type = context.GetType();
+            var dgmlBuilder = new DgmlBuilder();
 
-            return null;
+            var debugView = CreateDebugView(context);
+            var dgml = dgmlBuilder.Build(debugView, type.Name);
+
+            return dgml;
         }
 
         private string CreateDebugView(dynamic context)
