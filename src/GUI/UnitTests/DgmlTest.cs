@@ -24,7 +24,8 @@ namespace UnitTests
             var result = _parser.Parse(_sample, "Test");
 
             // Assert
-            //Assert.AreEqual(1, result.Nodes.Count);
+            Assert.AreEqual(83, result.Nodes.Count);
+            Assert.AreEqual(159, result.Links.Count);
         }
 
 
@@ -33,7 +34,7 @@ namespace UnitTests
         {
             // Act
             var builder = new DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Vax.txt"), "test");
+            var result = builder.Build(File.ReadAllText("Aw2014Person.txt"), "test");
 
             // Assert
             Assert.AreNotEqual(result, null);
