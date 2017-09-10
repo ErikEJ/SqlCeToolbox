@@ -125,7 +125,8 @@ namespace EFCorePowerTools
 
             try
             {
-                var context = DiscoverUserContextType();
+                Type systemContextType;
+                var context = DiscoverUserContextType(out  systemContextType);
 
                 if (context != null)
                 {
@@ -153,8 +154,9 @@ namespace EFCorePowerTools
         }
 
 
-        private dynamic DiscoverUserContextType()
+        private dynamic DiscoverUserContextType(out Type systemContextType)
         {
+            systemContextType = null;
             var project = _dte2.SelectedItems.Item(1).ProjectItem.ContainingProject;
 
             if (!project.TryBuild())
@@ -190,7 +192,7 @@ namespace EFCorePowerTools
                 {
                     var userContextType = resolver.GetType(codeElement.FullName);
 
-                    if (userContextType != null && IsContextType(userContextType))
+                    if (userContextType != null && IsContextType(userContextType, out systemContextType))
                     {
                         return Activator.CreateInstance(userContextType);
                     }
@@ -218,11 +220,11 @@ namespace EFCorePowerTools
             }
         }
 
-        private static bool IsContextType(Type userContextType)
+        private static bool IsContextType(Type userContextType, out Type systemContextType)
         {
-            var systemContextType = GetBaseTypes(userContextType).FirstOrDefault(
-                t => t.FullName == "Microsoft.EntityFrameworkCore.DbContext" 
-                && t.Assembly.GetName().Name == "Microsoft.EntityFrameworkCore");
+            systemContextType = GetBaseTypes(userContextType).FirstOrDefault(
+                t => t.FullName == "Microsoft.EntityFrameworkCore.DbContext"
+                     && t.Assembly.GetName().Name == "Microsoft.EntityFrameworkCore");
 
             return systemContextType != null;
         }

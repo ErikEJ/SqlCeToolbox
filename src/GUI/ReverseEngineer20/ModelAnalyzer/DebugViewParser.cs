@@ -57,11 +57,11 @@ namespace ReverseEngineer20.ModelAnalyzer
 
                 if (!string.IsNullOrEmpty(entityName) && inProperties)
                 {
-                    //TODO Improve!
                     if (line.StartsWith("    Keys:")
                     ||  line.StartsWith("    Navigations:")
                     ||  line.StartsWith("    Annotations:")
-                    ||  line.StartsWith("    Indexes:"))
+                    ||  line.StartsWith("    Indexes:")
+                    ||  line.StartsWith("    Foreign keys:"))
                     {
                         inOtherProperties = true;
                         continue;
@@ -70,12 +70,12 @@ namespace ReverseEngineer20.ModelAnalyzer
                     {
                         var annotations = GetAnnotations(i, debugViewLines);
 
-                        //TODO How to show navigaions?
+                        //TODO Indexes ?
+
+                        //TODO Navigations ?
                         var navigations = GetNavigationNodes(i, debugViewLines);
 
                         var foreignKeysFragment = GetForeignKeys(i, debugViewLines);
-
-                        //TODO Indexes!
 
                         if (line.StartsWith("        Annotations:")
                          || line.StartsWith("          "))
@@ -140,19 +140,26 @@ namespace ReverseEngineer20.ModelAnalyzer
 
         private IEnumerable<string> ParseForeignKeys(List<string> foreignKeysFragments)
         {
-            var links = new List<string>();                
-
+            var links = new List<string>();
+            int i = 0;
+            var annotation = new List<string>();
             if (foreignKeysFragments.Count > 1)
             {
                 foreach (var foreignKeysFragment in foreignKeysFragments)
                 {
+                    i++;
                     var trim = foreignKeysFragment.Trim();
-                    if (trim == "Foreign keys:") continue;
-                    
-                    //TODO Get annotations!
-                    if (trim == "Annotations:") continue;
-                    if (trim == "Relational:") continue;
 
+                    if (trim == "Foreign keys:") continue;
+
+                    if (trim == "Annotations:")
+                    {
+                        annotation = GetFkAnnotations(i, foreignKeysFragments.ToArray());
+                        continue;
+                    }
+
+                    if (trim == "Relational:") continue;
+                    
                     //TODO Test with multi key FKs!
                     var parts = trim.Split(' ');
 
@@ -168,16 +175,14 @@ namespace ReverseEngineer20.ModelAnalyzer
                                      .Replace("'", string.Empty);
 
                     links.Add($"<Link Source=\"{source}\" Target=\"{target}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
+                    annotation.Clear();
                     //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
                 }
             }
-            //       Foreign keys: 
-      //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
-      //  Annotations: 
-      //    Relational:Name: FK_dbo.OrderNdc_dbo.Ndc_NdcId
-      //OrderNdc {'OrderId'} -> Order {'OrderId'} ToDependent: OrderNdc ToPrincipal: Order
-      //  Annotations: 
-      //    Relational:Name: FK_dbo.OrderNdc_dbo.Order_OrderId
+//       Foreign keys: 
+//OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
+//  Annotations: 
+//    Relational:Name: FK_dbo.OrderNdc_dbo.Ndc_NdcId
 
             return links;
         }
@@ -277,6 +282,24 @@ namespace ReverseEngineer20.ModelAnalyzer
                 {
                     annotations.Add(debugViewLines[x].Trim());
                 }
+            }
+
+            return annotations;
+        }
+
+        private List<string> GetFkAnnotations(int i, string[] debugViewLines)
+        {
+            var x = i;
+            var annotations = new List<string>();
+            var maxLength = debugViewLines.Length - 1;
+            while (x++ < maxLength)
+            {
+                if (debugViewLines[x].StartsWith("    "))
+                {
+                    annotations.Add(debugViewLines[x].Trim());
+                }
+                if (debugViewLines[x].StartsWith("    Foreign Keys:"))
+                    break;
             }
 
             return annotations;
