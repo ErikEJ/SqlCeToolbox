@@ -60,7 +60,6 @@ namespace ReverseEngineer20.ModelAnalyzer
                     if (line.StartsWith("    Keys:")
                     ||  line.StartsWith("    Navigations:")
                     ||  line.StartsWith("    Annotations:")
-                    ||  line.StartsWith("    Indexes:")
                     ||  line.StartsWith("    Foreign keys:"))
                     {
                         inOtherProperties = true;
@@ -69,8 +68,6 @@ namespace ReverseEngineer20.ModelAnalyzer
                     if (line.StartsWith("      ") && !inOtherProperties)
                     {
                         var annotations = GetAnnotations(i, debugViewLines);
-
-                        //TODO Indexes ?
 
                         //TODO Navigations ?
                         var navigations = GetNavigationNodes(i, debugViewLines);
@@ -209,8 +206,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                 var trim = debugViewLines[x].Trim();
                 if (!inNavigations) inNavigations = trim == "Foreign keys:";
 
-                if (trim.StartsWith("Indexes:")
-                    || debugViewLines[x].StartsWith("    Annotations:")
+                if (debugViewLines[x].StartsWith("    Annotations:")
                     || debugViewLines[x].StartsWith("Annotations:")
                     || trim.StartsWith("EntityType:"))
                 {
@@ -255,7 +251,6 @@ namespace ReverseEngineer20.ModelAnalyzer
                 {
                     var trim = debugViewLines[x].Trim();
                     if (trim.StartsWith("Keys:")
-                        || trim.StartsWith("Indexes:")
                         || debugViewLines[x].StartsWith("    Annotations:")
                         || debugViewLines[x].StartsWith("Annotations:")
                         || trim.StartsWith("EntityType:")
