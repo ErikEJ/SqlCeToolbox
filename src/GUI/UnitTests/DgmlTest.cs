@@ -14,7 +14,7 @@ namespace UnitTests
         [SetUp]
         public void Setup()
         {
-            _sample = File.ReadAllLines("Vax.txt");
+            _sample = File.ReadAllLines("Aw2014Person.txt");
         }
 
         [Test]

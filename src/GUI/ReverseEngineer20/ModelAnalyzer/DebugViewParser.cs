@@ -2,73 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-//Model: 
-//  EntityType: Alert
-//    Properties: 
-//      AlertId(long) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
-//        Annotations: 
-
-//         Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
-//     Acknowledged (bool) Required 1 1 -1 -1 -1
-
-//       Annotations: 
-
-//         Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
-//     Active (bool) Required 2 2 -1 -1 -1
-
-//       Annotations: 
-
-//         Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
-//     AlertText (string) 3 3 -1 -1 -1
-
-//       Annotations: 
-
-//         Relational:ColumnType: nvarchar(4000)
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
-//      AlertTime(DateTime) Required 4 4 -1 -1 -1
-//        Annotations: 
-//          Relational:ColumnType: datetime
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerDateTimeTypeMapping
-//      Category(int) Required ValueGenerated.OnAdd 5 5 -1 -1 1
-//        Annotations: 
-
-//         Relational:DefaultValueSql: ((0))
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
-//      Details(string) 6 6 -1 -1 -1
-//        Annotations: 
-//          Relational:ColumnType: nvarchar(4000)
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
-//      Reported(bool) Required 7 7 -1 -1 -1
-//        Annotations: 
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping
-//      Resolution(int) Required ValueGenerated.OnAdd 8 8 -1 -1 2
-//        Annotations: 
-//         Relational:DefaultValueSql: ((0))
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
-//      SessionId(long) Required 9 9 -1 -1 -1
-//        Annotations: 
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
-//      Severity(int) Required 10 10 -1 -1 -1
-//        Annotations: 
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
-//      Status(int) Required ValueGenerated.OnAdd 11 11 -1 -1 3
-//        Annotations: 
-
-//         Relational:DefaultValueSql: ((0))
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
-//      SystemErrorGuid(Guid) Required 12 12 -1 -1 -1
-//        Annotations: 
-//          Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.GuidTypeMapping
-//    Keys: 
-//      AlertId PK
-//    Annotations: 
-//      Relational:TableName: Alert
-//      RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
-//Annotations: 
-//ProductVersion: 2.0.0-rtm-26452
-//SqlServer:ValueGenerationStrategy: IdentityColumn
-
-
 namespace ReverseEngineer20.ModelAnalyzer
 {
     public class DebugViewParser
@@ -91,44 +24,33 @@ namespace ReverseEngineer20.ModelAnalyzer
                 {
                     if (line.TrimStart().StartsWith("ProductVersion: "))
                     {
-                        productVersion = line.Split(' ')[1];
+                        productVersion = line.Trim().Split(' ')[1];
                     }
                     if (!line.TrimStart().StartsWith("ProductVersion: " ) &&
                         !line.TrimStart().StartsWith("Annotations:"))
                     {
-                        modelAnnotations += line.Trim() + " ";
+                        modelAnnotations += line.Trim() + Environment.NewLine;
                     }
                 }
             }
             result.Nodes.Add(
-                $"<Node Id=\"Model\" Label=\"{dbContextName}\" ProductVersion=\"{productVersion}\" ProviderAnnotations=\"{modelAnnotations}\" Category=\"Model\" Group=\"Expanded\" />");
-
-   //EntityType: PackageCode
-   //           Properties: 
-   //   PackageCodeId(long) Required PK AfterSave: Throw ValueGenerated.OnAdd 0 0 0 - 1 0
-   //     Annotations:
-   //         Relational: TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
-   //   NdcId(long) Required 1 1 - 1 - 1 - 1
-   //     Annotations:
-   //         Relational: TypeMapping: Microsoft.EntityFrameworkCore.Storage.LongTypeMapping
-   //   PackageNdc(string) 2 2 - 1 - 1 - 1
-   //     Annotations:
-   //         Relational: ColumnType: nvarchar(4000)
-   //       Relational: TypeMapping: Microsoft.EntityFrameworkCore.Storage.Internal.SqlServerStringTypeMapping
+                $"<Node Id=\"Model\" Label=\"{dbContextName}\" ProductVersion=\"{productVersion}\" Annotations=\"{modelAnnotations.Trim()}\" Category=\"Model\" Group=\"Expanded\" />");
 
             var entityName = string.Empty;
             var properties = new List<string>();
             var propertyLinks = new List<string>();
             var inProperties = false;
             var inOtherProperties = false;
+            var i = -1;
             foreach (var line in debugViewLines)
             {
+                i++;
                 if (line.TrimStart().StartsWith("EntityType:"))
                 {
                     if (!string.IsNullOrEmpty(entityName))
                     {
                         result.Nodes.Add(
-                            $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Category=\"EntityType\" Group=\"Collapsed\" />");
+                            $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" Category=\"EntityType\" Group=\"Collapsed\" />");
                         result.Links.Add(
                             $"<Link Source = \"Model\" Target=\"{entityName}\" Category=\"Contains\" />");
                         result.Nodes.AddRange(properties);
@@ -150,27 +72,37 @@ namespace ReverseEngineer20.ModelAnalyzer
                     //TODO Improve!
                     if (line.StartsWith("    Keys:")
                     ||  line.StartsWith("    Navigations:")
-                    ||  line.StartsWith("    Annotations:"))
+                    ||  line.StartsWith("    Annotations:")
+                    ||  line.StartsWith("    Indexes:"))
                     {
                         inOtherProperties = true;
                         continue;
                     }
-                    //TODO Use regex here!
                     if (line.StartsWith("      ") && !inOtherProperties)
                     {
+                        var annotations = GetAnnotations(i, debugViewLines);
+
+                        //TODO How to show navigaions?
+                        var navigations = GetNavigationNodes(i, debugViewLines);
+
+                        var foreignKeysFragment = GetForeignKeys(i, debugViewLines);
+
+                        //TODO Indexes!
+
                         if (line.StartsWith("        Annotations:")
                          || line.StartsWith("          Relational:"))
-                        {
+                         {
                             continue;
                         }
-                        //0       1      2+        
-                        //AlertId (long) Required PK AfterSave:Throw ValueGenerated.OnAdd 
-                        //TODO What is AfterSave:Throw ?
-                        //TODO Backing field!
 
+                        var annotation = string.Join(Environment.NewLine, annotations);
+                        
                         var props = line.Trim().Split(' ').ToList();
+
                         var name = props[0];
-                        var type = System.Security.SecurityElement.Escape(props[1]);
+                        var field = GetTypeValue(props[1], true);
+                        var type = GetTypeValue(props[1], false);
+
                         props.RemoveRange(0, 2);
 
                         var isRequired = props.Contains("Required");
@@ -183,53 +115,138 @@ namespace ReverseEngineer20.ModelAnalyzer
                         if (isPrimaryKey) category = "Property Primary";
 
                         properties.Add(
-                            $"<Node Id = \"{entityName}_{name}\" Label=\"{name}\" Category=\"{category}\" Type=\"{type}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" ValueGenerated=\"{valueGenerated}\" />");
+                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" Field=\"{field}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" ValueGenerated=\"{valueGenerated}\" />");
 
-                        propertyLinks.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}_{name}\" Category=\"Contains\" />");
+                        propertyLinks.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
 
-                        //<Property Id = "Type" Label="Type" Description="CLR data type" Group="Model Properties" DataType="System.String" />
-                        //<Property Id = "Field" Label ="Field" Description="Backing field" Group="Model Properties" DataType="System.String" />
-                        //<Property Id = "IsIndexed" Group="Model Flags" DataType="System.Boolean" />
-                        //<Property Id = "IsRequired" Group="Model Flags" DataType="System.Boolean" />
-                        //<Property Id = "IsPrimaryKey" Group="Model Flags" DataType="System.Boolean" />
-                        //<Property Id = "IsForeignKey" Group="Model Flags" DataType="System.Boolean" />
-                        //<Property Id = "Valuegeneration"  Group="Model Flags" DataType="System.String" />
-
-                        //<Property Id = "ColumnType" Label="Column Type" Description="Relational data type" Group="Model Properties" DataType="System.String" />
-                        //<Property Id = "ProviderAnnotations" Label="Provider Annotations" Description="Provider specific annotations" Group="Model Properties" DataType="System.String" />
-                        //<Property Id = "TableName" Label="Table name" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
+                        propertyLinks.AddRange(ParseForeignKeys(foreignKeysFragment));
                     }
                 }
             }
 
             return result;
         }
+
+        private IEnumerable<string> ParseForeignKeys(List<string> foreignKeysFragments)
+        {
+            var links = new List<string>();                
+
+            if (foreignKeysFragments.Count > 1)
+            {
+                foreach (var foreignKeysFragment in foreignKeysFragments)
+                {
+                    var trim = foreignKeysFragment.Trim();
+                    if (trim == "Foreign keys:") continue;
+                    
+                    //TODO Get annotations!
+                    if (trim == "Annotations:") continue;
+                    if (trim == "Relational:") continue;
+
+                    //TODO Test with multi key FKs!
+                    var parts = trim.Split(' ');
+
+                    var source = parts[0]
+                                 + "."
+                                 //TODO improve
+                                 + parts[1].Replace("{", string.Empty).Replace("}", string.Empty)
+                                     .Replace("'", string.Empty);
+                    var target = parts[3]
+                                 + "."
+                                 //TODO improve
+                                 + parts[4].Replace("{", string.Empty).Replace("}", string.Empty)
+                                     .Replace("'", string.Empty);
+
+                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
+                    //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
+                }
+            }
+            //       Foreign keys: 
+      //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
+      //  Annotations: 
+      //    Relational:Name: FK_dbo.OrderNdc_dbo.Ndc_NdcId
+      //OrderNdc {'OrderId'} -> Order {'OrderId'} ToDependent: OrderNdc ToPrincipal: Order
+      //  Annotations: 
+      //    Relational:Name: FK_dbo.OrderNdc_dbo.Order_OrderId
+
+            return links;
+        }
+
+        private string GetTypeValue(string type, bool asField)
+        {
+            var i = asField ? 0 : 1;
+            var result = type.Replace("(", string.Empty).Replace(")", string.Empty);
+            if (result.Contains(","))
+            {
+                result = result.Split(',')[i];
+            }
+            return System.Security.SecurityElement.Escape(result);
+        }
+
+        private List<string> GetForeignKeys(int i, string[] debugViewLines)
+        {
+            var x = i;
+            var navigations = new List<string>();
+            var maxLength = debugViewLines.Length - 1;
+            bool inNavigations = false;
+            while (x++ < maxLength)
+            {
+                var trim = debugViewLines[x].Trim();
+                if (!inNavigations) inNavigations = trim == "Foreign keys:";
+
+                if (trim.StartsWith("Indexes:")
+                    || debugViewLines[x].StartsWith("    Annotations:")
+                    || debugViewLines[x].StartsWith("Annotations:")
+                    || trim.StartsWith("EntityType:"))
+                {
+                    break;
+                }
+                if (inNavigations) navigations.Add(trim);
+            }
+
+            return navigations;
+        }
+
+    private List<string> GetNavigationNodes(int i, string[] debugViewLines)
+        {
+            var x = i;
+            var navigations = new List<string>();
+            var maxLength = debugViewLines.Length - 1;
+            while (x++ < maxLength && debugViewLines[x] == "    Navigations: ")
+            {
+                while (x++ < maxLength)
+                {
+                    var trim = debugViewLines[x].Trim();
+                    if (trim.StartsWith("Keys:")
+                        || trim.StartsWith("Indexes:")
+                        || debugViewLines[x].StartsWith("    Annotations:")
+                        || debugViewLines[x].StartsWith("Annotations:")
+                        || trim.StartsWith("EntityType:")
+                        || trim.StartsWith("Foreign Keys:")
+                        || trim.StartsWith("Keys:"))
+                    {
+                        break;
+                    }
+                    navigations.Add(debugViewLines[x].Trim());
+                }
+            }
+
+            return navigations;
+        }
+
+        private List<string> GetAnnotations(int i, string[] debugViewLines)
+        {
+            var x = i;
+            var annotations = new List<string>();
+            var maxLength = debugViewLines.Length - 1;
+            if (x++ < maxLength && debugViewLines[x] == "        Annotations: ")
+            {
+                while (x++ < maxLength && debugViewLines[x].Trim().StartsWith("Relational:"))
+                {
+                    annotations.Add(debugViewLines[x].Trim());
+                }
+            }
+
+            return annotations;
+        }
     }
 }
-
-
-
-//<Property Id = "Field" Label ="Field" Description="Backing field" Group="Model Properties" DataType="System.String" />
-//<Property Id = "Type" Label="Type" Description="CLR data type" Group="Model Properties" DataType="System.String" />
-//<Property Id = "ColumnType" Label="Column Type" Description="Relational data type" Group="Model Properties" DataType="System.String" />
-//<Property Id = "ProductVersion" Label="Product Version" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
-//<Property Id = "ProviderAnnotations" Label="Provider Annotations" Description="Provider specific annotations" Group="Model Properties" DataType="System.String" />
-//<Property Id = "TableName" Label="Table name" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
-//<Property Id = "IsIndexed" Group="Model Flags" DataType="System.Boolean" />
-//<Property Id = "IsRequired" Group="Model Flags" DataType="System.Boolean" />
-//<Property Id = "IsPrimaryKey" Group="Model Flags" DataType="System.Boolean" />
-//<Property Id = "IsForeignKey" Group="Model Flags" DataType="System.Boolean" />
-//<Property Id = "IsValueGenerated" Group="Model Flags" DataType="System.Boolean" /> 
-//<Property Id = "Valuegeneration"  Group="Model Flags" DataType="System.String" />
-
-//<Node Id = "Database" Label="NorthwindEF7.sdf" Category="Database" Group="Expanded" />
-//<Node Id = "Categories" Label="Categories" Category="Table" Group="Collapsed" />
-//<Node Id = "Categories_CategoryID" Label="CategoryID" Category="Field Primary" Description="int" />
-//<Node Id = "Categories_CategoryName" Label="CategoryName" Category="Field" Description="nvarchar(15)" />
-//<Node Id = "Categories_Description" Label="Description" Category="Field Optional" Description="ntext" />
-
-//<Link Source = "Database" Target="Categories" Category="Contains" />
-//<Link Source = "Categories" Target="Categories_CategoryID" Category="Contains" />
-//<Link Source = "Categories" Target="Categories_CategoryName" Category="Contains" />
-//<Link Source = "Categories" Target="Categories_Description" Category="Contains" />
-//<Link Source = "Categories" Target="Categories_Picture" Category="Contains" />
