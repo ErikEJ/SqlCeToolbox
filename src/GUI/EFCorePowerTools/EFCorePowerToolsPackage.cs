@@ -76,6 +76,12 @@ namespace EFCorePowerTools
                 var menuItem7 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
                     OnProjectMenuBeforeQueryStatus, menuCommandId7);
                 oleMenuCommandService.AddCommand(menuItem7);
+
+                var menuCommandId8 = new CommandID(GuidList.guidDbContextPackageCmdSet,
+                    (int)PkgCmdIDList.cmdidDgmlView);
+                var menuItem8 = new OleMenuCommand(OnItemContextMenuInvokeHandler, null,
+                    OnItemMenuBeforeQueryStatus, menuCommandId8);
+                oleMenuCommandService.AddCommand(menuItem8);
             }
         }
 
@@ -126,6 +132,10 @@ namespace EFCorePowerTools
                     if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDebugView)
                     {
                         _modelAnalyzerHandler.GenerateDebugView(context);
+                    }
+                    if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlView)
+                    {
+                        _modelAnalyzerHandler.GenerateDgml(context);
                     }
                 }
             }
@@ -293,7 +303,6 @@ namespace EFCorePowerTools
                 return;
             }
 
-            //TODO ErikEJ Extend list!
             menuCommand.Visible =
                 project.Kind == "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" ||
                 project.Kind == "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}"; // csproj

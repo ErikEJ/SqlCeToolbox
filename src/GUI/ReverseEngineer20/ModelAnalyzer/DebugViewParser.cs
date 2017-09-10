@@ -47,19 +47,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                 i++;
                 if (line.TrimStart().StartsWith("EntityType:"))
                 {
-                    if (!string.IsNullOrEmpty(entityName))
-                    {
-                        result.Nodes.Add(
-                            $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" Category=\"EntityType\" Group=\"Collapsed\" />");
-                        result.Links.Add(
-                            $"<Link Source = \"Model\" Target=\"{entityName}\" Category=\"Contains\" />");
-                        result.Nodes.AddRange(properties);
-                        result.Links.AddRange(propertyLinks);
-                        properties.Clear();
-                        propertyLinks.Clear();
-                    }
-                    entityName = line.Trim().Split(' ')[1];
-                    inProperties = false;
+                    entityName = BuildEntity(debugViewLines, entityName, i, result, properties, propertyLinks, line, ref inProperties);
                 }
                 if (line.TrimStart().StartsWith("Properties:"))
                 {
@@ -90,7 +78,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                         //TODO Indexes!
 
                         if (line.StartsWith("        Annotations:")
-                         || line.StartsWith("          Relational:"))
+                         || line.StartsWith("          "))
                          {
                             continue;
                         }
@@ -123,8 +111,31 @@ namespace ReverseEngineer20.ModelAnalyzer
                     }
                 }
             }
-
+            BuildEntity(debugViewLines, entityName, i, result, properties, propertyLinks, null, ref inProperties);
             return result;
+        }
+
+        private string BuildEntity(string[] debugViewLines, string entityName, int i, DebugViewParserResult result,
+            List<string> properties, List<string> propertyLinks, string line, ref bool inProperties)
+        {
+            if (!string.IsNullOrEmpty(entityName))
+            {
+                var annotations = GetEntityAnnotations(i, debugViewLines);
+                var annotation = string.Join(Environment.NewLine, annotations);
+
+                result.Nodes.Add(
+                    $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" Annotations=\"{annotation}\" Category=\"EntityType\" Group=\"Collapsed\" />");
+                result.Links.Add(
+                    $"<Link Source = \"Model\" Target=\"{entityName}\" Category=\"Contains\" />");
+                result.Nodes.AddRange(properties);
+                result.Links.AddRange(propertyLinks);
+                properties.Clear();
+                propertyLinks.Clear();
+            }
+            if (!string.IsNullOrEmpty(line))
+                entityName = line.Trim().Split(' ')[1];
+            inProperties = false;
+            return entityName;
         }
 
         private IEnumerable<string> ParseForeignKeys(List<string> foreignKeysFragments)
@@ -177,9 +188,9 @@ namespace ReverseEngineer20.ModelAnalyzer
             var result = type.Replace("(", string.Empty).Replace(")", string.Empty);
             if (result.Contains(","))
             {
-                result = result.Split(',')[i];
+                return System.Security.SecurityElement.Escape(result.Split(',')[i]);
             }
-            return System.Security.SecurityElement.Escape(result);
+            return asField ? string.Empty : System.Security.SecurityElement.Escape(result);
         }
 
         private List<string> GetForeignKeys(int i, string[] debugViewLines)
@@ -206,7 +217,29 @@ namespace ReverseEngineer20.ModelAnalyzer
             return navigations;
         }
 
-    private List<string> GetNavigationNodes(int i, string[] debugViewLines)
+        private List<string> GetEntityAnnotations(int i, string[] debugViewLines)
+        {
+            var x = i;
+            var values = new List<string>();
+            var maxLength = debugViewLines.Length - 1;
+            bool inTheMix = false;
+            while (x++ < maxLength)
+            {
+                var trim = debugViewLines[x].Trim();
+                if (!inTheMix) inTheMix = debugViewLines[x] == "    Annotations: ";
+
+                if (debugViewLines[x].StartsWith("Annotations:")
+                    || trim.StartsWith("EntityType:"))
+                {
+                    break;
+                }
+                if (inTheMix && !trim.StartsWith("Annotations:")) values.Add(trim);
+            }
+
+            return values;
+        }
+
+        private List<string> GetNavigationNodes(int i, string[] debugViewLines)
         {
             var x = i;
             var navigations = new List<string>();
@@ -240,7 +273,7 @@ namespace ReverseEngineer20.ModelAnalyzer
             var maxLength = debugViewLines.Length - 1;
             if (x++ < maxLength && debugViewLines[x] == "        Annotations: ")
             {
-                while (x++ < maxLength && debugViewLines[x].Trim().StartsWith("Relational:"))
+                while (x++ < maxLength && debugViewLines[x].StartsWith("        "))
                 {
                     annotations.Add(debugViewLines[x].Trim());
                 }
