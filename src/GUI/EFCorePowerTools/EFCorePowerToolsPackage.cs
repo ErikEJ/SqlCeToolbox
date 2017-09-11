@@ -29,14 +29,16 @@ namespace EFCorePowerTools
     // ReSharper disable once InconsistentNaming
     public sealed class EFCorePowerToolsPackage : Package
     {
-        private readonly ReverseEngineerCodeFirstHandler _reverseEngineerCodeFirstHandler;
+
+        //private readonly ReverseEngineerCodeFirstHandler _reverseEngineerCodeFirstHandler;
+
         private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
         private readonly AboutHandler _aboutHandler;
         private DTE2 _dte2;
 
         public EFCorePowerToolsPackage()
         {
-            _reverseEngineerCodeFirstHandler = new ReverseEngineerCodeFirstHandler(this);
+            //_reverseEngineerCodeFirstHandler = new ReverseEngineerCodeFirstHandler(this);
             _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
             _aboutHandler = new AboutHandler(this);
         }
@@ -82,6 +84,12 @@ namespace EFCorePowerTools
                 var menuItem8 = new OleMenuCommand(OnItemContextMenuInvokeHandler, null,
                     OnItemMenuBeforeQueryStatus, menuCommandId8);
                 oleMenuCommandService.AddCommand(menuItem8);
+
+                var menuCommandId9 = new CommandID(GuidList.guidDbContextPackageCmdSet,
+                    (int)PkgCmdIDList.cmdidEdmMenuAbout);
+                var menuItem9 = new OleMenuCommand(OnItemContextMenuInvokeHandler, null,
+                    OnItemMenuBeforeQueryStatus, menuCommandId9);
+                oleMenuCommandService.AddCommand(menuItem9);
             }
         }
 
@@ -101,7 +109,8 @@ namespace EFCorePowerTools
 
             if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
             {
-                _reverseEngineerCodeFirstHandler.ReverseEngineerCodeFirst(project);
+                EnvDteHelper.ShowMessage("Temporarily disabled, you can use the same feature in SQLite Toolbox in the meantime");
+                //_reverseEngineerCodeFirstHandler.ReverseEngineerCodeFirst(project);
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
             {
@@ -111,45 +120,58 @@ namespace EFCorePowerTools
 
         private void OnItemContextMenuInvokeHandler(object sender, EventArgs e)
         {
-            var menuCommand = sender as MenuCommand;
-
-            if (menuCommand == null)
-            {
-                return;
-            }
-
-            if (_dte2.SelectedItems.Count != 1)
-            {
-                return;
-            }
-
             try
             {
-                Type systemContextType;
-                var context = DiscoverUserContextType(out  systemContextType);
+                var menuCommand = sender as MenuCommand;
 
-                if (context != null)
+                if (menuCommand == null)
                 {
-                    if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDebugView)
+                    return;
+                }
+
+                if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidEdmMenuAbout)
+                {
+                    _aboutHandler.ShowDialog();
+                    return;
+                }
+
+                if (_dte2.SelectedItems.Count != 1)
+                {
+                    return;
+                }
+
+                try
+                {                  
+                    Type systemContextType;
+                    var context = DiscoverUserContextType(out systemContextType);
+
+                    if (context != null)
                     {
-                        _modelAnalyzerHandler.GenerateDebugView(context);
-                    }
-                    if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlView)
-                    {
-                        _modelAnalyzerHandler.GenerateDgml(context);
+                        if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDebugView)
+                        {
+                            _modelAnalyzerHandler.GenerateDebugView(context);
+                        }
+                        else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlView)
+                        {
+                            _modelAnalyzerHandler.GenerateDgml(context);
+                        }
                     }
                 }
+                catch (TargetInvocationException ex)
+                {
+                    var innerException = ex.InnerException;
+
+                    var remoteStackTraceString =
+                        typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic)
+                        ?? typeof(Exception).GetField("remote_stack_trace", BindingFlags.Instance | BindingFlags.NonPublic);
+                    remoteStackTraceString.SetValue(innerException, innerException.StackTrace + "$$RethrowMarker$$");
+
+                    EnvDteHelper.ShowMessage("An error occurred: " + Environment.NewLine + innerException.ToString());
+                }
             }
-            catch (TargetInvocationException ex)
+            catch (Exception ex)
             {
-                var innerException = ex.InnerException;
-
-                var remoteStackTraceString =
-                    typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic)
-                    ?? typeof(Exception).GetField("remote_stack_trace", BindingFlags.Instance | BindingFlags.NonPublic);
-                remoteStackTraceString.SetValue(innerException, innerException.StackTrace + "$$RethrowMarker$$");
-
-                throw innerException;
+                EnvDteHelper.ShowMessage("An error occurred: " + Environment.NewLine + ex.ToString());
             }
         }
 
@@ -184,7 +206,7 @@ namespace EFCorePowerTools
 
             var resolver = typeService.GetTypeResolutionService(vsHierarchy);
 
-            var codeElements = FindClassesInCodeModel(_dte2.SelectedItems.Item(1).ProjectItem.FileCodeModel.CodeElements);
+            var codeElements = FindClassesInCodeModel(_dte2.SelectedItems.Item(1).ProjectItem.FileCodeModel.CodeElements).ToList();
 
             if (codeElements.Any())
             {
