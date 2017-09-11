@@ -158,7 +158,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                     if (trim == "Relational:") continue;
                     
                     //TODO Test with multi key FKs!
-                    var parts = trim.Split(' ');
+                    var parts = trim.Split(' ').ToList();
 
                     var source = parts[0]
                                  + "."
@@ -171,7 +171,11 @@ namespace ReverseEngineer20.ModelAnalyzer
                                  + parts[4].Replace("{", string.Empty).Replace("}", string.Empty)
                                      .Replace("'", string.Empty);
 
-                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
+                    parts.RemoveRange(0, 4);
+
+                    var isUnique = parts.Contains("Unique");
+
+                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" Name=\"{source + " -> " + target}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
                     annotation.Clear();
                     //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
                 }

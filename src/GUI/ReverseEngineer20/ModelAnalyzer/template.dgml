@@ -37,6 +37,7 @@
     <Property Id="Field" Label ="Field" Description="Backing field" Group="Model Properties" DataType="System.String" />
     <Property Id="Type" Label="Type" Description="CLR data type" Group="Model Properties" DataType="System.String" />
     <Property Id="Annotations" Label="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsUnique" Group="Model Properties" DataType="System.Boolean" />
     <Property Id="ProductVersion" Label="Product Version" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
     <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
     <Property Id="IsRequired" Group="Property Flags" DataType="System.Boolean" />

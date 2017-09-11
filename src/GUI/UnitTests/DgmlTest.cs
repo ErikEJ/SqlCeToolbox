@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using ReverseEngineer20.ModelAnalyzer;
@@ -26,8 +27,9 @@ namespace UnitTests
             // Assert
             Assert.AreEqual(83, result.Nodes.Count);
             Assert.AreEqual(159, result.Links.Count);
-        }
 
+            Assert.AreEqual(18, result.Links.Where(n => n.Contains("IsUnique=\"True\"")).Count());
+        }
 
         [Test]
         public void BuildSample1()
