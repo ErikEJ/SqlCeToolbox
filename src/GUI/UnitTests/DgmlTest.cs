@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using ReverseEngineer20.ModelAnalyzer;
 
@@ -28,7 +30,7 @@ namespace UnitTests
             Assert.AreEqual(83, result.Nodes.Count);
             Assert.AreEqual(159, result.Links.Count);
 
-            Assert.AreEqual(18, result.Links.Where(n => n.Contains("IsUnique=\"True\"")).Count());
+            Assert.AreEqual(18, result.Links.Count(n => n.Contains("IsUnique=\"True\"")));
         }
 
         [Test]
@@ -43,5 +45,34 @@ namespace UnitTests
 
             File.WriteAllText(@"C:\temp\testing.dgml", result, Encoding.UTF8);
         }
+
+        //[Test]
+        //public void CanBuildDgml()
+        //{
+        //    using (var myContext = new MyDbContext())
+        //    {
+        //        var dgml = myContext.AsDgmlView();
+        //        var path = Path.GetTempFileName() + ".dgml";
+        //        File.WriteAllText(path, dgml, Encoding.UTF8);
+        //        Process.Start(path);
+        //    }
+        //}
+
+        public class Samurai
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public class MyDbContext : DbContext
+        {
+            public DbSet<Samurai> Samurais { get; set; }
+            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            {
+                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=EFCoreSamuraiConsole;Integrated Security=True;";
+                optionsBuilder.UseInMemoryDatabase("dgml");
+            }
+        }
+
     }
 }
