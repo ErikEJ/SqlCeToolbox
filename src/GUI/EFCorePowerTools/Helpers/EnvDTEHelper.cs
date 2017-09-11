@@ -123,7 +123,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         // <param name="defaultButton">Default button (invoked when user presses return).</param>
         // <param name="messageIcon">Icon (warning, error, informational, etc.) to display</param>
         // <returns>result corresponding to the button clicked by the user.</returns>
-        public static DialogResult ShowMessageBox(
+        private static DialogResult ShowMessageBox(
             string messageText, OLEMSGBUTTON messageButtons, OLEMSGDEFBUTTON defaultButton,
             OLEMSGICON messageIcon)
         {
