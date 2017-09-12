@@ -155,7 +155,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                         continue;
                     }
 
-                    if (trim == "Relational:") continue;
+                    if (trim.StartsWith("Relational:")) continue;
                     
                     //TODO Test with multi key FKs!
                     var parts = trim.Split(' ').ToList();

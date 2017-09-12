@@ -11,26 +11,38 @@ namespace UnitTests
     [TestFixture]
     public class DgmlTest
     {
-        private string[] _sample;
         private readonly DebugViewParser _parser = new DebugViewParser();
-
-        [SetUp]
-        public void Setup()
-        {
-            _sample = File.ReadAllLines("Aw2014Person.txt");
-        }
 
         [Test]
         public void ParseDebugViewSample1()
         {
+            // Arrange
+            var _debugView = File.ReadAllLines("Aw2014Person.txt");
+
             // Act
-            var result = _parser.Parse(_sample, "Test");
+            var result = _parser.Parse(_debugView, "Test");
 
             // Assert
             Assert.AreEqual(83, result.Nodes.Count);
             Assert.AreEqual(159, result.Links.Count);
 
             Assert.AreEqual(18, result.Links.Count(n => n.Contains("IsUnique=\"True\"")));
+        }
+
+        [Test]
+        public void ParseDebugViewFkBug()
+        {
+            // Arrange
+            var _debugView = File.ReadAllLines("Northwind.txt");
+
+            // Act
+            var result = _parser.Parse(_debugView, "Test");
+
+            // Assert
+            Assert.AreEqual(102, result.Nodes.Count);
+            Assert.AreEqual(202, result.Links.Count);
+
+            Assert.AreEqual(0, result.Links.Count(n => n.Contains("IsUnique=\"True\"")));
         }
 
         [Test]
@@ -43,7 +55,20 @@ namespace UnitTests
             // Assert
             Assert.AreNotEqual(result, null);
 
-            File.WriteAllText(@"C:\temp\testing.dgml", result, Encoding.UTF8);
+            File.WriteAllText(@"C:\temp\Aw2014Person.dgml", result, Encoding.UTF8);
+        }
+
+        [Test]
+        public void BuildNorthwind()
+        {
+            // Act
+            var builder = new DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("Northwind.txt"), "test");
+
+            // Assert
+            Assert.AreNotEqual(result, null);
+
+            File.WriteAllText(@"C:\temp\northwind.dgml", result, Encoding.UTF8);
         }
 
         //[Test]
