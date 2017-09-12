@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ReverseEngineer20\ModelAnalyzer\DebugViewParser.cs" Link="DebugViewParser.cs" />
+    <Compile Include="..\ReverseEngineer20\ModelAnalyzer\DebugViewParserResult.cs" Link="DebugViewParserResult.cs" />
+    <Compile Include="..\ReverseEngineer20\ModelAnalyzer\DgmlBuilder.cs" Link="DgmlBuilder.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\ReverseEngineer20\ModelAnalyzer\template.dgml" Link="ModelAnalyzer\template.dgml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ModelAnalyzer\" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>ErikEJ.EntityFrameworkCore.DgmlBuilder</PackageId>
+    <PackageVersion>0.1-alpha</PackageVersion>
+    <Authors>ErikEJ</Authors>
+    <Description>Generate DGML (Graph) content that visualizes your Dbontext</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Initial beta release</PackageReleaseNotes>
+    <PackageTags>DbContext EntityFramework DGML graph</PackageTags>
+    <RootNamespace>ReverseEngineer20</RootNamespace>
+  </PropertyGroup>
+
+</Project>
