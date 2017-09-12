@@ -90,6 +90,7 @@
     <Compile Include="Guids.cs" />
     <Compile Include="Handlers\AboutHandler.cs" />
     <Compile Include="Handlers\ModelAnalyzerHandler.cs" />
+    <Compile Include="Handlers\ReverseEngineerCodeFirstHandler.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -297,7 +298,15 @@
     <Content Include="db.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="netstandard.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\license.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="System.ValueTuple.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

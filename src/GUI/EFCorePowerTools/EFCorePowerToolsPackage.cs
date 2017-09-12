@@ -29,16 +29,14 @@ namespace EFCorePowerTools
     // ReSharper disable once InconsistentNaming
     public sealed class EFCorePowerToolsPackage : Package
     {
-
-        //private readonly ReverseEngineerCodeFirstHandler _reverseEngineerCodeFirstHandler;
-
+        private readonly ReverseEngineerCodeFirstHandler _reverseEngineerCodeFirstHandler;
         private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
         private readonly AboutHandler _aboutHandler;
         private DTE2 _dte2;
 
         public EFCorePowerToolsPackage()
         {
-            //_reverseEngineerCodeFirstHandler = new ReverseEngineerCodeFirstHandler(this);
+            _reverseEngineerCodeFirstHandler = new ReverseEngineerCodeFirstHandler(this);
             _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
             _aboutHandler = new AboutHandler(this);
         }
@@ -109,8 +107,7 @@ namespace EFCorePowerTools
 
             if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
             {
-                EnvDteHelper.ShowMessage("Temporarily disabled, you can use the same feature in SQLite Toolbox in the meantime");
-                //_reverseEngineerCodeFirstHandler.ReverseEngineerCodeFirst(project);
+                _reverseEngineerCodeFirstHandler.ReverseEngineerCodeFirst(project);
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
             {
