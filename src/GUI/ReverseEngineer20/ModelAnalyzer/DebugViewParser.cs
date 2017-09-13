@@ -171,11 +171,11 @@ namespace ReverseEngineer20.ModelAnalyzer
                                  + parts[4].Replace("{", string.Empty).Replace("}", string.Empty)
                                      .Replace("'", string.Empty);
 
-                    parts.RemoveRange(0, 4);
+                    parts.RemoveRange(0, 5);
 
                     var isUnique = parts.Contains("Unique");
 
-                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" Name=\"{source + " -> " + target}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
+                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
                     annotation.Clear();
                     //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
                 }
@@ -216,7 +216,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                 {
                     break;
                 }
-                if (inNavigations) navigations.Add(trim);
+                if (inNavigations) navigations.Add(debugViewLines[x]);
             }
 
             return navigations;
@@ -293,7 +293,7 @@ namespace ReverseEngineer20.ModelAnalyzer
             var maxLength = debugViewLines.Length - 1;
             while (x++ < maxLength)
             {
-                if (debugViewLines[x].StartsWith("    "))
+                if (debugViewLines[x].StartsWith("          "))
                 {
                     annotations.Add(debugViewLines[x].Trim());
                 }
