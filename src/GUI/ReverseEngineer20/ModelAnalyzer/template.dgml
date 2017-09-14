@@ -46,6 +46,11 @@
     <Property Id="IsRequired" Group="Property Flags" DataType="System.Boolean" />
     <Property Id="IsPrimaryKey" Group="Property Flags" DataType="System.Boolean" />
     <Property Id="IsForeignKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsShadow" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsAlternateKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsConcurrencyToken" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsUnicode" Group="Property Flags" DataType="System.Boolean" />
     <Property Id="ValueGenerated"  Group="Property Flags" DataType="System.String" />
   </Properties>
 </DirectedGraph>

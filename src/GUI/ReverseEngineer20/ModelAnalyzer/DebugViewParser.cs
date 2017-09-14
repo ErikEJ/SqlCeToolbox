@@ -95,13 +95,18 @@ namespace ReverseEngineer20.ModelAnalyzer
                         var isIndexed = props.Contains("Index");
                         var isPrimaryKey = props.Contains("PK");
                         var isForeignKey = props.Contains("FK");
+                        var isShadow = props.Contains("Shadow");
+                        var isAlternateKey = props.Contains("AlternateKey");
+                        var isConcurrency = props.Contains("Concurrency");
+                        var isUnicode = !props.Contains("Ansi");
+
                         var valueGenerated = props.FirstOrDefault(p => p.StartsWith("ValueGenerated."));
                         var category = "Property";
                         if (isForeignKey) category = "Property Foreign";
                         if (isPrimaryKey) category = "Property Primary";
 
                         properties.Add(
-                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" Field=\"{field}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" ValueGenerated=\"{valueGenerated}\" />");
+                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" Field=\"{field}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" IsShadow=\"{isShadow}\" IsAlternateKey=\"{isAlternateKey}\" IsConcurrencyToken=\"{isConcurrency}\" IsUnicode=\"{isUnicode}\" ValueGenerated=\"{valueGenerated}\" />");
 
                         propertyLinks.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
 
