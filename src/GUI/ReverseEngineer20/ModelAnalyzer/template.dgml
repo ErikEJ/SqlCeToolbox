@@ -54,5 +54,6 @@
     <Property Id="ValueGenerated" Group="Property Flags" DataType="System.String" />
     <Property Id="BeforeSaveBehavior" Group="Property Flags" DataType="System.String" />
     <Property Id="AfterSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="PropertyAccessMode" Group="Property Flags" DataType="System.String" />
   </Properties>
 </DirectedGraph>

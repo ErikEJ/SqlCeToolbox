@@ -112,6 +112,14 @@ namespace ReverseEngineer20.ModelAnalyzer
                         if (props.Contains("AfterSave:PropertySaveBehavior.Throw"))
                             afterSaveBehavior = "PropertySaveBehavior.Throw";
 
+                        var propertyAccesMode = "PropertyAccessMode.Default";
+                        if (props.Contains("PropertyAccessMode.Field"))
+                            propertyAccesMode = "PropertyAccessMode.Field";
+                        if (props.Contains("PropertyAccessMode.FieldDuringConstruction"))
+                            propertyAccesMode = "PropertyAccessMode.FieldDuringConstruction";
+                        if (props.Contains("PropertyAccessMode.Property"))
+                            propertyAccesMode = "PropertyAccessMode.Property";
+
                         var valueGenerated = props.FirstOrDefault(p => p.StartsWith("ValueGenerated.")) ?? "None";
                         var category = "Property";
                         if (!isRequired) category = "Property Optional";
@@ -119,7 +127,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                         if (isPrimaryKey) category = "Property Primary";
 
                         properties.Add(
-                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" Field=\"{field}\" BeforeSaveBehavior=\"{beforeSaveBehavior}\" AfterSaveBehavior=\"{afterSaveBehavior}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" IsShadow=\"{isShadow}\" IsAlternateKey=\"{isAlternateKey}\" IsConcurrencyToken=\"{isConcurrency}\" IsUnicode=\"{isUnicode}\" ValueGenerated=\"{valueGenerated}\" />");
+                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" Field=\"{field}\" PropertyAccessMode=\"{propertyAccesMode}\" BeforeSaveBehavior=\"{beforeSaveBehavior}\" AfterSaveBehavior=\"{afterSaveBehavior}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" IsShadow=\"{isShadow}\" IsAlternateKey=\"{isAlternateKey}\" IsConcurrencyToken=\"{isConcurrency}\" IsUnicode=\"{isUnicode}\" ValueGenerated=\"{valueGenerated}\" />");
 
                         propertyLinks.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
 
@@ -136,8 +144,6 @@ namespace ReverseEngineer20.ModelAnalyzer
         {
             if (!string.IsNullOrEmpty(entityName))
             {
-                // Base: xxx - Abstract - ChangeTrackingStrategy.Snapshot(or other)
-
                 var isAbstract = false;
                 var baseClass = string.Empty;
                 string changeTrackingStrategy = "ChangeTrackingStrategy.Snapshot";
