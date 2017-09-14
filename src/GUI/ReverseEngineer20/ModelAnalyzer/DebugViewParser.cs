@@ -100,13 +100,26 @@ namespace ReverseEngineer20.ModelAnalyzer
                         var isConcurrency = props.Contains("Concurrency");
                         var isUnicode = !props.Contains("Ansi");
 
-                        var valueGenerated = props.FirstOrDefault(p => p.StartsWith("ValueGenerated."));
+                        var beforeSaveBehavior = "PropertySaveBehavior.Save";
+                        if (props.Contains("BeforeSave:PropertySaveBehavior.Ignore"))
+                            beforeSaveBehavior = "PropertySaveBehavior.Ignore";
+                        if (props.Contains("BeforeSave:PropertySaveBehavior.Throw"))
+                            beforeSaveBehavior = "PropertySaveBehavior.Throw";
+
+                        var afterSaveBehavior = "PropertySaveBehavior.Save";
+                        if (props.Contains("AfterSave:PropertySaveBehavior.Ignore"))
+                            afterSaveBehavior = "PropertySaveBehavior.Ignore";
+                        if (props.Contains("AfterSave:PropertySaveBehavior.Throw"))
+                            afterSaveBehavior = "PropertySaveBehavior.Throw";
+
+                        var valueGenerated = props.FirstOrDefault(p => p.StartsWith("ValueGenerated.")) ?? "None";
                         var category = "Property";
+                        if (!isRequired) category = "Property Optional";
                         if (isForeignKey) category = "Property Foreign";
                         if (isPrimaryKey) category = "Property Primary";
 
                         properties.Add(
-                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" Field=\"{field}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" IsShadow=\"{isShadow}\" IsAlternateKey=\"{isAlternateKey}\" IsConcurrencyToken=\"{isConcurrency}\" IsUnicode=\"{isUnicode}\" ValueGenerated=\"{valueGenerated}\" />");
+                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" Field=\"{field}\" BeforeSaveBehavior=\"{beforeSaveBehavior}\" AfterSaveBehavior=\"{afterSaveBehavior}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" IsShadow=\"{isShadow}\" IsAlternateKey=\"{isAlternateKey}\" IsConcurrencyToken=\"{isConcurrency}\" IsUnicode=\"{isUnicode}\" ValueGenerated=\"{valueGenerated}\" />");
 
                         propertyLinks.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
 

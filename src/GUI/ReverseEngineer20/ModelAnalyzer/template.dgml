@@ -15,7 +15,7 @@
       <Condition Expression="HasCategory('Property Primary')" />
       <Setter Property="Background" Value="#FF008000" />
     </Style>
-    <Style TargetType="Node" GroupLabel="Field Optional" ValueLabel="True">
+    <Style TargetType="Node" GroupLabel="Property Optional" ValueLabel="True">
       <Condition Expression="HasCategory('Field Optional')" />
       <Setter Property="Background" Value="#FF808040" />
     </Style>
@@ -51,6 +51,8 @@
     <Property Id="IsConcurrencyToken" Group="Property Flags" DataType="System.Boolean" />
     <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
     <Property Id="IsUnicode" Group="Property Flags" DataType="System.Boolean" />
-    <Property Id="ValueGenerated"  Group="Property Flags" DataType="System.String" />
+    <Property Id="ValueGenerated" Group="Property Flags" DataType="System.String" />
+    <Property Id="BeforeSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="AfterSaveBehavior" Group="Property Flags" DataType="System.String" />
   </Properties>
 </DirectedGraph>
