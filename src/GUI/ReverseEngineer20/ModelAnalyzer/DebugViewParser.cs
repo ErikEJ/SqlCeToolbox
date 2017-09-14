@@ -47,7 +47,8 @@ namespace ReverseEngineer20.ModelAnalyzer
                 i++;
                 if (line.TrimStart().StartsWith("EntityType:"))
                 {
-                    entityName = BuildEntity(debugViewLines, entityName, i, result, properties, propertyLinks, line, ref inProperties);
+                    entityName = line.Trim().Split(' ')[1];
+                    BuildEntity(debugViewLines, entityName, i, result, properties, propertyLinks, line, ref inProperties);
                 }
                 if (line.TrimStart().StartsWith("Properties:"))
                 {
@@ -117,11 +118,30 @@ namespace ReverseEngineer20.ModelAnalyzer
         {
             if (!string.IsNullOrEmpty(entityName))
             {
+                // Base: xxx - Abstract - ChangeTrackingStrategy.Snapshot(or other)
+
+                var isAbstract = false;
+                var baseClass = string.Empty;
+                string changeTrackingStrategy = "ChangeTrackingStrategy.Snapshot";
+
+                if (!string.IsNullOrEmpty(line))
+                {
+                    var parts = line.Trim().Split(' ').ToList();
+                    isAbstract = parts.Contains("Abstract");
+                    if (parts.Contains("Base:"))
+                    {
+                        baseClass = parts[parts.IndexOf("Base:") + 1];
+                    }
+                    changeTrackingStrategy = parts.Where(p => p.StartsWith("ChangeTrackingStrategy.")).FirstOrDefault();
+                }
+                if (string.IsNullOrEmpty(changeTrackingStrategy))
+                    changeTrackingStrategy = "ChangeTrackingStrategy.Snapshot";
+
                 var annotations = GetEntityAnnotations(i, debugViewLines);
                 var annotation = string.Join(Environment.NewLine, annotations);
 
                 result.Nodes.Add(
-                    $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" Annotations=\"{annotation}\" Category=\"EntityType\" Group=\"Collapsed\" />");
+                    $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" BaseClass=\"{baseClass}\" IsAbstract=\"{isAbstract}\" ChangeTrackingStrategy=\"{changeTrackingStrategy}\"  Annotations=\"{annotation}\" Category=\"EntityType\" Group=\"Collapsed\" />");
                 result.Links.Add(
                     $"<Link Source = \"Model\" Target=\"{entityName}\" Category=\"Contains\" />");
                 result.Nodes.AddRange(properties);

@@ -23,8 +23,8 @@ namespace UnitTests
             var result = _parser.Parse(_debugView, "Test");
 
             // Assert
-            Assert.AreEqual(83, result.Nodes.Count);
-            Assert.AreEqual(159, result.Links.Count);
+            Assert.AreEqual(84, result.Nodes.Count);
+            Assert.AreEqual(160, result.Links.Count);
 
             Assert.AreEqual(18, result.Links.Count(n => n.Contains("IsUnique=\"True\"")));
         }
@@ -39,8 +39,8 @@ namespace UnitTests
             var result = _parser.Parse(_debugView, "Test");
 
             // Assert
-            Assert.AreEqual(102, result.Nodes.Count);
-            Assert.AreEqual(202, result.Links.Count);
+            Assert.AreEqual(103, result.Nodes.Count);
+            Assert.AreEqual(203, result.Links.Count);
 
             Assert.AreEqual(0, result.Links.Count(n => n.Contains("IsUnique=\"True\"")));
         }

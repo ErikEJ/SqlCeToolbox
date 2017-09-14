@@ -33,11 +33,14 @@
     </Style>
   </Styles>
   <Properties>
-    <Property Id="Name" Label ="Name" Group="Model Properties" DataType="System.String" />
-    <Property Id="Field" Label ="Field" Description="Backing field" Group="Model Properties" DataType="System.String" />
-    <Property Id="Type" Label="Type" Description="CLR data type" Group="Model Properties" DataType="System.String" />
-    <Property Id="Annotations" Label="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
+    <Property Id="Name" Group="Model Properties" DataType="System.String" />
+    <Property Id="Field"  Description="Backing field" Group="Model Properties" DataType="System.String" />
+    <Property Id="Type"  Description="CLR data type" Group="Model Properties" DataType="System.String" />
+    <Property Id="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
+    <Property Id="BaseClass"  Description="Base class" Group="Model Properties" DataType="System.String" />
+    <Property Id="ChangeTrackingStrategy" Description="Change tracking strategy" Group="Model Properties" DataType="System.String" />
     <Property Id="IsUnique" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="IsAbstract" Group="Model Properties" DataType="System.Boolean" />
     <Property Id="ProductVersion" Label="Product Version" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
     <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
     <Property Id="IsRequired" Group="Property Flags" DataType="System.Boolean" />

@@ -1,5 +1,5 @@
 ﻿Model: 
-  EntityType: Categories
+  EntityType: Categories Base: Abc Abstract ChangeTrackingStrategy.ErikEJ
     Properties: 
       CategoryId (int) Required PK AfterSave:Throw ValueGenerated.OnAdd 0 0 0 -1 0
         Annotations: 
@@ -514,7 +514,7 @@
     Annotations: 
       Relational:TableName: Suppliers
       RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.Type]
-  EntityType: Territories
+  EntityType: Territories 
     Properties: 
       TerritoryId (string) Required PK AfterSave:Throw MaxLength20 0 0 0 -1 -1
         Annotations: 
