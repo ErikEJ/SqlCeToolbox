@@ -13,9 +13,24 @@ namespace ReverseEngineer20.ModelAnalyzer
             var modelAnnotated = false;
             var productVersion = string.Empty;
             var modelAnnotations = string.Empty;
+            var modelPropertyAccessMode = "PropertyAccessMode.Default";
+            var changeTrackingStrategy = "ChangeTrackingStrategy.Snapshot";
 
             foreach (var line in debugViewLines)
             {
+                if (line.StartsWith("Model:"))
+                {
+           
+                    var props = line.Trim().Split(' ').ToList();
+                    if (props.Count > 0)
+                    {
+                        changeTrackingStrategy = props.Where(p => p.StartsWith("ChangeTrackingStrategy.")).FirstOrDefault();
+                        if (string.IsNullOrEmpty(changeTrackingStrategy))
+                            changeTrackingStrategy = "ChangeTrackingStrategy.Snapshot";
+
+                        modelPropertyAccessMode = GetPropertyAccessMode(props);
+                    }
+                }
                 if (line.StartsWith("Annotations:"))
                 {
                     modelAnnotated = true;
@@ -34,7 +49,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                 }
             }
             result.Nodes.Add(
-                $"<Node Id=\"Model\" Label=\"{dbContextName}\" ProductVersion=\"{productVersion}\" Annotations=\"{modelAnnotations.Trim()}\" Category=\"Model\" Group=\"Expanded\" />");
+                $"<Node Id=\"Model\" Label=\"{dbContextName}\" ChangeTrackingStrategy=\"{changeTrackingStrategy}\" PropertyAccessMode=\"{modelPropertyAccessMode}\" ProductVersion=\"{productVersion}\" Annotations=\"{modelAnnotations.Trim()}\" Category=\"Model\" Group=\"Expanded\" />");
 
             var entityName = string.Empty;
             var properties = new List<string>();
@@ -77,12 +92,12 @@ namespace ReverseEngineer20.ModelAnalyzer
 
                         if (line.StartsWith("        Annotations:")
                          || line.StartsWith("          "))
-                         {
+                        {
                             continue;
                         }
 
                         var annotation = string.Join(Environment.NewLine, annotations);
-                        
+
                         var props = line.Trim().Split(' ').ToList();
 
                         var name = props[0];
@@ -112,13 +127,17 @@ namespace ReverseEngineer20.ModelAnalyzer
                         if (props.Contains("AfterSave:PropertySaveBehavior.Throw"))
                             afterSaveBehavior = "PropertySaveBehavior.Throw";
 
-                        var propertyAccesMode = "PropertyAccessMode.Default";
-                        if (props.Contains("PropertyAccessMode.Field"))
-                            propertyAccesMode = "PropertyAccessMode.Field";
-                        if (props.Contains("PropertyAccessMode.FieldDuringConstruction"))
-                            propertyAccesMode = "PropertyAccessMode.FieldDuringConstruction";
-                        if (props.Contains("PropertyAccessMode.Property"))
-                            propertyAccesMode = "PropertyAccessMode.Property";
+                        string propertyAccesMode = GetPropertyAccessMode(props);
+
+                        var maxLength = props.FirstOrDefault(p => p.StartsWith("MaxLength"));
+                        if (string.IsNullOrEmpty(maxLength))
+                        {
+                            maxLength = "None";
+                        }
+                        else
+                        {
+                            maxLength = maxLength.Replace("MaxLength", string.Empty);
+                        }
 
                         var valueGenerated = props.FirstOrDefault(p => p.StartsWith("ValueGenerated.")) ?? "None";
                         var category = "Property";
@@ -127,7 +146,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                         if (isPrimaryKey) category = "Property Primary";
 
                         properties.Add(
-                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" Field=\"{field}\" PropertyAccessMode=\"{propertyAccesMode}\" BeforeSaveBehavior=\"{beforeSaveBehavior}\" AfterSaveBehavior=\"{afterSaveBehavior}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" IsShadow=\"{isShadow}\" IsAlternateKey=\"{isAlternateKey}\" IsConcurrencyToken=\"{isConcurrency}\" IsUnicode=\"{isUnicode}\" ValueGenerated=\"{valueGenerated}\" />");
+                            $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" MaxLength=\"{maxLength}\" Field=\"{field}\" PropertyAccessMode=\"{propertyAccesMode}\" BeforeSaveBehavior=\"{beforeSaveBehavior}\" AfterSaveBehavior=\"{afterSaveBehavior}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" IsShadow=\"{isShadow}\" IsAlternateKey=\"{isAlternateKey}\" IsConcurrencyToken=\"{isConcurrency}\" IsUnicode=\"{isUnicode}\" ValueGenerated=\"{valueGenerated}\" />");
 
                         propertyLinks.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
 
@@ -137,6 +156,18 @@ namespace ReverseEngineer20.ModelAnalyzer
             }
             BuildEntity(debugViewLines, entityName, i, result, properties, propertyLinks, null, ref inProperties);
             return result;
+        }
+
+        private static string GetPropertyAccessMode(List<string> props)
+        {
+            var propertyAccesMode = "PropertyAccessMode.Default";
+            if (props.Contains("PropertyAccessMode.Field"))
+                propertyAccesMode = "PropertyAccessMode.Field";
+            if (props.Contains("PropertyAccessMode.FieldDuringConstruction"))
+                propertyAccesMode = "PropertyAccessMode.FieldDuringConstruction";
+            if (props.Contains("PropertyAccessMode.Property"))
+                propertyAccesMode = "PropertyAccessMode.Property";
+            return propertyAccesMode;
         }
 
         private string BuildEntity(string[] debugViewLines, string entityName, int i, DebugViewParserResult result,
