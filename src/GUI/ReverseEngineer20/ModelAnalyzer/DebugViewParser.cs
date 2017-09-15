@@ -85,7 +85,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                     {
                         var annotations = GetAnnotations(i, debugViewLines);
 
-                        //TODO Navigations ?
+                        // Not included in graph for now
                         var navigations = GetNavigationNodes(i, debugViewLines);
 
                         var foreignKeysFragment = GetForeignKeys(i, debugViewLines);
@@ -233,18 +233,23 @@ namespace ReverseEngineer20.ModelAnalyzer
                     if (trim.StartsWith("Relational:")) continue;
                     
                     //TODO Test with multi key FKs!
+
                     var parts = trim.Split(' ').ToList();
 
-                    var source = parts[0]
-                                 + "."
-                                 //TODO improve
-                                 + parts[1].Replace("{", string.Empty).Replace("}", string.Empty)
-                                     .Replace("'", string.Empty);
-                    var target = parts[3]
-                                 + "."
-                                 //TODO improve
-                                 + parts[4].Replace("{", string.Empty).Replace("}", string.Empty)
-                                     .Replace("'", string.Empty);
+                    for (int x = 0; x < parts.Count; x++)
+                    {
+                        if (parts[x].StartsWith("{'"))
+                        {
+                            parts[x] = parts[x].Substring(2);
+                        }
+                        if (parts[x].EndsWith("'}"))
+                        {
+                            parts[x] = parts[x].Substring(0, parts[x].LastIndexOf("'}"));
+                        }
+                    }
+
+                    var source = parts[0] + "." + parts[1];
+                    var target = parts[3] + "." + parts[4];
 
                     parts.RemoveRange(0, 5);
 
@@ -255,10 +260,6 @@ namespace ReverseEngineer20.ModelAnalyzer
                     //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
                 }
             }
-//       Foreign keys: 
-//OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
-//  Annotations: 
-//    Relational:Name: FK_dbo.OrderNdc_dbo.Ndc_NdcId
 
             return links;
         }

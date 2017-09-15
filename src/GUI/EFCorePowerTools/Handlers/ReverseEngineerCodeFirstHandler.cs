@@ -60,7 +60,7 @@ namespace EFCorePowerTools.Handlers
                     if (providerInvariant == "System.Data.SqlClient")
                         dbType = DatabaseType.SQLServer;
 
-                    if (dbType == DatabaseType.SQLCE35 || dbType == DatabaseType.SQLCE40)
+                    if (dbType == DatabaseType.SQLCE35)
                     {
                         EnvDteHelper.ShowError($"Unsupported provider: {providerInvariant}");
                         return;
