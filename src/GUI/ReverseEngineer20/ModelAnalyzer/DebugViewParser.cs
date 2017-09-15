@@ -226,13 +226,15 @@ namespace ReverseEngineer20.ModelAnalyzer
 
                     if (trim == "Annotations:")
                     {
-                        annotation = GetFkAnnotations(i, foreignKeysFragments.ToArray());
                         continue;
                     }
 
+                    annotation = GetFkAnnotations(i, foreignKeysFragments.ToArray());
+
                     if (trim.StartsWith("Relational:")) continue;
-                    
-                    //TODO Test with multi key FKs!
+
+                    //Multi key FKs!
+                    trim = trim.Replace("', '", ",");
 
                     var parts = trim.Split(' ').ToList();
 
@@ -250,12 +252,21 @@ namespace ReverseEngineer20.ModelAnalyzer
 
                     var source = parts[0] + "." + parts[1];
                     var target = parts[3] + "." + parts[4];
+                    //TblFavoriteDoctor {'DoctorIdFk', 'LocationIdFk'} -> TblDoctorLocation {'DoctorId', 'LocationId'} ToDependent: TblFavoriteDoctor ToPrincipal: TblDoctorLocation
 
+                    var linkSource = source;
+                    var linkTarget = target;
+
+                    if (parts[1].Contains(","))
+                    {
+                        linkSource = parts[0] + "." + parts[1].Split(',')[0];
+                        linkTarget = parts[3] + "." + parts[4].Split(',')[0];
+                    }
                     parts.RemoveRange(0, 5);
 
                     var isUnique = parts.Contains("Unique");
 
-                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
+                    links.Add($"<Link Source=\"{linkSource}\" Target=\"{linkTarget}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
                     annotation.Clear();
                     //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
                 }
@@ -373,6 +384,12 @@ namespace ReverseEngineer20.ModelAnalyzer
                 {
                     annotations.Add(debugViewLines[x].Trim());
                 }
+
+                if (debugViewLines[x].Substring(7, 1) != " ")
+                {
+                    break;
+                }
+
                 if (debugViewLines[x].StartsWith("    Foreign Keys:"))
                     break;
             }

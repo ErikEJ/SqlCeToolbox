@@ -46,6 +46,20 @@ namespace UnitTests
         }
 
         [Test]
+        public void ParseDebugViewMultiColFk()
+        {
+            // Arrange
+            var _debugView = File.ReadAllLines("Pfizer.txt");
+
+            // Act
+            var result = _parser.Parse(_debugView, "Test");
+
+            // Assert
+            Assert.AreEqual(134, result.Nodes.Count);
+            Assert.AreEqual(211, result.Links.Count);
+        }
+
+        [Test]
         public void BuildSample1()
         {
             // Act
@@ -69,6 +83,19 @@ namespace UnitTests
             Assert.AreNotEqual(result, null);
 
             File.WriteAllText(@"C:\temp\northwind.dgml", result, Encoding.UTF8);
+        }
+
+        [Test]
+        public void BuildPfizer()
+        {
+            // Act
+            var builder = new DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("Pfizer.txt"), "test");
+
+            // Assert
+            Assert.AreNotEqual(result, null);
+
+            File.WriteAllText(@"C:\temp\pfizer.dgml", result, Encoding.UTF8);
         }
 
         //[Test]
