@@ -85,7 +85,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                     {
                         var annotations = GetAnnotations(i, debugViewLines);
 
-                        //TODO Navigations ?
+                        // Not included in graph for now
                         var navigations = GetNavigationNodes(i, debugViewLines);
 
                         var foreignKeysFragment = GetForeignKeys(i, debugViewLines);
@@ -226,39 +226,51 @@ namespace ReverseEngineer20.ModelAnalyzer
 
                     if (trim == "Annotations:")
                     {
-                        annotation = GetFkAnnotations(i, foreignKeysFragments.ToArray());
                         continue;
                     }
 
+                    annotation = GetFkAnnotations(i, foreignKeysFragments.ToArray());
+
                     if (trim.StartsWith("Relational:")) continue;
-                    
-                    //TODO Test with multi key FKs!
+
+                    //Multi key FKs!
+                    trim = trim.Replace("', '", ",");
+
                     var parts = trim.Split(' ').ToList();
 
-                    var source = parts[0]
-                                 + "."
-                                 //TODO improve
-                                 + parts[1].Replace("{", string.Empty).Replace("}", string.Empty)
-                                     .Replace("'", string.Empty);
-                    var target = parts[3]
-                                 + "."
-                                 //TODO improve
-                                 + parts[4].Replace("{", string.Empty).Replace("}", string.Empty)
-                                     .Replace("'", string.Empty);
+                    for (int x = 0; x < parts.Count; x++)
+                    {
+                        if (parts[x].StartsWith("{'"))
+                        {
+                            parts[x] = parts[x].Substring(2);
+                        }
+                        if (parts[x].EndsWith("'}"))
+                        {
+                            parts[x] = parts[x].Substring(0, parts[x].LastIndexOf("'}"));
+                        }
+                    }
 
+                    var source = parts[0] + "." + parts[1];
+                    var target = parts[3] + "." + parts[4];
+                    //TblFavoriteDoctor {'DoctorIdFk', 'LocationIdFk'} -> TblDoctorLocation {'DoctorId', 'LocationId'} ToDependent: TblFavoriteDoctor ToPrincipal: TblDoctorLocation
+
+                    var linkSource = source;
+                    var linkTarget = target;
+
+                    if (parts[1].Contains(","))
+                    {
+                        linkSource = parts[0] + "." + parts[1].Split(',')[0];
+                        linkTarget = parts[3] + "." + parts[4].Split(',')[0];
+                    }
                     parts.RemoveRange(0, 5);
 
                     var isUnique = parts.Contains("Unique");
 
-                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
+                    links.Add($"<Link Source=\"{linkSource}\" Target=\"{linkTarget}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
                     annotation.Clear();
                     //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
                 }
             }
-//       Foreign keys: 
-//OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
-//  Annotations: 
-//    Relational:Name: FK_dbo.OrderNdc_dbo.Ndc_NdcId
 
             return links;
         }
@@ -372,6 +384,12 @@ namespace ReverseEngineer20.ModelAnalyzer
                 {
                     annotations.Add(debugViewLines[x].Trim());
                 }
+
+                if (debugViewLines[x].Substring(7, 1) != " ")
+                {
+                    break;
+                }
+
                 if (debugViewLines[x].StartsWith("    Foreign Keys:"))
                     break;
             }
