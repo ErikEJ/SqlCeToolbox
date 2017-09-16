@@ -202,6 +202,7 @@ namespace ErikEJ.SqlCeScripting
         {
             List<KeyValuePair<string, string>> valueList;
 #if V31
+            valueList = new List<KeyValuePair<string, string>>();
 #else
             valueList = _cn.GetDatabaseInfo();
 #endif
