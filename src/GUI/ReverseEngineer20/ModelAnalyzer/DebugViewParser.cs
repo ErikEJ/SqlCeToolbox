@@ -98,7 +98,10 @@ namespace ReverseEngineer20.ModelAnalyzer
 
                         var annotation = string.Join(Environment.NewLine, annotations);
 
-                        var props = line.Trim().Split(' ').ToList();
+                        var foundLine = line.Replace("(no field, ", "(nofield,");
+                        foundLine = foundLine.Replace(", ", ",");
+
+                        var props = foundLine.Trim().Split(' ').ToList();
 
                         var name = props[0];
                         var field = GetTypeValue(props[1], true);
@@ -196,7 +199,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                 var annotation = string.Join(Environment.NewLine, annotations);
 
                 result.Nodes.Add(
-                    $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" BaseClass=\"{baseClass}\" IsAbstract=\"{isAbstract}\" ChangeTrackingStrategy=\"{changeTrackingStrategy}\"  Annotations=\"{annotation}\" Category=\"EntityType\" Group=\"Collapsed\" />");
+                    $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" BaseClass=\"{baseClass}\" IsAbstract=\"{isAbstract}\" ChangeTrackingStrategy=\"{changeTrackingStrategy}\"  Annotations=\"{annotation}\" Category=\"EntityType\" Group=\"Expanded\" />");
                 result.Links.Add(
                     $"<Link Source = \"Model\" Target=\"{entityName}\" Category=\"Contains\" />");
                 result.Nodes.AddRange(properties);

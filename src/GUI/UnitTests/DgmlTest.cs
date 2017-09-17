@@ -98,6 +98,34 @@ namespace UnitTests
             File.WriteAllText(@"C:\temp\pfizer.dgml", result, Encoding.UTF8);
         }
 
+        [Test]
+        public void BuildBNoFk()
+        {
+            // Act
+            var builder = new DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("NoFk.txt"), "test");
+
+            // Assert
+            Assert.AreNotEqual(result, null);
+
+            File.WriteAllText(@"C:\temp\nofk.dgml", result, Encoding.UTF8);
+        }
+
+        [Test]
+        public void BuildSingleNav()
+        {
+            // Act
+            var builder = new DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("SingleNav.txt"), "test");
+
+            // Assert
+            Assert.AreNotEqual(result, null);
+
+            File.WriteAllText(@"C:\temp\singlenav.dgml", result, Encoding.UTF8);
+        }
+
+
+
         //[Test]
         //public void CanBuildDgml()
         //{
@@ -121,7 +149,6 @@ namespace UnitTests
             public DbSet<Samurai> Samurais { get; set; }
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {
-                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=EFCoreSamuraiConsole;Integrated Security=True;";
                 optionsBuilder.UseInMemoryDatabase("dgml");
             }
         }

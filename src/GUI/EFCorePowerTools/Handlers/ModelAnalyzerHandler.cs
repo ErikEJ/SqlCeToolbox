@@ -23,6 +23,7 @@ namespace EFCorePowerTools.Handlers
                 var modelText = _modelAnalyzer.GenerateDebugView(contextType);
                 var path = Path.GetTempFileName() + ".txt";
                 File.WriteAllText(path, modelText, Encoding.UTF8);
+                File.SetAttributes(path, FileAttributes.ReadOnly);
                 var window = _package.Dte2.ItemOperations.OpenFile(path);
                 window.Document.Activate();
             }
