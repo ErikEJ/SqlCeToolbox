@@ -89,6 +89,9 @@ namespace EFCorePowerTools
                     OnItemMenuBeforeQueryStatus, menuCommandId9);
                 oleMenuCommandService.AddCommand(menuItem9);
             }
+
+            //TODO Enable after upgrade to 2.0.1!
+            //AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
         }
 
         private void OnProjectContextMenuInvokeHandler(object sender, EventArgs e)

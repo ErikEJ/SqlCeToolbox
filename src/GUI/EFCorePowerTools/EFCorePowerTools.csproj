@@ -91,6 +91,7 @@
     <Compile Include="Handlers\AboutHandler.cs" />
     <Compile Include="Handlers\ModelAnalyzerHandler.cs" />
     <Compile Include="Handlers\ReverseEngineerCodeFirstHandler.cs" />
+    <Compile Include="Helpers\AssemblyBindingRedirectHelper.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,7 +102,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">

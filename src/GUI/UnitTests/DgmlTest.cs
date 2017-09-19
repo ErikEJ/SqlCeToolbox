@@ -131,7 +131,7 @@ namespace UnitTests
         //{
         //    using (var myContext = new MyDbContext())
         //    {
-        //        var dgml = myContext.AsDgmlView();
+        //        var dgml = myContext.AsDgml();
         //        var path = Path.GetTempFileName() + ".dgml";
         //        File.WriteAllText(path, dgml, Encoding.UTF8);
         //        Process.Start(path);
