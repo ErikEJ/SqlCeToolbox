@@ -103,7 +103,7 @@ namespace UnitTests
         //{
         //    using (var myContext = new MyDbContext())
         //    {
-        //        var dgml = myContext.AsDgmlView();
+        //        var dgml = myContext.AsDgml();
         //        var path = Path.GetTempFileName() + ".dgml";
         //        File.WriteAllText(path, dgml, Encoding.UTF8);
         //        Process.Start(path);
@@ -121,7 +121,6 @@ namespace UnitTests
             public DbSet<Samurai> Samurais { get; set; }
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {
-                string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=EFCoreSamuraiConsole;Integrated Security=True;";
                 optionsBuilder.UseInMemoryDatabase("dgml");
             }
         }
