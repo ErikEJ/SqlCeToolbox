@@ -134,19 +134,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\EFCoreReverseEngineer\DatabaseType.cs">
-      <Link>ReverseEngineer\DatabaseType.cs</Link>
-    </Compile>
-    <Compile Include="..\EFCoreReverseEngineer\ReverseEngineerOptions.cs">
-      <Link>ReverseEngineer\ReverseEngineerOptions.cs</Link>
-    </Compile>
     <Compile Include="ModelAnalyzer\DebugViewParser.cs" />
     <Compile Include="ModelAnalyzer\DebugViewParserResult.cs" />
     <Compile Include="ModelAnalyzer\DgmlBuilder.cs" />
     <Compile Include="ModelAnalyzer\EFCoreModelAnalyzer.cs" />
+    <Compile Include="ReverseEngineer\DatabaseType.cs" />
     <Compile Include="ReverseEngineer\EFCoreReverseEngineer.cs" />
     <Compile Include="ReverseEngineer\EFCoreReverseEngineerResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReverseEngineer\ReverseEngineerOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
