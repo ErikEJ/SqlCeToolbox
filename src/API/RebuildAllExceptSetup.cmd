@@ -25,7 +25,7 @@ msbuild ExportSQLCE31.sln /t:Rebuild /p:Configuration=Release
 copy bin\Release\*.dll ..\..\..\
 copy bin\x86\Release\*.dll ..\..\..\
 cd lib
-.\ilmerge /targetplatform:"v4,C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /out:..\..\..\..\ExportSqlCe31.exe ..\bin\release\exportsqlce31.exe QuickGraph.dll QuickGraph.Data.dll QuickGraph.GraphViz.dll
+.\ilmerge /targetplatform:"v4,C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /out:..\..\..\..\ExportSqlCe31.exe ..\bin\x86\release\exportsqlce31.exe QuickGraph.dll QuickGraph.Data.dll QuickGraph.GraphViz.dll
 cd ..
 pause
 
