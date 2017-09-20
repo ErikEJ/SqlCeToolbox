@@ -545,10 +545,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EFCoreReverseEngineer\EFCoreReverseEngineer.csproj">
-      <Project>{7e384a05-2677-4f39-82ff-f6b1cd8a9e06}</Project>
-      <Name>EFCoreReverseEngineer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\QueryPlanVisualizer\QueryPlanVisualizer.csproj">
       <Project>{df42bbc7-9733-4fd3-9758-13a1f657cfbb}</Project>
       <Name>QueryPlanVisualizer</Name>

@@ -54,10 +54,7 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             Items.Add(scriptDatabaseRootMenuItem);
             Items.Add(new Separator());
-#if SSMS
-#else
-            if (SqlCeToolboxPackage.VsSupportsEfCore()) Items.Add(itemBuilder.BuildEfCoreModelMenuItem(databaseMenuCommandParameters, dbcmd));
-#endif
+
 #if VS2010
 #else
             if (SqlCeToolboxPackage.VsSupportsEf6()) Items.Add(BuildScriptEfPocoDacPacMenuItem(databaseMenuCommandParameters, dcmd));

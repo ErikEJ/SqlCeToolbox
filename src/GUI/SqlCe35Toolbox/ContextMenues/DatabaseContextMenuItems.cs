@@ -253,24 +253,5 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             removeCeConnectionMenuItem.CommandBindings.Add(removeCeConnectionCommandBinding);
             return removeCeConnectionMenuItem;
         }
-#if SSMS
-#else
-        public MenuItem BuildEfCoreModelMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
-        {
-            var efCoreModelCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.GenerateEfCoreModelInProject);
-            var efCoreModelMenuItem = new MenuItem
-            {
-                Header = "Add EF Core Model to current Project... (beta)",
-                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters
-            };
-            efCoreModelMenuItem.CommandBindings.Add(efCoreModelCommandBinding);
-            return efCoreModelMenuItem;
-        }
-#endif
-
     }
 }
