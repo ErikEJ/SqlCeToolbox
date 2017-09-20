@@ -298,7 +298,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="db.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="netstandard.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
