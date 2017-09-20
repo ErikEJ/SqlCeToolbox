@@ -83,11 +83,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
             };
 
-#if SSMS
-#else
-            if (SqlCeToolboxPackage.VsSupportsEfCore())
-                generateCodeRootMenuItem.Items.Add(itemBuilder.BuildEfCoreModelMenuItem(databaseMenuCommandParameters, dcmd));
-#endif
             generateCodeRootMenuItem.Items.Add(BuildScriptModelMenuItem(databaseMenuCommandParameters, dcmd));
 
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(generateCodeRootMenuItem);
