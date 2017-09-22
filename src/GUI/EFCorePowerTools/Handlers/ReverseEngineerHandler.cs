@@ -76,7 +76,7 @@ namespace EFCorePowerTools.Handlers
             }
         }
 
-        public  void ReverseEngineerCodeFirst(Project project)
+        public async void ReverseEngineerCodeFirst(Project project)
         {
             try
             {
@@ -183,7 +183,7 @@ namespace EFCorePowerTools.Handlers
                     {
                         _package.Dte2.StatusBar.Text = "Installing EF Core provider package";
                         var nuGetHelper = new NuGetHelper();
-                        nuGetHelper.InstallPackage(packageResult.Item2, project);
+                        await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
                     }
                     var duration = DateTime.Now - startTime;
                     _package.Dte2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
@@ -198,6 +198,13 @@ namespace EFCorePowerTools.Handlers
                     {
                         _package.LogError(revEngResult.EntityWarnings, null);
                     }
+                }
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var innerException in ae.Flatten().InnerExceptions)
+                {
+                    _package.LogError(new List<string>(), innerException);
                 }
             }
             catch (Exception exception)
