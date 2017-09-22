@@ -43,30 +43,16 @@ namespace EFCorePowerTools.Handlers
 
                 _package.Dte2.StatusBar.Text = "Loading schema information...";
 
-                // Find connection string and provider
-                var connection = (DbConnection)dialogResult.GetLockedProviderObject();
-                var connectionString = connection.ConnectionString;
-                var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
-                IVsDataProvider dp;
-                providerManager.Providers.TryGetValue(dialogResult.Provider, out dp);
-                var providerInvariant = (string)dp.GetProperty("InvariantName");
+                var dbInfo = GetDatabaseInfo(dialogResult);
 
-                var dbType = DatabaseType.SQLCE35;
-                if (providerInvariant == "System.Data.SqlServerCe.4.0")
-                    dbType = DatabaseType.SQLCE40;
-                if (providerInvariant == "System.Data.SQLite.EF6")
-                    dbType = DatabaseType.SQLite;
-                if (providerInvariant == "System.Data.SqlClient")
-                    dbType = DatabaseType.SQLServer;
-
-                if (dbType == DatabaseType.SQLCE35)
+                if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                 {
-                    EnvDteHelper.ShowError($"Unsupported provider: {providerInvariant}");
+                    EnvDteHelper.ShowError($"Unsupported provider: {dbInfo.ServerVersion}");
                     return;
                 }
 
                 var ptd = new PickTablesDialog();
-                using (var repository = RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
+                using (var repository = RepositoryHelper.CreateRepository(dbInfo))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
                 }
@@ -76,10 +62,10 @@ namespace EFCorePowerTools.Handlers
 
                 var path = Path.GetTempFileName() + ".dgml";
 
-                using (var repository = RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
+                using (var repository = RepositoryHelper.CreateRepository(dbInfo))
                 {
-                    var generator = RepositoryHelper.CreateGenerator(repository, path, dbType);
-                    generator.GenerateSchemaGraph(connectionString, ptd.Tables);
+                    var generator = RepositoryHelper.CreateGenerator(repository, path, dbInfo.DatabaseType);
+                    generator.GenerateSchemaGraph(dbInfo.ConnectionString, ptd.Tables);
                     _package.Dte2.ItemOperations.OpenFile(path);
                     _package.Dte2.ActiveDocument.Activate();
                 }
@@ -112,31 +98,17 @@ namespace EFCorePowerTools.Handlers
                 if (dialogResult != null)
                 {
                     _package.Dte2.StatusBar.Text = "Loading schema information...";
-                    
-                    // Find connection string and provider
-                    var connection = (DbConnection)dialogResult.GetLockedProviderObject();
-                    var connectionString = connection.ConnectionString;
-                    var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
-                    IVsDataProvider dp;
-                    providerManager.Providers.TryGetValue(dialogResult.Provider, out dp);
-                    var providerInvariant = (string)dp.GetProperty("InvariantName");
 
-                    var dbType = DatabaseType.SQLCE35;
-                    if (providerInvariant == "System.Data.SqlServerCe.4.0")
-                        dbType = DatabaseType.SQLCE40;
-                    if (providerInvariant == "System.Data.SQLite.EF6")
-                        dbType = DatabaseType.SQLite;
-                    if (providerInvariant == "System.Data.SqlClient")
-                        dbType = DatabaseType.SQLServer;
+                    var dbInfo = GetDatabaseInfo(dialogResult);
 
-                    if (dbType == DatabaseType.SQLCE35)
+                    if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                     {
-                        EnvDteHelper.ShowError($"Unsupported provider: {providerInvariant}");
+                        EnvDteHelper.ShowError($"Unsupported provider: {dbInfo.ServerVersion}");
                         return;
                     }
 
                     var ptd = new PickTablesDialog { IncludeTables = true };
-                    using (var repository = RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
+                    using (var repository = RepositoryHelper.CreateRepository(dbInfo))
                     {
                         ptd.Tables = repository.GetAllTableNamesForExclusion();
                     }
@@ -144,13 +116,13 @@ namespace EFCorePowerTools.Handlers
                     var res = ptd.ShowModal();
                     if (!res.HasValue || !res.Value) return;
 
-                    var classBasis = RepositoryHelper.GetClassBasis(connectionString, dbType);
+                    var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
 
                     var dteH = new EnvDteHelper();
                     var revEng = new EfCoreReverseEngineer();
 
                     var model = revEng.GenerateClassName(classBasis) + "Context";
-                    var packageResult = dteH.ContainsEfCoreReference(project, dbType);
+                    var packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
 
                     var modelDialog = new EfCoreModelDialog
                     {
@@ -170,9 +142,9 @@ namespace EFCorePowerTools.Handlers
                     var options = new ReverseEngineerOptions
                     {
                         UseFluentApiOnly = !modelDialog.UseDataAnnotations,
-                        ConnectionString = connectionString,
+                        ConnectionString = dbInfo.ConnectionString,
                         ContextClassName = modelDialog.ModelName,
-                        DatabaseType = (EFCoreReverseEngineer.DatabaseType)dbType,
+                        DatabaseType = (EFCoreReverseEngineer.DatabaseType)dbInfo.DatabaseType,
                         ProjectPath = projectPath,
                         OutputPath = modelDialog.OutputPath,
                         ProjectRootNamespace = modelDialog.NameSpace,
@@ -196,7 +168,7 @@ namespace EFCorePowerTools.Handlers
                         _package.Dte2.ItemOperations.OpenFile(revEngResult.ContextFilePath);
                     }
 
-                    packageResult = dteH.ContainsEfCoreReference(project, dbType);
+                    packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
 
                     var missingProviderPackage = packageResult.Item1 ? null : packageResult.Item2;
                     if (modelDialog.InstallNuGetPackage)
@@ -226,12 +198,37 @@ namespace EFCorePowerTools.Handlers
                     {
                         _package.LogError(revEngResult.EntityWarnings, null);
                     }
-                }  
+                }
             }
             catch (Exception exception)
             {
                 _package.LogError(new List<string>(), exception);
             }
+        }
+
+        private DatabaseInfo GetDatabaseInfo(IVsDataConnection dialogResult)
+        {
+            // Find connection string and provider
+            var connection = (DbConnection)dialogResult.GetLockedProviderObject();
+            var connectionString = connection.ConnectionString;
+            var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
+            IVsDataProvider dp;
+            providerManager.Providers.TryGetValue(dialogResult.Provider, out dp);
+            var providerInvariant = (string)dp.GetProperty("InvariantName");
+            var dbType = DatabaseType.SQLCE35;
+            if (providerInvariant == "System.Data.SqlServerCe.4.0")
+                dbType = DatabaseType.SQLCE40;
+            if (providerInvariant == "System.Data.SQLite.EF6")
+                dbType = DatabaseType.SQLite;
+            if (providerInvariant == "System.Data.SqlClient")
+                dbType = DatabaseType.SQLServer;
+
+            return new DatabaseInfo
+            {
+                DatabaseType = dbType,
+                ConnectionString = connectionString,
+                ServerVersion = providerInvariant
+            };
         }
 
         private string ReportRevEngErrors(EfCoreReverseEngineerResult revEngResult, string missingProviderPackage)
