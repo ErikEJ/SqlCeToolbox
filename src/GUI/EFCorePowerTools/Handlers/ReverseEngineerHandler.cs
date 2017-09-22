@@ -8,17 +8,86 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
 using System.Text;
 
 namespace EFCorePowerTools.Handlers
 {
-    internal class ReverseEngineerCodeFirstHandler
+    internal class ReverseEngineerHandler
     {
         private readonly EFCorePowerToolsPackage _package;
 
-        public ReverseEngineerCodeFirstHandler(EFCorePowerToolsPackage package)
+        public ReverseEngineerHandler(EFCorePowerToolsPackage package)
         {
             _package = package;
+        }
+
+        public void GenerateServerDgmlFiles()
+        {
+            try
+            {
+                if (_package.Dte2.Mode == vsIDEMode.vsIDEModeDebug)
+                {
+                    EnvDteHelper.ShowError("Cannot generate code while debugging");
+                    return;
+                }
+
+                // Show dialog with SqlClient selected by default
+                var dialogFactory = _package.GetService<IVsDataConnectionDialogFactory>();
+                var dialog = dialogFactory.CreateConnectionDialog();
+                dialog.AddAllSources();
+                dialog.SelectedSource = new Guid("067ea0d9-ba62-43f7-9106-34930c60c528");
+                var dialogResult = dialog.ShowDialog(connect: true);
+
+                if (dialogResult == null) return;
+
+                _package.Dte2.StatusBar.Text = "Loading schema information...";
+
+                // Find connection string and provider
+                var connection = (DbConnection)dialogResult.GetLockedProviderObject();
+                var connectionString = connection.ConnectionString;
+                var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
+                IVsDataProvider dp;
+                providerManager.Providers.TryGetValue(dialogResult.Provider, out dp);
+                var providerInvariant = (string)dp.GetProperty("InvariantName");
+
+                var dbType = DatabaseType.SQLCE35;
+                if (providerInvariant == "System.Data.SqlServerCe.4.0")
+                    dbType = DatabaseType.SQLCE40;
+                if (providerInvariant == "System.Data.SQLite.EF6")
+                    dbType = DatabaseType.SQLite;
+                if (providerInvariant == "System.Data.SqlClient")
+                    dbType = DatabaseType.SQLServer;
+
+                if (dbType == DatabaseType.SQLCE35)
+                {
+                    EnvDteHelper.ShowError($"Unsupported provider: {providerInvariant}");
+                    return;
+                }
+
+                var ptd = new PickTablesDialog();
+                using (var repository = RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
+                {
+                    ptd.Tables = repository.GetAllTableNamesForExclusion();
+                }
+
+                var res = ptd.ShowModal();
+                if (!res.HasValue || !res.Value) return;
+
+                var path = Path.GetTempFileName() + ".dgml";
+
+                using (var repository = RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = dbType }))
+                {
+                    var generator = RepositoryHelper.CreateGenerator(repository, path, dbType);
+                    generator.GenerateSchemaGraph(connectionString, ptd.Tables);
+                    _package.Dte2.ItemOperations.OpenFile(path);
+                    _package.Dte2.ActiveDocument.Activate();
+                }
+            }
+            catch (Exception ex)
+            {
+                _package.LogError(new List<string>(), ex);
+            }
         }
 
         public  void ReverseEngineerCodeFirst(Project project)

@@ -61,7 +61,17 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidAbout" priority="0x0200" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerDgml" priority="0x0200" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
+        <Icon guid="guidImage1" id="bmpPic1" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidReverseEngineerDgml</CommandName>
+          <ButtonText>View Database Schema as Graph</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidAbout" priority="0x0300" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
         <Icon guid="guidImage0" id="bmpPic0" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -108,6 +118,7 @@
       <Bitmap guid="guidImage5" href="Resources\5.png" usedList="bmpPic5" />
       <Bitmap guid="guidImage4" href="Resources\4.png" usedList="bmpPic4" />
       <Bitmap guid="guidImage2" href="Resources\2.png" usedList="bmpPic2" />
+      <Bitmap guid="guidImage1" href="Resources\1.png" usedList="bmpPic1" />
       <Bitmap guid="guidImage0" href="Resources\h.png" usedList="bmpPic0" />
     </Bitmaps>
 
@@ -146,6 +157,7 @@
       <IDSymbol name="cmdidEdmProjectMenuItemsGroup" value="0x0002" />
       <IDSymbol name="cmdidEdmProjectMenu" value="0x0003" />
       <IDSymbol name="cmdidEdmProjectMenuGroup" value="0x0004" />
+      <IDSymbol name="cmdidReverseEngineerDgml" value="0x0005" />
       <IDSymbol name="cmdidAbout" value="0x0006" />
     </GuidSymbol>
 
@@ -153,12 +165,16 @@
       <IDSymbol name="bmpPic5" value="1" />
     </GuidSymbol>
 
+    <GuidSymbol name="guidImage4" value="{abef17c2-c8e3-4cfd-9fe2-50cc07c6d4ff}">
+      <IDSymbol name="bmpPic4" value="1" />
+    </GuidSymbol>
+    
     <GuidSymbol name="guidImage2" value="{146f17c2-c8e3-4cfd-9fe2-50cc07c6d4ff}">
       <IDSymbol name="bmpPic2" value="1" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImage4" value="{abef17c2-c8e3-4cfd-9fe2-50cc07c6d4ff}">
-      <IDSymbol name="bmpPic4" value="1" />
+    <GuidSymbol name="guidImage1" value="{ffff17c2-c8e3-4cfd-9fe2-50cc07c6d4ff}">
+      <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImage0" value="{146f17c2-c8e3-4cfd-9fe2-ffcc07c6d450}">

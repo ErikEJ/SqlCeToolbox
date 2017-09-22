@@ -29,14 +29,14 @@ namespace EFCorePowerTools
     // ReSharper disable once InconsistentNaming
     public sealed class EFCorePowerToolsPackage : Package
     {
-        private readonly ReverseEngineerCodeFirstHandler _reverseEngineerCodeFirstHandler;
+        private readonly ReverseEngineerHandler _reverseEngineerHandler;
         private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
         private readonly AboutHandler _aboutHandler;
         private DTE2 _dte2;
 
         public EFCorePowerToolsPackage()
         {
-            _reverseEngineerCodeFirstHandler = new ReverseEngineerCodeFirstHandler(this);
+            _reverseEngineerHandler = new ReverseEngineerHandler(this);
             _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
             _aboutHandler = new AboutHandler(this);
         }
@@ -59,6 +59,12 @@ namespace EFCorePowerTools
 
             if (oleMenuCommandService != null)
             {
+                var menuCommandId4 = new CommandID(GuidList.guidDbContextPackageCmdSet,
+                    (int)PkgCmdIDList.cmdidReverseEngineerDgml);
+                var menuItem4 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
+                    OnProjectMenuBeforeQueryStatus, menuCommandId4);
+                oleMenuCommandService.AddCommand(menuItem4);
+
                 var menuCommandId5 = new CommandID(GuidList.guidDbContextPackageCmdSet,
                     (int) PkgCmdIDList.cmdidReverseEngineerCodeFirst);
                 var menuItem5 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
@@ -109,7 +115,11 @@ namespace EFCorePowerTools
 
             if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
             {
-                _reverseEngineerCodeFirstHandler.ReverseEngineerCodeFirst(project);
+                _reverseEngineerHandler.ReverseEngineerCodeFirst(project);
+            }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerDgml)
+            {
+                _reverseEngineerHandler.GenerateServerDgmlFiles();
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
             {
