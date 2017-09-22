@@ -16,7 +16,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 case DatabaseType.SQLCE40:
                     return new DB4Repository(databaseInfo.ConnectionString);
                 case DatabaseType.SQLServer:
-                    return new ServerDBRepository(databaseInfo.ConnectionString);
+                    return new ServerDBRepository(databaseInfo.ConnectionString, keepSchemaName: true);
                 case DatabaseType.SQLite:
                     return new SQLiteRepository(databaseInfo.ConnectionString);
                 default:
@@ -35,6 +35,23 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 case DatabaseType.SQLServer:
                 case DatabaseType.SQLite:
                     return new SqliteHelper();
+                default:
+                    return null;
+            }
+        }
+
+        public static IGenerator CreateGenerator(IRepository repository, string outFile, DatabaseType databaseType)
+        {
+            switch (databaseType)
+            {
+                case DatabaseType.SQLServer:
+                    return new Generator(repository, outFile, false, false, false, true);
+                case DatabaseType.SQLCE40:
+                    return string.IsNullOrEmpty(outFile)
+                        ? new Generator4(repository)
+                        : new Generator4(repository, outFile);
+                case DatabaseType.SQLite:
+                    return new Generator(repository, outFile, false, false, true);
                 default:
                     return null;
             }
