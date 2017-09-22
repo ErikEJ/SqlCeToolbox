@@ -1,4 +1,5 @@
-﻿namespace EFCorePowerTools
+﻿// ReSharper disable InconsistentNaming
+namespace EFCorePowerTools
 {
     internal static class PkgCmdIDList
     {

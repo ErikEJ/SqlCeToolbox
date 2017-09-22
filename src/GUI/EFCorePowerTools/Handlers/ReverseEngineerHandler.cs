@@ -188,7 +188,11 @@ namespace EFCorePowerTools.Handlers
                     var duration = DateTime.Now - startTime;
                     _package.Dte2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
 
-                    EnvDteHelper.ShowMessage(errors);
+                    if (revEngResult.EntityErrors.Count > 0 || revEngResult.EntityWarnings.Count > 0)
+                    {
+                        EnvDteHelper.ShowMessage(errors);
+                    }
+                    EnvDteHelper.ShowMessage("Errors or warnings occurred while reverse engineering. See the Output window for details.");
 
                     if (revEngResult.EntityErrors.Count > 0)
                     {
@@ -215,21 +219,26 @@ namespace EFCorePowerTools.Handlers
 
         private DatabaseInfo GetDatabaseInfo(IVsDataConnection dialogResult)
         {
+            var dbType = DatabaseType.SQLCE35;
+            var providerInvariant = "N/A";
             // Find connection string and provider
             var connection = (DbConnection)dialogResult.GetLockedProviderObject();
             var connectionString = connection.ConnectionString;
             var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
             IVsDataProvider dp;
             providerManager.Providers.TryGetValue(dialogResult.Provider, out dp);
-            var providerInvariant = (string)dp.GetProperty("InvariantName");
-            var dbType = DatabaseType.SQLCE35;
-            if (providerInvariant == "System.Data.SqlServerCe.4.0")
-                dbType = DatabaseType.SQLCE40;
-            if (providerInvariant == "System.Data.SQLite.EF6")
-                dbType = DatabaseType.SQLite;
-            if (providerInvariant == "System.Data.SqlClient")
-                dbType = DatabaseType.SQLServer;
+            if (dp != null)
+            {
+                providerInvariant = (string)dp.GetProperty("InvariantName");
+                dbType = DatabaseType.SQLCE35;
+                if (providerInvariant == "System.Data.SqlServerCe.4.0")
+                    dbType = DatabaseType.SQLCE40;
+                if (providerInvariant == "System.Data.SQLite.EF6")
+                    dbType = DatabaseType.SQLite;
+                if (providerInvariant == "System.Data.SqlClient")
+                    dbType = DatabaseType.SQLServer;
 
+            }
             return new DatabaseInfo
             {
                 DatabaseType = dbType,

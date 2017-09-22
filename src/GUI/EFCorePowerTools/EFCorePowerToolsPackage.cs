@@ -151,6 +151,7 @@ namespace EFCorePowerTools
 
                 try
                 {                  
+                    // ReSharper disable once NotAccessedVariable
                     Type systemContextType;
                     var context = DiscoverUserContextType(out systemContextType);
 
@@ -173,14 +174,19 @@ namespace EFCorePowerTools
                     var remoteStackTraceString =
                         typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic)
                         ?? typeof(Exception).GetField("remote_stack_trace", BindingFlags.Instance | BindingFlags.NonPublic);
-                    remoteStackTraceString.SetValue(innerException, innerException.StackTrace + "$$RethrowMarker$$");
+                    if (remoteStackTraceString != null)
+                        if (innerException != null)
+                            remoteStackTraceString.SetValue(innerException,
+                                innerException.StackTrace + "$$RethrowMarker$$");
 
-                    EnvDteHelper.ShowMessage("An error occurred: " + Environment.NewLine + innerException.ToString());
+                    if (innerException != null)
+                        EnvDteHelper.ShowMessage(
+                            "An error occurred: " + Environment.NewLine + innerException);
                 }
             }
             catch (Exception ex)
             {
-                EnvDteHelper.ShowMessage("An error occurred: " + Environment.NewLine + ex.ToString());
+                EnvDteHelper.ShowMessage("An error occurred: " + Environment.NewLine + ex);
             }
         }
 
@@ -199,6 +205,7 @@ namespace EFCorePowerTools
 
             DynamicTypeService typeService;
             IVsSolution solution;
+            // ReSharper disable once SuspiciousTypeConversion.Global
             using (var serviceProvider = new ServiceProvider((Microsoft.VisualStudio.OLE.Interop.IServiceProvider)_dte2.DTE))
             {
                 typeService = (DynamicTypeService)serviceProvider.GetService(typeof(DynamicTypeService));
@@ -264,6 +271,7 @@ namespace EFCorePowerTools
         {
             while (type != typeof(object))
             {
+                if (type == null) continue;
                 yield return type.BaseType;
 
                 type = type.BaseType;
@@ -343,7 +351,7 @@ namespace EFCorePowerTools
 
         internal void LogError(List<string> statusMessages, Exception exception)
         {
-            _dte2.StatusBar.Text = "An error occurred while reverse engineering Code First. See the Output window for details.";
+            _dte2.StatusBar.Text = "An error occurred while reverse engineering. See the Output window for details.";
 
             var buildOutputWindow = _dte2.ToolWindows.OutputWindow.OutputWindowPanes.Item("Build");
             buildOutputWindow.OutputString(Environment.NewLine);

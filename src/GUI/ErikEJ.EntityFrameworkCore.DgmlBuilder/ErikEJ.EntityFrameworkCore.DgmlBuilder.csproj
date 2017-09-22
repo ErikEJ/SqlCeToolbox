@@ -33,7 +33,7 @@
     <PackageProjectUrl>https://github.com/ErikEJ/SqlCeToolbox</PackageProjectUrl>
     <PackageTags>DbContext;EntityFramework;DGML;graph</PackageTags>
     <RootNamespace>ReverseEngineer20</RootNamespace>
-    <MinClientVersion>4.0</MinClientVersion>
+    <MinClientVersion>4.3</MinClientVersion>
     <Dependencies>
       <Dependency id="Microsoft.EntityFrameworkCore.Relational" version="2.0.0" />
     </Dependencies>

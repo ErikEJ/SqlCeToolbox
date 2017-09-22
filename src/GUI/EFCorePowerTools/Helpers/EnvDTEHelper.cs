@@ -6,6 +6,7 @@ using System;
 using System.Windows.Forms;
 using VSLangProj;
 
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class EnvDteHelper
@@ -17,7 +18,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 var objIVsDataProviderManager =
                     Package.GetGlobalService(typeof(IVsDataProviderManager)) as IVsDataProviderManager;
                 return objIVsDataProviderManager != null &&
-                    objIVsDataProviderManager.Providers.TryGetValue(id, out IVsDataProvider provider);
+                    objIVsDataProviderManager.Providers.TryGetValue(id, out IVsDataProvider _);
             }
             catch
             {
@@ -123,11 +124,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         // <param name="defaultButton">Default button (invoked when user presses return).</param>
         // <param name="messageIcon">Icon (warning, error, informational, etc.) to display</param>
         // <returns>result corresponding to the button clicked by the user.</returns>
-        private static DialogResult ShowMessageBox(
-            string messageText, OLEMSGBUTTON messageButtons, OLEMSGDEFBUTTON defaultButton,
-            OLEMSGICON messageIcon)
+        private static void ShowMessageBox(string messageText, OLEMSGBUTTON messageButtons, OLEMSGDEFBUTTON defaultButton, OLEMSGICON messageIcon)
         {
-            return ShowMessageBox(messageText, null, messageButtons, defaultButton, messageIcon);
+            ShowMessageBox(messageText, null, messageButtons, defaultButton, messageIcon);
         }
 
         // <summary>

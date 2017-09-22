@@ -2,8 +2,6 @@
 
 namespace EFCorePowerTools.Extensions
 {
-    using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-
     internal static class ProjectExtensions
     {
         public const int S_OK = 0;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+// ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
     public static class AssemblyBindingRedirectHelper

@@ -9,7 +9,7 @@ namespace ReverseEngineer20.ModelAnalyzer
         public string Build(string debugView, string contextName)
         {
             var parser = new DebugViewParser();
-            var result = parser.Parse(debugView.Split(new string[] { Environment.NewLine }, StringSplitOptions.None), contextName);
+            var result = parser.Parse(debugView.Split(new [] { Environment.NewLine }, StringSplitOptions.None), contextName);
 
             var template = GetTemplate();
 

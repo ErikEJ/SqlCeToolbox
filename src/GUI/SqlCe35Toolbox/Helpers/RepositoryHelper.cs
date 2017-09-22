@@ -59,7 +59,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public static string GetClassBasis(string connectionString, DatabaseType dbType)
         {
-            var classBasis = "My";
+            string classBasis;
             if (dbType == DatabaseType.SQLServer)
             {
                 var builder = new SqlConnectionStringBuilder(connectionString);

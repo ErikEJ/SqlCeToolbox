@@ -249,7 +249,7 @@ namespace ReverseEngineer20.ModelAnalyzer
                         }
                         if (parts[x].EndsWith("'}"))
                         {
-                            parts[x] = parts[x].Substring(0, parts[x].LastIndexOf("'}"));
+                            parts[x] = parts[x].Substring(0, parts[x].LastIndexOf("'}", StringComparison.Ordinal));
                         }
                     }
 
