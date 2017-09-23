@@ -188,11 +188,7 @@ namespace EFCorePowerTools.Handlers
                     var duration = DateTime.Now - startTime;
                     _package.Dte2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
 
-                    if (revEngResult.EntityErrors.Count > 0 || revEngResult.EntityWarnings.Count > 0)
-                    {
-                        EnvDteHelper.ShowMessage(errors);
-                    }
-                    EnvDteHelper.ShowMessage("Errors or warnings occurred while reverse engineering. See the Output window for details.");
+                    EnvDteHelper.ShowMessage(errors);
 
                     if (revEngResult.EntityErrors.Count > 0)
                     {
@@ -264,7 +260,7 @@ namespace EFCorePowerTools.Handlers
             }
             else
             {
-                errors.Insert(0, "The following issues were encountered:" + Environment.NewLine);
+                errors.Insert(0, "Please check the output window for errors" + Environment.NewLine);
             }
 
             if (!string.IsNullOrEmpty(missingProviderPackage))

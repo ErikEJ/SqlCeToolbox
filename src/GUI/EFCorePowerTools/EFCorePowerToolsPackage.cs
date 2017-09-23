@@ -96,7 +96,7 @@ namespace EFCorePowerTools
                 oleMenuCommandService.AddCommand(menuItem9);
             }
 
-            AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
+            // AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
         }
 
         private void OnProjectContextMenuInvokeHandler(object sender, EventArgs e)
