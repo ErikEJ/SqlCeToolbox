@@ -234,16 +234,16 @@ namespace EFCorePowerTools
                 {
                     var userContextType = resolver.GetType(codeElement.FullName);
 
-                    if (userContextType == null)
-                        errors.Add("DEBUG: No userContextType found");
+                    //if (userContextType == null)
+                    //    errors.Add("DEBUG: No userContextType found");
 
-                    if (!IsContextType(userContextType, out systemContextType))
-                        errors.Add("DEBUG: Not a ContextType");
+                    //if (!IsContextType(userContextType, out systemContextType))
+                    //    errors.Add("DEBUG: Not a ContextType");
 
-                    if (userContextType != null && IsContextType(userContextType, out systemContextType))
-                    {
-                        return Activator.CreateInstance(userContextType);
-                    }
+                    //if (userContextType != null && IsContextType(userContextType, out systemContextType))
+                    //{
+                    //    return Activator.CreateInstance(userContextType);
+                    //}
                 }
             }
 
