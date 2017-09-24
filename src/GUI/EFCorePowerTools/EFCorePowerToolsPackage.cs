@@ -225,14 +225,6 @@ namespace EFCorePowerTools
             var codeElements = FindClassesInCodeModel(_dte2.SelectedItems.Item(1).ProjectItem.FileCodeModel.CodeElements).ToList();
 
             var errors = new List<string>();
-            if (!codeElements.Any())
-            {
-                errors.Add("DEBUG: No codeelements found");
-            }
-            else
-            {
-                errors.Add("DEBUG: Codeelements found");
-            }
 
             if (codeElements.Any())
             {
@@ -242,20 +234,21 @@ namespace EFCorePowerTools
 
                     if (userContextType == null)
                     {
-                        errors.Add("DEBUG: No userContextType found");
+                        errors.Add("DEBUG: No userContextType found: " + codeElement.FullName);
                     }
                     else
                     {
                         errors.Add("DEBUG: UserContextType found: " + userContextType.Name);
                     }
 
-                    //if (!IsContextType(userContextType, out systemContextType))
-                    //    errors.Add("DEBUG: Not a DbContextType");
+                    systemContextType = GetDbContextType(userContextType);
 
-                    //if (userContextType != null && IsContextType(userContextType, out systemContextType))
-                    //{
-                    //    return Activator.CreateInstance(userContextType);
-                    //}
+                    if (systemContextType != null)
+                    {
+                        errors.Add("DEBUG: Found systemContextType: " + systemContextType.Name);
+                        LogError(errors, null);
+                        return Activator.CreateInstance(userContextType);
+                    }
                 }
             }
 
@@ -282,13 +275,16 @@ namespace EFCorePowerTools
             }
         }
 
-        private static bool IsContextType(Type userContextType, out Type systemContextType)
+        private static Type GetDbContextType(Type userContextType)
         {
-            systemContextType = GetBaseTypes(userContextType).FirstOrDefault(
-                t => t.FullName == "Microsoft.EntityFrameworkCore.DbContext"
-                     && t.Assembly.GetName().Name == "Microsoft.EntityFrameworkCore");
-
-            return systemContextType != null;
+            Type systemContextType = null;
+            if (userContextType != null)
+            {
+                systemContextType = GetBaseTypes(userContextType).FirstOrDefault(
+                    t => t.FullName == "Microsoft.EntityFrameworkCore.DbContext"
+                         && t.Assembly.GetName().Name == "Microsoft.EntityFrameworkCore");
+            }
+            return systemContextType;
         }
 
         private static IEnumerable<Type> GetBaseTypes(Type type)
