@@ -230,34 +230,28 @@ namespace EFCorePowerTools
             {
                 foreach (var codeElement in codeElements)
                 {
-                    var assembly = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore"));
+                    var assembly1 = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore"));
+                    var assembly2 = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore.SqlServer"));
+                    var assembly3 = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore.Sqlite"));
+                    var assembly4 = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore.Relational"));
 
-                    if (assembly == null)
-                        errors.Add("DEBUG: No EF Core assembly found");
+                    var userContextType = resolver.GetType(codeElement.FullName);
 
-                    if (assembly != null)
+                    if (userContextType == null)
                     {
-                        systemContextType = resolver.GetType("Microsoft.EntityFrameworkCore.DbContext");
+                        errors.Add("DEBUG: No userContextType found: " + codeElement.FullName);
+                    }
+                    else
+                    {
+                        errors.Add("DEBUG: UserContextType found: " + userContextType.Name);
+                    }
 
-                        var userContextType = resolver.GetType(codeElement.FullName, true, true);
+                    systemContextType = GetDbContextType(userContextType);
 
-                        if (userContextType == null)
-                        {
-                            errors.Add("DEBUG: No userContextType found: " + codeElement.FullName);
-                        }
-                        else
-                        {
-                            errors.Add("DEBUG: UserContextType found: " + userContextType.Name);
-                        }
-
-                        //systemContextType = GetDbContextType(userContextType);
-
-                        if (systemContextType != null)
-                        {
-                            errors.Add("DEBUG: Found systemContextType: " + systemContextType.Name);
-                            LogError(errors, null);
-                            return Activator.CreateInstance(userContextType);
-                        }
+                    if (systemContextType != null)
+                    {
+                        LogError(errors, null);
+                        return Activator.CreateInstance(userContextType);
                     }
                 }
             }
