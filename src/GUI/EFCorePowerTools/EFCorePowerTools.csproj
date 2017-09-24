@@ -55,6 +55,15 @@
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\DebugViewParser.cs">
+      <Link>DgmlBuilder\DebugViewParser.cs</Link>
+    </Compile>
+    <Compile Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\DebugViewParserResult.cs">
+      <Link>DgmlBuilder\DebugViewParserResult.cs</Link>
+    </Compile>
+    <Compile Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\DgmlBuilder.cs">
+      <Link>DgmlBuilder\DgmlBuilder.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\CheckListItem.cs">
       <Link>Helpers\CheckListItem.cs</Link>
     </Compile>
@@ -76,6 +85,7 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\VsTheming.cs">
       <Link>Helpers\VsTheming.cs</Link>
     </Compile>
+    <Compile Include="DgmlBuilder\EFCoreModelAnalyzer.cs" />
     <Compile Include="Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
@@ -90,7 +100,6 @@
     <Compile Include="Guids.cs" />
     <Compile Include="Handlers\AboutHandler.cs" />
     <Compile Include="Handlers\ModelAnalyzerHandler.cs" />
-    <Compile Include="Handlers\ReverseEngineerHandler.cs" />
     <Compile Include="Helpers\AssemblyBindingRedirectHelper.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
     <Compile Include="PkgCmdID.cs" />
@@ -102,6 +111,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\template.dgml">
+      <Link>DgmlBuilder\template.dgml</Link>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config">
@@ -112,10 +124,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ReverseEngineer20\ReverseEngineer20.csproj">
-      <Project>{4c0f2979-fcd9-4e93-8e4f-2a43055d42fe}</Project>
-      <Name>ReverseEngineer20</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SqlCeToolbox.DDEX4\SqlCeToolbox.DDEX4.csproj">
       <Project>{42939e33-fc72-459c-9403-b62ab074635e}</Project>
       <Name>SqlCeToolbox.DDEX4</Name>

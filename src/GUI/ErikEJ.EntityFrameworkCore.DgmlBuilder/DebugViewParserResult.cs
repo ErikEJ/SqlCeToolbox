@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ReverseEngineer20.ModelAnalyzer
+namespace DgmlBuilder
 {
     public class DebugViewParserResult
     {

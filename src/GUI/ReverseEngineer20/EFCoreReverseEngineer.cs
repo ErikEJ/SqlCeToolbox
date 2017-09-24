@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Design.Internal;
-using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Design.Internal;
+using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace EFCoreReverseEngineer
+namespace ReverseEngineer20
 {
     public class EfCoreReverseEngineer
     {
@@ -32,9 +32,11 @@ namespace EFCoreReverseEngineer
                 case DatabaseType.SQLCE35:
                     throw new NotImplementedException();
                 case DatabaseType.SQLCE40:
-                    var sqlCeProvider = new SqlCeDesignTimeServices();
-                    sqlCeProvider.ConfigureDesignTimeServices(serviceCollection);
-                    break;
+                    // TODO Add after 2.0.1 release
+                    throw new NotImplementedException();
+                    //var sqlCeProvider = new SqlCeDesignTimeServices();
+                    //sqlCeProvider.ConfigureDesignTimeServices(serviceCollection);
+                    //break;
                 case DatabaseType.SQLServer:
                     var provider = new SqlServerDesignTimeServices();
                     provider.ConfigureDesignTimeServices(serviceCollection);

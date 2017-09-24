@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using DgmlBuilder;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
-using ReverseEngineer20.ModelAnalyzer;
 
 namespace UnitTests
 {
@@ -12,6 +14,14 @@ namespace UnitTests
     public class DgmlTest
     {
         private readonly DebugViewParser _parser = new DebugViewParser();
+        private string template;
+
+        [SetUp]
+        public void Setuup()
+        {
+            template = GetTemplate();
+        }
+
 
         [Test]
         public void ParseDebugViewSample1()
@@ -63,8 +73,8 @@ namespace UnitTests
         public void BuildSample1()
         {
             // Act
-            var builder = new DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Aw2014Person.txt"), "test");
+            var builder = new DgmlBuilder.DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("Aw2014Person.txt"), "test", template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -76,8 +86,8 @@ namespace UnitTests
         public void BuildNorthwind()
         {
             // Act
-            var builder = new DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Northwind.txt"), "test");
+            var builder = new DgmlBuilder.DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("Northwind.txt"), "test", template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -89,8 +99,8 @@ namespace UnitTests
         public void BuildPfizer()
         {
             // Act
-            var builder = new DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Pfizer.txt"), "test");
+            var builder = new DgmlBuilder.DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("Pfizer.txt"), "test", template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -102,8 +112,8 @@ namespace UnitTests
         public void BuildBNoFk()
         {
             // Act
-            var builder = new DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("NoFk.txt"), "test");
+            var builder = new DgmlBuilder.DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("NoFk.txt"), "test", template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -115,8 +125,8 @@ namespace UnitTests
         public void BuildSingleNav()
         {
             // Act
-            var builder = new DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("SingleNav.txt"), "test");
+            var builder = new DgmlBuilder.DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("SingleNav.txt"), "test", template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -124,7 +134,18 @@ namespace UnitTests
             File.WriteAllText(@"C:\temp\singlenav.dgml", result, Encoding.UTF8);
         }
 
+        private static string GetTemplate()
+        {
+            var resourceName = "UnitTests.template.dgml";
 
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            {
+                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
 
         //[Test]
         //public void CanBuildDgml()

@@ -5,21 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\ReverseEngineer20\ModelAnalyzer\DebugViewParser.cs" Link="DebugViewParser.cs" />
-    <Compile Include="..\ReverseEngineer20\ModelAnalyzer\DebugViewParserResult.cs" Link="DebugViewParserResult.cs" />
-    <Compile Include="..\ReverseEngineer20\ModelAnalyzer\DgmlBuilder.cs" Link="DgmlBuilder.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="..\ReverseEngineer20\ModelAnalyzer\template.dgml" Link="ModelAnalyzer\template.dgml" />
+    <EmbeddedResource Include="template.dgml" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ModelAnalyzer\" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -32,13 +22,15 @@
     <PackageReleaseNotes>Initial beta release</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/ErikEJ/SqlCeToolbox</PackageProjectUrl>
     <PackageTags>DbContext;EntityFramework;DGML;graph</PackageTags>
-    <RootNamespace>ReverseEngineer20</RootNamespace>
+    <RootNamespace>DgmlBuilder</RootNamespace>
     <MinClientVersion>4.3</MinClientVersion>
     <Dependencies>
       <Dependency id="Microsoft.EntityFrameworkCore.Relational" version="2.0.0" />
     </Dependencies>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.1.0-alpha</Version>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
 </Project>

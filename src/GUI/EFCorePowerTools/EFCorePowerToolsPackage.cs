@@ -29,14 +29,14 @@ namespace EFCorePowerTools
     // ReSharper disable once InconsistentNaming
     public sealed class EFCorePowerToolsPackage : Package
     {
-        private readonly ReverseEngineerHandler _reverseEngineerHandler;
+        //private readonly ReverseEngineerHandler _reverseEngineerHandler;
         private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
         private readonly AboutHandler _aboutHandler;
         private DTE2 _dte2;
 
         public EFCorePowerToolsPackage()
         {
-            _reverseEngineerHandler = new ReverseEngineerHandler(this);
+            //_reverseEngineerHandler = new ReverseEngineerHandler(this);
             _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
             _aboutHandler = new AboutHandler(this);
         }
@@ -115,11 +115,11 @@ namespace EFCorePowerTools
 
             if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
             {
-                _reverseEngineerHandler.ReverseEngineerCodeFirst(project);
+                //_reverseEngineerHandler.ReverseEngineerCodeFirst(project);
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerDgml)
             {
-                _reverseEngineerHandler.GenerateServerDgmlFiles();
+                //_reverseEngineerHandler.GenerateServerDgmlFiles();
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
             {

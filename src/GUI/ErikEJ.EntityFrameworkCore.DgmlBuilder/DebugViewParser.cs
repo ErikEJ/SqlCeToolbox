@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ReverseEngineer20.ModelAnalyzer
+namespace DgmlBuilder
 {
     public class DebugViewParser
     {

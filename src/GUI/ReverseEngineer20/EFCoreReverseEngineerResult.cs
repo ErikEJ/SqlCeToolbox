@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EFCoreReverseEngineer
+namespace ReverseEngineer20
 {
     public class EfCoreReverseEngineerResult
     {

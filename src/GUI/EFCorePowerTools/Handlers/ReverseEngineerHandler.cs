@@ -1,5 +1,4 @@
-﻿using EFCoreReverseEngineer;
-using EnvDTE;
+﻿using EnvDTE;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.VisualStudio.Data.Core;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.Text;
+using ReverseEngineer20;
 
 namespace EFCorePowerTools.Handlers
 {
@@ -144,7 +144,7 @@ namespace EFCorePowerTools.Handlers
                         UseFluentApiOnly = !modelDialog.UseDataAnnotations,
                         ConnectionString = dbInfo.ConnectionString,
                         ContextClassName = modelDialog.ModelName,
-                        DatabaseType = (EFCoreReverseEngineer.DatabaseType)dbInfo.DatabaseType,
+                        DatabaseType = (ReverseEngineer20.DatabaseType)dbInfo.DatabaseType,
                         ProjectPath = projectPath,
                         OutputPath = modelDialog.OutputPath,
                         ProjectRootNamespace = modelDialog.NameSpace,
