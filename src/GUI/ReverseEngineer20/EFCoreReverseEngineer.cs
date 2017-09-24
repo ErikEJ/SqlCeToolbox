@@ -32,11 +32,9 @@ namespace ReverseEngineer20
                 case DatabaseType.SQLCE35:
                     throw new NotImplementedException();
                 case DatabaseType.SQLCE40:
-                    // TODO Add after 2.0.1 release
-                    throw new NotImplementedException();
-                    //var sqlCeProvider = new SqlCeDesignTimeServices();
-                    //sqlCeProvider.ConfigureDesignTimeServices(serviceCollection);
-                    //break;
+                    var sqlCeProvider = new SqlCeDesignTimeServices();
+                    sqlCeProvider.ConfigureDesignTimeServices(serviceCollection);
+                    break;
                 case DatabaseType.SQLServer:
                     var provider = new SqlServerDesignTimeServices();
                     provider.ConfigureDesignTimeServices(serviceCollection);
