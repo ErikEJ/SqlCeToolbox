@@ -228,17 +228,21 @@ namespace EFCorePowerTools
             if (!codeElements.Any())
                 errors.Add("DEBUG: No codeelements found");
 
+            errors.Add("DEBUG: Codeelements found");
+
             if (codeElements.Any())
             {
                 foreach (var codeElement in codeElements)
                 {
                     var userContextType = resolver.GetType(codeElement.FullName);
 
-                    //if (userContextType == null)
-                    //    errors.Add("DEBUG: No userContextType found");
+                    if (userContextType == null)
+                        errors.Add("DEBUG: No userContextType found");
+
+                    errors.Add("DEBUG: UserContextType found: " + userContextType.Name);
 
                     //if (!IsContextType(userContextType, out systemContextType))
-                    //    errors.Add("DEBUG: Not a ContextType");
+                    //    errors.Add("DEBUG: Not a DbContextType");
 
                     //if (userContextType != null && IsContextType(userContextType, out systemContextType))
                     //{
