@@ -230,24 +230,34 @@ namespace EFCorePowerTools
             {
                 foreach (var codeElement in codeElements)
                 {
-                    var userContextType = resolver.GetType(codeElement.FullName, true, true);
+                    var assembly = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore"));
 
-                    if (userContextType == null)
-                    {
-                        errors.Add("DEBUG: No userContextType found: " + codeElement.FullName);
-                    }
-                    else
-                    {
-                        errors.Add("DEBUG: UserContextType found: " + userContextType.Name);
-                    }
+                    if (assembly == null)
+                        errors.Add("DEBUG: No EF Core assembly found");
 
-                    systemContextType = GetDbContextType(userContextType);
-
-                    if (systemContextType != null)
+                    if (assembly != null)
                     {
-                        errors.Add("DEBUG: Found systemContextType: " + systemContextType.Name);
-                        LogError(errors, null);
-                        return Activator.CreateInstance(userContextType);
+                        systemContextType = resolver.GetType("Microsoft.EntityFrameworkCore.DbContext");
+
+                        var userContextType = resolver.GetType(codeElement.FullName, true, true);
+
+                        if (userContextType == null)
+                        {
+                            errors.Add("DEBUG: No userContextType found: " + codeElement.FullName);
+                        }
+                        else
+                        {
+                            errors.Add("DEBUG: UserContextType found: " + userContextType.Name);
+                        }
+
+                        //systemContextType = GetDbContextType(userContextType);
+
+                        if (systemContextType != null)
+                        {
+                            errors.Add("DEBUG: Found systemContextType: " + systemContextType.Name);
+                            LogError(errors, null);
+                            return Activator.CreateInstance(userContextType);
+                        }
                     }
                 }
             }
