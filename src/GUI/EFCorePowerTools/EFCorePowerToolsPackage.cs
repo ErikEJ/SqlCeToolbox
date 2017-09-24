@@ -224,11 +224,21 @@ namespace EFCorePowerTools
 
             var codeElements = FindClassesInCodeModel(_dte2.SelectedItems.Item(1).ProjectItem.FileCodeModel.CodeElements).ToList();
 
+            var errors = new List<string>();
+            if (!codeElements.Any())
+                errors.Add("DEBUG: No codeelements found");
+
             if (codeElements.Any())
             {
                 foreach (var codeElement in codeElements)
                 {
                     var userContextType = resolver.GetType(codeElement.FullName);
+
+                    if (userContextType == null)
+                        errors.Add("DEBUG: No userContextType found");
+
+                    if (!IsContextType(userContextType, out systemContextType))
+                        errors.Add("DEBUG: Not a ContextType");
 
                     if (userContextType != null && IsContextType(userContextType, out systemContextType))
                     {
@@ -236,6 +246,8 @@ namespace EFCorePowerTools
                     }
                 }
             }
+
+            LogError(errors, null);
 
             _dte2.StatusBar.Text = "A type deriving from DbContext could not be found in the selected project.";
 
