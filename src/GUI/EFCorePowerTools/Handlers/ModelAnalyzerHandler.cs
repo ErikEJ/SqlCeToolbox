@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using ReverseEngineer20;
+using DgmlBuilder;
 
 namespace EFCorePowerTools.Handlers
 {

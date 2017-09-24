@@ -1,5 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
-namespace EFCoreReverseEngineer
+namespace ReverseEngineer20
 {
     public enum DatabaseType
     {
