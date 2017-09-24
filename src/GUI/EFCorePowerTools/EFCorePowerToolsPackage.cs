@@ -232,7 +232,7 @@ namespace EFCorePowerTools
                 {
                     LoadAssemblies(resolver);
 
-                    var userContextType = resolver.GetType(codeElement.FullName);
+                    var userContextType = resolver.GetType(codeElement.FullName, true);
 
                     if (userContextType == null)
                     {
@@ -243,11 +243,12 @@ namespace EFCorePowerTools
                         errors.Add("DEBUG: UserContextType found: " + userContextType.Name);
                     }
 
+                    LogError(errors, null);
+
                     systemContextType = GetDbContextType(userContextType);
 
                     if (systemContextType != null)
                     {
-                        LogError(errors, null);
                         return Activator.CreateInstance(userContextType);
                     }
                 }
