@@ -230,10 +230,7 @@ namespace EFCorePowerTools
             {
                 foreach (var codeElement in codeElements)
                 {
-                    var assembly1 = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore"));
-                    var assembly2 = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore.SqlServer"));
-                    var assembly3 = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore.Sqlite"));
-                    var assembly4 = resolver.GetAssembly(new AssemblyName("Microsoft.EntityFrameworkCore.Relational"));
+                    LoadAssemblies(resolver);
 
                     var userContextType = resolver.GetType(codeElement.FullName);
 
@@ -255,15 +252,45 @@ namespace EFCorePowerTools
                     }
                 }
             }
-
-            LogError(errors, null);
-
             _dte2.StatusBar.Text = "A type deriving from DbContext could not be found in the selected project.";
 
             return null;
         }
 
-        private static IEnumerable<CodeElement> FindClassesInCodeModel(CodeElements codeElements)
+        private void LoadAssemblies(ITypeResolutionService resolver)
+        {
+            var list = new List<string>
+            {
+                "Microsoft.Extensions.Options",
+                "System.Diagnostics.DiagnosticSource",
+                "System.ComponentModel.Annotations",
+                "Microsoft.Extensions.DependencyInjection.Abstractions",
+                "System.Interactive.Async",
+                "Microsoft.Extensions.Logging",
+                "Microsoft.Extensions.Logging.Abstractions",
+                "Remotion.Linq",
+                "Microsoft.Extensions.Caching.Abstractions",
+                "Microsoft.EntityFrameworkCore.SqlServer",
+                "System.Collections.Immutable",
+                "Microsoft.Extensions.Caching.Memory",
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.Extensions.DependencyInjection",
+                "Microsoft.Extensions.Primitives",
+                "Microsoft.EntityFrameworkCore.Relational",
+                "Microsoft.Extensions.Configuration.Abstractions",
+                "Microsoft.EntityFrameworkCore",
+                "Microsoft.EntityFrameworkCore.SqlServer",
+                "Microsoft.EntityFrameworkCore.Sqlite",
+                "Microsoft.EntityFrameworkCore.Relational"
+            };
+
+            foreach (var item in list)
+            {
+                resolver.GetAssembly(new AssemblyName(item));
+            }
+        }
+
+        private IEnumerable<CodeElement> FindClassesInCodeModel(CodeElements codeElements)
         {
             foreach (CodeElement codeElement in codeElements)
             {
@@ -279,7 +306,7 @@ namespace EFCorePowerTools
             }
         }
 
-        private static Type GetDbContextType(Type userContextType)
+        private Type GetDbContextType(Type userContextType)
         {
             Type systemContextType = null;
             if (userContextType != null)
@@ -301,7 +328,7 @@ namespace EFCorePowerTools
                 type = type.BaseType;
             }
         }
-#endregion
+        #endregion
 
         private void OnItemMenuBeforeQueryStatus(object sender, EventArgs e)
         {
