@@ -29,14 +29,14 @@ namespace EFCorePowerTools
     // ReSharper disable once InconsistentNaming
     public sealed class EFCorePowerToolsPackage : Package
     {
-        //private readonly ReverseEngineerHandler _reverseEngineerHandler;
+        private readonly ReverseEngineerHandler _reverseEngineerHandler;
         private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
         private readonly AboutHandler _aboutHandler;
         private DTE2 _dte2;
 
         public EFCorePowerToolsPackage()
         {
-            //_reverseEngineerHandler = new ReverseEngineerHandler(this);
+            _reverseEngineerHandler = new ReverseEngineerHandler(this);
             _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
             _aboutHandler = new AboutHandler(this);
         }
@@ -115,11 +115,11 @@ namespace EFCorePowerTools
 
             if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
             {
-                //_reverseEngineerHandler.ReverseEngineerCodeFirst(project);
+                _reverseEngineerHandler.ReverseEngineerCodeFirst(project);
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerDgml)
             {
-                //_reverseEngineerHandler.GenerateServerDgmlFiles();
+                _reverseEngineerHandler.GenerateServerDgmlFiles();
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
             {
@@ -190,7 +190,7 @@ namespace EFCorePowerTools
             }
         }
 
-
+#region DbConext discovery
         private dynamic DiscoverUserContextType(out Type systemContextType)
         {
             systemContextType = null;
@@ -277,16 +277,11 @@ namespace EFCorePowerTools
                 type = type.BaseType;
             }
         }
+#endregion
 
         private void OnItemMenuBeforeQueryStatus(object sender, EventArgs e)
         {
-            OnItemMenuBeforeQueryStatus(
-                sender,
-                new[] { ".cs" });
-        }
-
-        private void OnItemMenuBeforeQueryStatus(object sender, IEnumerable<string> supportedExtensions)
-        {
+            var supportedExtensions = new[] {".cs"};
             var menuCommand = sender as MenuCommand;
 
             if (menuCommand == null)
@@ -299,8 +294,19 @@ namespace EFCorePowerTools
                 return;
             }
 
+            var project = _dte2.SelectedItems.Item(1).ProjectItem.ContainingProject;
+
+            if (project == null)
+            {
+                return;
+            }
+
+            var supportedProject =
+                project.Kind == "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" ||
+                project.Kind == "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}"; // csproj
+
             var extensionValue = GetSelectedItemExtension();
-            menuCommand.Visible = supportedExtensions.Contains(extensionValue);
+            menuCommand.Visible = supportedExtensions.Contains(extensionValue) && supportedProject;
         }
 
         private string GetSelectedItemExtension()
@@ -315,12 +321,7 @@ namespace EFCorePowerTools
 
             var extension = selectedItem.ProjectItem.Properties.Item("Extension");
 
-            if (extension == null)
-            {
-                return null;
-            }
-
-            return (string)extension.Value;
+            return (string) extension?.Value;
         }
 
         private void OnProjectMenuBeforeQueryStatus(object sender, EventArgs e)

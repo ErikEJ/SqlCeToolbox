@@ -246,21 +246,18 @@ namespace EFCorePowerTools.Handlers
         private string ReportRevEngErrors(EfCoreReverseEngineerResult revEngResult, string missingProviderPackage)
         {
             var errors = new StringBuilder();
-            foreach (var entityError in revEngResult.EntityErrors)
-            {
-                errors.Append($"Error: {entityError}{Environment.NewLine}");
-            }
-            foreach (var entityError in revEngResult.EntityWarnings)
-            {
-                errors.Append($"Warning: {entityError}{Environment.NewLine}");
-            }
             if (revEngResult.EntityErrors.Count == 0)
             {
-                errors.Insert(0, "Model generated successfully." + Environment.NewLine);
+                errors.Append("Model generated successfully." + Environment.NewLine);
             }
             else
             {
-                errors.Insert(0, "Please check the output window for errors" + Environment.NewLine);
+                errors.Append("Please check the output window for errors" + Environment.NewLine);
+            }
+
+            if (revEngResult.EntityWarnings.Count > 0)
+            {
+                errors.Append("Please check the output window for warnings" + Environment.NewLine);
             }
 
             if (!string.IsNullOrEmpty(missingProviderPackage))
