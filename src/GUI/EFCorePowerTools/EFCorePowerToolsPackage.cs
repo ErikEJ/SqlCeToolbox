@@ -230,7 +230,7 @@ namespace EFCorePowerTools
             {
                 foreach (var codeElement in codeElements)
                 {
-                    var userContextType = resolver.GetType(codeElement.FullName);
+                    var userContextType = resolver.GetType(codeElement.FullName, true, true);
 
                     if (userContextType == null)
                     {
