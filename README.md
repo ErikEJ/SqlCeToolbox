@@ -53,7 +53,7 @@ If you have trouble installing the SSMS extension, try the following command lin
 
 `"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
 
-## EF Core Power Tools for Visual Studio 2017 (alpha) 
+## EF Core Power Tools for Visual Studio 2017 (beta) 
 
 **Daily build**
 
