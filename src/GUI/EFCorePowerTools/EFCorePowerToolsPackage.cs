@@ -71,12 +71,6 @@ namespace EFCorePowerTools
                     OnProjectMenuBeforeQueryStatus, menuCommandId5);
                 oleMenuCommandService.AddCommand(menuItem5);
 
-                var menuCommandId6 = new CommandID(GuidList.guidDbContextPackageCmdSet,
-                    (int)PkgCmdIDList.cmdidDebugView);
-                var menuItem6 = new OleMenuCommand(OnItemContextMenuInvokeHandler, null,
-                    OnItemMenuBeforeQueryStatus, menuCommandId6);
-                oleMenuCommandService.AddCommand(menuItem6);
-
                 var menuCommandId7 = new CommandID(GuidList.guidDbContextPackageCmdSet,
                     (int)PkgCmdIDList.cmdidAbout);
                 var menuItem7 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
@@ -85,15 +79,9 @@ namespace EFCorePowerTools
 
                 var menuCommandId8 = new CommandID(GuidList.guidDbContextPackageCmdSet,
                     (int)PkgCmdIDList.cmdidDgmlView);
-                var menuItem8 = new OleMenuCommand(OnItemContextMenuInvokeHandler, null,
-                    OnItemMenuBeforeQueryStatus, menuCommandId8);
+                var menuItem8 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
+                    OnProjectMenuBeforeQueryStatus, menuCommandId8);
                 oleMenuCommandService.AddCommand(menuItem8);
-
-                var menuCommandId9 = new CommandID(GuidList.guidDbContextPackageCmdSet,
-                    (int)PkgCmdIDList.cmdidEdmMenuAbout);
-                var menuItem9 = new OleMenuCommand(OnItemContextMenuInvokeHandler, null,
-                    OnItemMenuBeforeQueryStatus, menuCommandId9);
-                oleMenuCommandService.AddCommand(menuItem9);
             }
 
             // AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
@@ -121,244 +109,14 @@ namespace EFCorePowerTools
             {
                 _reverseEngineerHandler.GenerateServerDgmlFiles();
             }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlView)
+            {
+                _modelAnalyzerHandler.InstallDgmlNuget(project);
+            }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
             {
                 _aboutHandler.ShowDialog();
             }
-        }
-
-        private void OnItemContextMenuInvokeHandler(object sender, EventArgs e)
-        {
-            try
-            {
-                var menuCommand = sender as MenuCommand;
-
-                if (menuCommand == null)
-                {
-                    return;
-                }
-
-                if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidEdmMenuAbout)
-                {
-                    _aboutHandler.ShowDialog();
-                    return;
-                }
-
-                if (_dte2.SelectedItems.Count != 1)
-                {
-                    return;
-                }
-
-                try
-                {                  
-                    // ReSharper disable once NotAccessedVariable
-                    Type systemContextType;
-                    var context = DiscoverUserContextType(out systemContextType);
-
-                    if (context != null)
-                    {
-                        if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDebugView)
-                        {
-                            _modelAnalyzerHandler.GenerateDebugView(context);
-                        }
-                        else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlView)
-                        {
-                            _modelAnalyzerHandler.GenerateDgml(context);
-                        }
-                    }
-                }
-                catch (TargetInvocationException ex)
-                {
-                    var innerException = ex.InnerException;
-
-                    var remoteStackTraceString =
-                        typeof(Exception).GetField("_remoteStackTraceString", BindingFlags.Instance | BindingFlags.NonPublic)
-                        ?? typeof(Exception).GetField("remote_stack_trace", BindingFlags.Instance | BindingFlags.NonPublic);
-                    if (remoteStackTraceString != null)
-                        if (innerException != null)
-                            remoteStackTraceString.SetValue(innerException,
-                                innerException.StackTrace + "$$RethrowMarker$$");
-
-                    if (innerException != null)
-                        EnvDteHelper.ShowMessage(
-                            "An error occurred: " + Environment.NewLine + innerException);
-                }
-            }
-            catch (Exception ex)
-            {
-                EnvDteHelper.ShowMessage("An error occurred: " + Environment.NewLine + ex);
-            }
-        }
-
-#region DbConext discovery
-        private dynamic DiscoverUserContextType(out Type systemContextType)
-        {
-            systemContextType = null;
-            var project = _dte2.SelectedItems.Item(1).ProjectItem.ContainingProject;
-
-            if (!project.TryBuild())
-            {
-                _dte2.StatusBar.Text = "Build failed. Unable to discover a DbContext class.";
-
-                return null;
-            }
-
-            DynamicTypeService typeService;
-            IVsSolution solution;
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            using (var serviceProvider = new ServiceProvider((Microsoft.VisualStudio.OLE.Interop.IServiceProvider)_dte2.DTE))
-            {
-                typeService = (DynamicTypeService)serviceProvider.GetService(typeof(DynamicTypeService));
-                solution = (IVsSolution)serviceProvider.GetService(typeof(SVsSolution));
-            }
-
-            IVsHierarchy vsHierarchy;
-            var hr = solution.GetProjectOfUniqueName(_dte2.SelectedItems.Item(1).ProjectItem.ContainingProject.UniqueName, out vsHierarchy);
-
-            if (hr != ProjectExtensions.S_OK)
-            {
-                throw Marshal.GetExceptionForHR(hr);
-            }
-
-            var resolver = typeService.GetTypeResolutionService(vsHierarchy);
-
-            var codeElements = FindClassesInCodeModel(_dte2.SelectedItems.Item(1).ProjectItem.FileCodeModel.CodeElements).ToList();
-
-            var errors = new List<string>();
-
-            if (codeElements.Any())
-            {
-                foreach (var codeElement in codeElements)
-                {
-                    LoadAssemblies(resolver);
-
-                    var userContextType = resolver.GetType(codeElement.FullName, true);
-
-                    if (userContextType == null)
-                    {
-                        errors.Add("DEBUG: No userContextType found: " + codeElement.FullName);
-                    }
-                    else
-                    {
-                        errors.Add("DEBUG: UserContextType found: " + userContextType.Name);
-                    }
-
-                    LogError(errors, null);
-
-                    systemContextType = GetDbContextType(userContextType);
-
-                    if (systemContextType != null)
-                    {
-                        return Activator.CreateInstance(userContextType);
-                    }
-                }
-            }
-            _dte2.StatusBar.Text = "A type deriving from DbContext could not be found in the selected project.";
-
-            return null;
-        }
-
-        private void LoadAssemblies(ITypeResolutionService resolver)
-        {
-            var list = new List<string>
-            {
-                "Microsoft.Extensions.Options",
-                "System.Diagnostics.DiagnosticSource",
-                "System.ComponentModel.Annotations",
-                "Microsoft.Extensions.DependencyInjection.Abstractions",
-                "System.Interactive.Async",
-                "Microsoft.Extensions.Logging",
-                "Microsoft.Extensions.Logging.Abstractions",
-                "Remotion.Linq",
-                "Microsoft.Extensions.Caching.Abstractions",
-                "Microsoft.EntityFrameworkCore.SqlServer",
-                "System.Collections.Immutable",
-                "Microsoft.Extensions.Caching.Memory",
-                "Microsoft.EntityFrameworkCore",
-                "Microsoft.Extensions.DependencyInjection",
-                "Microsoft.Extensions.Primitives",
-                "Microsoft.EntityFrameworkCore.Relational",
-                "Microsoft.Extensions.Configuration.Abstractions",
-                "Microsoft.EntityFrameworkCore",
-                "Microsoft.EntityFrameworkCore.SqlServer",
-                "Microsoft.EntityFrameworkCore.Sqlite",
-                "Microsoft.EntityFrameworkCore.Relational"
-            };
-
-            foreach (var item in list)
-            {
-                resolver.GetAssembly(new AssemblyName(item));
-            }
-        }
-
-        private IEnumerable<CodeElement> FindClassesInCodeModel(CodeElements codeElements)
-        {
-            foreach (CodeElement codeElement in codeElements)
-            {
-                if (codeElement.Kind == vsCMElement.vsCMElementClass)
-                {
-                    yield return codeElement;
-                }
-
-                foreach (var element in FindClassesInCodeModel(codeElement.Children))
-                {
-                    yield return element;
-                }
-            }
-        }
-
-        private Type GetDbContextType(Type userContextType)
-        {
-            Type systemContextType = null;
-            if (userContextType != null)
-            {
-                systemContextType = GetBaseTypes(userContextType).FirstOrDefault(
-                    t => t.FullName == "Microsoft.EntityFrameworkCore.DbContext"
-                         && t.Assembly.GetName().Name == "Microsoft.EntityFrameworkCore");
-            }
-            return systemContextType;
-        }
-
-        private static IEnumerable<Type> GetBaseTypes(Type type)
-        {
-            while (type != typeof(object))
-            {
-                if (type == null) continue;
-                yield return type.BaseType;
-
-                type = type.BaseType;
-            }
-        }
-        #endregion
-
-        private void OnItemMenuBeforeQueryStatus(object sender, EventArgs e)
-        {
-            var supportedExtensions = new[] {".cs"};
-            var menuCommand = sender as MenuCommand;
-
-            if (menuCommand == null)
-            {
-                return;
-            }
-
-            if (_dte2.SelectedItems.Count != 1)
-            {
-                return;
-            }
-
-            var project = _dte2.SelectedItems.Item(1).ProjectItem.ContainingProject;
-
-            if (project == null)
-            {
-                return;
-            }
-
-            var supportedProject =
-                project.Kind == "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" ||
-                project.Kind == "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}"; // csproj
-
-            var extensionValue = GetSelectedItemExtension();
-            menuCommand.Visible = supportedExtensions.Contains(extensionValue) && supportedProject;
         }
 
         private string GetSelectedItemExtension()
