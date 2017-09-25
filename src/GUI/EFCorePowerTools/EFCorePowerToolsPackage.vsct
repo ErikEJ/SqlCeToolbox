@@ -19,14 +19,6 @@
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenu" />
       </Group>
       
-      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuGroup" priority="0x0100">
-        <Parent guid="guidDbContextPackageCmdSet" id="IDM_VS_CTXT_ITEMNODE" />
-      </Group>
-
-      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuItemsGroup" priority="0x0200">
-        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmMenu" />
-      </Group>
-
     </Groups>
 
     <Menus>
@@ -61,7 +53,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerDgml" priority="0x0200" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerDgml" priority="0x0300" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
         <Icon guid="guidImage1" id="bmpPic1" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -71,7 +63,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidAbout" priority="0x0300" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidAbout" priority="0x0600" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
         <Icon guid="guidImage0" id="bmpPic0" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -81,33 +73,13 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlView" priority="0x0100" type="Button">
-        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuItemsGroup" />
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlView" priority="0x0200" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
         <Icon guid="guidImage2" id="bmpPic2" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>cmdidDgmlView</CommandName>
-          <ButtonText>View DbContext Model as Graph (preview)</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidDebugView" priority="0x0200" type="Button">
-        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuItemsGroup" />
-        <Icon guid="guidImage4" id="bmpPic4" />
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <Strings>
-          <CommandName>cmdidDebugView</CommandName>
-          <ButtonText>View DbContext Model as Text</ButtonText>
-        </Strings>
-      </Button>
-
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuAbout" priority="0x0300" type="Button">
-        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuItemsGroup" />
-        <Icon guid="guidImage0" id="bmpPic0" />
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <Strings>
-          <CommandName>cmdidAbout</CommandName>
-          <ButtonText>About</ButtonText>
+          <ButtonText>Add AsDgml() extension method</ButtonText>
         </Strings>
       </Button>
           
@@ -128,10 +100,6 @@
 
     <CommandPlacement guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuGroup" priority="0x100">
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
-    </CommandPlacement>
-    
-    <CommandPlacement guid="guidDbContextPackageCmdSet" id="cmdidEdmMenuGroup" priority="0x100">
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
     </CommandPlacement>
 
   </CommandPlacements>

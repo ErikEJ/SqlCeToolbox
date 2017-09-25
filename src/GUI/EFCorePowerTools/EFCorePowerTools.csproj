@@ -314,6 +314,7 @@
     <Content Include="db.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <EmbeddedResource Include="DgmlBuilder\readme.txt" />
     <Content Include="netstandard.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
