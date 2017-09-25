@@ -6,17 +6,16 @@
         <Description xml:space="preserve">
             Preview of useful design-time DbContext features, added to the Visual Studio Solution Explorer context menu.
 
-            When right-clicking on a C# project, the following context menu function is available:
+            When right-clicking on a C# project, the following context menu functions are available:
             Reverse Engineer - Generates POCO classes, derived DbContext and Code First mapping for an existing database.
-            
-            When right-clicking on a C# project item, the following context menu functions are available:
-            View DbContext Model as Graph - Generates a DGML graph of your DbContext Model, viewable in Visual Studio.
-            View DbContext Model as Text - Generates textual representation of your DbContext Model. 
+            Add AsDgml() extension method - Adds an extension method to generate a DGML graph from your DbContext.
+            View Database Schema as Graph - Generates a DGML graph of your database schema, viewable in Visual Studio.
+            About - Displays version and other diagnostic information about your Visual Studio instance. 
         </Description>
         <MoreInfo>https://github.com/ErikEJ/SqlCeToolbox/wiki/EF-Core-Power-Tools</MoreInfo>
         <License>Resources\license.txt</License>
         <Icon>db.png</Icon>
-        <PreviewImage>Resources\efcreveng2.png</PreviewImage>
+        <PreviewImage>Resources\pt.png</PreviewImage>
         <Tags>sql sqlite sqlce entityframework efcore codegeneration database</Tags>
     </Metadata>
     <Installation>
