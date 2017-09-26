@@ -39,7 +39,11 @@ You can also automatically get the [latest build of the Master branch directly i
 
 If you need the Visual Studio 2010 extension, please contact me, and I can provide a link! 
 
-## SQL Server Management Studio (SSMS) 16.x and 17.x Extension (beta) 
+## SQL Server Management Studio (SSMS) 17.x Extension
+
+**Release**
+
+Download the latest version of the SSMS extension (for both 3.5, 4.0, SQLite and SQ Server) from [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolboxforSSMS)
 
 **Daily build**
 
@@ -49,7 +53,7 @@ If you have trouble installing the SSMS extension, try the following command lin
 
 `"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
 
-## EF Core Power Tools for Visual Studio 2017 (alpha) 
+## EF Core Power Tools for Visual Studio 2017 (beta) 
 
 **Daily build**
 

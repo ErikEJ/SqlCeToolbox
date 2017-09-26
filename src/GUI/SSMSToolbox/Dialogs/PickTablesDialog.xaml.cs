@@ -27,6 +27,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             foreach (string table in Tables)
             { 
                 bool isChecked = !table.StartsWith("__");
+                isChecked = !table.StartsWith("dbo.__");
                 items.Add(new CheckListItem { IsChecked = isChecked, Label = table });                
             }
             chkTables.ItemsSource = items;
