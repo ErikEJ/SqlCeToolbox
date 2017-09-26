@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Windows;
 using System;
-using System.ComponentModel;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeScripting;
 
@@ -162,7 +161,7 @@ namespace EFCorePowerTools
 
         private void GalleryLink_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details");
+            Process.Start("https://marketplace.visualstudio.com/items?itemName=ErikEJ.EFCorePowerTools#review-details");
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
