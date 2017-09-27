@@ -8,6 +8,7 @@ using System.Data;
 using System.IO;
 using System.Globalization;
 using DbUp.Support.SqlServer;
+using System.Text.RegularExpressions;
 
 namespace ErikEJ.SQLiteScripting
 {
@@ -63,7 +64,7 @@ namespace ErikEJ.SQLiteScripting
             {
                 var view = new View();
                 view.ViewName = dt.Rows[i]["TABLE_NAME"].ToString();
-                view.Definition = dt.Rows[i]["VIEW_DEFINITION"].ToString();
+                view.Definition = Regex.Replace(dt.Rows[i]["VIEW_DEFINITION"].ToString(), @"\r\n|\n\r|\n|\r", "\r\n");
                 list.Add(view);
             }
             return list;
