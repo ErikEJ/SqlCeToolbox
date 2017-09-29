@@ -78,24 +78,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return classBasis;
         }
 
-        public static string GetFilePath(string connectionString, DatabaseType dbType)
-        {
-            if (dbType == DatabaseType.SQLServer)
-            {
-                var helper = new SqlServerHelper();
-                return helper.PathFromConnectionString(connectionString);
-            }
-            var filePath = GetPath(connectionString, dbType);
-            return Path.GetFileName(filePath);
-        }
-
-        private static string GetPath(string connectionString, DatabaseType dbType)
+        private static string GetFilePath(string connectionString, DatabaseType dbType)
         {
             var helper = CreateEngineHelper(dbType);
+
+            if (dbType == DatabaseType.SQLServer)
+            {
+                return helper.PathFromConnectionString(connectionString);
+            }
             return helper.PathFromConnectionString(connectionString);
         }
 
-        internal static bool IsMissing(DatabaseInfo info)
+        public static bool IsMissing(DatabaseInfo info)
         {
             if (info.DatabaseType == DatabaseType.SQLServer)
             {
