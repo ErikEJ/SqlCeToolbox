@@ -11,8 +11,10 @@ namespace ReverseEngineer20
 {
     public class EFCoreModelBuilder
     {
-        public Tuple<string, string> GenerateDebugView(string outputPath)
+        public List<Tuple<string, string>> GenerateDebugView(string outputPath)
         {
+            var result = new List<Tuple<string, string>>();
+
             var errors = new List<string>();
             var warnings = new List<string>();
 
@@ -29,17 +31,20 @@ namespace ReverseEngineer20
 
             DbContextOperations operations = new DbContextOperations(reporter, assembly, assembly);
             var types = operations.GetContextTypes().ToList();
-
+            
             if (types.Count == 0)
             {
                 throw new ArgumentException("No DbContext types found in the project");
             }
 
-            var dbContext = operations.CreateContext(types[0].Name);
+            foreach (var type in types)
+            {
+                var dbContext = operations.CreateContext(types[0].Name);
+                var debugView = dbContext.Model.AsModel().DebugView.View;
+                result.Add(new Tuple<string, string>(type.Name, debugView));
+            }
 
-            var debugView = dbContext.Model.AsModel().DebugView.View;
-
-            return new Tuple<string, string>(debugView, types[0].Name);
+            return result;
         }
 
         private Assembly Load(string assemblyPath)

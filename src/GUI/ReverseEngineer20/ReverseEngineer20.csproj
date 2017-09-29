@@ -5,10 +5,10 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4C0F2979-FCD9-4E93-8E4F-2A43055D42FE}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ReverseEngineer20</RootNamespace>
-    <AssemblyName>ReverseEngineer20</AssemblyName>
+    <AssemblyName>efpt</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -37,6 +37,9 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ReverseEngineer20.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFrameworkCore.SqlServerCompact40, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9af395b34ac99006, processorArchitecture=MSIL">
@@ -135,15 +138,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseType.cs" />
-    <Compile Include="EFCoreModelBuilder.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="ReverseEngineer\DatabaseType.cs" />
+    <Compile Include="ModelBuilder\EFCoreModelBuilder.cs" />
     <Compile Include="EFCoreReverseEngineer.cs" />
-    <Compile Include="EFCoreReverseEngineerResult.cs" />
+    <Compile Include="ReverseEngineer\EFCoreReverseEngineerResult.cs" />
     <Compile Include="PathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReverseEngineerOptions.cs" />
+    <Compile Include="ReverseEngineer\ReverseEngineerOptions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>
