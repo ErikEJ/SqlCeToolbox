@@ -73,12 +73,12 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlView" priority="0x0200" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlNuget" priority="0x0200" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
         <Icon guid="guidImage2" id="bmpPic2" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
-          <CommandName>cmdidDgmlView</CommandName>
+          <CommandName>cmdidDgmlNuget</CommandName>
           <ButtonText>Add AsDgml() extension method</ButtonText>
         </Strings>
       </Button>
@@ -114,7 +114,7 @@
       <!-- Project Item Menu Entries -->
 
       <IDSymbol name="cmdidDebugView" value="0x0100" />
-      <IDSymbol name="cmdidDgmlView" value="0x0200" />
+      <IDSymbol name="cmdidDgmlNuget" value="0x0200" />
       <IDSymbol name="cmdidEdmMenuAbout" value="0x0300" />
       <IDSymbol name="cmdidEdmMenu" value="0x0500" />
       <IDSymbol name="cmdidEdmMenuGroup" value="0x0600" />

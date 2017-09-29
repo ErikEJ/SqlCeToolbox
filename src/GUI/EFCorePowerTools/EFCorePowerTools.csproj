@@ -85,7 +85,6 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\VsTheming.cs">
       <Link>Helpers\VsTheming.cs</Link>
     </Compile>
-    <Compile Include="DgmlBuilder\EFCoreModelAnalyzer.cs" />
     <Compile Include="Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
@@ -340,6 +339,7 @@
     <Resource Include="Resources\5.png" />
     <VSCTCompile Include="EFCorePowerToolsPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

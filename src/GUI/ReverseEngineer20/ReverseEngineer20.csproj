@@ -136,8 +136,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DatabaseType.cs" />
+    <Compile Include="EFCoreModelBuilder.cs" />
     <Compile Include="EFCoreReverseEngineer.cs" />
     <Compile Include="EFCoreReverseEngineerResult.cs" />
+    <Compile Include="PathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReverseEngineerOptions.cs" />
   </ItemGroup>

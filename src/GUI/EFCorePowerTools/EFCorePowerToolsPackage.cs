@@ -13,8 +13,6 @@ using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.DbContextPackage;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Design;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace EFCorePowerTools
 {
@@ -78,60 +76,13 @@ namespace EFCorePowerTools
                 oleMenuCommandService.AddCommand(menuItem7);
 
                 var menuCommandId8 = new CommandID(GuidList.guidDbContextPackageCmdSet,
-                    (int)PkgCmdIDList.cmdidDgmlView);
+                    (int)PkgCmdIDList.cmdidDgmlNuget);
                 var menuItem8 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
                     OnProjectMenuBeforeQueryStatus, menuCommandId8);
                 oleMenuCommandService.AddCommand(menuItem8);
             }
 
             // AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
-        }
-
-        private void OnProjectContextMenuInvokeHandler(object sender, EventArgs e)
-        {
-            var menuCommand = sender as MenuCommand;
-            if (menuCommand == null || _dte2.SelectedItems.Count != 1)
-            {
-                return;
-            }
-
-            var project = _dte2.SelectedItems.Item(1).Project;
-            if (project == null)
-            {
-                return;
-            }
-
-            if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
-            {
-                _reverseEngineerHandler.ReverseEngineerCodeFirst(project);
-            }
-            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerDgml)
-            {
-                _reverseEngineerHandler.GenerateServerDgmlFiles();
-            }
-            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlView)
-            {
-                _modelAnalyzerHandler.InstallDgmlNuget(project);
-            }
-            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
-            {
-                _aboutHandler.ShowDialog();
-            }
-        }
-
-        private string GetSelectedItemExtension()
-        {
-            var selectedItem = _dte2.SelectedItems.Item(1);
-
-            if ((selectedItem.ProjectItem == null)
-                || (selectedItem.ProjectItem.Properties == null))
-            {
-                return null;
-            }
-
-            var extension = selectedItem.ProjectItem.Properties.Item("Extension");
-
-            return (string) extension?.Value;
         }
 
         private void OnProjectMenuBeforeQueryStatus(object sender, EventArgs e)
@@ -158,6 +109,64 @@ namespace EFCorePowerTools
             menuCommand.Visible =
                 project.Kind == "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" ||
                 project.Kind == "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}"; // csproj
+        }
+
+        private void OnProjectContextMenuInvokeHandler(object sender, EventArgs e)
+        {
+            var menuCommand = sender as MenuCommand;
+            if (menuCommand == null || _dte2.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            var project = _dte2.SelectedItems.Item(1).Project;
+            if (project == null)
+            {
+                return;
+            }
+
+            if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
+            {
+                _reverseEngineerHandler.ReverseEngineerCodeFirst(project);
+            }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerDgml)
+            {
+                _reverseEngineerHandler.GenerateServerDgmlFiles();
+            }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlNuget)
+            {
+                _modelAnalyzerHandler.InstallDgmlNuget(project);
+
+                //var path = LocateProjectAssemblyPath(project);
+                //if (path != null)
+                //{
+                //    _modelAnalyzerHandler.GenerateDgml(path, project);
+                //}
+            }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
+            {
+                _aboutHandler.ShowDialog();
+            }
+        }
+
+        private string LocateProjectAssemblyPath(Project project)
+        {
+            if (!project.TryBuild())
+            {
+                _dte2.StatusBar.Text = "Build failed. Unable to discover a DbContext class.";
+
+                return null;
+            }
+
+            var path = project.GetOutPutAssemblyPath();
+            if (path != null)
+            {
+                return path;
+            }
+
+            _dte2.StatusBar.Text = "Unable to locate project assembly.";
+
+            return null;
         }
 
         internal void LogError(List<string> statusMessages, Exception exception)
