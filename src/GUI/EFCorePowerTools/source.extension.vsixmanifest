@@ -8,6 +8,7 @@
 When right-clicking on a C# project, the following context menu functions are available:
 Reverse Engineer - Generates POCO classes, derived DbContext and Code First mapping for an existing database.
 Add AsDgml() extension method - Adds an extension method to generate a DGML graph from your DbContext.
+Add DbContext Model Diagram (experimental) - Adds a DGML graph from your DbContext Model. Currently only works for .NET Framework projects.
 View Database Schema as Graph - Generates a DGML graph of your database schema, viewable in Visual Studio.
 About - Displays version and other diagnostic information about your Visual Studio instance. 
         </Description>
