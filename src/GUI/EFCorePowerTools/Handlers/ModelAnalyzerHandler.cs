@@ -22,12 +22,23 @@ namespace EFCorePowerTools.Handlers
 
         public void GenerateDgml(string outputPath, Project project)
         {
+            if (project.Properties.Item("TargetFrameworkMoniker") == null)
+            {
+                EnvDteHelper.ShowError("The selected project type has no TargetFrameworkMoniker");
+                return;
+            }
+
+            if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
+            {
+                EnvDteHelper.ShowError("Currently only .NET Framework projects are supported - TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                return;
+            }
+
             var dgmlBuilder = new DgmlBuilder.DgmlBuilder();
 
             try
             {
-                //TODO!!!
-                //DropFiles(outputPath);
+                DropFiles(outputPath);
 
                 var modelInfo = LaunchProcess(outputPath);
 
@@ -42,11 +53,11 @@ namespace EFCorePowerTools.Handlers
 
                 foreach (var info in result)
                 {
-                    var dgmlText = dgmlBuilder.Build(info.Item1, info.Item2, GetTemplate());
+                    var dgmlText = dgmlBuilder.Build(info.Item2, info.Item1, GetTemplate());
 
-                    var path = Path.GetTempFileName() + ".dgml";
+                    var path = Path.GetTempPath() + info.Item1 + ".dgml";
                     File.WriteAllText(path, dgmlText, Encoding.UTF8);
-                    item = project.ProjectItems.AddFromFile(path);
+                    item = project.ProjectItems.AddFromFileCopy(path);
                 }
 
                 if (item != null)
@@ -64,11 +75,12 @@ namespace EFCorePowerTools.Handlers
         private void DropFiles(string outputPath)
         {
             var toDir = Path.GetDirectoryName(outputPath);
-            var fromDir = Assembly.GetExecutingAssembly().Location;
+            var fromDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            File.Copy(Path.Combine(fromDir, ptexe), Path.Combine(toDir, ptexe));
-            File.Copy(Path.Combine(fromDir, "efpt.exe.config"), Path.Combine(toDir, "efpt.exe.config"));
-            File.Copy(Path.Combine(fromDir, "Microsoft.EntityFrameworkCore.Design.dll"), Path.Combine(toDir, "Microsoft.EntityFrameworkCore.Design.dll"));
+            File.Copy(Path.Combine(fromDir, ptexe), Path.Combine(toDir, ptexe), true);
+            File.Copy(Path.Combine(fromDir, "efpt.exe.config"), Path.Combine(toDir, "efpt.exe.config"), true);
+            //TODO Handle 2.0.1 and newer!
+            File.Copy(Path.Combine(fromDir, "Microsoft.EntityFrameworkCore.Design.dll"), Path.Combine(toDir, "Microsoft.EntityFrameworkCore.Design.dll"), true);
         }
 
         private string LaunchProcess(string outputPath)
@@ -99,12 +111,12 @@ namespace EFCorePowerTools.Handlers
         {
             var result = new List<Tuple<string, string>>();
 
-            var contexts = modelInfo.Split(new[] { "DbContext:" + Environment.NewLine }, StringSplitOptions.None);
+            var contexts = modelInfo.Split(new[] { "DbContext:" + Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var context in contexts)
             {
-                var parts = modelInfo.Split(new[] { "DebugView:" + Environment.NewLine }, StringSplitOptions.None);
-                result.Add(new Tuple<string, string>(parts[0], parts[1]));
+                var parts = context.Split(new[] { "DebugView:" + Environment.NewLine }, StringSplitOptions.None);
+                result.Add(new Tuple<string, string>(parts[0].Trim(), parts[1].Trim()));
             }
 
             return result;

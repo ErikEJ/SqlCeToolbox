@@ -57,6 +57,12 @@ namespace EFCorePowerTools
 
             if (oleMenuCommandService != null)
             {
+                var menuCommandId3 = new CommandID(GuidList.guidDbContextPackageCmdSet,
+                    (int)PkgCmdIDList.cmdidDgmlBuild);
+                var menuItem3 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
+                    OnProjectMenuBeforeQueryStatus, menuCommandId3);
+                oleMenuCommandService.AddCommand(menuItem3);
+
                 var menuCommandId4 = new CommandID(GuidList.guidDbContextPackageCmdSet,
                     (int)PkgCmdIDList.cmdidReverseEngineerDgml);
                 var menuItem4 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
@@ -136,12 +142,14 @@ namespace EFCorePowerTools
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlNuget)
             {
                 _modelAnalyzerHandler.InstallDgmlNuget(project);
-
-                //var path = LocateProjectAssemblyPath(project);
-                //if (path != null)
-                //{
-                //    _modelAnalyzerHandler.GenerateDgml(path, project);
-                //}
+            }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlBuild)
+            {
+                var path = LocateProjectAssemblyPath(project);
+                if (path != null)
+                {
+                    _modelAnalyzerHandler.GenerateDgml(path, project);
+                }
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
             {

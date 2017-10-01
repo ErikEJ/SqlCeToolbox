@@ -105,6 +105,10 @@
     <EmbeddedResource Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\template.dgml">
       <Link>DgmlBuilder\template.dgml</Link>
     </EmbeddedResource>
+    <Content Include="..\efpt\bin\x86\Debug\efpt.exe.config">
+      <Link>efpt.exe.config</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config">
@@ -301,6 +305,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\efpt\bin\x86\Debug\efpt.exe">
+      <Link>efpt.exe</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\efpt\bin\x86\Debug\Microsoft.EntityFrameworkCore.Design.dll">
+      <Link>Microsoft.EntityFrameworkCore.Design.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="db.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

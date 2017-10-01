@@ -7,7 +7,7 @@ namespace EFCorePowerTools
         public const uint cmdidReverseEngineerDgml = 0x005;
         public const uint cmdidAbout = 0x006;
 
-        public const uint cmdidDebugView = 0x0100;
+        public const uint cmdidDgmlBuild = 0x0100;
         public const uint cmdidDgmlNuget = 0x0200;
         public const uint cmdidEdmMenuAbout = 0x0300;
     }

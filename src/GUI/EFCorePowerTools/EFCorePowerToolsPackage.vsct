@@ -53,7 +53,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerDgml" priority="0x0300" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerDgml" priority="0x0800" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
         <Icon guid="guidImage1" id="bmpPic1" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -63,7 +63,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidAbout" priority="0x0600" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidAbout" priority="0x0900" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
         <Icon guid="guidImage0" id="bmpPic0" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -73,7 +73,17 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlNuget" priority="0x0200" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlBuild" priority="0x0300" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
+        <Icon guid="guidImage2" id="bmpPic2" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidDgmlNuget</CommandName>
+          <ButtonText>Add DbContext Model Diagram (experimental)</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlNuget" priority="0x0300" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenuItemsGroup" />
         <Icon guid="guidImage2" id="bmpPic2" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -113,7 +123,7 @@
 
       <!-- Project Item Menu Entries -->
 
-      <IDSymbol name="cmdidDebugView" value="0x0100" />
+      <IDSymbol name="cmdidDgmlBuild" value="0x0100" />
       <IDSymbol name="cmdidDgmlNuget" value="0x0200" />
       <IDSymbol name="cmdidEdmMenuAbout" value="0x0300" />
       <IDSymbol name="cmdidEdmMenu" value="0x0500" />
