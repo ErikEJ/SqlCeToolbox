@@ -28,6 +28,7 @@ namespace EFCorePowerTools.Handlers
             {
                 //TODO!!!
                 //DropFiles(outputPath);
+
                 var modelInfo = LaunchProcess(outputPath);
 
                 if (modelInfo.StartsWith("Error:"))
@@ -96,8 +97,17 @@ namespace EFCorePowerTools.Handlers
 
         private List<Tuple<string, string>> BuildModelInfo(string modelInfo)
         {
-            //TODO!!
-            return new List<Tuple<string, string>>();
+            var result = new List<Tuple<string, string>>();
+
+            var contexts = modelInfo.Split(new[] { "DbContext:" + Environment.NewLine }, StringSplitOptions.None);
+
+            foreach (var context in contexts)
+            {
+                var parts = modelInfo.Split(new[] { "DebugView:" + Environment.NewLine }, StringSplitOptions.None);
+                result.Add(new Tuple<string, string>(parts[0], parts[1]));
+            }
+
+            return result;
         }
 
         public async void InstallDgmlNuget(Project project)

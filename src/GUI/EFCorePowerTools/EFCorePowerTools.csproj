@@ -55,15 +55,6 @@
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\DebugViewParser.cs">
-      <Link>DgmlBuilder\DebugViewParser.cs</Link>
-    </Compile>
-    <Compile Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\DebugViewParserResult.cs">
-      <Link>DgmlBuilder\DebugViewParserResult.cs</Link>
-    </Compile>
-    <Compile Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\DgmlBuilder.cs">
-      <Link>DgmlBuilder\DgmlBuilder.cs</Link>
-    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\CheckListItem.cs">
       <Link>Helpers\CheckListItem.cs</Link>
     </Compile>

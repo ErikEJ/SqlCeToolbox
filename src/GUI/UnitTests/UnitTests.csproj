@@ -111,10 +111,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\ErikEJ.EntityFrameworkCore.DgmlBuilder.csproj">
-      <Project>{079b9426-9230-468e-8d02-2a0de07c7237}</Project>
-      <Name>ErikEJ.EntityFrameworkCore.DgmlBuilder</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ReverseEngineer20\ReverseEngineer20.csproj">
       <Project>{4c0f2979-fcd9-4e93-8e4f-2a43055d42fe}</Project>
       <Name>ReverseEngineer20</Name>
