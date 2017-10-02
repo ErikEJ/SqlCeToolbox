@@ -43,7 +43,7 @@ namespace EFCorePowerTools.Handlers
 
                 _package.Dte2.StatusBar.Text = "Loading schema information...";
 
-                var dbInfo = GetDatabaseInfo(dialogResult);
+                var dbInfo = GetDatabaseInfo(dialogResult, DataProtection.DecryptString(dialog.EncryptedConnectionString));
 
                 if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                 {
@@ -99,7 +99,7 @@ namespace EFCorePowerTools.Handlers
                 {
                     _package.Dte2.StatusBar.Text = "Loading schema information...";
 
-                    var dbInfo = GetDatabaseInfo(dialogResult);
+                    var dbInfo = GetDatabaseInfo(dialogResult, DataProtection.DecryptString(dialog.EncryptedConnectionString));
 
                     if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                     {
@@ -213,13 +213,12 @@ namespace EFCorePowerTools.Handlers
             }
         }
 
-        private DatabaseInfo GetDatabaseInfo(IVsDataConnection dialogResult)
+        private DatabaseInfo GetDatabaseInfo(IVsDataConnection dialogResult, string connectionString)
         {
             var dbType = DatabaseType.SQLCE35;
             var providerInvariant = "N/A";
             // Find connection string and provider
             var connection = (DbConnection)dialogResult.GetLockedProviderObject();
-            var connectionString = connection.ConnectionString;
             var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
             IVsDataProvider dp;
             providerManager.Providers.TryGetValue(dialogResult.Provider, out dp);
