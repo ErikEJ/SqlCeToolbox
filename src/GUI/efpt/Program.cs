@@ -2,7 +2,7 @@
 
 namespace ReverseEngineer20
 {
-    class Program
+    public class Program
     {
         static int Main(string[] args)
         {
@@ -10,7 +10,7 @@ namespace ReverseEngineer20
             {
                 if (args.Length > 0)
                 {
-                    var builder = new EFCoreModelBuilder();
+                    var builder = new EfCoreModelBuilder();
                     var result = builder.GenerateDebugView(args[0]);
                     foreach (var tuple in result)
                     {

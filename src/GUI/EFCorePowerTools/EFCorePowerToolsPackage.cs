@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using EFCorePowerTools.Extensions;
 using EFCorePowerTools.Handlers;
 using EnvDTE;
 using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.DbContextPackage;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 

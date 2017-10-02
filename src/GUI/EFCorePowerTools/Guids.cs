@@ -1,8 +1,7 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
-namespace Microsoft.DbContextPackage
-{
-    using System;
+﻿using System;
 
+namespace EFCorePowerTools
+{
     internal static class GuidList
     {
         public const string guidDbContextPackagePkgString = "f4c4712c-ceae-4803-8e52-0e2049d5de9f";

@@ -86,7 +86,7 @@ namespace DgmlBuilder
                         var annotations = GetAnnotations(i, debugViewLines);
 
                         // Not included in graph for now
-                        var navigations = GetNavigationNodes(i, debugViewLines);
+                        //var navigations = GetNavigationNodes(i, debugViewLines);
 
                         var foreignKeysFragment = GetForeignKeys(i, debugViewLines);
 
@@ -173,8 +173,7 @@ namespace DgmlBuilder
             return propertyAccesMode;
         }
 
-        private string BuildEntity(string[] debugViewLines, string entityName, int i, DebugViewParserResult result,
-            List<string> properties, List<string> propertyLinks, string line, ref bool inProperties)
+        private void BuildEntity(string[] debugViewLines, string entityName, int i, DebugViewParserResult result, List<string> properties, List<string> propertyLinks, string line, ref bool inProperties)
         {
             if (!string.IsNullOrEmpty(entityName))
             {
@@ -207,17 +206,13 @@ namespace DgmlBuilder
                 properties.Clear();
                 propertyLinks.Clear();
             }
-            if (!string.IsNullOrEmpty(line))
-                entityName = line.Trim().Split(' ')[1];
             inProperties = false;
-            return entityName;
         }
 
         private IEnumerable<string> ParseForeignKeys(List<string> foreignKeysFragments)
         {
             var links = new List<string>();
             int i = 0;
-            var annotation = new List<string>();
             if (foreignKeysFragments.Count > 1)
             {
                 foreach (var foreignKeysFragment in foreignKeysFragments)
@@ -232,7 +227,7 @@ namespace DgmlBuilder
                         continue;
                     }
 
-                    annotation = GetFkAnnotations(i, foreignKeysFragments.ToArray());
+                    var annotation = GetFkAnnotations(i, foreignKeysFragments.ToArray());
 
                     if (trim.StartsWith("Relational:")) continue;
 

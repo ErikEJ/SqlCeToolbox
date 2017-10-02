@@ -10,8 +10,8 @@ namespace DgmlBuilder
             Links = new List<string>();
         }
 
-        public List<string> Nodes { get; set; }
+        public List<string> Nodes { get; }
 
-        public List<string> Links { get; set; }
+        public List<string> Links { get; }
     }
 }

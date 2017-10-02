@@ -13,7 +13,7 @@ namespace EFCorePowerTools.Handlers
     {
         private readonly EFCorePowerToolsPackage _package;
 
-        private const string ptexe = "efpt.exe";
+        private const string Ptexe = "efpt.exe";
 
         public ModelAnalyzerHandler(EFCorePowerToolsPackage package)
         {
@@ -77,7 +77,10 @@ namespace EFCorePowerTools.Handlers
             var toDir = Path.GetDirectoryName(outputPath);
             var fromDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            File.Copy(Path.Combine(fromDir, ptexe), Path.Combine(toDir, ptexe), true);
+            Debug.Assert(fromDir != null, nameof(fromDir) + " != null");
+            Debug.Assert(toDir != null, nameof(toDir) + " != null");
+
+            File.Copy(Path.Combine(fromDir, Ptexe), Path.Combine(toDir, Ptexe), true);
             File.Copy(Path.Combine(fromDir, "efpt.exe.config"), Path.Combine(toDir, "efpt.exe.config"), true);
             //TODO Handle 2.0.1 and newer!
             File.Copy(Path.Combine(fromDir, "Microsoft.EntityFrameworkCore.Design.dll"), Path.Combine(toDir, "Microsoft.EntityFrameworkCore.Design.dll"), true);
@@ -87,7 +90,7 @@ namespace EFCorePowerTools.Handlers
         {
             var startInfo = new ProcessStartInfo
             {
-                FileName = Path.Combine(Path.GetDirectoryName(outputPath), ptexe),
+                FileName = Path.Combine(Path.GetDirectoryName(outputPath) ?? throw new InvalidOperationException(), Ptexe),
                 Arguments = "\"" + outputPath + "\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
@@ -98,11 +101,11 @@ namespace EFCorePowerTools.Handlers
             var standardOutput = new StringBuilder();
             using (var process = System.Diagnostics.Process.Start(startInfo))
             {
-                while (!process.HasExited)
+                while (process != null && !process.HasExited)
                 {
                     standardOutput.Append(process.StandardOutput.ReadToEnd());
                 }
-                standardOutput.Append(process.StandardOutput.ReadToEnd());
+                if (process != null) standardOutput.Append(process.StandardOutput.ReadToEnd());
             }
             return standardOutput.ToString();
         }

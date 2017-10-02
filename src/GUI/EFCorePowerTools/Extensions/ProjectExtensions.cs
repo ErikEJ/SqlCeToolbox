@@ -1,13 +1,11 @@
 ﻿using EnvDTE;
 using System.IO;
-using System.Reflection;
-using System;
 
 namespace EFCorePowerTools.Extensions
 {
     internal static class ProjectExtensions
     {
-        public const int S_OK = 0;
+        public const int SOk = 0;
 
         public static bool TryBuild(this Project project)
         {
@@ -22,8 +20,6 @@ namespace EFCorePowerTools.Extensions
         public static string GetOutPutAssemblyPath(this Project project)
         {
             var assemblyName = project.Properties.Item("AssemblyName").Value.ToString();
-
-            if (assemblyName == null) return null;
 
             var assemblyNameExe = assemblyName + ".exe";
             var assemblyNameDll = assemblyName + ".dll";
@@ -45,8 +41,6 @@ namespace EFCorePowerTools.Extensions
 
         private static string GetOutputPath(Project project)
         {
-            string absoluteOutputPath = null;
-
             var configManager = project.ConfigurationManager;
             if (configManager == null) return null;
 
@@ -54,7 +48,7 @@ namespace EFCorePowerTools.Extensions
             var outputPath = activeConfig.Properties.Item("OutputPath").Value.ToString();
             var fullName = project.FullName;
 
-            absoluteOutputPath = ReverseEngineer20.PathHelper.GetAbsPath(outputPath, fullName);
+            var absoluteOutputPath = ReverseEngineer20.PathHelper.GetAbsPath(outputPath, fullName);
 
             return absoluteOutputPath;
         }

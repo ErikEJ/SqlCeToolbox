@@ -9,14 +9,11 @@ using System.Reflection;
 
 namespace ReverseEngineer20
 {
-    public class EFCoreModelBuilder
+    public class EfCoreModelBuilder
     {
         public List<Tuple<string, string>> GenerateDebugView(string outputPath)
         {
             var result = new List<Tuple<string, string>>();
-
-            var errors = new List<string>();
-            var warnings = new List<string>();
 
             var assembly = Load(outputPath);
             if (assembly == null)
@@ -25,11 +22,9 @@ namespace ReverseEngineer20
             }
 
             var reporter = new OperationReporter(
-                new OperationReportHandler(
-                    m => errors.Add(m),
-                    m => warnings.Add(m)));
+                new OperationReportHandler());
 
-            DbContextOperations operations = new DbContextOperations(reporter, assembly, assembly);
+            var operations = new DbContextOperations(reporter, assembly, assembly);
             var types = operations.GetContextTypes().ToList();
             
             if (types.Count == 0)
@@ -49,12 +44,7 @@ namespace ReverseEngineer20
 
         private Assembly Load(string assemblyPath)
         {
-            if (File.Exists(assemblyPath))
-            {
-                return Assembly.LoadFile(assemblyPath);
-            }
-
-            return null;
+            return File.Exists(assemblyPath) ? Assembly.LoadFile(assemblyPath) : null;
         }
     }
 }
