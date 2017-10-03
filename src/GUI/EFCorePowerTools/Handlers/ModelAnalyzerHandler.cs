@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 
@@ -28,19 +29,30 @@ namespace EFCorePowerTools.Handlers
                 return;
             }
 
-            if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
+            if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework")
+                && !project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0"))
             {
-                EnvDteHelper.ShowError("Currently only .NET Framework projects are supported - TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                EnvDteHelper.ShowError("Currently only .NET Framework and .NET Core 2.0 projects are supported - TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                 return;
             }
+
+            bool isNetCore = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0");
 
             var dgmlBuilder = new DgmlBuilder.DgmlBuilder();
 
             try
             {
-                DropFiles(outputPath);
+                string launchPath;
+                if (isNetCore)
+                {
+                    launchPath = DropNetCoreFiles(outputPath);
+                }
+                else
+                {
+                    launchPath = DropFiles(outputPath);
+                }
 
-                var modelInfo = LaunchProcess(outputPath);
+                var modelInfo = LaunchProcess(outputPath, launchPath, isNetCore);
 
                 if (modelInfo.StartsWith("Error:"))
                 {
@@ -72,7 +84,7 @@ namespace EFCorePowerTools.Handlers
             }
         }
 
-        private void DropFiles(string outputPath)
+        private string DropFiles(string outputPath)
         {
             var toDir = Path.GetDirectoryName(outputPath);
             var fromDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -84,19 +96,48 @@ namespace EFCorePowerTools.Handlers
             File.Copy(Path.Combine(fromDir, "efpt.exe.config"), Path.Combine(toDir, "efpt.exe.config"), true);
             //TODO Handle 2.0.1 and newer!
             File.Copy(Path.Combine(fromDir, "Microsoft.EntityFrameworkCore.Design.dll"), Path.Combine(toDir, "Microsoft.EntityFrameworkCore.Design.dll"), true);
+
+            return outputPath;
         }
 
-        private string LaunchProcess(string outputPath)
+        private string DropNetCoreFiles(string outputPath)
+        {
+            var toDir = Path.Combine(Path.GetTempPath(), "efpt");
+            var fromDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            Debug.Assert(fromDir != null, nameof(fromDir) + " != null");
+            Debug.Assert(toDir != null, nameof(toDir) + " != null");
+
+            if (Directory.Exists(toDir))
+            {
+                Directory.Delete(toDir, true);
+            }
+
+            Directory.CreateDirectory(toDir);
+
+            ZipFile.ExtractToDirectory(Path.Combine(fromDir, Ptexe + ".zip"), toDir);
+
+            return toDir;
+        }
+
+        private string LaunchProcess(string outputPath, string launchPath, bool isNetCore)
         {
             var startInfo = new ProcessStartInfo
             {
-                FileName = Path.Combine(Path.GetDirectoryName(outputPath) ?? throw new InvalidOperationException(), Ptexe),
+                FileName = Path.Combine(Path.GetDirectoryName(launchPath) ?? throw new InvalidOperationException(), Ptexe),
                 Arguments = "\"" + outputPath + "\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 CreateNoWindow = true
             };
+
+            if (isNetCore)
+            {
+                startInfo.WorkingDirectory = launchPath;
+                startInfo.FileName = "dotnet";
+                startInfo.Arguments = " efpt.dll \"" + outputPath + "\"";
+            }
 
             var standardOutput = new StringBuilder();
             using (var process = System.Diagnostics.Process.Start(startInfo))
