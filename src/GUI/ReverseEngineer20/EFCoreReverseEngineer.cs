@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using System.IO;
+using System.Text;
 
 namespace ReverseEngineer20
 {
@@ -63,6 +65,13 @@ namespace ReverseEngineer20
                 useDatabaseNames: reverseEngineerOptions.UseDatabaseNames);
             // Explanation: Use table and column names directly from the database.
 
+            foreach (var file in filePaths.EntityTypeFiles)
+            {
+                //TODO remove this when bug fix is released and adopted
+                Fix200Bug(file);
+            }
+            Fix200Bug(filePaths.ContextFile);
+
             var result = new EfCoreReverseEngineerResult
             {
                 EntityErrors = errors,
@@ -72,6 +81,13 @@ namespace ReverseEngineer20
             };
 
             return result;
+        }
+
+        private static void Fix200Bug(string file)
+        {
+            var text = File.ReadAllText(file);
+            text = text.Replace("\"nvarchar\"", "\"nvarchar(4000)\"");
+            File.WriteAllText(file, text, Encoding.UTF8);
         }
 
         public string GenerateClassName(string value)
