@@ -176,7 +176,7 @@ namespace EFCorePowerTools
 
         internal void LogError(List<string> statusMessages, Exception exception)
         {
-            _dte2.StatusBar.Text = "An error occurred while reverse engineering. See the Output window for details.";
+            _dte2.StatusBar.Text = "An error occurred. See the Output window for details.";
 
             var buildOutputWindow = _dte2.ToolWindows.OutputWindow.OutputWindowPanes.Item("Build");
             buildOutputWindow.OutputString(Environment.NewLine);
