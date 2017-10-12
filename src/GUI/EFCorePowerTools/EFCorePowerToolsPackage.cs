@@ -83,6 +83,12 @@ namespace EFCorePowerTools
                 var menuItem8 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
                     OnProjectMenuBeforeQueryStatus, menuCommandId8);
                 oleMenuCommandService.AddCommand(menuItem8);
+
+                var menuCommandId9 = new CommandID(GuidList.guidDbContextPackageCmdSet,
+                   (int)PkgCmdIDList.cmdidSqlBuild);
+                var menuItem9 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
+                    OnProjectMenuBeforeQueryStatus, menuCommandId9);
+                oleMenuCommandService.AddCommand(menuItem9);
             }
 
             // AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
@@ -145,7 +151,15 @@ namespace EFCorePowerTools
                 var path = LocateProjectAssemblyPath(project);
                 if (path != null)
                 {
-                    _modelAnalyzerHandler.GenerateDgml(path, project);
+                    _modelAnalyzerHandler.Generate(path, project);
+                }
+            }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidSqlBuild)
+            {
+                var path = LocateProjectAssemblyPath(project);
+                if (path != null)
+                {
+                    _modelAnalyzerHandler.Generate(path, project, generateDdl: true);
                 }
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
