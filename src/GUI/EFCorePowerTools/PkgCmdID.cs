@@ -9,5 +9,6 @@ namespace EFCorePowerTools
 
         public const uint cmdidDgmlBuild = 0x0100;
         public const uint cmdidDgmlNuget = 0x0200;
+        public const uint cmdidSqlBuild = 0x0400;
     }
 }

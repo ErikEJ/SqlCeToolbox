@@ -61,16 +61,6 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerDgml" priority="0x0800" type="Button">
-        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
-        <Icon guid="guidImage1" id="bmpPic1" />
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <Strings>
-          <CommandName>cmdidReverseEngineerDgml</CommandName>
-          <ButtonText>View Database Schema as Graph</ButtonText>
-        </Strings>
-      </Button>
-
       <Button guid="guidDbContextPackageCmdSet" id="cmdidAbout" priority="0x0900" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmAboutMenuItemsGroup" />
         <Icon guid="guidImage0" id="bmpPic0" />
@@ -81,7 +71,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlBuild" priority="0x0300" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlBuild" priority="0x0200" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
         <Icon guid="guidImage2" id="bmpPic2" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -90,8 +80,18 @@
           <ButtonText>Add DbContext Model Diagram (experimental)</ButtonText>
         </Strings>
       </Button>
+      
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidSqlBuild" priority="0x0300" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
+        <Icon guid="guidImage3" id="bmpPic3" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidSqlBuild</CommandName>
+          <ButtonText>View DbContext Model DDL SQL (experimental)</ButtonText>
+        </Strings>
+      </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlNuget" priority="0x0300" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlNuget" priority="0x0400" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
         <Icon guid="guidImage2" id="bmpPic2" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -100,13 +100,24 @@
           <ButtonText>Add AsDgml() extension method</ButtonText>
         </Strings>
       </Button>
-          
+      
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerDgml" priority="0x0800" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
+        <Icon guid="guidImage1" id="bmpPic1" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidReverseEngineerDgml</CommandName>
+          <ButtonText>View Database Schema as Graph</ButtonText>
+        </Strings>
+      </Button>
+      
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
       <Bitmap guid="guidImage5" href="Resources\5.png" usedList="bmpPic5" />
       <Bitmap guid="guidImage4" href="Resources\4.png" usedList="bmpPic4" />
+      <Bitmap guid="guidImage3" href="Resources\3.png" usedList="bmpPic3" />
       <Bitmap guid="guidImage2" href="Resources\2.png" usedList="bmpPic2" />
       <Bitmap guid="guidImage1" href="Resources\1.png" usedList="bmpPic1" />
       <Bitmap guid="guidImage0" href="Resources\h.png" usedList="bmpPic0" />
@@ -134,6 +145,7 @@
       <IDSymbol name="cmdidDgmlBuild" value="0x0100" />
       <IDSymbol name="cmdidDgmlNuget" value="0x0200" />
       <IDSymbol name="cmdidEdmMenuAbout" value="0x0300" />
+      <IDSymbol name="cmdidSqlBuild" value="0x0400" />
       <IDSymbol name="cmdidEdmMenu" value="0x0500" />
       <IDSymbol name="cmdidEdmMenuGroup" value="0x0600" />
       <IDSymbol name="cmdidEdmProjectMenuItemsGroup" value="0x0700" />
@@ -155,6 +167,10 @@
 
     <GuidSymbol name="guidImage4" value="{abef17c2-c8e3-4cfd-9fe2-50cc07c6d4ff}">
       <IDSymbol name="bmpPic4" value="1" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImage3" value="{abef17c2-c8e3-4eed-9fe2-50cc07c6d4ff}">
+      <IDSymbol name="bmpPic3" value="1" />
     </GuidSymbol>
     
     <GuidSymbol name="guidImage2" value="{146f17c2-c8e3-4cfd-9fe2-50cc07c6d4ff}">

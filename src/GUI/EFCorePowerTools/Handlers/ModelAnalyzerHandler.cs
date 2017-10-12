@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using EFCorePowerTools.Extensions;
+using EnvDTE;
 using ErikEJ.SqlCeToolbox.Helpers;
 using System;
 using System.Collections.Generic;
@@ -21,27 +22,25 @@ namespace EFCorePowerTools.Handlers
             _package = package;
         }
 
-        public void GenerateDgml(string outputPath, Project project)
+        public void Generate(string outputPath, Project project, bool generateDdl = false)
         {
-            if (project.Properties.Item("TargetFrameworkMoniker") == null)
-            {
-                EnvDteHelper.ShowError("The selected project type has no TargetFrameworkMoniker");
-                return;
-            }
-
-            if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework")
-                && !project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0"))
-            {
-                EnvDteHelper.ShowError("Currently only .NET Framework and .NET Core 2.0 projects are supported - TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
-                return;
-            }
-
-            bool isNetCore = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0");
-
-            var dgmlBuilder = new DgmlBuilder.DgmlBuilder();
-
             try
             {
+                if (project.Properties.Item("TargetFrameworkMoniker") == null)
+                {
+                    EnvDteHelper.ShowError("The selected project type has no TargetFrameworkMoniker");
+                    return;
+                }
+
+                if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework")
+                    && !project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0"))
+                {
+                    EnvDteHelper.ShowError("Currently only .NET Framework and .NET Core 2.0 projects are supported - TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
+                    return;
+                }
+
+                bool isNetCore = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0");
+
                 string launchPath;
                 if (isNetCore)
                 {
@@ -52,35 +51,72 @@ namespace EFCorePowerTools.Handlers
                     launchPath = DropFiles(outputPath);
                 }
 
-                var modelInfo = LaunchProcess(outputPath, launchPath, isNetCore);
+                var processResult = LaunchProcess(outputPath, launchPath, isNetCore, generateDdl);
 
-                if (modelInfo.StartsWith("Error:"))
+                if (processResult.StartsWith("Error:"))
                 {
-                    throw new ArgumentException(modelInfo);
+                    throw new ArgumentException(processResult);
                 }
 
-                var result = BuildModelInfo(modelInfo);
-
-                ProjectItem item = null;
-
-                foreach (var info in result)
+                if (generateDdl)
                 {
-                    var dgmlText = dgmlBuilder.Build(info.Item2, info.Item1, GetTemplate());
-
-                    var path = Path.GetTempPath() + info.Item1 + ".dgml";
-                    File.WriteAllText(path, dgmlText, Encoding.UTF8);
-                    item = project.ProjectItems.AddFromFileCopy(path);
+                    GenerateDatabaseScripts(processResult, project);
                 }
-
-                if (item != null)
+                else
                 {
-                    var window = item.Open();
-                    window.Document.Activate();
+                    GenerateDgml(processResult, project);
                 }
             }
             catch (Exception exception)
             {
                 _package.LogError(new List<string>(), exception);
+            }
+        }
+
+        private void GenerateDgml(string processResult, Project project)
+        {
+            var dgmlBuilder = new DgmlBuilder.DgmlBuilder();
+            var result = BuildModelResult(processResult);
+            ProjectItem item = null;
+
+            foreach (var info in result)
+            {
+                var dgmlText = dgmlBuilder.Build(info.Item2, info.Item1, GetTemplate());
+
+                var path = Path.GetTempPath() + info.Item1 + ".dgml";
+                File.WriteAllText(path, dgmlText, Encoding.UTF8);
+                item = project.ProjectItems.GetItem(Path.GetFileName(path));
+                if (item != null)
+                {
+                    item.Delete();
+                }
+                item = project.ProjectItems.AddFromFileCopy(path);
+            }
+
+            if (item != null)
+            {
+                var window = item.Open();
+                window.Document.Activate();
+            }
+        }
+
+        public void GenerateDatabaseScripts(string processResult, Project project)
+        {
+            var result = BuildModelResult(processResult);
+
+            foreach (var item in result)
+            {
+                var filePath = Path.Combine(Path.GetTempPath(),
+                    item.Item1 + ".sql");
+
+                if (File.Exists(filePath))
+                {
+                    File.SetAttributes(filePath, FileAttributes.Normal);
+                }
+                File.WriteAllText(filePath, item.Item2);
+                File.SetAttributes(filePath, FileAttributes.ReadOnly);
+
+                _package.Dte2.ItemOperations.OpenFile(filePath);
             }
         }
 
@@ -120,7 +156,7 @@ namespace EFCorePowerTools.Handlers
             return toDir;
         }
 
-        private string LaunchProcess(string outputPath, string launchPath, bool isNetCore)
+        private string LaunchProcess(string outputPath, string launchPath, bool isNetCore, bool generateDdl)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -131,12 +167,20 @@ namespace EFCorePowerTools.Handlers
                 RedirectStandardError = true,
                 CreateNoWindow = true
             };
+            if (generateDdl)
+            {
+                startInfo.Arguments = "ddl \"" + outputPath + "\"";
+            }
 
             if (isNetCore)
             {
                 startInfo.WorkingDirectory = launchPath;
                 startInfo.FileName = "dotnet";
                 startInfo.Arguments = " efpt.dll \"" + outputPath + "\"";
+                if (generateDdl)
+                {
+                    startInfo.Arguments = " efpt.dll ddl \"" + outputPath + "\"";
+                }
             }
 
             var standardOutput = new StringBuilder();
@@ -151,7 +195,7 @@ namespace EFCorePowerTools.Handlers
             return standardOutput.ToString();
         }
 
-        private List<Tuple<string, string>> BuildModelInfo(string modelInfo)
+        private List<Tuple<string, string>> BuildModelResult(string modelInfo)
         {
             var result = new List<Tuple<string, string>>();
 

@@ -1,11 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace ReverseEngineer20
 {
@@ -14,7 +20,69 @@ namespace ReverseEngineer20
         public List<Tuple<string, string>> GenerateDebugView(string outputPath)
         {
             var result = new List<Tuple<string, string>>();
+            var operations = GetOperations(outputPath);
+            var types = GetDbContextTypes(outputPath, operations);
 
+            foreach (var type in types)
+            {
+                var dbContext = operations.CreateContext(type.Name);
+                var debugView = dbContext.Model.AsModel().DebugView.View;
+                result.Add(new Tuple<string, string>(type.Name, debugView));
+            }
+
+            return result;
+        }
+
+        public List<Tuple<string, string>> GenerateDatabaseCreateScript(string outputPath)
+        {
+            var result = new List<Tuple<string, string>>();
+            var operations = GetOperations(outputPath);
+            var types = GetDbContextTypes(outputPath, operations);
+
+            foreach (var type in types)
+            {
+                var dbContext = operations.CreateContext(type.Name);
+                result.Add(new Tuple<string, string>(type.Name, GenerateCreateScript(dbContext)));
+            }
+
+            return result;
+        }
+
+        private static string GenerateCreateScript(DbContext dbContext)
+        {
+            var database = dbContext.Database;
+            var model = database.GetService<IModel>();
+            var differ = database.GetService<IMigrationsModelDiffer>();
+            var generator = database.GetService<IMigrationsSqlGenerator>();
+            var sql = database.GetService<ISqlGenerationHelper>();
+
+            var operations = differ.GetDifferences(null, model);
+            var commands = generator.Generate(operations, model);
+
+            var builder = new StringBuilder();
+            foreach (var command in commands)
+            {
+                builder
+                    .Append(command.CommandText)
+                    .AppendLine(sql.BatchTerminator);
+            }
+
+            return builder.ToString();
+        }
+
+        private List<Type> GetDbContextTypes(string outputPath, DbContextOperations operations)
+        {
+            var types = operations.GetContextTypes().ToList();
+            if (types.Count == 0)
+            {
+                throw new ArgumentException("No EF Core DbContext types found in the project");
+            }
+            return types;
+        }
+
+        private DbContextOperations GetOperations(string outputPath)
+        {
+            DbContextOperations operations;
             var assembly = Load(outputPath);
             if (assembly == null)
             {
@@ -24,22 +92,8 @@ namespace ReverseEngineer20
             var reporter = new OperationReporter(
                 new OperationReportHandler());
 
-            var operations = new DbContextOperations(reporter, assembly, assembly);
-            var types = operations.GetContextTypes().ToList();
-            
-            if (types.Count == 0)
-            {
-                throw new ArgumentException("No DbContext types found in the project");
-            }
-
-            foreach (var type in types)
-            {
-                var dbContext = operations.CreateContext(types[0].Name);
-                var debugView = dbContext.Model.AsModel().DebugView.View;
-                result.Add(new Tuple<string, string>(type.Name, debugView));
-            }
-
-            return result;
+            operations = new DbContextOperations(reporter, assembly, assembly);
+            return operations;
         }
 
         private Assembly Load(string assemblyPath)
