@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.Data.Services;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.IO;
 using System.Text;
 using ReverseEngineer20;
@@ -217,8 +216,7 @@ namespace EFCorePowerTools.Handlers
         {
             var dbType = DatabaseType.SQLCE35;
             var providerInvariant = "N/A";
-            // Find connection string and provider
-            var connection = (DbConnection)dialogResult.GetLockedProviderObject();
+            // Find provider
             var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
             IVsDataProvider dp;
             providerManager.Providers.TryGetValue(dialogResult.Provider, out dp);

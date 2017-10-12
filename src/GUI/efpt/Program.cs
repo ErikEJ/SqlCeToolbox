@@ -12,7 +12,7 @@ namespace ReverseEngineer20
                 if (args.Length > 0)
                 {
                     var builder = new EfCoreModelBuilder();
-                    var result = new List<Tuple<string, string>>();
+                    List<Tuple<string, string>> result;
 
                     if (args[0].ToLowerInvariant() == "ddl" && args.Length == 2)
                     {

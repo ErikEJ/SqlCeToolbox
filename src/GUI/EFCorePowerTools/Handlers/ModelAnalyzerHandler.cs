@@ -41,15 +41,7 @@ namespace EFCorePowerTools.Handlers
 
                 bool isNetCore = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0");
 
-                string launchPath;
-                if (isNetCore)
-                {
-                    launchPath = DropNetCoreFiles(outputPath);
-                }
-                else
-                {
-                    launchPath = DropFiles(outputPath);
-                }
+                var launchPath = isNetCore ? DropNetCoreFiles() : DropFiles(outputPath);
 
                 var processResult = LaunchProcess(outputPath, launchPath, isNetCore, generateDdl);
 
@@ -136,7 +128,7 @@ namespace EFCorePowerTools.Handlers
             return outputPath;
         }
 
-        private string DropNetCoreFiles(string outputPath)
+        private string DropNetCoreFiles()
         {
             var toDir = Path.Combine(Path.GetTempPath(), "efpt");
             var fromDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

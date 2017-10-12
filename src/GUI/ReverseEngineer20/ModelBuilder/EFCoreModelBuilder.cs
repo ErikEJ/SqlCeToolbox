@@ -19,34 +19,31 @@ namespace ReverseEngineer20
     {
         public List<Tuple<string, string>> GenerateDebugView(string outputPath)
         {
-            var result = new List<Tuple<string, string>>();
-            var operations = GetOperations(outputPath);
-            var types = GetDbContextTypes(outputPath, operations);
-
-            foreach (var type in types)
-            {
-                var dbContext = operations.CreateContext(type.Name);
-                var debugView = dbContext.Model.AsModel().DebugView.View;
-                result.Add(new Tuple<string, string>(type.Name, debugView));
-            }
-
-            return result;
+            return BuildResult(outputPath, false);
         }
 
         public List<Tuple<string, string>> GenerateDatabaseCreateScript(string outputPath)
         {
+            return BuildResult(outputPath, false);
+        }
+
+        private List<Tuple<string, string>> BuildResult(string outputPath, bool generateDdl)
+        {
             var result = new List<Tuple<string, string>>();
             var operations = GetOperations(outputPath);
-            var types = GetDbContextTypes(outputPath, operations);
+            var types = GetDbContextTypes(operations);
 
             foreach (var type in types)
             {
                 var dbContext = operations.CreateContext(type.Name);
-                result.Add(new Tuple<string, string>(type.Name, GenerateCreateScript(dbContext)));
+                result.Add(generateDdl
+                    ? new Tuple<string, string>(type.Name, GenerateCreateScript(dbContext))
+                    : new Tuple<string, string>(type.Name, dbContext.Model.AsModel().DebugView.View));
             }
 
             return result;
         }
+
 
         private static string GenerateCreateScript(DbContext dbContext)
         {
@@ -70,7 +67,7 @@ namespace ReverseEngineer20
             return builder.ToString();
         }
 
-        private List<Type> GetDbContextTypes(string outputPath, DbContextOperations operations)
+        private List<Type> GetDbContextTypes(DbContextOperations operations)
         {
             var types = operations.GetContextTypes().ToList();
             if (types.Count == 0)
@@ -82,7 +79,6 @@ namespace ReverseEngineer20
 
         private DbContextOperations GetOperations(string outputPath)
         {
-            DbContextOperations operations;
             var assembly = Load(outputPath);
             if (assembly == null)
             {
@@ -92,7 +88,7 @@ namespace ReverseEngineer20
             var reporter = new OperationReporter(
                 new OperationReportHandler());
 
-            operations = new DbContextOperations(reporter, assembly, assembly);
+            var operations = new DbContextOperations(reporter, assembly, assembly);
             return operations;
         }
 
