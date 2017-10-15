@@ -101,7 +101,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     AllowNull = item.IsNullable == YesNoOption.YES,
                     DataType = item.DataType,
                     DefaultValue = item.ColumnDefault,
-                    Identity = item.AutoIncrementBy > 1,
+                    Identity = item.AutoIncrementBy > 0,
                     Name = item.ColumnName,
                     Precision = byte.Parse(item.NumericPrecision.ToString()),
                     //TODO Detect!
