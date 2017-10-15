@@ -77,7 +77,7 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>cmdidDgmlNuget</CommandName>
-          <ButtonText>Add DbContext Model Diagram (experimental)</ButtonText>
+          <ButtonText>Add DbContext Model Diagram</ButtonText>
         </Strings>
       </Button>
       
@@ -87,7 +87,7 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>cmdidSqlBuild</CommandName>
-          <ButtonText>View DbContext Model DDL SQL (experimental)</ButtonText>
+          <ButtonText>View DbContext Model DDL SQL</ButtonText>
         </Strings>
       </Button>
 
