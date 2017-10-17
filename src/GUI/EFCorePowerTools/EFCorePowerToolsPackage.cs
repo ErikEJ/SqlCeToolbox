@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using EFCorePowerTools.Extensions;
 using EFCorePowerTools.Handlers;
@@ -16,7 +18,7 @@ namespace EFCorePowerTools
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [SqlCe40ProviderRegistration]
     [SqliteProviderRegistration]
-    [InstalledProductRegistration("#110", "#112", "0.1", IconResourceID = 400)] // Info on this package for Help/About
+    [InstalledProductRegistration("#110", "#112", "0.2", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(GuidList.guidDbContextPackagePkgString)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
@@ -90,6 +92,17 @@ namespace EFCorePowerTools
                     OnProjectMenuBeforeQueryStatus, menuCommandId9);
                 oleMenuCommandService.AddCommand(menuItem9);
             }
+
+            //Boot Telemetry
+            Telemetry.Enabled = true;
+            if (Telemetry.Enabled)
+            {
+                Telemetry.Initialize(Dte2,
+                    Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                    VisualStudioVersion.ToString(),
+                    "d4881a82-2247-42c9-9272-f7bc8aa29315");
+            }
+            Telemetry.TrackEvent("Platform: Visual Studio " + VisualStudioVersion.ToString(1));
 
             // AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
         }
@@ -206,6 +219,8 @@ namespace EFCorePowerTools
 
             buildOutputWindow.Activate();
         }
+
+        private Version VisualStudioVersion => new Version(int.Parse(_dte2.Version.Split('.')[0], CultureInfo.InvariantCulture), 0);
 
         internal T GetService<T>()
             where T : class

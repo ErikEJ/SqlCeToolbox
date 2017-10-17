@@ -53,10 +53,12 @@ namespace EFCorePowerTools.Handlers
                 if (generateDdl)
                 {
                     GenerateDatabaseScripts(processResult, project);
+                    Telemetry.TrackEvent("PowerTools.GenerateSqlCreate");
                 }
                 else
                 {
                     GenerateDgml(processResult, project);
+                    Telemetry.TrackEvent("PowerTools.GenerateModelDgml");
                 }
             }
             catch (Exception exception)

@@ -73,6 +73,9 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\SqliteProviderRegistration.cs">
       <Link>Helpers\SqliteProviderRegistration.cs</Link>
     </Compile>
+    <Compile Include="..\SqlCe35Toolbox\Helpers\Telemetry.cs">
+      <Link>Helpers\Telemetry.cs</Link>
+    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\VsTheming.cs">
       <Link>Helpers\VsTheming.cs</Link>
     </Compile>
@@ -148,6 +151,9 @@
     </Reference>
     <Reference Include="ISqlCeScripting">
       <HintPath>..\lib\ISqlCeScripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.1.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

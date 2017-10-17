@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ErikEJ.SqlCeToolbox.Helpers;
 
 namespace EFCorePowerTools.Handlers
 {
@@ -18,6 +19,7 @@ namespace EFCorePowerTools.Handlers
             {
                 var dialog = new AboutDialog(_package);
                 dialog.ShowDialog();
+                Telemetry.TrackEvent("PowerTools.About");
             }
             catch (Exception exception)
             {

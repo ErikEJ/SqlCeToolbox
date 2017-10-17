@@ -68,6 +68,7 @@ namespace EFCorePowerTools.Handlers
                     _package.Dte2.ItemOperations.OpenFile(path);
                     _package.Dte2.ActiveDocument.Activate();
                 }
+                Telemetry.TrackEvent("PowerTools.GenerateSchemaDgml");
             }
             catch (Exception ex)
             {
@@ -197,6 +198,7 @@ namespace EFCorePowerTools.Handlers
                     {
                         _package.LogError(revEngResult.EntityWarnings, null);
                     }
+                    Telemetry.TrackEvent("PowerTools.ReversEngineer");
                 }
             }
             catch (AggregateException ae)
