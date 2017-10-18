@@ -14,6 +14,7 @@ namespace EFCorePowerTools
 
         public AboutDialog(EFCorePowerToolsPackage package)
         {
+            Telemetry.TrackPageView(nameof(AboutDialog));
             _package = package;
             InitializeComponent();
         }

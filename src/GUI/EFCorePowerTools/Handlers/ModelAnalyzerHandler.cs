@@ -3,9 +3,7 @@ using EnvDTE;
 using ErikEJ.SqlCeToolbox.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 
@@ -14,8 +12,7 @@ namespace EFCorePowerTools.Handlers
     internal class ModelAnalyzerHandler
     {
         private readonly EFCorePowerToolsPackage _package;
-
-        private const string Ptexe = "efpt.exe";
+        private readonly ProcessLauncher _processLauncher = new ProcessLauncher();
 
         public ModelAnalyzerHandler(EFCorePowerToolsPackage package)
         {
@@ -41,9 +38,7 @@ namespace EFCorePowerTools.Handlers
 
                 bool isNetCore = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0");
 
-                var launchPath = isNetCore ? DropNetCoreFiles() : DropFiles(outputPath);
-
-                var processResult = LaunchProcess(outputPath, launchPath, isNetCore, generateDdl);
+                var processResult = _processLauncher.GetOutput(outputPath, isNetCore, generateDdl);
 
                 if (processResult.StartsWith("Error:"))
                 {
@@ -114,81 +109,6 @@ namespace EFCorePowerTools.Handlers
             }
         }
 
-        private string DropFiles(string outputPath)
-        {
-            var toDir = Path.GetDirectoryName(outputPath);
-            var fromDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            Debug.Assert(fromDir != null, nameof(fromDir) + " != null");
-            Debug.Assert(toDir != null, nameof(toDir) + " != null");
-
-            File.Copy(Path.Combine(fromDir, Ptexe), Path.Combine(toDir, Ptexe), true);
-            File.Copy(Path.Combine(fromDir, "efpt.exe.config"), Path.Combine(toDir, "efpt.exe.config"), true);
-            //TODO Handle 2.0.1 and newer!
-            File.Copy(Path.Combine(fromDir, "Microsoft.EntityFrameworkCore.Design.dll"), Path.Combine(toDir, "Microsoft.EntityFrameworkCore.Design.dll"), true);
-
-            return outputPath;
-        }
-
-        private string DropNetCoreFiles()
-        {
-            var toDir = Path.Combine(Path.GetTempPath(), "efpt");
-            var fromDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            Debug.Assert(fromDir != null, nameof(fromDir) + " != null");
-            Debug.Assert(toDir != null, nameof(toDir) + " != null");
-
-            if (Directory.Exists(toDir))
-            {
-                Directory.Delete(toDir, true);
-            }
-
-            Directory.CreateDirectory(toDir);
-
-            ZipFile.ExtractToDirectory(Path.Combine(fromDir, Ptexe + ".zip"), toDir);
-
-            return toDir;
-        }
-
-        private string LaunchProcess(string outputPath, string launchPath, bool isNetCore, bool generateDdl)
-        {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = Path.Combine(Path.GetDirectoryName(launchPath) ?? throw new InvalidOperationException(), Ptexe),
-                Arguments = "\"" + outputPath + "\"",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true
-            };
-            if (generateDdl)
-            {
-                startInfo.Arguments = "ddl \"" + outputPath + "\"";
-            }
-
-            if (isNetCore)
-            {
-                startInfo.WorkingDirectory = launchPath;
-                startInfo.FileName = "dotnet";
-                startInfo.Arguments = " efpt.dll \"" + outputPath + "\"";
-                if (generateDdl)
-                {
-                    startInfo.Arguments = " efpt.dll ddl \"" + outputPath + "\"";
-                }
-            }
-
-            var standardOutput = new StringBuilder();
-            using (var process = System.Diagnostics.Process.Start(startInfo))
-            {
-                while (process != null && !process.HasExited)
-                {
-                    standardOutput.Append(process.StandardOutput.ReadToEnd());
-                }
-                if (process != null) standardOutput.Append(process.StandardOutput.ReadToEnd());
-            }
-            return standardOutput.ToString();
-        }
-
         private List<Tuple<string, string>> BuildModelResult(string modelInfo)
         {
             var result = new List<Tuple<string, string>>();
@@ -202,31 +122,6 @@ namespace EFCorePowerTools.Handlers
             }
 
             return result;
-        }
-
-        public async void InstallDgmlNuget(Project project)
-        {
-            _package.Dte2.StatusBar.Text = "Installing DbContext Dgml extension package";
-            var nuGetHelper = new NuGetHelper();
-            await nuGetHelper.InstallPackageAsync("ErikEJ.EntityFrameworkCore.DgmlBuilder", project);
-            _package.Dte2.StatusBar.Text = "Dgml package installed";
-            var path = Path.GetTempFileName() + ".txt";
-            File.WriteAllText(path, GetReadme(), Encoding.UTF8);
-            var window = _package.Dte2.ItemOperations.OpenFile(path);
-            window.Document.Activate();
-        }
-
-        private string GetReadme()
-        {
-            var resourceName = "EFCorePowerTools.DgmlBuilder.readme.txt";
-
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
-            {
-                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
         }
 
         private string GetTemplate()

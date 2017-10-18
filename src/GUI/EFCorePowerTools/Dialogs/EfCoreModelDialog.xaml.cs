@@ -8,7 +8,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
     {
         public EfCoreModelDialog()
         {
-            //Telemetry.TrackPageView(nameof(EfCoreModelDialog));
+            Telemetry.TrackPageView(nameof(EfCoreModelDialog));
             InitializeComponent();
             Background = VsThemes.GetWindowBackground();
         }
