@@ -93,7 +93,9 @@
     <Compile Include="Extensions\ProjectItemsExtensions.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Handlers\AboutHandler.cs" />
+    <Compile Include="Handlers\DgmlNugetHandler.cs" />
     <Compile Include="Handlers\ModelAnalyzerHandler.cs" />
+    <Compile Include="Handlers\ProcessLauncher.cs" />
     <Compile Include="Handlers\ReverseEngineerHandler.cs" />
     <Compile Include="Helpers\AssemblyBindingRedirectHelper.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />

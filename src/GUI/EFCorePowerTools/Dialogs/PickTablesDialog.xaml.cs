@@ -13,7 +13,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
     {
         public PickTablesDialog()
         {
-            //Telemetry.TrackPageView(nameof(PickTablesDialog));
+            Telemetry.TrackPageView(nameof(PickTablesDialog));
             InitializeComponent();
             Background = VsThemes.GetWindowBackground();
         }
