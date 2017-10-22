@@ -33,9 +33,9 @@ namespace ErikEJ.SqlCeToolbox
         public static IGenerator CreateGenerator(IRepository repo, string file = null)
         {
 #if V35
-            return new Generator(repo, file, false, false, false, Properties.Settings.Default.KeepServerSchemaNames);
+            return new Generator(repo, file, false, false, false);
 #else
-            return new Generator4(repo, file, false, false, false, Properties.Settings.Default.KeepServerSchemaNames);
+            return new Generator4(repo, file, false, false, false);
 #endif
         }
 
