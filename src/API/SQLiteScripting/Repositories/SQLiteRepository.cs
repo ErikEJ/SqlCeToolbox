@@ -1030,5 +1030,10 @@ namespace ErikEJ.SQLiteScripting
             new SqLiteDbTypeMapping("YESNO", DbType.Boolean, false)
         });
         }
+
+        public bool KeepSchema()
+        {
+            return false;
+        }
     }
 }

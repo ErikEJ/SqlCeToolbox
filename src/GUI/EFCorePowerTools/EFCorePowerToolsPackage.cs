@@ -37,6 +37,7 @@ namespace EFCorePowerTools
             _reverseEngineerHandler = new ReverseEngineerHandler(this);
             _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
             _aboutHandler = new AboutHandler(this);
+            _dgmlNugetHandler = new DgmlNugetHandler(this);
         }
 
         internal DTE2 Dte2 => _dte2;

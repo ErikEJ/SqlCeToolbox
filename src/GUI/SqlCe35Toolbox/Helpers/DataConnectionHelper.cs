@@ -596,8 +596,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             switch (databaseType)
             {
                 case DatabaseType.SQLServer:
-                    return new Generator(repository, outFile, false, Properties.Settings.Default.PreserveSqlDates, false,
-                        Properties.Settings.Default.KeepSchemaNames);
+                    return new Generator(repository, outFile, false, Properties.Settings.Default.PreserveSqlDates);
                 case DatabaseType.SQLCE35:
                     return string.IsNullOrEmpty(outFile)
                         ? new Generator(repository)

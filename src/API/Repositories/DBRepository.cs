@@ -857,6 +857,11 @@ namespace ErikEJ.SqlCeScripting
                     return ((DateTime)obj);
             }
         }
+
+        public bool KeepSchema()
+        {
+            return  false;
+        }
         #endregion
     }
 }

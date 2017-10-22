@@ -61,7 +61,7 @@ namespace ExportSqlCE
                         Helper.FinalFiles = outputFileLocation;
                         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                         sw.Start();
-                        var generator = new Generator(repository, outputFileLocation, false, preserveDateAndDateTime2, sqlite, keepSchemaName);
+                        var generator = new Generator(repository, outputFileLocation, false, preserveDateAndDateTime2, sqlite);
 
                         generator.ExcludeTables(exclusions);
                         if (sqlite)

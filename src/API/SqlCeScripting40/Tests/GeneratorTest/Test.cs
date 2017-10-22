@@ -32,6 +32,7 @@ using System.Text.RegularExpressions;
         private const string sdfConnectionString2 = @"Data Source=C:\data\sqlce\test\PFIZER_DB40.sdf";
         private const string serverConnectionString = @"data source=.;Initial Catalog=AdventureWorksLT2012;Integrated Security=true";
         private const string serverAWConnectionString = @"data source=(localdb)\Mssqllocaldb;Initial Catalog=AdventureWorks2014;Integrated Security=true";
+        private const string serverDefConnectionString = @"data source=(localdb)\Mssqllocaldb;Initial Catalog=DefaultValuesTest;Integrated Security=true";
         private const string serverHIDConnectionString = @"data source=.;Initial Catalog=HID;Integrated Security=true";
         private const string serverApiTestConnectionString = @"data source=.;Initial Catalog=SqlCeApiTester;Integrated Security=true";
         private const string BaseballTestConnectionString = @"data source=.;Initial Catalog=BaseballStats;Integrated Security=true";
@@ -64,6 +65,18 @@ using System.Text.RegularExpressions;
             {
                 var generator = new Generator4(sourceRepository, path);
                 generator.ScriptDatabaseToFile(Scope.SchemaData);
+            }
+        }
+
+        [Test]
+        public void TestServerExportToSqlite()
+        {
+            var path = @"C:\temp\testAW2012.sql";
+            using (var sourceRepository = new ServerDBRepository4(serverDefConnectionString, true))
+            {
+                var generator = new Generator4(sourceRepository, path, false, false, true);
+                generator.ExcludeTables(new List<string>());
+                generator.ScriptDatabaseToFile(Scope.SchemaDataSQLite);
             }
         }
 
@@ -279,7 +292,7 @@ GO";
                 var exclusions = new List<string>();
                 exclusions.Add("dbo.BuildVersion");
                 exclusions.Add("dbo.ErrorLog");
-                var generator = new Generator4(sourceRepository, @"C:\temp\test2.dgml", false, false, false, true);
+                var generator = new Generator4(sourceRepository, @"C:\temp\test2.dgml", false, false, false);
                 generator.GenerateSchemaGraph(serverConnectionString, exclusions);
             }
         }

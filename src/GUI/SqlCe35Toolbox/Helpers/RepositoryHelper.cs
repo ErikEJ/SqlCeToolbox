@@ -1,4 +1,5 @@
-﻿using ErikEJ.SqlCeScripting;
+﻿using ErikEJ.SqlCeToolbox;
+using ErikEJ.SqlCeScripting;
 using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.IO;
@@ -16,7 +17,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 case DatabaseType.SQLCE40:
                     return new DB4Repository(databaseInfo.ConnectionString);
                 case DatabaseType.SQLServer:
-                    return new ServerDBRepository(databaseInfo.ConnectionString, keepSchemaName: true);
+                    return new ServerDBRepository(databaseInfo.ConnectionString, Properties.Settings.Default.KeepSchemaNames);
                 case DatabaseType.SQLite:
                     return new SQLiteRepository(databaseInfo.ConnectionString);
                 default:
@@ -45,7 +46,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             switch (databaseType)
             {
                 case DatabaseType.SQLServer:
-                    return new Generator(repository, outFile, false, false, false, true);
+                    return new Generator(repository, outFile, false, false);
                 case DatabaseType.SQLCE40:
                     return string.IsNullOrEmpty(outFile)
                         ? new Generator4(repository)

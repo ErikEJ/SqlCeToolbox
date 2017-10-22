@@ -21,8 +21,9 @@ namespace ErikEJ.SqlCeScripting
         List<Index> GetIndexesFromTable(string tableName);
         List<Index> GetAllIndexes();
         List<KeyValuePair<string, string>> GetDatabaseInfo();
-        Boolean HasIdentityColumn(string tableName);
-        Boolean IsServer();
+        bool HasIdentityColumn(string tableName);
+        bool IsServer();
+        bool KeepSchema();
         string GetRunTimeVersion();
         Int32 GetRowVersionOrdinal(string tableName);
         Int32 GetIdentityOrdinal(string tableName);

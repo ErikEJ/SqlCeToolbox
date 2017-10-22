@@ -38,7 +38,6 @@ namespace ErikEJ.SqlCeScripting
         private List<Trigger> _allTriggers;
         private bool _batchForAzure;
         private bool _sqlite;
-        private bool _keepSchema;
         private bool _preserveDateAndDateTime2;
         private bool _truncateSqLiteStrings;
 
@@ -75,15 +74,14 @@ namespace ErikEJ.SqlCeScripting
         }
 
 #if V40
-        public Generator4(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false, bool keepSchema = false)
+        public Generator4(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false)
 #else
 
-        public Generator(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false, bool keepSchema = false)
+        public Generator(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false)
 #endif
         {
             _batchForAzure = azure;
             _sqlite = sqlite;
-            _keepSchema = keepSchema;
             if (sqlite)
                 _sep = string.Empty;
             _preserveDateAndDateTime2 = preserveSqlDates;
@@ -1640,7 +1638,7 @@ namespace ErikEJ.SqlCeScripting
 
         private string GetLocalName(string table)
         {
-            if (!_repository.IsServer() || _keepSchema)
+            if (!_repository.IsServer() || _repository.KeepSchema())
                 return table;
 
             int index = table.IndexOf('.');
@@ -1660,6 +1658,10 @@ namespace ErikEJ.SqlCeScripting
                 {
                     colDefault = string.Empty;
                 }
+                if (col.ColumnDefault.ToLowerInvariant().StartsWith("n'"))
+                {
+                    colDefault = "DEFAULT " + col.ColumnDefault.Remove(0, 1);
+                }
                 if (col.ColumnDefault.ToLowerInvariant().Contains("getdate()"))
                 {
                     colDefault = "current_timestamp ";
@@ -1673,7 +1675,7 @@ namespace ErikEJ.SqlCeScripting
                 case "binary":
                 case "varbinary":
                     line = string.Format(CultureInfo.InvariantCulture,
-                        "[{0}] {1}({2}) {3}{4}"
+                        "[{0}] {1}({2}) {3} {4}"
                         , col.ColumnName
                         , col.DataType
                         , col.CharacterMaxLength == -1 ? 4000 : col.CharacterMaxLength
@@ -1683,7 +1685,7 @@ namespace ErikEJ.SqlCeScripting
                     break;
                 case "numeric":
                     line = string.Format(CultureInfo.InvariantCulture,
-                        "[{0}] {1}({2},{3}) {4}{5}"
+                        "[{0}] {1}({2},{3}) {4} {5}"
                         , col.ColumnName
                         , col.DataType
                         , col.NumericPrecision
@@ -1719,7 +1721,7 @@ namespace ErikEJ.SqlCeScripting
                     if (includeData)
                     {
                         line = string.Format(CultureInfo.InvariantCulture,
-                            "[{0}] {1} {2}{3}{4}"
+                            "[{0}] {1} {2}{3} {4}"
                             , col.ColumnName
                             , col.DataType
                             , colDefault
@@ -1730,7 +1732,7 @@ namespace ErikEJ.SqlCeScripting
                     else
                     {
                         line = string.Format(CultureInfo.InvariantCulture,
-                            "[{0}] {1} {2}{3}{4}"
+                            "[{0}] {1} {2}{3} {4}"
                             , col.ColumnName
                             , col.DataType
                             , colDefault

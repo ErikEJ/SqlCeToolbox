@@ -677,7 +677,10 @@ namespace ErikEJ.SqlCeScripting
             if (_keepSchemaName)
             {                
                 var parts = tableName.Split('.');
-                tableName = parts[1];
+                if (parts.Length > 1)
+                {
+                    tableName = parts[1];
+                }
             }
             object value = ExecuteScalar("SELECT TOP(1) ic.ORDINAL_POSITION FROM sys.columns INNER JOIN sys.objects ON sys.columns.object_id = sys.objects.object_id  INNER JOIN INFORMATION_SCHEMA.COLUMNS ic ON ic.TABLE_NAME = '" + tableName + "' WHERE sys.objects.name = '" + tableName + "' AND sys.objects.type = 'U' AND sys.columns.is_identity = 1");
             if (value != null)
@@ -699,6 +702,11 @@ namespace ErikEJ.SqlCeScripting
         public Type GetClrTypeFromDataType(string typeName)
         {
             throw new NotImplementedException();
+        }
+
+        public bool KeepSchema()
+        {
+            return  _keepSchemaName;
         }
         #endregion
     }
