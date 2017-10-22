@@ -143,7 +143,7 @@ namespace DgmlBuilder
                         }
 
                         var valueGenerated = props.FirstOrDefault(p => p.StartsWith("ValueGenerated.")) ?? "None";
-                        var category = "Property";
+                        var category = "Property Required";
                         if (!isRequired) category = "Property Optional";
                         if (isForeignKey) category = "Property Foreign";
                         if (isPrimaryKey) category = "Property Primary";

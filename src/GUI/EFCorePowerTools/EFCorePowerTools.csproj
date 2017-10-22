@@ -106,9 +106,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\template.dgml">
-      <Link>DgmlBuilder\template.dgml</Link>
-    </EmbeddedResource>
     <Content Include="..\lib\efpt.exe.config">
       <Link>efpt.exe.config</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -117,6 +114,9 @@
       <Link>efpt.exe.zip</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <EmbeddedResource Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\template.dgml">
+      <Link>DgmlBuilder\template.dgml</Link>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config">

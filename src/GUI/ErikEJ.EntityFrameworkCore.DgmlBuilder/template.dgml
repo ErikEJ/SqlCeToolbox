@@ -16,15 +16,15 @@
       <Setter Property="Background" Value="#FF008000" />
     </Style>
     <Style TargetType="Node" GroupLabel="Property Optional" ValueLabel="True">
-      <Condition Expression="HasCategory('Field Optional')" />
+      <Condition Expression="HasCategory('Property Optional')" />
       <Setter Property="Background" Value="#FF808040" />
     </Style>
     <Style TargetType="Node" GroupLabel="Property Foreign" ValueLabel="True">
       <Condition Expression="HasCategory('Property Foreign')" />
       <Setter Property="Background" Value="#FF8080FF" />
     </Style>
-    <Style TargetType="Node" GroupLabel="Property" ValueLabel="True">
-      <Condition Expression="HasCategory('Property')" />
+    <Style TargetType="Node" GroupLabel="Property Required" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Required')" />
       <Setter Property="Background" Value="#FFC0A000" />
     </Style>
     <Style TargetType="Node" GroupLabel="Model" ValueLabel="True">
