@@ -2,24 +2,24 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>EntityFramework.SqlServerCompact.PrivateDeployment</id>
-    <version>6.1.3.1</version>
+    <version>6.2.0</version>
     <title>EntityFramework.SqlServerCompact.PrivateDeployment</title>
     <authors>ErikEJ</authors>
     <owners>ErikEJ</owners>
     <projectUrl>http://sqlcetoolbox.codeplex.com/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>**Unofficial** Enables SQL Server Compact 4.0 private desktop deployment with Entity Framework 6.1.x
+    <description>**Unofficial** Enables SQL Server Compact 4.0 private desktop deployment with Entity Framework 6.2.x
  </description>
 	<summary>See the blog post at http://erikej.blogspot.dk/2014/10/entity-framework-6-and-sql-server.html for details. To make the most of this package, make sure that:
 - The binding redirect is set to: oldVersion='4.0.0.0-4.0.0.1'
 - Prefer32Bit project option is disabled if using AnyCPU
 	</summary>
-    <releaseNotes>Release for 6.1.3 RTW</releaseNotes> 
+    <releaseNotes>Release for 6.2 RTW</releaseNotes> 
     <copyright>Copyright 2015</copyright>
     <language />
     <dependencies>
       <dependency id="Baseclass.Contrib.Nuget.Output" version="1.0.7" />
-      <dependency id="EntityFramework" version="[6.1.3]" />
+      <dependency id="EntityFramework" version="[6.2.0]" />
     </dependencies>
   </metadata>
   <files> 

@@ -1,0 +1,1 @@
+..\.nuget\nuget pack C:\Code\SqlCeToolbox\NuGet\EntityFramework.SqlServerCompact.PrivateDeployment\EntityFramework.SqlServerCompact.PrivateDeployment.nuspec
