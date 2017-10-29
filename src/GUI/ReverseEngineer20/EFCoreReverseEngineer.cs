@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using ReverseEngineer20.ReverseEngineer;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ReverseEngineer20
 {
@@ -27,6 +28,11 @@ namespace ReverseEngineer20
                 .AddScaffolding(reporter)
                 .AddSingleton<IOperationReporter, OperationReporter>()
                 .AddSingleton<IOperationReportHandler, OperationReportHandler>();
+
+            if (reverseEngineerOptions.UseInflector)
+            {
+                serviceCollection.AddSingleton<IPluralizer, InflectorPluralizer>();
+            }
 
             // Add database provider services
             switch (reverseEngineerOptions.DatabaseType)
@@ -67,7 +73,7 @@ namespace ReverseEngineer20
 
             foreach (var file in filePaths.EntityTypeFiles)
             {
-                //TODO remove this when bug fix is released and adopted
+                //TODO remove this when bug fix is released in 2.0.1 and adopted
                 Fix200Bug(file);
             }
             Fix200Bug(filePaths.ContextFile);
@@ -98,7 +104,7 @@ namespace ReverseEngineer20
             if (!isValid)
             {
                 // File name contains invalid chars, remove them
-                Regex regex = new Regex(@"[^\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Nl}\p{Mn}\p{Mc}\p{Cf}\p{Pc}\p{Lm}]");
+                var regex = new Regex(@"[^\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Nd}\p{Nl}\p{Mn}\p{Mc}\p{Cf}\p{Pc}\p{Lm}]", RegexOptions.None, TimeSpan.FromSeconds(5));
                 className = regex.Replace(className, "");
 
                 // Class name doesn't begin with a letter, insert an underscore

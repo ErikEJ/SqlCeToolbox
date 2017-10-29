@@ -13,5 +13,6 @@ namespace ReverseEngineer20
         public string ContextClassName { get; set; }
         public List<string> Tables { get; set; }
         public bool UseDatabaseNames { get; set; }
+        public bool UseInflector { get; set; }
     }
 }

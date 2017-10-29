@@ -104,7 +104,6 @@
     <EmbeddedResource Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\template.dgml">
       <Link>template.dgml</Link>
     </EmbeddedResource>
-    <None Include="app.config" />
     <None Include="graph.dgml">
       <SubType>Designer</SubType>
     </None>

@@ -31,6 +31,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         public bool UseDatabaseNames => chkUseDatabaseNames.IsChecked != null && chkUseDatabaseNames.IsChecked.Value;
 
+        public bool UsePluralizer => chkPluralize.IsChecked != null && chkPluralize.IsChecked.Value;
+
         public string ModelName 
         {
             get
