@@ -85,6 +85,9 @@
     <Compile Include="Dialogs\EfCoreModelDialog.xaml.cs">
       <DependentUpon>EfCoreModelDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\PickServerDatabaseDialog.xaml.cs">
+      <DependentUpon>PickServerDatabaseDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PickTablesDialog.xaml.cs">
       <DependentUpon>PickTablesDialog.xaml</DependentUpon>
     </Compile>
@@ -319,6 +322,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\EfCoreModelDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialogs\PickServerDatabaseDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

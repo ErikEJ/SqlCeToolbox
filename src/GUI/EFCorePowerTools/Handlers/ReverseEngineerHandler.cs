@@ -1,9 +1,6 @@
 ﻿using EnvDTE;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.VisualStudio.Data.Core;
-using Microsoft.VisualStudio.Data.Services;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,18 +28,15 @@ namespace EFCorePowerTools.Handlers
                     return;
                 }
 
-                // Show dialog with SqlClient selected by default
-                var dialogFactory = _package.GetService<IVsDataConnectionDialogFactory>();
-                var dialog = dialogFactory.CreateConnectionDialog();
-                dialog.AddAllSources();
-                dialog.SelectedSource = new Guid("067ea0d9-ba62-43f7-9106-34930c60c528");
-                var dialogResult = dialog.ShowDialog(connect: true);
+                var databaseList = EnvDteHelper.GetDataConnections(_package);
 
-                if (dialogResult == null) return;
+                var psd = new PickServerDatabaseDialog(databaseList, _package);
+                var diagRes = psd.ShowModal();
+                if (!diagRes.HasValue || !diagRes.Value) return;
 
                 _package.Dte2.StatusBar.Text = "Loading schema information...";
 
-                var dbInfo = GetDatabaseInfo(dialogResult, DataProtection.DecryptString(dialog.EncryptedConnectionString));
+                var dbInfo = psd.SelectedDatabase.Value;
 
                 if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                 {
@@ -88,119 +82,116 @@ namespace EFCorePowerTools.Handlers
 
                 var startTime = DateTime.Now;
 
+                var databaseList = EnvDteHelper.GetDataConnections(_package);
+
+                var psd = new PickServerDatabaseDialog(databaseList, _package);
+                var diagRes = psd.ShowModal();
+                if (!diagRes.HasValue || !diagRes.Value) return;
+
                 // Show dialog with SqlClient selected by default
-                var dialogFactory = _package.GetService<IVsDataConnectionDialogFactory>();
-                var dialog = dialogFactory.CreateConnectionDialog();
-                dialog.AddAllSources();
-                dialog.SelectedSource = new Guid("067ea0d9-ba62-43f7-9106-34930c60c528");
-                var dialogResult = dialog.ShowDialog(connect: true);
+                _package.Dte2.StatusBar.Text = "Loading schema information...";
 
-                if (dialogResult != null)
+                var dbInfo = psd.SelectedDatabase.Value;
+
+                if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                 {
-                    _package.Dte2.StatusBar.Text = "Loading schema information...";
-
-                    var dbInfo = GetDatabaseInfo(dialogResult, DataProtection.DecryptString(dialog.EncryptedConnectionString));
-
-                    if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
-                    {
-                        EnvDteHelper.ShowError($"Unsupported provider: {dbInfo.ServerVersion}");
-                        return;
-                    }
-
-                    var ptd = new PickTablesDialog { IncludeTables = true };
-                    using (var repository = RepositoryHelper.CreateRepository(dbInfo))
-                    {
-                        ptd.Tables = repository.GetAllTableNamesForExclusion();
-                    }
-
-                    var res = ptd.ShowModal();
-                    if (!res.HasValue || !res.Value) return;
-
-                    var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
-
-                    var dteH = new EnvDteHelper();
-                    var revEng = new EfCoreReverseEngineer();
-
-                    var model = revEng.GenerateClassName(classBasis) + "Context";
-                    var packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
-
-                    var modelDialog = new EfCoreModelDialog
-                    {
-                        InstallNuGetPackage = !packageResult.Item1,
-                        ModelName = model,
-                        ProjectName = project.Name,
-                        NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString()
-                    };
-
-                    _package.Dte2.StatusBar.Text = "Getting options...";
-                    var result = modelDialog.ShowModal();
-                    if (!result.HasValue || result.Value != true)
-                        return;
-
-                    var projectPath = project.Properties.Item("FullPath").Value.ToString();
-
-                    var options = new ReverseEngineerOptions
-                    {
-                        UseFluentApiOnly = !modelDialog.UseDataAnnotations,
-                        ConnectionString = dbInfo.ConnectionString,
-                        ContextClassName = modelDialog.ModelName,
-                        DatabaseType = (ReverseEngineer20.DatabaseType)dbInfo.DatabaseType,
-                        ProjectPath = projectPath,
-                        OutputPath = modelDialog.OutputPath,
-                        ProjectRootNamespace = modelDialog.NameSpace,
-                        UseDatabaseNames = modelDialog.UseDatabaseNames,
-                        UseInflector =  modelDialog.UsePluralizer,
-                        Tables = ptd.Tables
-                    };
-
-                    _package.Dte2.StatusBar.Text = "Generating code...";
-                    var revEngResult = revEng.GenerateFiles(options);
-
-                    if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 2)
-                    {
-                        foreach (var filePath in revEngResult.EntityTypeFilePaths)
-                        {
-                            project.ProjectItems.AddFromFile(filePath);
-                        }
-                    }
-                    if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 1)
-                    {
-                        project.ProjectItems.AddFromFile(revEngResult.ContextFilePath);
-                        _package.Dte2.ItemOperations.OpenFile(revEngResult.ContextFilePath);
-                    }
-
-                    packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
-
-                    var missingProviderPackage = packageResult.Item1 ? null : packageResult.Item2;
-                    if (modelDialog.InstallNuGetPackage)
-                    {
-                        missingProviderPackage = null;
-                    }
-
-                    _package.Dte2.StatusBar.Text = "Reporting result...";
-                    var errors = ReportRevEngErrors(revEngResult, missingProviderPackage);
-
-                    if (modelDialog.InstallNuGetPackage)
-                    {
-                        _package.Dte2.StatusBar.Text = "Installing EF Core provider package";
-                        var nuGetHelper = new NuGetHelper();
-                        await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
-                    }
-                    var duration = DateTime.Now - startTime;
-                    _package.Dte2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
-
-                    EnvDteHelper.ShowMessage(errors);
-
-                    if (revEngResult.EntityErrors.Count > 0)
-                    {
-                        _package.LogError(revEngResult.EntityErrors, null);
-                    }
-                    if (revEngResult.EntityWarnings.Count > 0)
-                    {
-                        _package.LogError(revEngResult.EntityWarnings, null);
-                    }
-                    Telemetry.TrackEvent("PowerTools.ReversEngineer");
+                    EnvDteHelper.ShowError($"Unsupported provider: {dbInfo.ServerVersion}");
+                    return;
                 }
+
+                var ptd = new PickTablesDialog { IncludeTables = true };
+                using (var repository = RepositoryHelper.CreateRepository(dbInfo))
+                {
+                    ptd.Tables = repository.GetAllTableNamesForExclusion();
+                }
+
+                var res = ptd.ShowModal();
+                if (!res.HasValue || !res.Value) return;
+
+                var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
+
+                var dteH = new EnvDteHelper();
+                var revEng = new EfCoreReverseEngineer();
+
+                var model = revEng.GenerateClassName(classBasis) + "Context";
+                var packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
+
+                var modelDialog = new EfCoreModelDialog
+                {
+                    InstallNuGetPackage = !packageResult.Item1,
+                    ModelName = model,
+                    ProjectName = project.Name,
+                    NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString()
+                };
+
+                _package.Dte2.StatusBar.Text = "Getting options...";
+                var result = modelDialog.ShowModal();
+                if (!result.HasValue || result.Value != true)
+                    return;
+
+                var projectPath = project.Properties.Item("FullPath").Value.ToString();
+
+                var options = new ReverseEngineerOptions
+                {
+                    UseFluentApiOnly = !modelDialog.UseDataAnnotations,
+                    ConnectionString = dbInfo.ConnectionString,
+                    ContextClassName = modelDialog.ModelName,
+                    DatabaseType = (ReverseEngineer20.DatabaseType)dbInfo.DatabaseType,
+                    ProjectPath = projectPath,
+                    OutputPath = modelDialog.OutputPath,
+                    ProjectRootNamespace = modelDialog.NameSpace,
+                    UseDatabaseNames = modelDialog.UseDatabaseNames,
+                    UseInflector =  modelDialog.UsePluralizer,
+                    Tables = ptd.Tables
+                };
+
+                _package.Dte2.StatusBar.Text = "Generating code...";
+                var revEngResult = revEng.GenerateFiles(options);
+
+                if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 2)
+                {
+                    foreach (var filePath in revEngResult.EntityTypeFilePaths)
+                    {
+                        project.ProjectItems.AddFromFile(filePath);
+                    }
+                }
+                if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 1)
+                {
+                    project.ProjectItems.AddFromFile(revEngResult.ContextFilePath);
+                    _package.Dte2.ItemOperations.OpenFile(revEngResult.ContextFilePath);
+                }
+
+                packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
+
+                var missingProviderPackage = packageResult.Item1 ? null : packageResult.Item2;
+                if (modelDialog.InstallNuGetPackage)
+                {
+                    missingProviderPackage = null;
+                }
+
+                _package.Dte2.StatusBar.Text = "Reporting result...";
+                var errors = ReportRevEngErrors(revEngResult, missingProviderPackage);
+
+                if (modelDialog.InstallNuGetPackage)
+                {
+                    _package.Dte2.StatusBar.Text = "Installing EF Core provider package";
+                    var nuGetHelper = new NuGetHelper();
+                    await nuGetHelper.InstallPackageAsync(packageResult.Item2, project);
+                }
+                var duration = DateTime.Now - startTime;
+                _package.Dte2.StatusBar.Text = $"Reverse engineer completed in {duration:h\\:mm\\:ss}";
+
+                EnvDteHelper.ShowMessage(errors);
+
+                if (revEngResult.EntityErrors.Count > 0)
+                {
+                    _package.LogError(revEngResult.EntityErrors, null);
+                }
+                if (revEngResult.EntityWarnings.Count > 0)
+                {
+                    _package.LogError(revEngResult.EntityWarnings, null);
+                }
+                Telemetry.TrackEvent("PowerTools.ReversEngineer");
             }
             catch (AggregateException ae)
             {
@@ -213,34 +204,6 @@ namespace EFCorePowerTools.Handlers
             {
                 _package.LogError(new List<string>(), exception);
             }
-        }
-
-        private DatabaseInfo GetDatabaseInfo(IVsDataConnection dialogResult, string connectionString)
-        {
-            var dbType = DatabaseType.SQLCE35;
-            var providerInvariant = "N/A";
-            // Find provider
-            var providerManager = (IVsDataProviderManager)Package.GetGlobalService(typeof(IVsDataProviderManager));
-            IVsDataProvider dp;
-            providerManager.Providers.TryGetValue(dialogResult.Provider, out dp);
-            if (dp != null)
-            {
-                providerInvariant = (string)dp.GetProperty("InvariantName");
-                dbType = DatabaseType.SQLCE35;
-                if (providerInvariant == "System.Data.SqlServerCe.4.0")
-                    dbType = DatabaseType.SQLCE40;
-                if (providerInvariant == "System.Data.SQLite.EF6")
-                    dbType = DatabaseType.SQLite;
-                if (providerInvariant == "System.Data.SqlClient")
-                    dbType = DatabaseType.SQLServer;
-
-            }
-            return new DatabaseInfo
-            {
-                DatabaseType = dbType,
-                ConnectionString = connectionString,
-                ServerVersion = providerInvariant
-            };
         }
 
         private string ReportRevEngErrors(EfCoreReverseEngineerResult revEngResult, string missingProviderPackage)

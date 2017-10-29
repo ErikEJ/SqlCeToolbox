@@ -1,8 +1,13 @@
-﻿using EnvDTE;
+﻿using EFCorePowerTools;
+using EnvDTE;
+using ErikEJ.SqlCeScripting;
 using Microsoft.VisualStudio.Data.Core;
+using Microsoft.VisualStudio.Data.Services;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using VSLangProj;
 
@@ -11,6 +16,98 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class EnvDteHelper
     {
+        //TODO Update this when SQLite provider is updated!
+        private static string SqliteEngineVersion = "3.18";
+
+        internal static Dictionary<string, DatabaseInfo> GetDataConnections(EFCorePowerToolsPackage package,
+    bool includeServerConnections = true)
+        {
+            // http://www.mztools.com/articles/2007/MZ2007018.aspx
+            Dictionary<string, DatabaseInfo> databaseList = new Dictionary<string, DatabaseInfo>();
+            var dataExplorerConnectionManager = package.GetService<IVsDataExplorerConnectionManager>();
+            Guid provider40 = new Guid(Resources.SqlCompact40Provider);
+            Guid provider40Private = new Guid(Resources.SqlCompact40PrivateProvider);
+            Guid providerSqLite = new Guid(Resources.SQLiteProvider);
+            Guid providerSqlitePrivate = new Guid(Resources.SqlitePrivateProvider);
+
+            bool isV40Installed = RepositoryHelper.IsV40Installed() &&
+                (DdexProviderIsInstalled(provider40) || DdexProviderIsInstalled(provider40Private));
+            if (dataExplorerConnectionManager != null)
+            {
+                foreach (var connection in dataExplorerConnectionManager.Connections.Values)
+                {
+                    try
+                    {
+                        var objProviderGuid = connection.Provider;
+                        if (objProviderGuid == provider40 && isV40Installed ||
+                            objProviderGuid == provider40Private && isV40Installed)
+                        {
+                            DatabaseType dbType = DatabaseType.SQLCE40;
+                            var serverVersion = "4.0";
+
+                            var sConnectionString =
+                                DataProtection.DecryptString(connection.EncryptedConnectionString);
+                            if (!sConnectionString.Contains("Mobile Device"))
+                            {
+                                DatabaseInfo info = new DatabaseInfo()
+                                {
+                                    Caption = connection.DisplayName,
+                                    FromServerExplorer = true,
+                                    DatabaseType = dbType,
+                                    ServerVersion = serverVersion,
+                                    ConnectionString = sConnectionString
+                                };
+                                info.FileIsMissing = RepositoryHelper.IsMissing(info);
+                                if (!databaseList.ContainsKey(sConnectionString))
+                                    databaseList.Add(sConnectionString, info);
+                            }
+                        }
+
+                        if (objProviderGuid == providerSqLite
+                            || objProviderGuid == providerSqlitePrivate)
+                        {
+                            DatabaseType dbType = DatabaseType.SQLite;
+
+                            var sConnectionString =
+                                DataProtection.DecryptString(connection.EncryptedConnectionString);
+                            DatabaseInfo info = new DatabaseInfo()
+                            {
+                                Caption = connection.DisplayName,
+                                FromServerExplorer = true,
+                                DatabaseType = dbType,
+                                ServerVersion = SqliteEngineVersion,
+                                ConnectionString = sConnectionString
+                            };
+                            info.FileIsMissing = RepositoryHelper.IsMissing(info);
+                            if (!databaseList.ContainsKey(sConnectionString))
+                                databaseList.Add(sConnectionString, info);
+                        }
+                        if (includeServerConnections && objProviderGuid == new Guid(Resources.SqlServerDotNetProvider))
+                        {
+                            var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
+                            var info = new DatabaseInfo()
+                            {
+                                Caption = connection.DisplayName,
+                                FromServerExplorer = true,
+                                DatabaseType = DatabaseType.SQLServer,
+                                ServerVersion = string.Empty,
+                                ConnectionString = sConnectionString
+                            };
+                            if (!databaseList.ContainsKey(sConnectionString))
+                                databaseList.Add(sConnectionString, info);
+                        }
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                    }
+                    catch (NullReferenceException)
+                    {
+                    }
+                }
+            }
+            return databaseList;
+        }
+
         internal static bool DdexProviderIsInstalled(Guid id)
         {
             try
@@ -27,6 +124,85 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
+        internal static DatabaseInfo PromptForInfo(EFCorePowerToolsPackage package)
+        {
+            // Show dialog with SqlClient selected by default
+            var dialogFactory = package.GetService<IVsDataConnectionDialogFactory>();
+            var dialog = dialogFactory.CreateConnectionDialog();
+            dialog.AddAllSources();
+            dialog.SelectedSource = new Guid("067ea0d9-ba62-43f7-9106-34930c60c528");
+            var dialogResult = dialog.ShowDialog(connect: true);
+
+            if (dialogResult == null) return new DatabaseInfo {DatabaseType = DatabaseType.SQLCE35};
+
+            var info = GetDatabaseInfo(package, dialogResult.Provider, DataProtection.DecryptString(dialog.EncryptedConnectionString));
+            SaveDataConnection(package, dialog.EncryptedConnectionString, info.DatabaseType, new Guid(info.Size));
+            return info;
+        }
+
+        internal static void SaveDataConnection(EFCorePowerToolsPackage package, string encryptedConnectionString,
+            DatabaseType dbType, Guid provider)
+        {
+            var dataExplorerConnectionManager = package.GetService<IVsDataExplorerConnectionManager>();
+            var savedName = GetFileName(DataProtection.DecryptString(encryptedConnectionString), dbType);
+            dataExplorerConnectionManager.AddConnection(savedName, provider, encryptedConnectionString, true);
+        }
+
+        private static DatabaseInfo GetDatabaseInfo(EFCorePowerToolsPackage package, Guid provider, string connectionString)
+        {
+            var dbType = DatabaseType.SQLCE35;
+            var providerInvariant = "N/A";
+            var providerGuid = Guid.Empty.ToString();
+            // Find provider
+            var providerManager = package.GetService<IVsDataProviderManager>();
+            IVsDataProvider dp;
+            providerManager.Providers.TryGetValue(provider, out dp);
+            if (dp != null)
+            {
+                providerInvariant = (string)dp.GetProperty("InvariantName");
+                dbType = DatabaseType.SQLCE35;
+                if (providerInvariant == "System.Data.SqlServerCe.4.0")
+                {
+                    dbType = DatabaseType.SQLCE40;
+                    providerGuid = EFCorePowerTools.Resources.SqlCompact40PrivateProvider;
+                }
+                if (providerInvariant == "System.Data.SQLite.EF6")
+                {
+                    dbType = DatabaseType.SQLite;
+                    providerGuid = EFCorePowerTools.Resources.SqlitePrivateProvider;
+                }
+                if (providerInvariant == "System.Data.SqlClient")
+                {
+                    dbType = DatabaseType.SQLServer;
+                    providerGuid = EFCorePowerTools.Resources.SqlServerDotNetProvider;
+                }
+            }
+            return new DatabaseInfo
+            {
+                DatabaseType = dbType,
+                ConnectionString = connectionString,
+                ServerVersion = providerInvariant,
+                Size = providerGuid
+            };
+        }
+
+        private static string GetFilePath(string connectionString, DatabaseType dbType)
+        {
+            var helper = RepositoryHelper.CreateEngineHelper(dbType);
+            return helper.PathFromConnectionString(connectionString);
+        }
+
+        private static string GetFileName(string connectionString, DatabaseType dbType)
+        {
+            if (dbType == DatabaseType.SQLServer)
+            {
+                var helper = new SqlServerHelper();
+                return helper.PathFromConnectionString(connectionString);
+            }
+            var filePath = GetFilePath(connectionString, dbType);
+            return Path.GetFileName(filePath);
+        }
+
         internal static bool IsSqLiteDbProviderInstalled()
         {
             try
@@ -38,40 +214,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 return false;
             }
             return true;
-        }
-
-        public Project GetProject(DTE dte)
-        {
-            foreach (SelectedItem item in dte.SelectedItems)
-            {
-                if (item.Project != null) return item.Project;
-                if (item.ProjectItem != null) return item.ProjectItem.ContainingProject;
-            }
-            return null;
-        }
-
-        public ProjectItem GetProjectConfig(Project project)
-        {
-            foreach (ProjectItem item in project.ProjectItems)
-            {
-                if (item.Name.ToLowerInvariant() == "app.config")
-                {
-                    return item;
-                }
-            }
-            return null;
-        }
-
-        public ProjectItem GetProjectDc(Project project, string model, string extension)
-        {
-            foreach (ProjectItem item in project.ProjectItems)
-            {
-                if (item.Name.ToLowerInvariant() == model.ToLowerInvariant() + extension)
-                {
-                    return item;
-                }
-            }
-            return null;
         }
 
         public Tuple<bool, string> ContainsEfCoreReference(Project project, DatabaseType dbType)
