@@ -148,16 +148,17 @@
     <Compile Include="..\ErikEJ.EntityFrameworkCore.DgmlBuilder\DgmlBuilder.cs">
       <Link>ModelBuilder\DgmlBuilder.cs</Link>
     </Compile>
-    <Compile Include="ModelBuilder\EFCoreModelBuilder.cs" />
+    <Compile Include="EFCoreModelBuilder.cs" />
     <Compile Include="ReverseEngineer\DatabaseType.cs" />
     <Compile Include="EFCoreReverseEngineer.cs" />
     <Compile Include="ReverseEngineer\EFCoreReverseEngineerResult.cs" />
     <Compile Include="PathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReverseEngineer\Inflector.cs" />
+    <Compile Include="ReverseEngineer\InflectorPluralizer.cs" />
     <Compile Include="ReverseEngineer\ReverseEngineerOptions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>

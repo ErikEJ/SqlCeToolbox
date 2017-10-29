@@ -149,6 +149,7 @@ namespace EFCorePowerTools.Handlers
                         OutputPath = modelDialog.OutputPath,
                         ProjectRootNamespace = modelDialog.NameSpace,
                         UseDatabaseNames = modelDialog.UseDatabaseNames,
+                        UseInflector =  modelDialog.UsePluralizer,
                         Tables = ptd.Tables
                     };
 
