@@ -22,7 +22,7 @@
             <RowDefinition Height="134*" />
         </Grid.RowDefinitions>
         <StackPanel Margin="0,98,9,3" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2"></StackPanel>
-        <ComboBox Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="comboBox1" VerticalAlignment="Top" Width="260" IsEditable="False" SelectionChanged="comboBox1_SelectionChanged" TabIndex="0" Margin="0,19,0,0" />
+        <ComboBox Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="comboBox1" VerticalAlignment="Top" Width="250" IsEditable="False" SelectionChanged="comboBox1_SelectionChanged" TabIndex="0" Margin="10,19,0,0" />
         <dw:DialogButton  Click="AddButton_OnClick"  Grid.Row="1" HorizontalAlignment="Right" TabIndex="1" SnapsToDevicePixels="False" Width="75" Margin="0,19,10,0" Height="25" VerticalAlignment="Top" Content="Add..."/>
         <dw:DialogButton IsDefault="True"   Click="SaveButton_Click" Grid.Row="2" HorizontalAlignment="Right" TabIndex="2" Margin="0,36,89,0" Width="75" Height="25" VerticalAlignment="Top">OK</dw:DialogButton>
         <dw:DialogButton IsCancel="True" Click="CancelButton_Click" Grid.Row="2" HorizontalAlignment="Right" TabIndex="3" SnapsToDevicePixels="False" Width="75" Margin="0,36,8,0" Height="25" VerticalAlignment="Top">Cancel</dw:DialogButton>
