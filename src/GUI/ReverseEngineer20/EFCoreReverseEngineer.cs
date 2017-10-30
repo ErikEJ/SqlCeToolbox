@@ -74,9 +74,9 @@ namespace ReverseEngineer20
             foreach (var file in filePaths.EntityTypeFiles)
             {
                 //TODO remove this when bug fix is released in 2.0.1 and adopted
-                Fix200Bug(file);
+                Fix200Bug(file, reverseEngineerOptions.IdReplace);
             }
-            Fix200Bug(filePaths.ContextFile);
+            Fix200Bug(filePaths.ContextFile, reverseEngineerOptions.IdReplace);
 
             var result = new EfCoreReverseEngineerResult
             {
@@ -89,10 +89,18 @@ namespace ReverseEngineer20
             return result;
         }
 
-        private static void Fix200Bug(string file)
+        private static void Fix200Bug(string file, bool idReplace)
         {
             var text = File.ReadAllText(file);
             text = text.Replace("\"nvarchar\"", "\"nvarchar(4000)\"");
+            if (idReplace)
+            {
+                text = text.Replace("Id, ", "ID, ");
+                text = text.Replace("Id }", "ID }");
+                text = text.Replace("Id }", "ID }");
+                text = text.Replace("Id)", "ID)");
+                text = text.Replace("Id { get; set; }", "ID { get; set; }");
+            }
             File.WriteAllText(file, text, Encoding.UTF8);
         }
 
