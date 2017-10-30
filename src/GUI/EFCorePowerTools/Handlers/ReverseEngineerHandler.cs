@@ -142,6 +142,7 @@ namespace EFCorePowerTools.Handlers
                     ProjectRootNamespace = modelDialog.NameSpace,
                     UseDatabaseNames = modelDialog.UseDatabaseNames,
                     UseInflector =  modelDialog.UsePluralizer,
+                    IdReplace = modelDialog.ReplaceId,
                     Tables = ptd.Tables
                 };
 

@@ -13,7 +13,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             Background = VsThemes.GetWindowBackground();
         }
 
-        #region Properties
         public string ProjectName
         {
             get
@@ -32,6 +31,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         public bool UseDatabaseNames => chkUseDatabaseNames.IsChecked != null && chkUseDatabaseNames.IsChecked.Value;
 
         public bool UsePluralizer => chkPluralize.IsChecked != null && chkPluralize.IsChecked.Value;
+
+        public bool ReplaceId => chkIdReplace.IsChecked != null && chkIdReplace.IsChecked.Value;
 
         public string ModelName 
         {
@@ -82,8 +83,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         }
 
         public int SelectedTobeGenerated => cmbLanguage.SelectedIndex;
-
-        #endregion
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {

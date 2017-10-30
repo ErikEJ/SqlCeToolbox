@@ -658,7 +658,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 // ignored
             }
-            return string.Format("- more than {0:0,0} downloads", 700000d);
+            return string.Format("- more than {0:0,0} downloads", 900000d);
         }
 
         public static string GetSqlCeFileFilter()
