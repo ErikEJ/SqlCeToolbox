@@ -4,8 +4,8 @@ Describe what is not working as expected.
 Include a complete description that I can redo to reproduce the issue.
 
 ### Further technical details
-Toolbox version: (found in About dialog - blue questionmark icon)
+Toolbox/Power Tools version: (found in About dialog - blue questionmark icon)
 
 Database engine: (SQlite, SQL Compact or SQL Server)
 
-Visual Studio or SSMS version: (e.g. Visual Studio 2015, SSMS 16.5.3)
+Visual Studio or SSMS version: (e.g. Visual Studio 2017 15.3, SSMS 17.3)
