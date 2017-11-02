@@ -15,5 +15,6 @@ namespace ReverseEngineer20
         public bool UseDatabaseNames { get; set; }
         public bool UseInflector { get; set; }
         public bool IdReplace { get; set; }
+        public bool UseHandleBars { get; set; }
     }
 }

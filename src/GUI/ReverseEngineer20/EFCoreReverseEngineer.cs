@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
+﻿using EntityFrameworkCore.Scaffolding.Handlebars;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,10 +25,20 @@ namespace ReverseEngineer20
                     m => warnings.Add(m)));
 
             // Add base services for scaffolding
-            var serviceCollection = new ServiceCollection()
-                .AddScaffolding(reporter)
-                .AddSingleton<IOperationReporter, OperationReporter>()
-                .AddSingleton<IOperationReportHandler, OperationReportHandler>();
+            var serviceCollection = new ServiceCollection();
+
+            if (reverseEngineerOptions.UseHandleBars)
+            {
+                //var options = ReverseEngineerOptions.DbContextAndEntities;
+                serviceCollection.AddHandlebarsScaffolding();
+            }
+            else
+            {
+                serviceCollection
+                    .AddScaffolding(reporter)
+                    .AddSingleton<IOperationReporter, OperationReporter>()
+                    .AddSingleton<IOperationReportHandler, OperationReportHandler>();
+            }
 
             if (reverseEngineerOptions.UseInflector)
             {
