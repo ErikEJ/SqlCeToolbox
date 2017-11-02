@@ -141,6 +141,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\POC\EntityFrameworkCore.Scaffolding.Handlebars\EntityFrameworkCore.Scaffolding.Handlebars.csproj">
+      <Project>{98ba37e1-99ff-4c0c-bd46-66c4f07e9b20}</Project>
+      <Name>EntityFrameworkCore.Scaffolding.Handlebars</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ReverseEngineer20\ReverseEngineer20.csproj">
       <Project>{4c0f2979-fcd9-4e93-8e4f-2a43055d42fe}</Project>
       <Name>ReverseEngineer20</Name>

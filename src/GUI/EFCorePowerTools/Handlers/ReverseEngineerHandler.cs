@@ -143,6 +143,7 @@ namespace EFCorePowerTools.Handlers
                     UseDatabaseNames = modelDialog.UseDatabaseNames,
                     UseInflector =  modelDialog.UsePluralizer,
                     IdReplace = modelDialog.ReplaceId,
+                    UseHandleBars = modelDialog.UseHandelbars,
                     Tables = ptd.Tables
                 };
 
