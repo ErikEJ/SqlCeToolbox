@@ -30,6 +30,7 @@ namespace EFCorePowerTools
         private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
         private readonly AboutHandler _aboutHandler;
         private readonly DgmlNugetHandler _dgmlNugetHandler;
+        private readonly ServerDgmlHandler _serverDgmlHandler;
         private DTE2 _dte2;
 
         public EFCorePowerToolsPackage()
@@ -38,6 +39,7 @@ namespace EFCorePowerTools
             _modelAnalyzerHandler = new ModelAnalyzerHandler(this);
             _aboutHandler = new AboutHandler(this);
             _dgmlNugetHandler = new DgmlNugetHandler(this);
+            _serverDgmlHandler = new ServerDgmlHandler(this);
         }
 
         internal DTE2 Dte2 => _dte2;
@@ -155,7 +157,7 @@ namespace EFCorePowerTools
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerDgml)
             {
-                _reverseEngineerHandler.GenerateServerDgmlFiles();
+                _serverDgmlHandler.GenerateServerDgmlFiles();
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlNuget)
             {
