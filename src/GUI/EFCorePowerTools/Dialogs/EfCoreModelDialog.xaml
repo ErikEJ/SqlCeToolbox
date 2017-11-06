@@ -29,7 +29,7 @@
             </StackPanel>
         </GroupBox>
         <CheckBox TabIndex="10" Content="Use DataAnnotation attributes to configure the model"  Grid.Row="5" Height="24" HorizontalAlignment="Left" Margin="12,10,0,0" Name="chkDataAnnoations" VerticalAlignment="Top" Width="358" />
-        <CheckBox IsEnabled="False" TabIndex="11" Content="Customize code using Handlebars templates (preview)" Grid.Row="6" Height="22" HorizontalAlignment="Left" Margin="13,10.5,0,0" x:Name="chkHandlebars" VerticalAlignment="Top" Width="358" />
+        <CheckBox TabIndex="11" Content="Customize code using Handlebars templates (preview)" Grid.Row="6" Height="22" HorizontalAlignment="Left" Margin="13,10.5,0,0" x:Name="chkHandlebars" VerticalAlignment="Top" Width="358" />
         <CheckBox TabIndex="12" Content="Install the EF Core provider package in the project" IsChecked="True" Grid.Row="7" Height="22" HorizontalAlignment="Left" Margin="13,9.5,0,0" x:Name="chkInstallNuGet" VerticalAlignment="Top" Width="358" />
         <Label Content="Context name"  HorizontalAlignment="Left" Margin="10,0,0,0" Name="label1" Width="151" Height="28" VerticalAlignment="Top" />
         <Label Content="Namespace" HorizontalAlignment="Left" Margin="10,0,0,0"  Width="197" Height="28" VerticalAlignment="Top"

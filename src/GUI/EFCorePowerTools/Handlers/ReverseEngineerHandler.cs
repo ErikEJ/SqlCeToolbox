@@ -1,10 +1,13 @@
 ﻿using EnvDTE;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
+using ReverseEngineer20;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Reflection;
 using System.Text;
-using ReverseEngineer20;
 
 namespace EFCorePowerTools.Handlers
 {
@@ -95,7 +98,15 @@ namespace EFCorePowerTools.Handlers
                 };
 
                 _package.Dte2.StatusBar.Text = "Generating code...";
-                //TODO Drop CodeTemplates files if using Handlebars..
+
+                if (modelDialog.UseHandelbars)
+                {
+                    if (DropTemplates(projectPath))
+                    {
+                        project.ProjectItems.AddFromDirectory(Path.Combine(projectPath, "CodeTemplates"));
+                    }
+                }
+
                 var revEngResult = revEng.GenerateFiles(options);
 
                 if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 2)
@@ -141,7 +152,7 @@ namespace EFCorePowerTools.Handlers
                 {
                     _package.LogError(revEngResult.EntityWarnings, null);
                 }
-                Telemetry.TrackEvent("PowerTools.ReversEngineer");
+                Telemetry.TrackEvent("PowerTools.ReverseEngineer");
             }
             catch (AggregateException ae)
             {
@@ -180,6 +191,21 @@ namespace EFCorePowerTools.Handlers
             }
 
             return errors.ToString();
+        }
+
+        private bool DropTemplates(string projectPath)
+        {
+            var toDir = Path.Combine(projectPath, "CodeTemplates");
+            var fromDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            if (!Directory.Exists(toDir))
+            {
+                Directory.CreateDirectory(toDir);
+                ZipFile.ExtractToDirectory(Path.Combine(fromDir, "CodeTemplates.zip"), toDir);
+                return true;
+            }
+
+            return false;
         }
     }
 }
