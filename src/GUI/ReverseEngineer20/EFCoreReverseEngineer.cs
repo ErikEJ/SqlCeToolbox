@@ -27,17 +27,14 @@ namespace ReverseEngineer20
             // Add base services for scaffolding
             var serviceCollection = new ServiceCollection();
 
+            serviceCollection
+                .AddScaffolding(reporter)
+                .AddSingleton<IOperationReporter, OperationReporter>()
+                .AddSingleton<IOperationReportHandler, OperationReportHandler>();
+
             if (reverseEngineerOptions.UseHandleBars)
             {
-                //var options = ReverseEngineerOptions.DbContextAndEntities;
                 serviceCollection.AddHandlebarsScaffolding();
-            }
-            else
-            {
-                serviceCollection
-                    .AddScaffolding(reporter)
-                    .AddSingleton<IOperationReporter, OperationReporter>()
-                    .AddSingleton<IOperationReportHandler, OperationReportHandler>();
             }
 
             if (reverseEngineerOptions.UseInflector)
