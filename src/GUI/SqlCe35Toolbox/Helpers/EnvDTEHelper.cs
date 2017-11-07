@@ -250,7 +250,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     //Universal App Shared
                     new Guid("{D954291E-2A0B-460D-934E-DC6B0785DB48}"),
                     //.NET Core project (Project.json)
-                    new Guid("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}")
+                    new Guid("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}"),
+                    //.NET C# (SDK project format)
+                    new Guid("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}")
                 };
             }
         }
