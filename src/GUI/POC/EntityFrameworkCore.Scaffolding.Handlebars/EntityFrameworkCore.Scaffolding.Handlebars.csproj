@@ -27,14 +27,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- pack  tempate files -->
-    <Content Include="CodeTemplates\CSharpDbContext\DbContext.hbs" PackagePath="lib\netstandard2.0\CodeTemplates\CSharpDbContext\" />
-    <Content Include="CodeTemplates\CSharpDbContext\Partials\DbImports.hbs" PackagePath="lib\netstandard2.0\CodeTemplates\CSharpDbContext\Partials\" />
-    <Content Include="CodeTemplates\CSharpDbContext\Partials\DbSets.hbs" PackagePath="lib\netstandard2.0\CodeTemplates\CSharpDbContext\Partials\" />
-    <Content Include="CodeTemplates\CSharpEntityType\Class.hbs" PackagePath="lib\netstandard2.0\CodeTemplates\CSharpEntityType\" />
-    <Content Include="CodeTemplates\CSharpEntityType\Partials\Constructor.hbs" PackagePath="lib\netstandard2.0\CodeTemplates\CSharpEntityType\Partials\" />
-    <Content Include="CodeTemplates\CSharpEntityType\Partials\Imports.hbs" PackagePath="lib\netstandard2.0\CodeTemplates\CSharpEntityType\Partials\" />
-    <Content Include="CodeTemplates\CSharpEntityType\Partials\Properties.hbs" PackagePath="lib\netstandard2.0\CodeTemplates\CSharpEntityType\Partials\" />
+    <Compile Remove="CodeTemplates\**" />
+    <EmbeddedResource Remove="CodeTemplates\**" />
+    <None Remove="CodeTemplates\**" />
   </ItemGroup>
   
   <ItemGroup>
@@ -47,30 +42,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Handlebars\Handlebars.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="CodeTemplates\CSharpDbContext\DbContext.hbs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="CodeTemplates\CSharpDbContext\Partials\DbImports.hbs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="CodeTemplates\CSharpDbContext\Partials\DbSets.hbs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="CodeTemplates\CSharpEntityType\Class.hbs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="CodeTemplates\CSharpEntityType\Partials\Constructor.hbs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="CodeTemplates\CSharpEntityType\Partials\Imports.hbs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="CodeTemplates\CSharpEntityType\Partials\Properties.hbs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

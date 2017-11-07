@@ -34,7 +34,7 @@ namespace ReverseEngineer20
 
             if (reverseEngineerOptions.UseHandleBars)
             {
-                serviceCollection.AddHandlebarsScaffolding();
+                serviceCollection.AddHandlebarsScaffolding(reverseEngineerOptions.ProjectPath);
             }
 
             if (reverseEngineerOptions.UseInflector)

@@ -49,7 +49,8 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
             }
             else
             {
-                var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                //var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var assemblyDirectory = ServiceCollectionExtensions.ProjectRoot;
                 var localDirectory = Path.Combine(assemblyDirectory, relativeDirectory);
                 var templateContents = RetrieveFileContents(localDirectory, fileName);
                 OutputFile(directory, fileName, templateContents);

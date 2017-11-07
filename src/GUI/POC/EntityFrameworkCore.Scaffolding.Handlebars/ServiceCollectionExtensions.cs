@@ -9,6 +9,7 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
     /// </summary>
     public static class ServiceCollectionExtensions
     {
+        public static string ProjectRoot { get; private set; }
         /// <summary>
         ///     <para>
         ///         Registers the Handlebars scaffolding generator as a service in the <see cref="IServiceCollection" />.
@@ -25,8 +26,9 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         /// <param name="options">Options for reverse engineering classes from an existing database.</param>
         /// <returns>The same service collection so that multiple calls can be chained.</returns>
         public static IServiceCollection AddHandlebarsScaffolding(this IServiceCollection services,
-            ReverseEngineerOptions options = ReverseEngineerOptions.DbContextAndEntities)
+            string projectRoot, ReverseEngineerOptions options = ReverseEngineerOptions.DbContextAndEntities)
         {
+            ProjectRoot = projectRoot;
             Type dbContextGeneratorImpl;
             var dbContextGeneratorType = typeof(ICSharpDbContextGenerator);
             if (options == ReverseEngineerOptions.DbContextOnly

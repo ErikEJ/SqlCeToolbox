@@ -15,7 +15,7 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         public void ConfigureDesignTimeServices(IServiceCollection services)
         {
             var options = ReverseEngineerOptions.DbContextAndEntities;
-            services.AddHandlebarsScaffolding(options);
+            services.AddHandlebarsScaffolding(null, options);
         }
     }
 }
