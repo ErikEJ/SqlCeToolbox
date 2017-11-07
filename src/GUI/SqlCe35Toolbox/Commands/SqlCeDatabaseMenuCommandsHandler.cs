@@ -265,7 +265,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
             if (isDesktop && !dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
             {
-                EnvDteHelper.ShowError("The selected project type does not support LINQ to SQL (please let me know if I am wrong)");
+                EnvDteHelper.ShowError("The selected project type does not support LINQ to SQL (please let me know if I am wrong)- Project kind: " + project.Kind);
                 return;
             }
             if (project.Properties.Item("TargetFrameworkMoniker") == null)
