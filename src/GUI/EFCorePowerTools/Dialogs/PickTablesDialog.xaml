@@ -4,6 +4,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         Title="Select Tables to Script" ShowInTaskbar="False" Height="411" Width="420" Loaded="Window_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+    <dw:DialogWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Dialogs/Style.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </dw:DialogWindow.Resources>
     <Grid>
         <StackPanel>
             <StackPanel Orientation="Horizontal" Margin="6" >
