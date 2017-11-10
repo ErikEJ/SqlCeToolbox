@@ -24,7 +24,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (menuInfo == null) return;
             try
             {
-                OpenSqlEditorToolWindow(menuInfo, string.Format("CREATE VIEW [{0}] AS {1}" + separator, menuInfo.Name, menuInfo.Description));
+                OpenSqlEditorToolWindow(menuInfo,  menuInfo.Description + separator);
                 DataConnectionHelper.LogUsage("ViewScriptAsCreate");
             }
             catch (Exception ex)
@@ -57,7 +57,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 var sql = string.Format("DROP VIEW [{0}]" + separator, menuInfo.Name);
-                sql += string.Format("CREATE VIEW [{0}] AS {1}" + separator, menuInfo.Name, menuInfo.Description);
+                sql += string.Format(menuInfo.Description + separator);
                 OpenSqlEditorToolWindow(menuInfo, sql);
                 DataConnectionHelper.LogUsage("ViewScriptAsDropAndCreate");
             }

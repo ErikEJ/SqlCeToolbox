@@ -10,13 +10,16 @@ public class SQLiteScriptingTests
     private const string dbPath = @"C:\Code\SqlCeToolbox\src\API\SqlCeScripting40\Tests\";
 
     private string chinookConnectionString = string.Format(
-            @"Data Source={0}chinook.db", dbPath);
+        @"Data Source={0}chinook.db", dbPath);
 
     private string infoConnectionString = string.Format(
         @"Data Source={0}inf2700_orders-1.db", dbPath);
     
     private string fkConnectionString = string.Format(
         @"Data Source={0}FkMultiKey.db", dbPath);
+
+    private string viewsConnectionString = string.Format(
+        @"Data Source={0}views.db", dbPath);
 
     [Test]
     public void TestGetAllTableNames()
@@ -87,6 +90,17 @@ public class SQLiteScriptingTests
             list = repo.GetAllViews();
         }
         Assert.IsTrue(list.Count == 3);
+    }
+
+    [Test]
+    public void TestGetView()
+    {
+        var list = new List<View>();
+        using (var repo = new SQLiteRepository(viewsConnectionString))
+        {
+            list = repo.GetAllViews();
+        }
+        Assert.IsTrue(list.Count == 1);
     }
 
     [Test]

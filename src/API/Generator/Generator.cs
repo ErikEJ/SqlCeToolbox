@@ -2136,7 +2136,8 @@ namespace ErikEJ.SqlCeScripting
         {
             foreach (var view in _allViews)
             {
-                _sbScript.AppendFormat("CREATE VIEW {0} AS{1}{2};{3}", view.ViewName, Environment.NewLine, view.Definition, Environment.NewLine);
+                _sbScript.AppendFormat(view.Definition);
+                _sbScript.AppendFormat(Environment.NewLine);
                 _sbScript.Append(_sep);
             }
         }

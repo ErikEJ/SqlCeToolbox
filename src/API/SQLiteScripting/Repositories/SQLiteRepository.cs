@@ -59,15 +59,73 @@ namespace ErikEJ.SQLiteScripting
         public List<View> GetAllViews()
         {
             var list = new List<View>();
-            var dt = _cn.GetSchema("Views");
+            var dt = Schema_Views(_cn);
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                var view = new View();
-                view.ViewName = dt.Rows[i]["TABLE_NAME"].ToString();
-                view.Definition = Regex.Replace(dt.Rows[i]["VIEW_DEFINITION"].ToString(), @"\r\n|\n\r|\n|\r", "\r\n");
+                var view = new View
+                {
+                    ViewName = dt.Rows[i]["TABLE_NAME"].ToString(),
+                    Definition = dt.Rows[i]["VIEW_DEFINITION"].ToString()
+                };
                 list.Add(view);
             }
             return list;
+        }
+
+        /// <summary>
+        /// Retrieves view schema information for the database
+        /// </summary>
+        /// <param name="strCatalog">The catalog (attached database) to retrieve views on</param>
+        /// <param name="strView">The view name, can be null</param>
+        /// <returns>DataTable</returns>
+        private DataTable Schema_Views(SQLiteConnection cn)
+        {
+            DataTable tbl = new DataTable("Views");
+            DataRow row;
+            string strItem;
+            int nPos;
+
+            tbl.Locale = CultureInfo.InvariantCulture;
+            tbl.Columns.Add("TABLE_CATALOG", typeof(string));
+            tbl.Columns.Add("TABLE_SCHEMA", typeof(string));
+            tbl.Columns.Add("TABLE_NAME", typeof(string));
+            tbl.Columns.Add("VIEW_DEFINITION", typeof(string));
+            tbl.Columns.Add("CHECK_OPTION", typeof(bool));
+            tbl.Columns.Add("IS_UPDATABLE", typeof(bool));
+            tbl.Columns.Add("DESCRIPTION", typeof(string));
+            tbl.Columns.Add("DATE_CREATED", typeof(DateTime));
+            tbl.Columns.Add("DATE_MODIFIED", typeof(DateTime));
+
+            tbl.BeginLoadData();
+
+            using (SQLiteCommand cmd = new SQLiteCommand(string.Format(CultureInfo.InvariantCulture, "SELECT * FROM [main].[sqlite_master] WHERE [type] LIKE 'view'")))
+            {
+                cmd.Connection = cn;
+                using (SQLiteDataReader rd = cmd.ExecuteReader())
+                {
+                    while (rd.Read())
+                    {
+                        strItem = rd.GetString(4);
+                        nPos = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strItem, " AS ", CompareOptions.IgnoreCase);
+                        if (nPos > -1)
+                        {
+                            strItem = strItem.Substring(nPos + 4).Trim();
+                            row = tbl.NewRow();
+
+                            row["TABLE_CATALOG"] = "main";
+                            row["TABLE_NAME"] = rd.GetString(2);
+                            row["IS_UPDATABLE"] = false;
+                            row["VIEW_DEFINITION"] = rd.GetString(4);
+
+                            tbl.Rows.Add(row);
+                        }
+                    }
+                }
+            }
+            tbl.AcceptChanges();
+            tbl.EndLoadData();
+
+            return tbl;
         }
 
         public List<Column> GetAllViewColumns()
