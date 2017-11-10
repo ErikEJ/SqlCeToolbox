@@ -8,6 +8,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ErikEJ.SqlCeToolbox.SSMSEngine;
+using ErikEJ.SqlCeToolbox.Helpers;
 
 // ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox
@@ -215,16 +216,24 @@ namespace ErikEJ.SqlCeToolbox
         /// </summary>
         protected override void Initialize()
         {
-            OtherWindowsCommand.Initialize(this);
-            ViewMenuCommand.Initialize(this);
+            try
+            {
+                OtherWindowsCommand.Initialize(this);
+                ViewMenuCommand.Initialize(this);
 
-            ExportImage = Resources.ExportReportData_10565;
-            Logo = Resources.data_out_small;
-            ScriptImage = Resources.script_16xLG;
+                ExportImage = Resources.ExportReportData_10565;
+                Logo = Resources.data_out_small;
+                ScriptImage = Resources.script_16xLG;
 
-            _objectExplorerManager = new ObjectExplorerManager(this);
-            _objectExplorerManager.SetObjectExplorerEventProvider();
-            base.Initialize();            
+                base.Initialize();
+
+                _objectExplorerManager = new ObjectExplorerManager(this);
+                _objectExplorerManager.SetObjectExplorerEventProvider();
+            }
+            catch (Exception ex)
+            {
+                SetStatus("SQLite Toolbox error: " + ex.Message);
+            }
         }
     }
 }
