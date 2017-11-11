@@ -154,7 +154,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 #if SSMS
             try
             {
-                if (package.TelemetryVersion().Major == 140)
+                if (package.TelemetryVersion().Major == 140 && Properties.Settings.Default.GetObjectExplorerDatabases)
                 {
                     var objectExplorerManager = new ObjectExplorerManager(package);
                     var list = objectExplorerManager.GetAllServerUserDatabases();

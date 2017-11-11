@@ -15,6 +15,7 @@ namespace ErikEJ.SqlCeToolbox
             DisplayDescriptionTable = Properties.Settings.Default.DisplayDescriptionTable;
             DisplayObjectProperties = Properties.Settings.Default.DisplayObjectProperties;
             PreferDDEX = Properties.Settings.Default.PreferDDEX;
+            GetObjectExplorerDatabases = Properties.Settings.Default.GetObjectExplorerDatabases;
             PromptToSaveChangedScript = Properties.Settings.Default.PromptToSaveChangedScript;
             FileFilterSqlCe = Properties.Settings.Default.FileFilterSqlCe;
             FileFilterSqlite = Properties.Settings.Default.FileFilterSqlite;
@@ -75,6 +76,12 @@ namespace ErikEJ.SqlCeToolbox
         public bool PreferDDEX { get; set; }
 
         [Category("Object Tree"),
+        DisplayName(@"Get databases from SSMS Object Explorer"),
+        Description("Show databases connected in SSMS Object Explorer, if possible"),
+        DefaultValue(true)]
+        public bool GetObjectExplorerDatabases { get; set; }
+
+        [Category("Object Tree"),
         DisplayName(@"File filter for SQL Server Compact"),
         Description("File filter use for SQL Server Compact database files"),
         DefaultValue("*.sdf")]
@@ -105,6 +112,7 @@ namespace ErikEJ.SqlCeToolbox
             Properties.Settings.Default.ShowNullValuesAsNULL = ShowNullValuesAsNULL;
             Properties.Settings.Default.UseClassicGrid = UseClassicGrid;
             Properties.Settings.Default.DisableEditorKeyboardShortcuts = DisableKeyboardShortcuts;
+            Properties.Settings.Default.GetObjectExplorerDatabases = GetObjectExplorerDatabases;
             Properties.Settings.Default.Save();
             base.OnApply(e);
         }
