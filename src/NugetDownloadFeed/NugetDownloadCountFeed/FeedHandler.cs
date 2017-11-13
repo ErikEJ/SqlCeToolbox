@@ -1,10 +1,7 @@
 ﻿using NugetDownloadCountFeed.ServiceReference1;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel.Syndication;
-using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 
@@ -12,8 +9,8 @@ namespace NugetDownloadCountFeed
 {
     public class FeedHandler : IHttpHandler
     {
-        private const string GalleryUri = "http://visualstudiogallery.msdn.microsoft.com/";
-        private readonly IDictionary<string, IList<SyndicationItem>> packageDownloadCounts = new ConcurrentDictionary<string, IList<SyndicationItem>>();
+        private const string GalleryUri = "https://marketplace.visualstudio.com/";
+        //private readonly IDictionary<string, IList<SyndicationItem>> packageDownloadCounts = new ConcurrentDictionary<string, IList<SyndicationItem>>();
 
         public bool IsReusable
         {
@@ -22,23 +19,13 @@ namespace NugetDownloadCountFeed
 
         public void ProcessRequest(HttpContext context)
         {
-            var packageId = context.Request.QueryString["extensionId"];
-            Guid id;
+            //Hardcoded for SQLite Toolbox VsixId!
 
-            if (string.IsNullOrWhiteSpace(packageId) || !Guid.TryParse(packageId, out id))
-            {
-                context.Response.StatusCode = 404;
-                context.Response.StatusDescription = "Missing or invalid extensionId";                
-                context.Response.End();
-                return;
-            }
-            var items = Search(new VsIdeServiceClient(), id);
+            var items = Search(new VsIdeServiceClient());
 
             if (items.Length > 0)
             {
                 var foundItem = items[0];
-                var nugetUrl = string.Format(
-                    "{0}{1}", GalleryUri, id);
 
 	            string version;
 	            if (!foundItem.Project.Metadata.TryGetValue("VsixVersion", out version))
@@ -50,14 +37,14 @@ namespace NugetDownloadCountFeed
                 var title = foundItem.Project.Title;
                 feedItems.Add(new SyndicationItem(
                             title,
-                            (foundItem.Files[0].DownloadCount - 78000).ToString(),
-                            new Uri(nugetUrl),
+                            (foundItem.Files[0].DownloadCount).ToString(),
+                            new Uri(GalleryUri),
                             Guid.NewGuid().ToString(),
                             new DateTimeOffset(DateTime.UtcNow)));                    
 
-                var feed = new SyndicationFeed("VS Gallery Download Count Feed",
+                var feed = new SyndicationFeed("VS Marketplace Download Count Feed",
                                                 version,
-                                                new Uri(nugetUrl), nugetUrl, foundItem.Project.ModifiedDate,
+                                                new Uri(GalleryUri), GalleryUri, foundItem.Project.ModifiedDate,
                                                 feedItems);
                 using (var xmlWriter = XmlWriter.Create(context.Response.OutputStream))
                 {
@@ -70,9 +57,9 @@ namespace NugetDownloadCountFeed
             }
         }
 
-        private Release[] Search(VsIdeServiceClient client, Guid id)
+        private Release[] Search(VsIdeServiceClient client)
         {
-            var whereClause = string.Format("(Project.Metadata['SupportedVSEditions'] LIKE '%15.0.26430.16,Pro;%')", id);
+            var whereClause = "(Project.MetaData['VsixId'] = '41521019-e4c7-480c-8ea8-fc4a2c6f50aa') AND (Project.Metadata['SupportedVSEditions'] LIKE '%15.0.26430.16,Pro;%')";
             var orderClause = "Project.Metadata['Ranking'] desc";
             var requestContext = new Dictionary<string, string>()
             {

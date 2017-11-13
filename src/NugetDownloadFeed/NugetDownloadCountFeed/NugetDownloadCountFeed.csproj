@@ -46,11 +46,6 @@
   <ItemGroup>
     <Compile Include="FeedHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\Nuget\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.datasvcmap</DependentUpon>
-    </Compile>
     <Compile Include="Service References\ServiceReference1\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -61,13 +56,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ServiceReferenceMetadataStorage Include="Service References\Nuget\">
-      <Type>datasvcmap</Type>
-    </ServiceReferenceMetadataStorage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Service References\Nuget\service.edmx" />
     <None Include="Service References\ServiceReference1\Extension.wsdl" />
     <None Include="Service References\ServiceReference1\Extension.xsd">
       <SubType>Designer</SubType>
@@ -89,12 +77,6 @@
     </None>
     <None Include="Service References\ServiceReference1\NugetDownloadCountFeed.ServiceReference1.ReleaseQueryResult.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\Nuget\Reference.datasvcmap">
-      <Generator>DataServiceClientGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

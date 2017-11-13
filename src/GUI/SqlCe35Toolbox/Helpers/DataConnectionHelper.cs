@@ -647,11 +647,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             try
             {
                 var reader = XmlReader.Create(
-                        "http://sqlcompact.dk/vsgallerycounter/downloadfeed.axd?extensionId=0e313dfd-be80-4afb-b5e9-6e74d369f7a1");
+                        "http://sqlcompact.dk/vsgallerycounter/downloadfeed.axd");
                 var feed = SyndicationFeed.Load(reader);
                 if (feed != null && feed.Items.Count() > 0)
                 {
-                    return string.Format("- {0:0,0} downloads", double.Parse(feed.Items.First().Summary.Text) + 78000d);
+                    return string.Format("- {0:0,0} downloads", double.Parse(feed.Items.First().Summary.Text));
                 }
             }
             catch
