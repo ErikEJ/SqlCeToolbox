@@ -15,7 +15,6 @@ namespace HandlebarsDotNet.Compiler.Lexer
         private static Parser _commentParser = new CommentParser();
         private static Parser _partialParser = new PartialParser();
         private static Parser _blockWordParser = new BlockWordParser();
-        //TODO: structure parser
 
         public Tokenizer(HandlebarsConfiguration configuration)
         {

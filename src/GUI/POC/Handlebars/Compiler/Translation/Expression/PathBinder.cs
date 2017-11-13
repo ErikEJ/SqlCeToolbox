@@ -135,7 +135,6 @@ namespace HandlebarsDotNet.Compiler
             return parameters;
         }
 
-        //TODO: make path resolution logic smarter
         private object ResolvePath(BindingContext context, string path)
         {
             var containsVariable = path.StartsWith("@");
