@@ -2137,7 +2137,7 @@ namespace ErikEJ.SqlCeScripting
             foreach (var view in _allViews)
             {
                 _sbScript.AppendFormat(view.Definition);
-                _sbScript.AppendFormat(Environment.NewLine);
+                _sbScript.AppendFormat(";" + Environment.NewLine);
                 _sbScript.Append(_sep);
             }
         }
