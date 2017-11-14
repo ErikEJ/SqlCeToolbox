@@ -33,12 +33,20 @@ namespace EFCorePowerTools.Handlers
         {
             var resourceName = "EFCorePowerTools.DgmlBuilder.readme.txt";
 
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            Stream stream = null;
+            try
             {
-                using (var reader = new StreamReader(stream ?? throw new InvalidOperationException()))
+                stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+                using (StreamReader reader = new StreamReader(stream))
                 {
+                    stream = null;
                     return reader.ReadToEnd();
                 }
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Dispose();
             }
         }
     }
