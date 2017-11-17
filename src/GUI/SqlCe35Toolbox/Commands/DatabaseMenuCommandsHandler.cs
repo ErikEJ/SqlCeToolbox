@@ -46,7 +46,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                     if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
                     {
-                        provider = new Guid(Resources.SqlitePrivateProvider);
+                        provider = new Guid(Resources.SQLiteProvider);
                     }
 
                     providerInstalled = DataConnectionHelper.DdexProviderIsInstalled(provider);
@@ -56,10 +56,14 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40)
                         {
                             provider = new Guid(Resources.SqlCompact40PrivateProvider);
-                            providerInstalled = DataConnectionHelper.DdexProviderIsInstalled(provider);
                         }
 
-                        if (!providerInstalled)
+                        if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
+                        {
+                            provider = new Guid(Resources.SqlitePrivateProvider);
+                        }
+
+                        if (!DataConnectionHelper.DdexProviderIsInstalled(provider))
                         {
                             EnvDteHelper.ShowError("The DDEX provider is not installed, cannot remove connection");
                             return;
