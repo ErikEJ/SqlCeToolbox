@@ -36,6 +36,8 @@
     <Property Id="Name" Group="Model Properties" DataType="System.String" />
     <Property Id="Field"  Description="Backing field" Group="Model Properties" DataType="System.String" />
     <Property Id="Type"  Description="CLR data type" Group="Model Properties" DataType="System.String" />
+    <Property Id="To" Description="Source property" Group="Model Properties" DataType="System.String" />
+    <Property Id="From" Description="Target property" Group="Model Properties" DataType="System.String" />    
     <Property Id="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
     <Property Id="BaseClass"  Description="Base class" Group="Model Properties" DataType="System.String" />
     <Property Id="ChangeTrackingStrategy" Description="Change tracking strategy" Group="Model Properties" DataType="System.String" />

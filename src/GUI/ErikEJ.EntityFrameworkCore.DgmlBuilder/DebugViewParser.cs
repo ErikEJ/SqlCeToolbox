@@ -248,23 +248,18 @@ namespace DgmlBuilder
                         }
                     }
 
-                    var source = parts[0] + "." + parts[1];
-                    var target = parts[3] + "." + parts[4];
+                    var source = parts[0]; // + "." + parts[1];
+                    var target = parts[3]; // + "." + parts[4];
                     //TblFavoriteDoctor {'DoctorIdFk', 'LocationIdFk'} -> TblDoctorLocation {'DoctorId', 'LocationId'} ToDependent: TblFavoriteDoctor ToPrincipal: TblDoctorLocation
 
-                    var linkSource = source;
-                    var linkTarget = target;
+                    var fromColumns = parts[1];
+                    var toColumns = parts[4];
 
-                    if (parts[1].Contains(","))
-                    {
-                        linkSource = parts[0] + "." + parts[1].Split(',')[0];
-                        linkTarget = parts[3] + "." + parts[4].Split(',')[0];
-                    }
                     parts.RemoveRange(0, 5);
 
                     var isUnique = parts.Contains("Unique");
 
-                    links.Add($"<Link Source=\"{linkSource}\" Target=\"{linkTarget}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
+                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" From=\"{fromColumns}\" To=\"{toColumns}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
                     annotation.Clear();
                     //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
                 }
