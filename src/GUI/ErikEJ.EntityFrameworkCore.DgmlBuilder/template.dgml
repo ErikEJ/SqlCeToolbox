@@ -27,6 +27,14 @@
       <Condition Expression="HasCategory('Property Required')" />
       <Setter Property="Background" Value="#FFC0A000" />
     </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Property" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Property')" />
+      <Setter Property="Background" Value="#FF990000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Collection" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Collection')" />
+      <Setter Property="Background" Value="#FFFF3232" />
+    </Style>
     <Style TargetType="Node" GroupLabel="Model" ValueLabel="True">
       <Condition Expression="HasCategory('Model')" />
       <Setter Property="Background" Value="#FFFFFFFF" />
@@ -37,7 +45,9 @@
     <Property Id="Field"  Description="Backing field" Group="Model Properties" DataType="System.String" />
     <Property Id="Type"  Description="CLR data type" Group="Model Properties" DataType="System.String" />
     <Property Id="To" Description="Source property" Group="Model Properties" DataType="System.String" />
-    <Property Id="From" Description="Target property" Group="Model Properties" DataType="System.String" />    
+    <Property Id="From" Description="Target property" Group="Model Properties" DataType="System.String" />
+    <Property Id="Dependent" Description="Dependent entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Inverse" Description="Inverse entity" Group="Model Properties" DataType="System.String" />
     <Property Id="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
     <Property Id="BaseClass"  Description="Base class" Group="Model Properties" DataType="System.String" />
     <Property Id="ChangeTrackingStrategy" Description="Change tracking strategy" Group="Model Properties" DataType="System.String" />

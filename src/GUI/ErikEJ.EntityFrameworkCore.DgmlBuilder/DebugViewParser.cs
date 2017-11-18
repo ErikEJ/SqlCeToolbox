@@ -85,8 +85,7 @@ namespace DgmlBuilder
                     {
                         var annotations = GetAnnotations(i, debugViewLines);
 
-                        // Not included in graph for now
-                        //var navigations = GetNavigationNodes(i, debugViewLines);
+                        var navigations = GetNavigations(i, debugViewLines);
 
                         var foreignKeysFragment = GetForeignKeys(i, debugViewLines);
 
@@ -151,6 +150,12 @@ namespace DgmlBuilder
                         properties.Add(
                             $"<Node Id = \"{entityName}.{name}\" Label=\"{name}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\" MaxLength=\"{maxLength}\" Field=\"{field}\" PropertyAccessMode=\"{propertyAccesMode}\" BeforeSaveBehavior=\"{beforeSaveBehavior}\" AfterSaveBehavior=\"{afterSaveBehavior}\" Annotations=\"{annotation}\" IsPrimaryKey=\"{isPrimaryKey}\" IsForeignKey=\"{isForeignKey}\" IsRequired=\"{isRequired}\" IsIndexed=\"{isIndexed}\" IsShadow=\"{isShadow}\" IsAlternateKey=\"{isAlternateKey}\" IsConcurrencyToken=\"{isConcurrency}\" IsUnicode=\"{isUnicode}\" ValueGenerated=\"{valueGenerated}\" />");
 
+                        var navigationResult = ParseNavigations(navigations, entityName);
+
+                        properties.AddRange(navigationResult.Item1);
+
+                        propertyLinks.AddRange(navigationResult.Item2);
+
                         propertyLinks.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
 
                         propertyLinks.AddRange(ParseForeignKeys(foreignKeysFragment));
@@ -160,6 +165,7 @@ namespace DgmlBuilder
             BuildEntity(debugViewLines, entityName, i, result, properties, propertyLinks, null, ref inProperties);
             return result;
         }
+
 
         private static string GetPropertyAccessMode(List<string> props)
         {
@@ -201,12 +207,70 @@ namespace DgmlBuilder
                     $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" BaseClass=\"{baseClass}\" IsAbstract=\"{isAbstract}\" ChangeTrackingStrategy=\"{changeTrackingStrategy}\"  Annotations=\"{annotation}\" Category=\"EntityType\" Group=\"Expanded\" />");
                 result.Links.Add(
                     $"<Link Source = \"Model\" Target=\"{entityName}\" Category=\"Contains\" />");
-                result.Nodes.AddRange(properties);
-                result.Links.AddRange(propertyLinks);
+                result.Nodes.AddRange(properties.Distinct());
+                result.Links.AddRange(propertyLinks.Distinct());
                 properties.Clear();
                 propertyLinks.Clear();
             }
             inProperties = false;
+        }
+
+        private Tuple<IEnumerable<string>, IEnumerable<string>> ParseNavigations(List<string> navigations, string entityName)
+        {
+            // <Name> (<field>, <type>) <flags> <indexes>
+            //Quotes (<Quotes>k__BackingField, List<Quote>) Collection ToDependent Quote Inverse: Samurai 0 - 1 1 - 1 - 1
+            //SecretIdentity (<SecretIdentity>k__BackingField, Identity) ToDependent Identity Inverse: Samurai 2 - 1 3 - 1 - 1
+
+            var properties = new List<string>();
+            var links = new List<string>();
+            int i = 0;
+
+            foreach (var navigation in navigations)
+            {
+                i++;
+                var trim = navigation.Trim();
+
+                var parts = trim.Split(' ').ToList();
+
+                var name = parts[0];
+
+                var fieldStripped = parts[1].Remove(parts[1].Length - 1, 1).Remove(0, 1);
+                var typeStripped = parts[2].Remove(parts[2].Length - 1);
+
+                var field =  System.Security.SecurityElement.Escape(fieldStripped);
+                var type = System.Security.SecurityElement.Escape(typeStripped);
+
+                parts.RemoveRange(0, 3);
+
+                var dependent = string.Empty;
+                var inverse = string.Empty;
+
+                if (parts.Contains("Inverse:"))
+                {
+                    inverse = parts[parts.IndexOf("Inverse:") + 1];
+                }
+
+                if (parts.Contains("ToDependent"))
+                {
+                    dependent = parts[parts.IndexOf("ToDependent") + 1];
+                }
+
+                var category = parts.Contains("Collection") ? "Navigation Collection" : "Navigation Property";
+
+                var displayName = name + " (1)";
+                if (parts.Contains("Collection"))
+                {
+                    displayName = name + " (*)";
+                }
+
+                properties.Add(
+                    $"<Node Id = \"{entityName}.{name}\" Label=\"{displayName}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\"  Field=\"{field}\" Dependent=\"{dependent}\" Inverse=\"{inverse}\" />");
+
+                links.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
+
+            }
+
+            return new Tuple<IEnumerable<string>, IEnumerable<string>>(properties, links);
         }
 
         private IEnumerable<string> ParseForeignKeys(List<string> foreignKeysFragments)
@@ -259,7 +323,9 @@ namespace DgmlBuilder
 
                     var isUnique = parts.Contains("Unique");
 
-                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" From=\"{fromColumns}\" To=\"{toColumns}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{source + " -> " + target}\" Category=\"Foreign Key\" />");
+                    var label = isUnique ? "1:1" : "1:*";
+
+                    links.Add($"<Link Source=\"{source}\" Target=\"{target}\" From=\"{source}.{fromColumns}\" To=\"{target}.{toColumns}\" Name=\"{source + " -> " + target}\" Annotations=\"{string.Join(Environment.NewLine, annotation)}\" IsUnique=\"{isUnique}\" Label=\"{label}\" Category=\"Foreign Key\" />");
                     annotation.Clear();
                     //OrderNdc {'NdcId'} -> Ndc {'NdcId'} ToDependent: OrderNdc ToPrincipal: Ndc
                 }
@@ -302,6 +368,34 @@ namespace DgmlBuilder
             return navigations;
         }
 
+        private List<string> GetNavigations(int i, string[] debugViewLines)
+        {
+            var x = i;
+            var navigations = new List<string>();
+            var maxLength = debugViewLines.Length - 1;
+            bool inNavigations = false;
+            while (x++ < maxLength)
+            {
+                var trim = debugViewLines[x].Trim();
+                if (!inNavigations) inNavigations = trim == "Navigations:";
+
+                if (debugViewLines[x].StartsWith("    Annotations:")
+                    || debugViewLines[x].StartsWith("Annotations:")
+                    || trim.StartsWith("Keys:")
+                    || trim.StartsWith("EntityType:"))
+                {
+                    break;
+                }
+                if (inNavigations) navigations.Add(debugViewLines[x]);
+            }
+            if (navigations.Count > 1)
+            {
+                navigations.RemoveAt(0);
+            }
+
+            return navigations;
+        }
+
         private List<string> GetEntityAnnotations(int i, string[] debugViewLines)
         {
             var x = i;
@@ -322,32 +416,6 @@ namespace DgmlBuilder
             }
 
             return values;
-        }
-
-        private List<string> GetNavigationNodes(int i, string[] debugViewLines)
-        {
-            var x = i;
-            var navigations = new List<string>();
-            var maxLength = debugViewLines.Length - 1;
-            while (x++ < maxLength && debugViewLines[x] == "    Navigations: ")
-            {
-                while (x++ < maxLength)
-                {
-                    var trim = debugViewLines[x].Trim();
-                    if (trim.StartsWith("Keys:")
-                        || debugViewLines[x].StartsWith("    Annotations:")
-                        || debugViewLines[x].StartsWith("Annotations:")
-                        || trim.StartsWith("EntityType:")
-                        || trim.StartsWith("Foreign Keys:")
-                        || trim.StartsWith("Keys:"))
-                    {
-                        break;
-                    }
-                    navigations.Add(debugViewLines[x].Trim());
-                }
-            }
-
-            return navigations;
         }
 
         private List<string> GetAnnotations(int i, string[] debugViewLines)
