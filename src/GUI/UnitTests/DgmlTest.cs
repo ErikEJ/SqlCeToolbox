@@ -32,10 +32,10 @@ namespace UnitTests
             var result = _parser.Parse(debugView, "Test");
 
             // Assert
-            Assert.AreEqual(84, result.Nodes.Count);
-            Assert.AreEqual(160, result.Links.Count);
+            Assert.AreEqual(110, result.Nodes.Count);
+            Assert.AreEqual(122, result.Links.Count);
 
-            Assert.AreEqual(18, result.Links.Count(n => n.Contains("IsUnique=\"True\"")));
+            Assert.AreEqual(2, result.Links.Count(n => n.Contains("IsUnique=\"True\"")));
         }
 
         [Test]
@@ -48,8 +48,8 @@ namespace UnitTests
             var result = _parser.Parse(debugView, "Test");
 
             // Assert
-            Assert.AreEqual(103, result.Nodes.Count);
-            Assert.AreEqual(203, result.Links.Count);
+            Assert.AreEqual(129, result.Nodes.Count);
+            Assert.AreEqual(141, result.Links.Count);
 
             Assert.AreEqual(0, result.Links.Count(n => n.Contains("IsUnique=\"True\"")));
         }
@@ -64,8 +64,8 @@ namespace UnitTests
             var result = _parser.Parse(debugView, "Test");
 
             // Assert
-            Assert.AreEqual(134, result.Nodes.Count);
-            Assert.AreEqual(211, result.Links.Count);
+            Assert.AreEqual(160, result.Nodes.Count);
+            Assert.AreEqual(172, result.Links.Count);
         }
 
         [Test]
@@ -131,6 +131,19 @@ namespace UnitTests
             Assert.AreNotEqual(result, null);
 
             File.WriteAllText(@"C:\temp\singlenav.dgml", result, Encoding.UTF8);
+        }
+
+        [Test]
+        public void BuildSamurai()
+        {
+            // Act
+            var builder = new DgmlBuilder.DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("Samurai.txt"), "test", _template);
+
+            // Assert
+            Assert.AreNotEqual(result, null);
+
+            File.WriteAllText(@"C:\temp\Samurai.dgml", result, Encoding.UTF8);
         }
 
         private static string GetTemplate()
