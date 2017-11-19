@@ -21,6 +21,9 @@ public class SQLiteScriptingTests
     private string viewsConnectionString = string.Format(
         @"Data Source={0}views.db", dbPath);
 
+    private string noRowIdConnectionString = string.Format(
+        @"Data Source={0}norowid.db", dbPath);
+
     [Test]
     public void TestGetAllTableNames()
     {
@@ -52,8 +55,8 @@ public class SQLiteScriptingTests
         {
             list = repo.GetAllColumns();
         }
-        Assert.IsTrue(list.Count == 64);
-        Assert.IsTrue(list[0].DataType == "integer");
+        Assert.AreEqual(67, list.Count);
+        Assert.AreEqual("bigint", list[0].DataType);
     }
 
     //[Test]
@@ -77,8 +80,8 @@ public class SQLiteScriptingTests
         {
             list = repo.GetAllColumns();
         }
-        Assert.IsTrue(list.Count == 68);
-        Assert.IsTrue(list[0].DataType == "integer");
+        Assert.AreEqual(68, list.Count);
+        Assert.AreEqual("bigint", list[0].DataType);
     }
 
     [Test]
@@ -101,6 +104,17 @@ public class SQLiteScriptingTests
             list = repo.GetAllViews();
         }
         Assert.IsTrue(list.Count == 1);
+    }
+
+    [Test]
+    public void TestGetIndexesNoRowId()
+    {
+        var list = new List<Index>();
+        using (var repo = new SQLiteRepository(noRowIdConnectionString))
+        {
+            list = repo.GetAllIndexes();
+        }
+        Assert.IsTrue(list.Count == 0);
     }
 
     [Test]
@@ -133,7 +147,7 @@ public class SQLiteScriptingTests
         {
             list = repo.GetAllPrimaryKeys();
         }
-        Assert.IsTrue(list.Count == 12);
+        Assert.AreEqual(13, list.Count);
         Assert.IsTrue(list[0].KeyName == "sqlite_master_PK_Album");
     }
 
@@ -145,8 +159,8 @@ public class SQLiteScriptingTests
         {
             list = repo.GetAllPrimaryKeys();
         }
-        Assert.IsTrue(list.Count == 12);
-        Assert.IsTrue(list[0].KeyName == "CUSTOMER219ORDERS");
+        Assert.AreEqual(11, list.Count);
+        Assert.AreEqual("CUSTOMER219ORDERS", list[0].KeyName);
     }
 
     [Test]

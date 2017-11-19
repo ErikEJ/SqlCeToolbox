@@ -427,9 +427,10 @@ namespace ErikEJ.SQLiteScripting
             for (int x = 0; x < indexes.Rows.Count; x++)
             {
                 var ix = new Index();
-                var dt = columns.AsEnumerable()
-                    .Where(row => row.Field<String>("INDEX_NAME") == indexes.Rows[x]["INDEX_NAME"].ToString())
-                    .CopyToDataTable();
+                var cols = columns.AsEnumerable()
+                    .Where(row => row.Field<String>("INDEX_NAME") == indexes.Rows[x]["INDEX_NAME"].ToString());
+
+                var dt = cols.Any() ? cols.CopyToDataTable() : columns.Clone();
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
