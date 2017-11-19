@@ -11,7 +11,7 @@ namespace EFCorePowerTools.Handlers
     {
         private const string Ptexe = "efpt.exe";
 
-        public string GetOutput(string outputPath, bool isNetCore, bool generateDdl)
+        public string GetOutput(string outputPath, bool isNetCore, GenerationType generationType)
         {
             var launchPath = isNetCore ? DropNetCoreFiles() : DropFiles(outputPath);
 
@@ -24,7 +24,7 @@ namespace EFCorePowerTools.Handlers
                 RedirectStandardError = true,
                 CreateNoWindow = true
             };
-            if (generateDdl)
+            if (generationType == GenerationType.Ddl)
             {
                 startInfo.Arguments = "ddl \"" + outputPath + "\"";
             }
@@ -34,7 +34,7 @@ namespace EFCorePowerTools.Handlers
                 startInfo.WorkingDirectory = launchPath;
                 startInfo.FileName = "dotnet";
                 startInfo.Arguments = " efpt.dll \"" + outputPath + "\"";
-                if (generateDdl)
+                if (generationType == GenerationType.Ddl)
                 {
                     startInfo.Arguments = " efpt.dll ddl \"" + outputPath + "\"";
                 }

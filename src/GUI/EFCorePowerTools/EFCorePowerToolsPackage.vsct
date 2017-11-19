@@ -23,7 +23,11 @@
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenu" />
       </Group>
 
-      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmAboutMenuItemsGroup" priority="0x0300">
+      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmDatabaseMenuItemsGroup" priority="0x0400">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenu" />
+      </Group>
+
+      <Group guid="guidDbContextPackageCmdSet" id="cmdidEdmAboutMenuItemsGroup" priority="0x0400">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmProjectMenu" />
       </Group>
 
@@ -91,7 +95,17 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlNuget" priority="0x0400" type="Button">
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDebugViewBuild" priority="0x0400" type="Button">
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
+        <Icon guid="guidImage3" id="bmpPic3" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <CommandName>cmdidDebugViewBuild</CommandName>
+          <ButtonText>View DbContext Model as DebugView</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlNuget" priority="0x0500" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
         <Icon guid="guidImage2" id="bmpPic2" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -102,7 +116,7 @@
       </Button>
       
       <Button guid="guidDbContextPackageCmdSet" id="cmdidReverseEngineerDgml" priority="0x0800" type="Button">
-        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
+        <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmDatabaseMenuItemsGroup" />
         <Icon guid="guidImage1" id="bmpPic1" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
@@ -146,12 +160,14 @@
       <IDSymbol name="cmdidDgmlNuget" value="0x0200" />
       <IDSymbol name="cmdidEdmMenuAbout" value="0x0300" />
       <IDSymbol name="cmdidSqlBuild" value="0x0400" />
+      <IDSymbol name="cmdidDebugViewBuild" value="0x0450" />
+      <IDSymbol name="cmdidEdmDatabaseMenuItemsGroup" value="0x0470" />
       <IDSymbol name="cmdidEdmMenu" value="0x0500" />
       <IDSymbol name="cmdidEdmMenuGroup" value="0x0600" />
       <IDSymbol name="cmdidEdmProjectMenuItemsGroup" value="0x0700" />
       <IDSymbol name="cmdidEdmAboutMenuItemsGroup" value="0x0800" />
       <IDSymbol name="cmdidEdmViewMenuItemsGroup" value="0x0900" />
-      
+
       <!-- Project Menu Entries -->
       <IDSymbol name="cmdidReverseEngineerCodeFirst" value="0x0001" />
       <IDSymbol name="cmdidEdmProjectMenuItemsGroup" value="0x0002" />

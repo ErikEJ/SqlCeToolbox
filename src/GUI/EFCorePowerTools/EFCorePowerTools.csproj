@@ -97,6 +97,7 @@
     <Compile Include="Guids.cs" />
     <Compile Include="Handlers\AboutHandler.cs" />
     <Compile Include="Handlers\DgmlNugetHandler.cs" />
+    <Compile Include="Handlers\GenerationType.cs" />
     <Compile Include="Handlers\ModelAnalyzerHandler.cs" />
     <Compile Include="Handlers\ProcessLauncher.cs" />
     <Compile Include="Handlers\ServerDgmlHandler.cs" />

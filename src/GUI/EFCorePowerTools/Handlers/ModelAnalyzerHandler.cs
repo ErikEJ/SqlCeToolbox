@@ -19,10 +19,17 @@ namespace EFCorePowerTools.Handlers
             _package = package;
         }
 
-        public void Generate(string outputPath, Project project, bool generateDdl = false)
+
+        public void Generate(string outputPath, Project project, GenerationType generationType)
         {
             try
             {
+
+                if (string.IsNullOrEmpty(outputPath))
+                {
+                    throw new ArgumentException(outputPath, nameof(outputPath));
+                }
+
                 if (project.Properties.Item("TargetFrameworkMoniker") == null)
                 {
                     EnvDteHelper.ShowError("The selected project type has no TargetFrameworkMoniker");
@@ -38,22 +45,29 @@ namespace EFCorePowerTools.Handlers
 
                 bool isNetCore = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0");
 
-                var processResult = _processLauncher.GetOutput(outputPath, isNetCore, generateDdl);
+                var processResult = _processLauncher.GetOutput(outputPath, isNetCore, generationType);
 
                 if (processResult.StartsWith("Error:"))
                 {
-                    throw new ArgumentException(processResult);
+                    throw new ArgumentException(processResult, nameof(processResult));
                 }
 
-                if (generateDdl)
+                switch (generationType)
                 {
-                    GenerateDatabaseScripts(processResult, project);
-                    Telemetry.TrackEvent("PowerTools.GenerateSqlCreate");
-                }
-                else
-                {
-                    GenerateDgml(processResult, project);
-                    Telemetry.TrackEvent("PowerTools.GenerateModelDgml");
+                    case GenerationType.Dgml:
+                        GenerateDgml(processResult, project);
+                        Telemetry.TrackEvent("PowerTools.GenerateModelDgml");
+                        break;
+                    case GenerationType.Ddl:
+                        GenerateFiles(processResult, project, ".sql");
+                        Telemetry.TrackEvent("PowerTools.GenerateSqlCreate");
+                        break;
+                    case GenerationType.DebugView:
+                        GenerateFiles(processResult, project, ".txt");
+                        Telemetry.TrackEvent("PowerTools.GenerateDebugView");
+                        break;
+                    default:
+                        break;
                 }
             }
             catch (Exception exception)
@@ -89,14 +103,14 @@ namespace EFCorePowerTools.Handlers
             }
         }
 
-        public void GenerateDatabaseScripts(string processResult, Project project)
+        public void GenerateFiles(string processResult, Project project, string extension)
         {
             var result = BuildModelResult(processResult);
 
             foreach (var item in result)
             {
                 var filePath = Path.Combine(Path.GetTempPath(),
-                    item.Item1 + ".sql");
+                    item.Item1 + extension);
 
                 if (File.Exists(filePath))
                 {

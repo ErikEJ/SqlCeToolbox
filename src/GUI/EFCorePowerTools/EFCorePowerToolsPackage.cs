@@ -95,6 +95,12 @@ namespace EFCorePowerTools
                 var menuItem9 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
                     OnProjectMenuBeforeQueryStatus, menuCommandId9);
                 oleMenuCommandService.AddCommand(menuItem9);
+
+                var menuCommandId10 = new CommandID(GuidList.guidDbContextPackageCmdSet,
+                    (int)PkgCmdIDList.cmdidDebugViewBuild);
+                var menuItem10 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
+                    OnProjectMenuBeforeQueryStatus, menuCommandId10);
+                oleMenuCommandService.AddCommand(menuItem10);
             }
 
             //Boot Telemetry
@@ -151,6 +157,8 @@ namespace EFCorePowerTools
                 return;
             }
 
+            var path = LocateProjectAssemblyPath(project);
+
             if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
             {
                 _reverseEngineerHandler.ReverseEngineerCodeFirst(project);
@@ -165,19 +173,15 @@ namespace EFCorePowerTools
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlBuild)
             {
-                var path = LocateProjectAssemblyPath(project);
-                if (path != null)
-                {
-                    _modelAnalyzerHandler.Generate(path, project);
-                }
+                _modelAnalyzerHandler.Generate(path, project, GenerationType.Dgml);
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidSqlBuild)
             {
-                var path = LocateProjectAssemblyPath(project);
-                if (path != null)
-                {
-                    _modelAnalyzerHandler.Generate(path, project, generateDdl: true);
-                }
+                _modelAnalyzerHandler.Generate(path, project, GenerationType.Ddl);
+            }
+            else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDebugViewBuild)
+            {
+                _modelAnalyzerHandler.Generate(path, project, GenerationType.DebugView);
             }
             else if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidAbout)
             {

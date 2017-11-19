@@ -244,6 +244,7 @@ namespace DgmlBuilder
 
                 var dependent = string.Empty;
                 var inverse = string.Empty;
+                var principal = string.Empty;
 
                 if (parts.Contains("Inverse:"))
                 {
@@ -255,6 +256,11 @@ namespace DgmlBuilder
                     dependent = parts[parts.IndexOf("ToDependent") + 1];
                 }
 
+                if (parts.Contains("ToPrincipal"))
+                {
+                    principal = parts[parts.IndexOf("ToPrincipal") + 1];
+                }
+
                 var category = parts.Contains("Collection") ? "Navigation Collection" : "Navigation Property";
 
                 var displayName = name + " (1)";
@@ -264,7 +270,7 @@ namespace DgmlBuilder
                 }
 
                 properties.Add(
-                    $"<Node Id = \"{entityName}.{name}\" Label=\"{displayName}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\"  Field=\"{field}\" Dependent=\"{dependent}\" Inverse=\"{inverse}\" />");
+                    $"<Node Id = \"{entityName}.{name}\" Label=\"{displayName}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\"  Field=\"{field}\" Dependent=\"{dependent}\" Principal=\"{principal}\" Inverse=\"{inverse}\" />");
 
                 links.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
 
