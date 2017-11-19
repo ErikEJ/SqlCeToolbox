@@ -98,6 +98,7 @@
     <None Include="dto.db" />
     <None Include="FkMultiKey.db" />
     <None Include="inf2700_orders-1.db" />
+    <None Include="norowid.db" />
     <None Include="views.db" />
   </ItemGroup>
   <ItemGroup>
