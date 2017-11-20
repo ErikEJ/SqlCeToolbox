@@ -48,6 +48,7 @@
     <Property Id="From" Description="Target property" Group="Model Properties" DataType="System.String" />
     <Property Id="Dependent" Description="Dependent entity" Group="Model Properties" DataType="System.String" />
     <Property Id="Inverse" Description="Inverse entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Principal" Description="Principal entity" Group="Model Properties" DataType="System.String" />    
     <Property Id="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
     <Property Id="BaseClass"  Description="Base class" Group="Model Properties" DataType="System.String" />
     <Property Id="ChangeTrackingStrategy" Description="Change tracking strategy" Group="Model Properties" DataType="System.String" />
