@@ -104,7 +104,7 @@ namespace EFCorePowerTools
             }
 
             //Boot Telemetry
-            Telemetry.Enabled = true;
+            Telemetry.Enabled = false;
             if (Telemetry.Enabled)
             {
                 Telemetry.Initialize(Dte2,
