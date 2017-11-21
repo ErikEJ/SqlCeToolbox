@@ -156,8 +156,15 @@ namespace EFCorePowerTools
             {
                 return;
             }
+            string path = null;
 
-            var path = LocateProjectAssemblyPath(project);
+            if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidDgmlBuild ||
+                menuCommand.CommandID.ID == PkgCmdIDList.cmdidDebugViewBuild ||
+                menuCommand.CommandID.ID == PkgCmdIDList.cmdidSqlBuild)
+            {
+                path = LocateProjectAssemblyPath(project);
+                if (path == null) return;
+            }
 
             if (menuCommand.CommandID.ID == PkgCmdIDList.cmdidReverseEngineerCodeFirst)
             {

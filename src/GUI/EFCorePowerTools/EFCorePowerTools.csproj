@@ -119,7 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\lib\efpt.exe.config">
-      <Link>efpt.exe.config</Link>
+      <Link>efpt\efpt.exe.config</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\lib\efpt.exe.zip">
@@ -354,11 +354,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\lib\efpt.exe">
-      <Link>efpt.exe</Link>
+      <Link>efpt\efpt.exe</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="..\lib\Microsoft.EntityFrameworkCore.Design.dll">
-      <Link>Microsoft.EntityFrameworkCore.Design.dll</Link>
+      <Link>efpt\Microsoft.EntityFrameworkCore.Design.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="db.png">

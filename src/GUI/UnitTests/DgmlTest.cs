@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using DgmlBuilder;
-using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 
 namespace UnitTests
@@ -158,33 +157,5 @@ namespace UnitTests
                 }
             }
         }
-
-        //[Test]
-        //public void CanBuildDgml()
-        //{
-        //    using (var myContext = new MyDbContext())
-        //    {
-        //        var dgml = myContext.AsDgml();
-        //        var path = Path.GetTempFileName() + ".dgml";
-        //        File.WriteAllText(path, dgml, Encoding.UTF8);
-        //        Process.Start(path);
-        //    }
-        //}
-
-        public class Samurai
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-        }
-
-        public class MyDbContext : DbContext
-        {
-            public DbSet<Samurai> Samurais { get; set; }
-            protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            {
-                optionsBuilder.UseInMemoryDatabase("dgml");
-            }
-        }
-
     }
 }
