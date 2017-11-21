@@ -77,14 +77,13 @@ namespace ReverseEngineer20
                 !reverseEngineerOptions.UseFluentApiOnly,
                 overwriteFiles: true,
                 useDatabaseNames: reverseEngineerOptions.UseDatabaseNames);
-            // Explanation: Use table and column names directly from the database.
+                // Explanation: Use table and column names directly from the database.
 
             foreach (var file in filePaths.EntityTypeFiles)
             {
-                //TODO remove this when bug fix is released in 2.0.1 and adopted
-                Fix200Bug(file, reverseEngineerOptions.IdReplace);
+                PostProcess(file, reverseEngineerOptions.IdReplace);
             }
-            Fix200Bug(filePaths.ContextFile, reverseEngineerOptions.IdReplace);
+            PostProcess(filePaths.ContextFile, reverseEngineerOptions.IdReplace);
 
             var result = new EfCoreReverseEngineerResult
             {
@@ -97,19 +96,18 @@ namespace ReverseEngineer20
             return result;
         }
 
-        private static void Fix200Bug(string file, bool idReplace)
+        private void PostProcess(string file, bool idReplace)
         {
-            var text = File.ReadAllText(file);
-            text = text.Replace("\"nvarchar\"", "\"nvarchar(4000)\"");
             if (idReplace)
             {
+                var text = File.ReadAllText(file);
                 text = text.Replace("Id, ", "ID, ");
                 text = text.Replace("Id }", "ID }");
                 text = text.Replace("Id }", "ID }");
                 text = text.Replace("Id)", "ID)");
                 text = text.Replace("Id { get; set; }", "ID { get; set; }");
+                File.WriteAllText(file, text, Encoding.UTF8);
             }
-            File.WriteAllText(file, text, Encoding.UTF8);
         }
 
         public string GenerateClassName(string value)

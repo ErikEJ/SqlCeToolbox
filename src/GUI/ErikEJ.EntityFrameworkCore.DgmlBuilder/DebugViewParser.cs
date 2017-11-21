@@ -49,7 +49,7 @@ namespace DgmlBuilder
                 }
             }
             result.Nodes.Add(
-                $"<Node Id=\"Model\" Label=\"{dbContextName}\" ChangeTrackingStrategy=\"{changeTrackingStrategy}\" PropertyAccessMode=\"{modelPropertyAccessMode}\" ProductVersion=\"{productVersion}\" Annotations=\"{modelAnnotations.Trim()}\" Category=\"Model\" Group=\"Expanded\" />");
+                $"<Node Id=\"IModel\" Label=\"{dbContextName}\" ChangeTrackingStrategy=\"{changeTrackingStrategy}\" PropertyAccessMode=\"{modelPropertyAccessMode}\" ProductVersion=\"{productVersion}\" Annotations=\"{modelAnnotations.Trim()}\" Category=\"Model\" Group=\"Expanded\" />");
 
             var entityName = string.Empty;
             var properties = new List<string>();
@@ -206,7 +206,7 @@ namespace DgmlBuilder
                 result.Nodes.Add(
                     $"<Node Id = \"{entityName}\" Label=\"{entityName}\" Name=\"{entityName}\" BaseClass=\"{baseClass}\" IsAbstract=\"{isAbstract}\" ChangeTrackingStrategy=\"{changeTrackingStrategy}\"  Annotations=\"{annotation}\" Category=\"EntityType\" Group=\"Expanded\" />");
                 result.Links.Add(
-                    $"<Link Source = \"Model\" Target=\"{entityName}\" Category=\"Contains\" />");
+                    $"<Link Source = \"IModel\" Target=\"{entityName}\" Category=\"Contains\" />");
                 result.Nodes.AddRange(properties.Distinct());
                 result.Links.AddRange(propertyLinks.Distinct());
                 properties.Clear();
