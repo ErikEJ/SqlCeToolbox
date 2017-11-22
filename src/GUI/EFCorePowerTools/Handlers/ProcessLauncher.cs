@@ -58,11 +58,31 @@ namespace EFCorePowerTools.Handlers
             Debug.Assert(fromDir != null, nameof(fromDir) + " != null");
             Debug.Assert(toDir != null, nameof(toDir) + " != null");
 
-            File.Copy(Path.Combine(fromDir, "efpt.exe"), Path.Combine(toDir, "efpt.exe"), true);
-            File.Copy(Path.Combine(fromDir, "efpt.exe.config"), Path.Combine(toDir, "efpt.exe.config"), true);
-            //TODO Handle 2.0.1 and newer!
-            File.Copy(Path.Combine(fromDir, "Microsoft.EntityFrameworkCore.Design.dll"), Path.Combine(toDir, "Microsoft.EntityFrameworkCore.Design.dll"), true);
+            var version = "2.0.0";
+            var testFile = Path.Combine(outputPath, "Microsoft.EntityFrameworkCore.dll");
 
+            if (File.Exists(testFile))
+            {
+                var fvi = FileVersionInfo.GetVersionInfo(testFile);
+                version = fvi.FileVersion;
+                if (version.StartsWith("2.0.1"))
+                {
+                    version = "2.0.1";
+                }
+            }
+
+            //TODO Handle 2.0.1 and newer! Need testing
+            File.Copy(Path.Combine(fromDir, "efpt.exe"), Path.Combine(toDir, "efpt.exe"), true);
+            if (version == "2.0.1")
+            {
+                File.Copy(Path.Combine(fromDir, "2.0.1", "efpt.exe.config"), Path.Combine(toDir, "efpt.exe.config"), true);
+                File.Copy(Path.Combine(fromDir, "2.0.1", "Microsoft.EntityFrameworkCore.Design.dll"), Path.Combine(toDir, "Microsoft.EntityFrameworkCore.Design.dll"), true);
+            }
+            else
+            {
+                File.Copy(Path.Combine(fromDir, "efpt.exe.config"), Path.Combine(toDir, "efpt.exe.config"), true);
+                File.Copy(Path.Combine(fromDir, "Microsoft.EntityFrameworkCore.Design.dll"), Path.Combine(toDir, "Microsoft.EntityFrameworkCore.Design.dll"), true);
+            }
             return outputPath;
         }
 

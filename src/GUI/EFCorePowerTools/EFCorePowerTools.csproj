@@ -135,6 +135,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="efpt\2.0.1\efpt.exe.config">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="Key.snk" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -371,6 +374,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <EmbeddedResource Include="DgmlBuilder\readme.txt" />
+    <Content Include="efpt\2.0.1\Microsoft.EntityFrameworkCore.Design.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="netstandard.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
