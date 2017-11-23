@@ -87,7 +87,7 @@
       
       <Button guid="guidDbContextPackageCmdSet" id="cmdidSqlBuild" priority="0x0300" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
-        <Icon guid="guidImage3" id="bmpPic3" />
+        <Icon guid="guidImage4" id="bmpPic4" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>cmdidSqlBuild</CommandName>
@@ -107,7 +107,7 @@
 
       <Button guid="guidDbContextPackageCmdSet" id="cmdidDgmlNuget" priority="0x0500" type="Button">
         <Parent guid="guidDbContextPackageCmdSet" id="cmdidEdmViewMenuItemsGroup" />
-        <Icon guid="guidImage2" id="bmpPic2" />
+        <Icon guid="guidImage6" id="bmpPic6" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <CommandName>cmdidDgmlNuget</CommandName>
@@ -129,10 +129,11 @@
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
+      <Bitmap guid="guidImage6" href="Resources\ImportPackage_16x.png" usedList="bmpPic6" />
       <Bitmap guid="guidImage5" href="Resources\5.png" usedList="bmpPic5" />
-      <Bitmap guid="guidImage4" href="Resources\4.png" usedList="bmpPic4" />
+      <Bitmap guid="guidImage4" href="Resources\SQL_16x.png" usedList="bmpPic4" />
       <Bitmap guid="guidImage3" href="Resources\3.png" usedList="bmpPic3" />
-      <Bitmap guid="guidImage2" href="Resources\2.png" usedList="bmpPic2" />
+      <Bitmap guid="guidImage2" href="Resources\Diagram_16x.png" usedList="bmpPic2" />
       <Bitmap guid="guidImage1" href="Resources\1.png" usedList="bmpPic1" />
       <Bitmap guid="guidImage0" href="Resources\h.png" usedList="bmpPic0" />
     </Bitmaps>
@@ -177,6 +178,10 @@
       <IDSymbol name="cmdidAbout" value="0x0006" />
     </GuidSymbol>
 
+    <GuidSymbol name="guidImage6" value="{146f17c2-c8e3-4cfd-9fe2-49cc07c6d456}">
+      <IDSymbol name="bmpPic6" value="1" />
+    </GuidSymbol>
+    
     <GuidSymbol name="guidImage5" value="{146f17c2-c8e3-4cfd-9fe2-49cc07c6d4aa}">
       <IDSymbol name="bmpPic5" value="1" />
     </GuidSymbol>
