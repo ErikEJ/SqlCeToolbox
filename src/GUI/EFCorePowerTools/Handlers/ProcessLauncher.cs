@@ -59,7 +59,7 @@ namespace EFCorePowerTools.Handlers
             Debug.Assert(toDir != null, nameof(toDir) + " != null");
 
             var version = "2.0.0";
-            var testFile = Path.Combine(outputPath, "Microsoft.EntityFrameworkCore.dll");
+            var testFile = Path.Combine(toDir, "Microsoft.EntityFrameworkCore.dll");
 
             if (File.Exists(testFile))
             {
