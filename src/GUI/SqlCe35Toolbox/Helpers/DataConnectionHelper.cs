@@ -14,22 +14,16 @@ using ErikEJ.SqlCeToolbox.SSMSEngine;
 #else
 using ErikEJ.SqlCeToolbox.Dialogs;
 #endif
-using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.Data.SQLite;
-using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
 using System.Linq;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
-
     internal class DataConnectionHelper
     {
         private static string separator = Environment.NewLine + "GO" + Environment.NewLine;
-
-        //TODO Update this when SQLite provider is updated!
-        private static string SqliteEngineVersion = "3.18";
 
         internal static Dictionary<string, DatabaseInfo> GetDataConnections(SqlCeToolboxPackage package,
             bool includeServerConnections, bool serverConnectionsOnly)
@@ -120,7 +114,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                     Caption = connection.DisplayName,
                                     FromServerExplorer = true,
                                     DatabaseType = dbType,
-                                    ServerVersion = SqliteEngineVersion,
+                                    ServerVersion = RepositoryHelper.SqliteEngineVersion,
                                     ConnectionString = sConnectionString
                                 };
                                 info.FileIsMissing = RepositoryHelper.IsMissing(info);
@@ -227,7 +221,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     if (foundType == DatabaseType.SQLCE35)
                         info.ServerVersion = "3.5.1.0";
                     if (foundType == DatabaseType.SQLite)
-                        info.ServerVersion = SqliteEngineVersion;
+                        info.ServerVersion = RepositoryHelper.SqliteEngineVersion;
                     info.FileIsMissing = RepositoryHelper.IsMissing(info);
                     if (!databaseList.ContainsKey(key) && !info.FileIsMissing)
                     {

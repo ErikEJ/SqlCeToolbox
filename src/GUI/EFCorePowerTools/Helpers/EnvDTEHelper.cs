@@ -16,9 +16,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class EnvDteHelper
     {
-        //TODO Update this when SQLite provider is updated!
-        private static string SqliteEngineVersion = "3.18";
-
         internal static Dictionary<string, DatabaseInfo> GetDataConnections(EFCorePowerToolsPackage package,
     bool includeServerConnections = true)
         {
@@ -75,7 +72,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                 Caption = connection.DisplayName,
                                 FromServerExplorer = true,
                                 DatabaseType = dbType,
-                                ServerVersion = SqliteEngineVersion,
+                                ServerVersion = RepositoryHelper.SqliteEngineVersion,
                                 ConnectionString = sConnectionString
                             };
                             info.FileIsMissing = RepositoryHelper.IsMissing(info);

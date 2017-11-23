@@ -71,7 +71,6 @@ namespace EFCorePowerTools.Handlers
                 }
             }
 
-            //TODO Handle 2.0.1 and newer! Need testing
             File.Copy(Path.Combine(fromDir, "efpt.exe"), Path.Combine(toDir, "efpt.exe"), true);
             if (version == "2.0.1")
             {
