@@ -395,6 +395,7 @@
     <Resource Include="Resources\SQL_16x.png" />
     <Content Include="System.Diagnostics.DiagnosticSource.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="System.ValueTuple.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
