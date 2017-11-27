@@ -21,19 +21,31 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         private static List<BindingRedirect> GetBindingRedirects()
         {
+            //var result = new List<BindingRedirect>
+            //{
+            //    new BindingRedirect
+            //    {
+            //        ShortName = "Microsoft.EntityFrameworkCore",
+            //        RedirectToVersion = "2.0.1.0",
+            //        PublicKeyToken = "adb9793829ddae60"
+            //    },
+            //    new BindingRedirect
+            //    {
+            //        ShortName = "Microsoft.EntityFrameworkCore.Relational",
+            //        RedirectToVersion = "2.0.1.0",
+            //        PublicKeyToken = "adb9793829ddae60"
+            //    }
+            //};
+
+            //System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51'
+
             var result = new List<BindingRedirect>
             {
                 new BindingRedirect
                 {
-                    ShortName = "Microsoft.EntityFrameworkCore",
-                    RedirectToVersion = "2.0.1.0",
-                    PublicKeyToken = "adb9793829ddae60"
-                },
-                new BindingRedirect
-                {
-                    ShortName = "Microsoft.EntityFrameworkCore.Relational",
-                    RedirectToVersion = "2.0.1.0",
-                    PublicKeyToken = "adb9793829ddae60"
+                    ShortName = "System.Diagnostics.DiagnosticSource",
+                    RedirectToVersion = "4.0.2.0",
+                    PublicKeyToken = "cc7b13ffcd2ddd51"
                 }
             };
 

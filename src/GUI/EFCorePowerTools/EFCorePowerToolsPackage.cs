@@ -103,6 +103,8 @@ namespace EFCorePowerTools
                 oleMenuCommandService.AddCommand(menuItem10);
             }
 
+            AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
+
             //Boot Telemetry
             Telemetry.Enabled = false;
             if (Telemetry.Enabled)
@@ -113,8 +115,6 @@ namespace EFCorePowerTools
                     "d4881a82-2247-42c9-9272-f7bc8aa29315");
             }
             Telemetry.TrackEvent("Platform: Visual Studio " + VisualStudioVersion.ToString(1));
-
-            // AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
         }
 
         private void OnProjectMenuBeforeQueryStatus(object sender, EventArgs e)
