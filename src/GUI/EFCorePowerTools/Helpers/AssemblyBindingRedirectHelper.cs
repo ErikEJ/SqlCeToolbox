@@ -44,7 +44,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 new BindingRedirect
                 {
                     ShortName = "System.Diagnostics.DiagnosticSource",
-                    RedirectToVersion = "4.0.2.1",
+                    RedirectToVersion = "4.0.2.0",
                     PublicKeyToken = "cc7b13ffcd2ddd51"
                 }
             };
