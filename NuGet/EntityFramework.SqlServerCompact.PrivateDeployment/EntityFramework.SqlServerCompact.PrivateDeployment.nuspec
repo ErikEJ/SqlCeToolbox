@@ -2,11 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>EntityFramework.SqlServerCompact.PrivateDeployment</id>
-    <version>6.2.0</version>
+    <version>6.2.0.1</version>
     <title>EntityFramework.SqlServerCompact.PrivateDeployment</title>
     <authors>ErikEJ</authors>
     <owners>ErikEJ</owners>
-    <projectUrl>http://sqlcetoolbox.codeplex.com/</projectUrl>
+    <projectUrl>https://github.com/ErikEJ/SqlCeToolbox/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>**Unofficial** Enables SQL Server Compact 4.0 private desktop deployment with Entity Framework 6.2.x
  </description>
@@ -18,7 +18,7 @@
     <copyright>Copyright 2015</copyright>
     <language />
     <dependencies>
-      <dependency id="Baseclass.Contrib.Nuget.Output" version="1.0.7" />
+      <dependency id="Baseclass.Contrib.Nuget.Output" version="2.3.0" />
       <dependency id="EntityFramework" version="[6.2.0]" />
     </dependencies>
   </metadata>
