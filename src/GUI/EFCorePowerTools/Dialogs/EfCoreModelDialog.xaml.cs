@@ -34,8 +34,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         public bool UseHandelbars => chkHandlebars.IsChecked != null && chkHandlebars.IsChecked.Value;
 
-        public bool RemoveConnectionString => chkRemoveConnectionString.IsChecked != null && chkRemoveConnectionString.IsChecked.Value;
-
         public bool ReplaceId => chkIdReplace.IsChecked != null && chkIdReplace.IsChecked.Value;
 
         public string ModelName 

@@ -16,6 +16,5 @@ namespace ReverseEngineer20
         public bool UseInflector { get; set; }
         public bool IdReplace { get; set; }
         public bool UseHandleBars { get; set; }
-        public bool RemoveConnectionString { get; set; }
     }
 }

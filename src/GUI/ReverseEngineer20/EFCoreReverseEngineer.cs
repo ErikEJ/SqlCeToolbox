@@ -85,11 +85,6 @@ namespace ReverseEngineer20
             }
             PostProcess(filePaths.ContextFile, reverseEngineerOptions.IdReplace);
 
-            if (reverseEngineerOptions.RemoveConnectionString)
-            {
-                PostProcessContext(filePaths.ContextFile);
-            }
-
             var result = new EfCoreReverseEngineerResult
             {
                 EntityErrors = errors,
@@ -99,24 +94,6 @@ namespace ReverseEngineer20
             };
 
             return result;
-        }
-
-        private void PostProcessContext(string contextFile)
-        {
-            var finalLines = new List<string>();
-            var lines = File.ReadAllLines(contextFile);
-
-            foreach (var line in lines)
-            {
-                if (line.Trim().StartsWith("#warning To protect"))
-                    continue;
-
-                if (line.Trim().StartsWith("optionsBuilder.Use"))
-                    continue;
-
-                finalLines.Add(line);
-            }
-            File.WriteAllLines(contextFile, finalLines, Encoding.UTF8);
         }
 
         private void PostProcess(string file, bool idReplace)
