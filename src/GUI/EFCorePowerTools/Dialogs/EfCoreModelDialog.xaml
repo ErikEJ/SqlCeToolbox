@@ -42,12 +42,6 @@
         <dw:LiveTextBlock Grid.Row="1" Text="Namespace" Margin="14,6,0,36"></dw:LiveTextBlock>
         <dw:LiveTextBlock Grid.Row="2" Text="Project path (f.ex. Model) - optional" Margin="14,6,0,36"></dw:LiveTextBlock>
         <dw:LiveTextBlock Grid.Row="3" Text="What to generate" Margin="14,4,256,10"></dw:LiveTextBlock>
-        <!--<Label Content="Context name"  HorizontalAlignment="Left" Margin="10,0,0,0" Name="label1" Width="151" Height="28" VerticalAlignment="Top" />-->
-        <!--<Label Content="Namespace" HorizontalAlignment="Left" Margin="10,0,0,0"  Width="197" Height="28" VerticalAlignment="Top"
-            Grid.Row="1" />-->
-        <!--<Label Content="Project path (f.ex. Model) - optional" HorizontalAlignment="Left" Margin="10,0,0,0" Width="250" Height="28" VerticalAlignment="Top"
-            Grid.Row="2"  />-->
-        <!--<Label Grid.Row="3" Content="What to generate" HorizontalAlignment="Left" Margin="10,0,0,0" Width="151" Height="28" VerticalAlignment="Top" />-->
         <dw:DialogButton TabIndex="20" Content="OK" IsDefault="True" Grid.Row="9" Height="23" Margin="0,0,94,12" Name="button1" VerticalAlignment="Bottom" Click="button1_Click" HorizontalAlignment="Right" Width="75" />
         <dw:DialogButton TabIndex="21" Content="Cancel" IsCancel="True" Grid.Row="9" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="button2" VerticalAlignment="Bottom" Width="75"  SnapsToDevicePixels="False" Click="button2_Click" />
     </Grid>
