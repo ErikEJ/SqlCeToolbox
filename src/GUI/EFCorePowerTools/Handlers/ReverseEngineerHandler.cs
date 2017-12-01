@@ -94,6 +94,7 @@ namespace EFCorePowerTools.Handlers
                     UseInflector =  modelDialog.UsePluralizer,
                     IdReplace = modelDialog.ReplaceId,
                     UseHandleBars = modelDialog.UseHandelbars,
+                    RemoveConnectionString = modelDialog.RemoveConnectionString,
                     Tables = ptd.Tables
                 };
 
