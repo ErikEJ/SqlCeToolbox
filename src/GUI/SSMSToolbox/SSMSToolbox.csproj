@@ -368,6 +368,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SSMSEngine\TableMenuItem.cs" />
     <Compile Include="SSMSEngine\DatabaseMenuItem.cs" />
     <Compile Include="SSMSEngine\ObjectExplorerManager.cs" />
     <Compile Include="SSMSEngine\ToolStripSeparatorMenuItem.cs" />
@@ -558,8 +559,9 @@
     <Reference Include="SqlCeToolBoxSyncFxLib">
       <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
     </Reference>
-    <Reference Include="SQLEditors">
-      <HintPath>..\lib\SQLEditors.dll</HintPath>
+    <Reference Include="SQLEditors, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\v140\SQLEditors.dll</HintPath>
     </Reference>
     <Reference Include="SQLiteScripting">
       <HintPath>..\lib\SQLiteScripting.dll</HintPath>

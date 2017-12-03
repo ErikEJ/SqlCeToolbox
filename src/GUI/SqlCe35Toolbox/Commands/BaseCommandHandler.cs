@@ -25,6 +25,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
             ParentWindow = parent;
         }
 
+        public BaseCommandHandler()
+        {
+        }
+
         public void ReportTableData(object sender, ExecutedRoutedEventArgs e)
         {
             var menuInfo = ValidateMenuInfo(sender);

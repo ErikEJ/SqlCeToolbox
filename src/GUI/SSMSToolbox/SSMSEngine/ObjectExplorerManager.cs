@@ -14,7 +14,9 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
     {
         private readonly SqlCeToolboxPackage _package;
         private HierarchyObject _serverMenu;
+        private HierarchyObject _tableMenu;
         private string _urnPath = "Server/Database";
+        private string _tableUrnPath = "Server/Database/Table";
 
         public ObjectExplorerManager(SqlCeToolboxPackage package)
         {
@@ -146,6 +148,15 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
                 //_serverMenu.AddChild(string.Empty, separator);
                 var item = new DatabaseMenuItem(_package);
                 _serverMenu.AddChild(string.Empty, item);
+            }
+
+            if (_tableMenu == null && _tableUrnPath == node.UrnPath)
+            {
+                _tableMenu = (HierarchyObject)node.GetService(typeof(IMenuHandler));
+                //var separator = new ToolStripSeparatorMenuItem();
+                //_serverMenu.AddChild(string.Empty, separator);
+                var item = new TableMenuItem(_package);
+                _tableMenu.AddChild(string.Empty, item);
             }
         }
 

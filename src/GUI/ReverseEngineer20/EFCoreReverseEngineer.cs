@@ -85,7 +85,7 @@ namespace ReverseEngineer20
             }
             PostProcess(filePaths.ContextFile, reverseEngineerOptions.IdReplace);
 
-            if (reverseEngineerOptions.RemoveConnectionString)
+            if (!reverseEngineerOptions.IncludeConnectionString)
             {
                 PostProcessContext(filePaths.ContextFile);
             }
