@@ -657,6 +657,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         else
                         {
                             var grid = new ExtEditControl {SourceTable = table};
+                            grid.grid.AutoGeneratingColumn += grid_AutoGeneratingColumn;
                             DockPanel.SetDock(grid, Dock.Top);
                             GridPanel.Children.Add(grid);
                         }
@@ -696,7 +697,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                                 }
                                 else if (item is DateTime)
                                 {
-                                    results.Append(((DateTime)item).ToString("O") + "\t");
+                                    results.Append(((DateTime)item).ToString("yyyy-MM-dd HH:mm:ss.fff") + "\t");
                                 }
                                 else if (item is double || item is float)
                                 {
@@ -748,8 +749,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             if (_showNullValuesAsNull)   
             {   
                 ((DataGridBoundColumn)e.Column).Binding.TargetNullValue = "NULL";   
-            }   
-        }  
+            }
+            if (e.PropertyType == typeof(DateTime))
+                (e.Column as DataGridTextColumn).Binding.StringFormat = "yyyy-MM-dd HH:mm:ss.fff";
+        }
 
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
