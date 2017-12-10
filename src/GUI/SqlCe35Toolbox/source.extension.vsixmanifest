@@ -2,7 +2,7 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="41521019-e4c7-480c-8ea8-fc4a2c6f50aa" Version="4.7.0.0" Language="en-US" Publisher="ErikEJ" />
-        <DisplayName>SQLite / SQL Server Compact Toolbox</DisplayName>
+        <DisplayName>SQLite_SQL_Server_Compact_Toolbox</DisplayName>
         <Description xml:space="preserve">SQLite / SQL Server Compact Toolbox extension for Visual Studio. This extension adds several features to help your embedded database development efforts: Scripting of tables and data, import from SQL Server and CSV files and much, much more.</Description>
         <MoreInfo>https://github.com/ErikEJ/SqlCeToolbox</MoreInfo>
         <License>Resources\license.txt</License>
