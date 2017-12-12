@@ -5,26 +5,32 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+
 using EFCorePowerTools.Extensions;
 using EFCorePowerTools.Handlers;
+
 using EnvDTE;
 using EnvDTE80;
+
 using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.VisualStudio.Shell;
+
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 
 namespace EFCorePowerTools
 {
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [SqlCe40ProviderRegistration]
     [SqliteProviderRegistration]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(GuidList.guidDbContextPackagePkgString)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // ReSharper disable once InconsistentNaming
-    public sealed class EFCorePowerToolsPackage : Package
+    public sealed class EFCorePowerToolsPackage : AsyncPackage
     {
         private readonly ReverseEngineerHandler _reverseEngineerHandler;
         private readonly ModelAnalyzerHandler _modelAnalyzerHandler;
@@ -44,19 +50,16 @@ namespace EFCorePowerTools
 
         internal DTE2 Dte2 => _dte2;
 
-        protected override void Initialize()
+        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            base.Initialize();
-
-            _dte2 = GetService(typeof(DTE)) as DTE2;
+            _dte2 = await GetServiceAsync(typeof(DTE)) as DTE2;
 
             if (_dte2 == null)
             {
                 return;
             }
 
-            var oleMenuCommandService
-                = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var oleMenuCommandService = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
 
             if (oleMenuCommandService != null)
             {
@@ -73,7 +76,7 @@ namespace EFCorePowerTools
                 oleMenuCommandService.AddCommand(menuItem4);
 
                 var menuCommandId5 = new CommandID(GuidList.guidDbContextPackageCmdSet,
-                    (int) PkgCmdIDList.cmdidReverseEngineerCodeFirst);
+                    (int)PkgCmdIDList.cmdidReverseEngineerCodeFirst);
                 var menuItem5 = new OleMenuCommand(OnProjectContextMenuInvokeHandler, null,
                     OnProjectMenuBeforeQueryStatus, menuCommandId5);
                 oleMenuCommandService.AddCommand(menuItem5);
@@ -105,16 +108,7 @@ namespace EFCorePowerTools
 
             AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
 
-            //Boot Telemetry
-            Telemetry.Enabled = false;
-            if (Telemetry.Enabled)
-            {
-                Telemetry.Initialize(Dte2,
-                    Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                    VisualStudioVersion.ToString(),
-                    "d4881a82-2247-42c9-9272-f7bc8aa29315");
-            }
-            Telemetry.TrackEvent("Platform: Visual Studio " + VisualStudioVersion.ToString(1));
+            await base.InitializeAsync(cancellationToken, progress);
         }
 
         private void OnProjectMenuBeforeQueryStatus(object sender, EventArgs e)
