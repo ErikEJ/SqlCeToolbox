@@ -52,6 +52,8 @@ namespace EFCorePowerTools
 
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            await base.InitializeAsync(cancellationToken, progress);
+
             _dte2 = await GetServiceAsync(typeof(DTE)) as DTE2;
 
             if (_dte2 == null)
@@ -60,6 +62,10 @@ namespace EFCorePowerTools
             }
 
             var oleMenuCommandService = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+            AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             if (oleMenuCommandService != null)
             {
@@ -105,10 +111,6 @@ namespace EFCorePowerTools
                     OnProjectMenuBeforeQueryStatus, menuCommandId10);
                 oleMenuCommandService.AddCommand(menuItem10);
             }
-
-            AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
-
-            await base.InitializeAsync(cancellationToken, progress);
         }
 
         private void OnProjectMenuBeforeQueryStatus(object sender, EventArgs e)

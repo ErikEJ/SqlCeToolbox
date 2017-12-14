@@ -24,7 +24,7 @@ namespace ReverseEngineer20
 
         public List<Tuple<string, string>> GenerateDatabaseCreateScript(string outputPath)
         {
-            return BuildResult(outputPath, false);
+            return BuildResult(outputPath, true);
         }
 
         private List<Tuple<string, string>> BuildResult(string outputPath, bool generateDdl)
