@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace ReverseEngineer20
@@ -14,7 +15,7 @@ namespace ReverseEngineer20
                     var builder = new EfCoreModelBuilder();
                     List<Tuple<string, string>> result;
 
-                    if (args[0].ToLowerInvariant() == "ddl" && args.Length == 2)
+                    if (args.Contains("ddl") && args.Count() >= 2)
                     {
                         result = builder.GenerateDatabaseCreateScript(args[1]);
                     }
