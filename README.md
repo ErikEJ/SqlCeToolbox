@@ -1,11 +1,10 @@
-
 # SQLite & SQL Server Compact Toolbox
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/ErikEJ.svg?style=social&label=Follow)](http://twitter.com/ErikEJ) [![Join the chat at https://gitter.im/SqlCeToolbox](https://badges.gitter.im/SqlCEToolbox/Lobby.svg)](https://gitter.im/SqlCeToolbox/Lobby)  [![AppVeyor](https://ci.appveyor.com/api/projects/status/r3pv323quuaoqw4f?svg=true)](https://ci.appveyor.com/project/ErikEJ/sqlcetoolbox/branch/master) 
 
 [My tools and utilities for embedded database development](http://erikej.github.io/SqlCeToolbox/)
 
-Visual Studio & SSMS 2016 extension, standalone app and command line tools, for managing all aspects of your SQL Server Compact/SQLite database files' data and schema, including generation of code, database diagrams and database documentation.
+Visual Studio & SSMS 17.x extension, standalone app and command line tools, for managing all aspects of your SQL Server Compact/SQLite database files' data and schema, including generation of code, database diagrams and database documentation.
 
 If you use my free tools, I would be very grateful for a [rating or review here](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details)
 
@@ -53,7 +52,7 @@ If you have trouble installing the SSMS extension, try the following command lin
 
 `"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
 
-## EF Core Power Tools for Visual Studio 2017 (beta) 
+## EF Core Power Tools for Visual Studio 2017 
 
 The EF Core Power Tools contains DbContext design time feature: Reverse Engineering, Model inspection and more to come - see the [wiki page](https://github.com/ErikEJ/SqlCeToolbox/wiki/EF-Core-Power-Tools) for more information
 
@@ -63,9 +62,12 @@ Download the latest version of the Visual Studio 2017 extension from [Visual Stu
 
 Or just install from Tools, Extensions and Updates in Visual Studio! ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/ext.png)
 
+
 **Daily build**
 
 You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/f4c4712c-ceae-4803-8e52-0e2049d5de9f/extension.vsix)
+
+You can also automatically get the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
