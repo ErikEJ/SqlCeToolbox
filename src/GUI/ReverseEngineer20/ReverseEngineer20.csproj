@@ -154,8 +154,8 @@
     <Compile Include="ReverseEngineer\EFCoreReverseEngineerResult.cs" />
     <Compile Include="PathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReverseEngineer\Inflector.cs" />
     <Compile Include="ReverseEngineer\InflectorPluralizer.cs" />
+    <Compile Include="ReverseEngineer\Pluralizer.cs" />
     <Compile Include="ReverseEngineer\ReverseEngineerOptions.cs" />
   </ItemGroup>
   <ItemGroup>
