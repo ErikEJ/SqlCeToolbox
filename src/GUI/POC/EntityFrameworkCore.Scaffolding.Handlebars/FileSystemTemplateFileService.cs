@@ -42,20 +42,11 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         {
             string contents;
             string directory = altRelativeDirectory ?? relativeDirectory;
-            string path = Path.Combine(directory, fileName);
-            if (File.Exists(path))
-            {
-                contents = RetrieveFileContents(directory, fileName);
-            }
-            else
-            {
-                //var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var assemblyDirectory = ServiceCollectionExtensions.ProjectRoot;
-                var localDirectory = Path.Combine(assemblyDirectory, relativeDirectory);
-                var templateContents = RetrieveFileContents(localDirectory, fileName);
-                OutputFile(directory, fileName, templateContents);
-                contents = RetrieveFileContents(directory, fileName);
-            }
+            var localDirectory = Path.Combine(ServiceCollectionExtensions.ProjectRoot, relativeDirectory);
+            var templateContents = RetrieveFileContents(localDirectory, fileName);
+            OutputFile(directory, fileName, templateContents);
+            contents = RetrieveFileContents(directory, fileName);
+
             return contents;
         }
     }
