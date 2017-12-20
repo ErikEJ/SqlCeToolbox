@@ -100,9 +100,12 @@ namespace EFCorePowerTools.Handlers
 
                 _package.Dte2.StatusBar.Text = "Generating code...";
 
+                bool isNetCore = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.0");
+
                 if (modelDialog.UseHandelbars)
                 {
-                    if (DropTemplates(projectPath))
+                    var dropped = (DropTemplates(projectPath));
+                    if (dropped && !isNetCore)
                     {
                         project.ProjectItems.AddFromDirectory(Path.Combine(projectPath, "CodeTemplates"));
                     }
@@ -120,7 +123,10 @@ namespace EFCorePowerTools.Handlers
                 if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 1)
                 {
                     project.ProjectItems.AddFromFile(revEngResult.ContextFilePath);
-                    _package.Dte2.ItemOperations.OpenFile(revEngResult.ContextFilePath);
+                    if (!isNetCore)
+                    {
+                        _package.Dte2.ItemOperations.OpenFile(revEngResult.ContextFilePath);
+                    }
                 }
 
                 packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);

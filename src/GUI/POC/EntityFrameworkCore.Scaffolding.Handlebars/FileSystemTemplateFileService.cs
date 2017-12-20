@@ -37,15 +37,11 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         /// <param name="fileName">File name.</param>
         /// <param name="altRelativeDirectory">Alternative relative directory. Used for testing purposes.</param>
         /// <returns>File contents.</returns>
-        public virtual string RetrieveTemplateFileContents(string relativeDirectory, string fileName,
-            string altRelativeDirectory = null)
+        public virtual string RetrieveTemplateFileContents(string relativeDirectory, string fileName, string altRelativeDirectory = null)
         {
             string contents;
-            string directory = altRelativeDirectory ?? relativeDirectory;
             var localDirectory = Path.Combine(ServiceCollectionExtensions.ProjectRoot, relativeDirectory);
-            var templateContents = RetrieveFileContents(localDirectory, fileName);
-            OutputFile(directory, fileName, templateContents);
-            contents = RetrieveFileContents(directory, fileName);
+            contents = RetrieveFileContents(localDirectory, fileName);
 
             return contents;
         }
