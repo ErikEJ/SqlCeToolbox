@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Runtime.Serialization.Json;
 using System.Text;
 
 namespace EFCorePowerTools.Handlers
@@ -58,11 +59,10 @@ namespace EFCorePowerTools.Handlers
                 var res = ptd.ShowModal();
                 if (!res.HasValue || !res.Value) return;
 
-                var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
-
                 var dteH = new EnvDteHelper();
                 var revEng = new EfCoreReverseEngineer();
 
+                var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
                 var model = revEng.GenerateClassName(classBasis) + "Context";
                 var packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
 
@@ -95,8 +95,13 @@ namespace EFCorePowerTools.Handlers
                     IdReplace = modelDialog.ReplaceId,
                     UseHandleBars = modelDialog.UseHandelbars,
                     IncludeConnectionString = modelDialog.IncludeConnectionString,
+                    SelectedToBeGenerated = modelDialog.SelectedTobeGenerated,
                     Tables = ptd.Tables
                 };
+
+                var optionsPath = Path.Combine(projectPath, "efpt.config.json");
+                File.WriteAllText(optionsPath, WriteOptions(options), Encoding.UTF8);
+                project.ProjectItems.AddFromFile(optionsPath);
 
                 _package.Dte2.StatusBar.Text = "Generating code...";
 
@@ -213,6 +218,26 @@ namespace EFCorePowerTools.Handlers
             }
 
             return false;
+        }
+
+        public static string WriteOptions(ReverseEngineerOptions options)
+        {
+            MemoryStream ms = new MemoryStream();
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ReverseEngineerOptions));
+            ser.WriteObject(ms, options);
+            byte[] json = ms.ToArray();
+            ms.Close();
+            return Encoding.UTF8.GetString(json, 0, json.Length);
+        }
+
+        public static ReverseEngineerOptions ReadOptions(string json)
+        {
+            ReverseEngineerOptions deserializedOptions = new ReverseEngineerOptions();
+            MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(deserializedOptions.GetType());
+            deserializedOptions = ser.ReadObject(ms) as ReverseEngineerOptions;
+            ms.Close();
+            return deserializedOptions;
         }
     }
 }

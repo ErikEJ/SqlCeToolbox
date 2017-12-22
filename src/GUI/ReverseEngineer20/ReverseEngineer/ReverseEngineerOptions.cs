@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace ReverseEngineer20
 {
     public class ReverseEngineerOptions
     {
         public DatabaseType DatabaseType { get; set; }
+        [IgnoreDataMember]
         public string ConnectionString { get; set; }
+        [IgnoreDataMember]
         public string ProjectPath { get; set; }
         public string OutputPath { get; set; }
         public string ProjectRootNamespace { get; set; }
@@ -17,5 +20,6 @@ namespace ReverseEngineer20
         public bool IdReplace { get; set; }
         public bool UseHandleBars { get; set; }
         public bool IncludeConnectionString { get; set; }
+        public int SelectedToBeGenerated { get; set; }
     }
 }
