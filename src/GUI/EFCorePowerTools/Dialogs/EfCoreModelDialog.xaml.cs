@@ -1,16 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using ErikEJ.SqlCeToolbox.Helpers;
+using ReverseEngineer20;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     public partial class EfCoreModelDialog
     {
-        public EfCoreModelDialog()
+        private readonly ReverseEngineerOptions _options;
+        public EfCoreModelDialog(ReverseEngineerOptions options)
         {
+            _options = options;
             Telemetry.TrackPageView(nameof(EfCoreModelDialog));
             InitializeComponent();
             Background = VsThemes.GetWindowBackground();
+            if (_options != null)
+            {
+                chkDataAnnoations.IsChecked = !options.UseFluentApiOnly;
+                chkUseDatabaseNames.IsChecked = options.UseDatabaseNames;
+                chkPluralize.IsChecked = options.UseInflector;
+                chkHandlebars.IsChecked = options.UseHandleBars;
+                chkIdReplace.IsChecked = options.IdReplace;
+                chkIncludeConnectionString.IsChecked = options.IncludeConnectionString;
+                ModelName = options.ContextClassName;
+                NameSpace = options.ProjectRootNamespace;
+                OutputPath = options.OutputPath;
+                cmbLanguage.SelectedIndex = options.SelectedToBeGenerated;
+                SetCheckState();
+            }
         }
 
         public string ProjectName
@@ -114,26 +131,36 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             textBox1.Focus();
             cmbLanguage.ItemsSource = new List<string> { "EntityTypes & DbContext", "DbContext only", "EntityTypes only" };
             cmbLanguage.SelectedIndex = 0;
+            if (_options != null)
+            {
+                cmbLanguage.SelectedIndex = _options.SelectedToBeGenerated;
+            }
         }
 
         private void chkPluralize_Checked(object sender, RoutedEventArgs e)
         {
             chkUseDatabaseNames.IsEnabled = true;
+            SetCheckState();
+        }
+
+        private void SetCheckState()
+        {
             if (chkPluralize.IsChecked.Value)
             {
                 chkUseDatabaseNames.IsChecked = false;
                 chkUseDatabaseNames.IsEnabled = false;
+            }
+            if (chkUseDatabaseNames.IsChecked.Value)
+            {
+                chkPluralize.IsChecked = false;
+                chkPluralize.IsEnabled = false;
             }
         }
 
         private void chkUseDatabaseNames_Checked(object sender, RoutedEventArgs e)
         {
             chkPluralize.IsEnabled = true;
-            if (chkUseDatabaseNames.IsChecked.Value)
-            {
-                chkPluralize.IsChecked = false;
-                chkPluralize.IsEnabled = false;
-            }
+            SetCheckState();
         }
 
         private void chkPluralize_Unchecked(object sender, RoutedEventArgs e)

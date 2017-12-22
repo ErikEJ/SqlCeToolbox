@@ -25,6 +25,9 @@ namespace EFCorePowerTools.Handlers
         {
             try
             {
+                var dteH = new EnvDteHelper();
+                var revEng = new EfCoreReverseEngineer();
+
                 if (_package.Dte2.Mode == vsIDEMode.vsIDEModeDebug)
                 {
                     EnvDteHelper.ShowError("Cannot generate code while debugging");
@@ -32,6 +35,8 @@ namespace EFCorePowerTools.Handlers
                 }
 
                 var startTime = DateTime.Now;
+                var projectPath = project.Properties.Item("FullPath").Value.ToString();
+                var optionsPath = Path.Combine(projectPath, "efpt.config.json");
 
                 var databaseList = EnvDteHelper.GetDataConnections(_package);
 
@@ -59,19 +64,18 @@ namespace EFCorePowerTools.Handlers
                 var res = ptd.ShowModal();
                 if (!res.HasValue || !res.Value) return;
 
-                var dteH = new EnvDteHelper();
-                var revEng = new EfCoreReverseEngineer();
-
                 var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
                 var model = revEng.GenerateClassName(classBasis) + "Context";
                 var packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
 
-                var modelDialog = new EfCoreModelDialog
+                var options = TryReadOptions(optionsPath);
+
+                var modelDialog = new EfCoreModelDialog(options)
                 {
                     InstallNuGetPackage = !packageResult.Item1,
-                    ModelName = model,
+                    ModelName = options != null ? options.ContextClassName : model,
                     ProjectName = project.Name,
-                    NameSpace = project.Properties.Item("DefaultNamespace").Value.ToString()
+                    NameSpace = options != null ? options.ProjectRootNamespace : project.Properties.Item("DefaultNamespace").Value.ToString()
                 };
 
                 _package.Dte2.StatusBar.Text = "Getting options...";
@@ -79,9 +83,7 @@ namespace EFCorePowerTools.Handlers
                 if (!result.HasValue || result.Value != true)
                     return;
 
-                var projectPath = project.Properties.Item("FullPath").Value.ToString();
-
-                var options = new ReverseEngineerOptions
+                options = new ReverseEngineerOptions
                 {
                     UseFluentApiOnly = !modelDialog.UseDataAnnotations,
                     ConnectionString = dbInfo.ConnectionString,
@@ -99,7 +101,6 @@ namespace EFCorePowerTools.Handlers
                     Tables = ptd.Tables
                 };
 
-                var optionsPath = Path.Combine(projectPath, "efpt.config.json");
                 File.WriteAllText(optionsPath, WriteOptions(options), Encoding.UTF8);
                 project.ProjectItems.AddFromFile(optionsPath);
 
@@ -220,23 +221,34 @@ namespace EFCorePowerTools.Handlers
             return false;
         }
 
-        public static string WriteOptions(ReverseEngineerOptions options)
+        public string WriteOptions(ReverseEngineerOptions options)
         {
-            MemoryStream ms = new MemoryStream();
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ReverseEngineerOptions));
+            var ms = new MemoryStream();
+            var ser = new DataContractJsonSerializer(typeof(ReverseEngineerOptions));
             ser.WriteObject(ms, options);
             byte[] json = ms.ToArray();
             ms.Close();
             return Encoding.UTF8.GetString(json, 0, json.Length);
         }
 
-        public static ReverseEngineerOptions ReadOptions(string json)
+        public ReverseEngineerOptions TryReadOptions(string optionsPath)
         {
-            ReverseEngineerOptions deserializedOptions = new ReverseEngineerOptions();
-            MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(deserializedOptions.GetType());
-            deserializedOptions = ser.ReadObject(ms) as ReverseEngineerOptions;
-            ms.Close();
+            if (!File.Exists(optionsPath))
+            {
+                return null;
+            }
+            ReverseEngineerOptions deserializedOptions = null;
+            try
+            {
+                var ms = new MemoryStream(Encoding.UTF8.GetBytes(File.ReadAllText(optionsPath, Encoding.UTF8)));
+                var ser = new DataContractJsonSerializer(typeof(ReverseEngineerOptions));
+                deserializedOptions = ser.ReadObject(ms) as ReverseEngineerOptions;
+                ms.Close();
+            }
+            catch (Exception ex)
+            {
+                _package.LogError(new List<string> { "Unable to load options" }, ex);
+            }
             return deserializedOptions;
         }
     }
