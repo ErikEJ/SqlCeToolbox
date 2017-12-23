@@ -24,6 +24,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         public List<string> Tables { get; set; }
 
+        public List<string> SelectedTables { get; set; }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             foreach (var table in Tables)
@@ -33,6 +35,11 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 items.Add(new CheckListItem { IsChecked = isChecked, Label = table });                
             }
             chkTables.ItemsSource = items;
+
+            if (SelectedTables != null)
+            {
+                SetChecked(SelectedTables.ToArray());
+            }
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
@@ -116,9 +123,14 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             if (ofd.ShowDialog() != true) return;
 
             var lines = File.ReadAllLines(ofd.FileName);
+            SetChecked(lines);
+        }
+
+        private void SetChecked(string[] tables)
+        {
             foreach (var item in items)
             {
-                item.IsChecked = lines.Contains(item.Label);
+                item.IsChecked = tables.Contains(item.Label);
             }
             chkTables.ItemsSource = null;
             chkTables.ItemsSource = items;
