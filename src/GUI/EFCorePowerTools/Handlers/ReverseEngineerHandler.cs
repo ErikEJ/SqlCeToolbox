@@ -55,10 +55,17 @@ namespace EFCorePowerTools.Handlers
                     return;
                 }
 
+                var options = TryReadOptions(optionsPath);
+
                 var ptd = new PickTablesDialog { IncludeTables = true };
                 using (var repository = RepositoryHelper.CreateRepository(dbInfo))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
+                }
+
+                if (options != null && options.Tables.Count > 0)
+                {
+                    ptd.SelectedTables = options.Tables;
                 }
 
                 var res = ptd.ShowModal();
@@ -67,8 +74,6 @@ namespace EFCorePowerTools.Handlers
                 var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
                 var model = revEng.GenerateClassName(classBasis) + "Context";
                 var packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
-
-                var options = TryReadOptions(optionsPath);
 
                 var modelDialog = new EfCoreModelDialog(options)
                 {
@@ -93,16 +98,13 @@ namespace EFCorePowerTools.Handlers
                     OutputPath = modelDialog.OutputPath,
                     ProjectRootNamespace = modelDialog.NameSpace,
                     UseDatabaseNames = modelDialog.UseDatabaseNames,
-                    UseInflector =  modelDialog.UsePluralizer,
+                    UseInflector = modelDialog.UsePluralizer,
                     IdReplace = modelDialog.ReplaceId,
                     UseHandleBars = modelDialog.UseHandelbars,
                     IncludeConnectionString = modelDialog.IncludeConnectionString,
                     SelectedToBeGenerated = modelDialog.SelectedTobeGenerated,
                     Tables = ptd.Tables
                 };
-
-                File.WriteAllText(optionsPath, WriteOptions(options), Encoding.UTF8);
-                project.ProjectItems.AddFromFile(optionsPath);
 
                 _package.Dte2.StatusBar.Text = "Generating code...";
 
@@ -135,8 +137,6 @@ namespace EFCorePowerTools.Handlers
                     }
                 }
 
-                packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
-
                 var missingProviderPackage = packageResult.Item1 ? null : packageResult.Item2;
                 if (modelDialog.InstallNuGetPackage)
                 {
@@ -145,6 +145,8 @@ namespace EFCorePowerTools.Handlers
 
                 _package.Dte2.StatusBar.Text = "Reporting result...";
                 var errors = ReportRevEngErrors(revEngResult, missingProviderPackage);
+
+                SaveOptions(project, optionsPath, options);
 
                 if (modelDialog.InstallNuGetPackage)
                 {
@@ -177,6 +179,15 @@ namespace EFCorePowerTools.Handlers
             catch (Exception exception)
             {
                 _package.LogError(new List<string>(), exception);
+            }
+        }
+
+        private void SaveOptions(Project project, string optionsPath, ReverseEngineerOptions options)
+        {
+            if (!File.Exists(optionsPath + ".ignore"))
+            {
+                File.WriteAllText(optionsPath, WriteOptions(options), Encoding.UTF8);
+                project.ProjectItems.AddFromFile(optionsPath);
             }
         }
 
@@ -233,10 +244,9 @@ namespace EFCorePowerTools.Handlers
 
         public ReverseEngineerOptions TryReadOptions(string optionsPath)
         {
-            if (!File.Exists(optionsPath))
-            {
-                return null;
-            }
+            if (!File.Exists(optionsPath)) return null;
+            if (File.Exists(optionsPath + ".ignore")) return null;
+
             ReverseEngineerOptions deserializedOptions = null;
             try
             {
