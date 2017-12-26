@@ -1,6 +1,7 @@
 ﻿using EntityFrameworkCore.Scaffolding.Handlebars;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
+using Microsoft.EntityFrameworkCore.Scaffolding;
 using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using ReverseEngineer20.ReverseEngineer;
@@ -58,6 +59,7 @@ namespace ReverseEngineer20
                 case DatabaseType.SQLite:
                     var sqliteProvider = new SqliteDesignTimeServices();
                     sqliteProvider.ConfigureDesignTimeServices(serviceCollection);
+                    serviceCollection.AddSingleton<IDatabaseModelFactory, SqliteDatabaseModelFactory>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
