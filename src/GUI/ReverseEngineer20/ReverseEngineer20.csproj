@@ -147,7 +147,7 @@
     <Compile Include="ReverseEngineer\InflectorPluralizer.cs" />
     <Compile Include="ReverseEngineer\Pluralizer.cs" />
     <Compile Include="ReverseEngineer\ReverseEngineerOptions.cs" />
-    <Compile Include="ReverseEngineer\SqliteDatabaseModelFactory.cs" />
+    <Compile Include="ReverseEngineer\CustomSqliteDatabaseModelFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

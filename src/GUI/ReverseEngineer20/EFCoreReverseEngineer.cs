@@ -59,7 +59,7 @@ namespace ReverseEngineer20
                 case DatabaseType.SQLite:
                     var sqliteProvider = new SqliteDesignTimeServices();
                     sqliteProvider.ConfigureDesignTimeServices(serviceCollection);
-                    serviceCollection.AddSingleton<IDatabaseModelFactory, SqliteDatabaseModelFactory>();
+                    serviceCollection.AddSingleton<IDatabaseModelFactory, CustomSqliteDatabaseModelFactory>();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
