@@ -5,13 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="template.dgml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="template.dgml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.0" />
   </ItemGroup>
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>ErikEJ.EntityFrameworkCore.DgmlBuilder</PackageId>
-    <PackageVersion>1.0.5</PackageVersion>
+    <PackageVersion>1.0.6</PackageVersion>
     <Authors>ErikEJ</Authors>
     <Description>Generate DGML (Graph) content that visualizes your DbContext. Adds the AsDgml() extension method to the DbContext class</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
