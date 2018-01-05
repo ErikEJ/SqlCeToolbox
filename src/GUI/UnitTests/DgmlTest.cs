@@ -68,6 +68,20 @@ namespace UnitTests
         }
 
         [Test]
+        public void ParseDebugViewIssue604()
+        {
+            // Arrange
+            var debugView = File.ReadAllLines("Issue604.txt");
+
+            // Act
+            var result = _parser.Parse(debugView, "Test");
+
+            // Assert
+            Assert.AreEqual(124, result.Nodes.Count);
+            Assert.AreEqual(150, result.Links.Count);
+        }
+
+        [Test]
         public void BuildSample1()
         {
             // Act
@@ -143,6 +157,19 @@ namespace UnitTests
             Assert.AreNotEqual(result, null);
 
             File.WriteAllText(@"C:\temp\Samurai.dgml", result, Encoding.UTF8);
+        }
+
+        [Test]
+        public void BuildIssue604()
+        {
+            // Act
+            var builder = new DgmlBuilder.DgmlBuilder();
+            var result = builder.Build(File.ReadAllText("Issue604.txt"), "test", _template);
+
+            // Assert
+            Assert.AreNotEqual(result, null);
+
+            File.WriteAllText(@"C:\temp\Issue604.dgml", result, Encoding.UTF8);
         }
 
         private static string GetTemplate()

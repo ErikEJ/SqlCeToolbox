@@ -220,8 +220,11 @@ namespace DgmlBuilder
             // <Name> (<field>, <type>) <flags> <indexes>
             //Quotes (<Quotes>k__BackingField, List<Quote>) Collection ToDependent Quote Inverse: Samurai 0 - 1 1 - 1 - 1
             //SecretIdentity (<SecretIdentity>k__BackingField, Identity) ToDependent Identity Inverse: Samurai 2 - 1 3 - 1 - 1
+            //Registrations(registrations, IReadOnlyCollection<Registration>) Collection ToDependent Registration Inverse: Project PropertyAccessMode.Field 5 - 1 10 - 1 - 1
+            //   Annotations:
+                   //PropertyAccessMode: Field
 
-            var properties = new List<string>();
+              var properties = new List<string>();
             var links = new List<string>();
             int i = 0;
 
@@ -232,6 +235,9 @@ namespace DgmlBuilder
 
                 var parts = trim.Split(' ').ToList();
 
+                if (parts.Count < 3)
+                    continue;
+                
                 var name = parts[0];
 
                 var fieldStripped = parts[1].Remove(parts[1].Length - 1, 1).Remove(0, 1);
@@ -269,8 +275,10 @@ namespace DgmlBuilder
                     displayName = name + " (*)";
                 }
 
+                var propertyAccessMode = GetPropertyAccessMode(parts);
+
                 properties.Add(
-                    $"<Node Id = \"{entityName}.{name}\" Label=\"{displayName}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\"  Field=\"{field}\" Dependent=\"{dependent}\" Principal=\"{principal}\" Inverse=\"{inverse}\" />");
+                    $"<Node Id = \"{entityName}.{name}\" Label=\"{displayName}\" Name=\"{name}\" Category=\"{category}\" Type=\"{type}\"  Field=\"{field}\" Dependent=\"{dependent}\" Principal=\"{principal}\" Inverse=\"{inverse}\" PropertyAccessMode=\"{propertyAccessMode}\" />");
 
                 links.Add($"<Link Source = \"{entityName}\" Target=\"{entityName}.{name}\" Category=\"Contains\" />");
 
