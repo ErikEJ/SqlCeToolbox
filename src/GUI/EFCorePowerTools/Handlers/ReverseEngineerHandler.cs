@@ -129,6 +129,10 @@ namespace EFCorePowerTools.Handlers
                     {
                         project.ProjectItems.AddFromFile(filePath);
                     }
+                    if (modelDialog.SelectedTobeGenerated == 2)
+                    {
+                        if (File.Exists(revEngResult.ContextFilePath)) File.Delete(revEngResult.ContextFilePath);
+                    }
                 }
                 if (modelDialog.SelectedTobeGenerated == 0 || modelDialog.SelectedTobeGenerated == 1)
                 {
@@ -136,6 +140,13 @@ namespace EFCorePowerTools.Handlers
                     if (!isNetCore && !isNetStandard)
                     {
                         _package.Dte2.ItemOperations.OpenFile(revEngResult.ContextFilePath);
+                    }
+                    if (modelDialog.SelectedTobeGenerated == 1)
+                    {
+                        foreach (var filePath in revEngResult.EntityTypeFilePaths)
+                        {
+                            if (File.Exists(filePath)) File.Delete(filePath);
+                        }
                     }
                 }
 
