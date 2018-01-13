@@ -1,5 +1,4 @@
-﻿using ErikEJ.SqlCeToolbox;
-using ErikEJ.SqlCeScripting;
+﻿using ErikEJ.SqlCeScripting;
 using ErikEJ.SQLiteScripting;
 using System.Data.SqlClient;
 using System.IO;
@@ -9,7 +8,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
     internal static class RepositoryHelper
     {
         //TODO Update this when SQLite provider is updated!
-        public static string SqliteEngineVersion = "3.18";
+        public static string SqliteEngineVersion = "3.21";
 
         internal static IRepository CreateRepository(DatabaseInfo databaseInfo)
         {
