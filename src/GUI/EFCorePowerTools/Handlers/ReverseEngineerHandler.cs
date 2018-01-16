@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -60,7 +61,19 @@ namespace EFCorePowerTools.Handlers
                 var ptd = new PickTablesDialog { IncludeTables = true };
                 using (var repository = RepositoryHelper.CreateRepository(dbInfo))
                 {
-                    ptd.Tables = repository.GetAllTableNamesForExclusion();
+                    var allPks = repository.GetAllPrimaryKeys();
+                    var tableList = repository.GetAllTableNamesForExclusion();
+                    var tables = new List<string>();
+
+                    foreach (var table in tableList)
+                    {
+                        if (allPks.Where(pk => pk.TableName == table).Count() > 0)
+                        {
+                            tables.Add(table);
+                        }
+                    }
+
+                    ptd.Tables = tables;
                 }
 
                 if (options != null && options.Tables.Count > 0)
