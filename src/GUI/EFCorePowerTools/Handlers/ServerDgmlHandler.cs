@@ -28,7 +28,7 @@ namespace EFCorePowerTools.Handlers
 
                 var databaseList = EnvDteHelper.GetDataConnections(_package);
 
-                var psd = new PickServerDatabaseDialog(databaseList, _package);
+                var psd = new PickServerDatabaseDialog(databaseList, _package, new Dictionary<string, string>());
                 var diagRes = psd.ShowModal();
                 if (!diagRes.HasValue || !diagRes.Value) return;
 

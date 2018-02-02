@@ -55,6 +55,10 @@ namespace ReverseEngineer20
                 case DatabaseType.SQLServer:
                     var provider = new SqlServerDesignTimeServices();
                     provider.ConfigureDesignTimeServices(serviceCollection);
+                    if (!string.IsNullOrEmpty(reverseEngineerOptions.Dacpac))
+                    {
+                        serviceCollection.AddSingleton<IDatabaseModelFactory, SqlServerDacpacDatabaseModelFactory>();
+                    }
                     break;
                 case DatabaseType.SQLite:
                     var sqliteProvider = new SqliteDesignTimeServices();
@@ -154,6 +158,12 @@ namespace ReverseEngineer20
             }
 
             return className.Replace(" ", string.Empty);
+        }
+
+        public List<string> GetDacpacTableNames(string dacpacPath)
+        {
+            var builder = new DacpacTableListBuilder(dacpacPath);
+            return builder.GetTableNames();
         }
     }
 }

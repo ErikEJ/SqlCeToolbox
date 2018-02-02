@@ -88,6 +88,9 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.SqlServer.Dac.Extensions">
+      <HintPath>..\packages\Microsoft.SqlServer.DacFx.x86.140.3881.1\lib\net46\Microsoft.SqlServer.Dac.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.1.1\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
@@ -139,6 +142,8 @@
       <Link>ModelBuilder\DgmlBuilder.cs</Link>
     </Compile>
     <Compile Include="EFCoreModelBuilder.cs" />
+    <Compile Include="ReverseEngineer\DacpacDatabaseModelBuilder.cs" />
+    <Compile Include="ReverseEngineer\SqlServerDacpacDatabaseModelFactory.cs" />
     <Compile Include="ReverseEngineer\DatabaseType.cs" />
     <Compile Include="EFCoreReverseEngineer.cs" />
     <Compile Include="ReverseEngineer\EFCoreReverseEngineerResult.cs" />
@@ -156,6 +161,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DacFxStronglyTypedModel\DacFxStronglyTypedModel.csproj">
+      <Project>{832ECF86-C071-4628-A8B7-2529D8A7BDBC}</Project>
+      <Name>DacFxStronglyTypedModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\POC\EntityFrameworkCore.Scaffolding.Handlebars\EntityFrameworkCore.Scaffolding.Handlebars.csproj">
       <Project>{98ba37e1-99ff-4c0c-bd46-66c4f07e9b20}</Project>
       <Name>EntityFrameworkCore.Scaffolding.Handlebars</Name>

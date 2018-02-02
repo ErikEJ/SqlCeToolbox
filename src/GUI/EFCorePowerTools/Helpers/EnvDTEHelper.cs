@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using VSLangProj;
@@ -237,6 +238,63 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return new Tuple<bool, string>(false, providerPackage);
         }
 
+        private Dictionary<string, string> result = new Dictionary<string, string>();
+
+        public Dictionary<string, string> GetDacpacFilesInActiveSolution(DTE dte)
+        {
+            result.Add("N/A", null);
+
+            if (!dte.Solution.IsOpen)
+                return result;
+
+            string path = null;
+            TryGetInitialPath(dte, out path);
+
+            if (path != null)
+                DirSearch(path);
+
+            return result;
+        }
+
+        void DirSearch(string sDir)
+        {
+            try
+            {
+                foreach (string d in Directory.GetDirectories(sDir))
+                {
+                    foreach (string f in Directory.GetFiles(d, "*.dacpac"))
+                    {
+                        result.Add(Path.GetFileName(f), f);
+                    }
+                    DirSearch(d);
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private bool TryGetInitialPath(DTE dte, out string path)
+        {
+            var dteHelper = new EnvDteHelper();
+            try
+            {
+                path = GetInitialFolder(dte);
+                return true;
+            }
+            catch
+            {
+                path = null;
+                return false;
+            }
+        }
+
+        public string GetInitialFolder(DTE dte)
+        {
+            if (!dte.Solution.IsOpen)
+                return null;
+            return Path.GetDirectoryName(dte.Solution.FullName);
+        }
 
         // <summary>
         //     Helper method to show an error message within the shell.  This should be used

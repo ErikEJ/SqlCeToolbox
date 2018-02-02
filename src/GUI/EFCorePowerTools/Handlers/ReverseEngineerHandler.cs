@@ -40,8 +40,9 @@ namespace EFCorePowerTools.Handlers
                 var optionsPath = Path.Combine(projectPath, "efpt.config.json");
 
                 var databaseList = EnvDteHelper.GetDataConnections(_package);
+                var dacpacList = new EnvDteHelper().GetDacpacFilesInActiveSolution(_package.Dte2.DTE);
 
-                var psd = new PickServerDatabaseDialog(databaseList, _package);
+                var psd = new PickServerDatabaseDialog(databaseList, _package, dacpacList);
                 var diagRes = psd.ShowModal();
                 if (!diagRes.HasValue || !diagRes.Value) return;
 
@@ -49,6 +50,7 @@ namespace EFCorePowerTools.Handlers
                 _package.Dte2.StatusBar.Text = "Loading schema information...";
 
                 var dbInfo = psd.SelectedDatabase.Value;
+                var dacpacPath = psd.DacpacPath;
 
                 if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                 {
@@ -58,22 +60,38 @@ namespace EFCorePowerTools.Handlers
 
                 var options = TryReadOptions(optionsPath);
 
-                var ptd = new PickTablesDialog { IncludeTables = true };
-                using (var repository = RepositoryHelper.CreateRepository(dbInfo))
+                bool useDacpac = false;
+                if (!string.IsNullOrEmpty(dacpacPath))
                 {
-                    var allPks = repository.GetAllPrimaryKeys();
-                    var tableList = repository.GetAllTableNamesForExclusion();
-                    var tables = new List<string>();
+                    useDacpac = true;
+                    dbInfo.DatabaseType = DatabaseType.SQLServer;
+                    dbInfo.ConnectionString = "Data Source=.;Initial Catalog=" + Path.GetFileNameWithoutExtension(dacpacPath);
+                    options.IncludeConnectionString = false;
+                }
 
-                    foreach (var table in tableList)
+                var ptd = new PickTablesDialog { IncludeTables = true };
+                if (useDacpac)
+                {
+                    ptd.Tables = revEng.GetDacpacTableNames(dacpacPath);
+                }
+                else
+                {
+                    using (var repository = RepositoryHelper.CreateRepository(dbInfo))
                     {
-                        if (allPks.Where(pk => pk.TableName == table).Count() > 0)
-                        {
-                            tables.Add(table);
-                        }
-                    }
+                        var allPks = repository.GetAllPrimaryKeys();
+                        var tableList = repository.GetAllTableNamesForExclusion();
+                        var tables = new List<string>();
 
-                    ptd.Tables = tables;
+                        foreach (var table in tableList)
+                        {
+                            if (allPks.Where(pk => pk.TableName == table).Count() > 0)
+                            {
+                                tables.Add(table);
+                            }
+                        }
+
+                        ptd.Tables = tables;
+                    }
                 }
 
                 if (options != null && options.Tables.Count > 0)
@@ -93,7 +111,7 @@ namespace EFCorePowerTools.Handlers
                     InstallNuGetPackage = !packageResult.Item1,
                     ModelName = options != null ? options.ContextClassName : model,
                     ProjectName = project.Name,
-                    NameSpace = options != null ? options.ProjectRootNamespace : project.Properties.Item("DefaultNamespace").Value.ToString()
+                    NameSpace = options != null ? options.ProjectRootNamespace : project.Properties.Item("DefaultNamespace").Value.ToString()                    
                 };
 
                 _package.Dte2.StatusBar.Text = "Getting options...";
@@ -116,6 +134,7 @@ namespace EFCorePowerTools.Handlers
                     UseHandleBars = modelDialog.UseHandelbars,
                     IncludeConnectionString = modelDialog.IncludeConnectionString,
                     SelectedToBeGenerated = modelDialog.SelectedTobeGenerated,
+                    Dacpac = useDacpac ? dacpacPath : null,
                     Tables = ptd.Tables
                 };
 

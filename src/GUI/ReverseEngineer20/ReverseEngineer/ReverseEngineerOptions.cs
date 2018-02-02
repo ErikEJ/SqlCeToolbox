@@ -5,6 +5,7 @@ namespace ReverseEngineer20
 {
     public class ReverseEngineerOptions
     {
+        [IgnoreDataMember]
         public DatabaseType DatabaseType { get; set; }
         [IgnoreDataMember]
         public string ConnectionString { get; set; }
@@ -21,5 +22,6 @@ namespace ReverseEngineer20
         public bool UseHandleBars { get; set; }
         public bool IncludeConnectionString { get; set; }
         public int SelectedToBeGenerated { get; set; }
+        public string Dacpac { get; set; }
     }
 }

@@ -10,8 +10,7 @@
         mc:Ignorable="d" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        d:DesignHeight="187.83" 
-        SizeToContent="WidthAndHeight" Loaded="Window_Loaded" Width="418.653">
+        SizeToContent="WidthAndHeight" Loaded="Window_Loaded" Width="418.653" Height="196.581">
     <dw:DialogWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -23,15 +22,20 @@
         <Grid.RowDefinitions>
 
             <RowDefinition Height="2" />
-            <RowDefinition Height="64" />
-            <RowDefinition Height="134*" />
+            <RowDefinition Height="38" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="100*" />
         </Grid.RowDefinitions>
-        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1">
-            <ComboBox Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="comboBox1" VerticalAlignment="Top" Width="281" IsEditable="False" SelectionChanged="comboBox1_SelectionChanged" TabIndex="0" Margin="10,19,6,0" />
-            <dw:DialogButton  Click="AddButton_OnClick"  Grid.Row="1" HorizontalAlignment="Right" TabIndex="1" SnapsToDevicePixels="False" Width="75" Margin="0,19,10,0" Height="25" VerticalAlignment="Top" Content="Add..."/>
+        <StackPanel Margin="0,0, 0,0" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="1" Width="385">
+            <ComboBox Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="comboBox1" VerticalAlignment="Top" Width="281" IsEditable="False" SelectionChanged="comboBox1_SelectionChanged" TabIndex="0" Margin="10,12,6,0" />
+            <dw:DialogButton  Click="AddButton_OnClick" HorizontalAlignment="Right" TabIndex="1" SnapsToDevicePixels="False" Width="75" Margin="0,12,0,0" Height="25" VerticalAlignment="Top" Content="Add..."/>
         </StackPanel>
-        <dw:DialogButton IsDefault="True"   Click="SaveButton_Click" Grid.Row="2" HorizontalAlignment="Right" TabIndex="2" Margin="0,36,89,0" Width="75" Height="25" VerticalAlignment="Top">OK</dw:DialogButton>
-        <dw:DialogButton IsCancel="True" Click="CancelButton_Click" Grid.Row="2" HorizontalAlignment="Right" TabIndex="3" SnapsToDevicePixels="False" Width="75" Margin="0,36,8,0" Height="25" VerticalAlignment="Top">Cancel</dw:DialogButton>
+        <StackPanel Margin="0,0, 0,0" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Width="385">
+            <Label Margin="10,10,6,0" >Dacpac</Label>
+            <ComboBox Grid.Row="1" Height="23" HorizontalAlignment="Left" Name="comboBox2" VerticalAlignment="Top" Width="306" IsEditable="False" SelectionChanged="comboBox1_SelectionChanged" TabIndex="0" Margin="0,12,0,0" />
+        </StackPanel>
+        <dw:DialogButton IsDefault="True"   Click="SaveButton_Click" Grid.Row="3" HorizontalAlignment="Right" TabIndex="2" Margin="0,20,89,0" Width="75" Height="25" VerticalAlignment="Top">OK</dw:DialogButton>
+        <dw:DialogButton IsCancel="True" Click="CancelButton_Click" Grid.Row="3" HorizontalAlignment="Right" TabIndex="3" SnapsToDevicePixels="False" Width="75" Margin="0,20,8,0" Height="25" VerticalAlignment="Top">Cancel</dw:DialogButton>
         <CheckBox Content="Swap source with target" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="27,58,0,0" Name="checkBox1" VerticalAlignment="Top" Width="250" Visibility="Hidden" />
     </Grid>
 </dw:DialogWindow>

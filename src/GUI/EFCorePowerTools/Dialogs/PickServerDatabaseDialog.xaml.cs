@@ -9,9 +9,11 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
     {
         public KeyValuePair<string, DatabaseInfo> SelectedDatabase { get; private set; }
 
+        public string DacpacPath { get; private set; }
+
         private readonly EFCorePowerTools.EFCorePowerToolsPackage _package;
 
-        public PickServerDatabaseDialog(Dictionary<string, DatabaseInfo> serverConnections, EFCorePowerTools.EFCorePowerToolsPackage package)
+        public PickServerDatabaseDialog(Dictionary<string, DatabaseInfo> serverConnections, EFCorePowerTools.EFCorePowerToolsPackage package, Dictionary<string, string> dacpacList)
         {
             _package = package;
             Telemetry.TrackPageView(nameof(PickServerDatabaseDialog));
@@ -19,6 +21,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             Background = VsThemes.GetWindowBackground();
             comboBox1.DisplayMemberPath = "Value.Caption";
             comboBox1.ItemsSource = serverConnections;
+            comboBox2.DisplayMemberPath = "Key";
+            comboBox2.ItemsSource = dacpacList;
             if (serverConnections.Count > 0)
             {
                 comboBox1.SelectedIndex = 0;
