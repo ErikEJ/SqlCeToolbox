@@ -3,14 +3,21 @@ using Microsoft.SqlServer.Dac.Extensions.Prototype;
 using Microsoft.SqlServer.Dac.Model;
 using NUnit.Framework;
 using ReverseEngineer20.ReverseEngineer;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace UnitTests
 {
     [TestFixture]
     public class DacpacTest
     {
+        private static readonly ISet<string> _dateTimePrecisionTypes = new HashSet<string> { "datetimeoffset", "datetime2", "time" };
+
+        private static readonly ISet<string> _maxLengthRequiredTypes
+            = new HashSet<string> { "binary", "varbinary", "char", "varchar", "nchar", "nvarchar" };
+
         private TSqlTypedModel model;
         [SetUp]
         public void Setup()
@@ -35,7 +42,7 @@ namespace UnitTests
         [Test]
         public void CanEnumerateTables()
         {
-            //TODO type aliases
+            //TODO type aliases - later
             //TSqlUserDefinedType
 
             var dbModel = new DatabaseModel();
@@ -74,7 +81,7 @@ namespace UnitTests
             Assert.AreEqual(tables.Count(), dbModel.Tables.Count());
         }
 
-        private static void GetColumns(TSqlTable item, DatabaseTable dbTable)
+        private void GetColumns(TSqlTable item, DatabaseTable dbTable)
         {
             var tableColumns = item.Columns
                 .Where(i => !i.GetProperty<bool>(Column.IsHidden)
@@ -83,23 +90,101 @@ namespace UnitTests
 
             foreach (var col in item.Columns)
             {
+                //TODO Alias support (later)
+                //string storeType;
+                //if (typeAliases.TryGetValue($"[{dataTypeSchemaName}].[{dataTypeName}]", out var underlyingStoreType))
+                //{
+                //    storeType = dataTypeName;
+                //}
+                //else
+                //{
+                //    storeType = GetStoreType(dataTypeName, maxLength, precision, scale);
+                //    underlyingStoreType = null;
+                //}
+                //if ((underlyingStoreType ?? storeType) == "rowversion")
+                //{
+                //    column[ScaffoldingAnnotationNames.ConcurrencyToken] = true;
+                //}
+                //dbColumn.SetUnderlyingStoreType(underlyingStoreType);
+
+                var dataTypeName = ShowType(col.DataType);
+                string storeType = GetStoreType(dataTypeName, col.Length, col.Precision, col.Scale);
+
                 var dbColumn = new DatabaseColumn
                 {
-                    Table = dbTable,
-                    Name = col.Name.Parts[2],
-                    IsNullable = col.Nullable
+                        Table = dbTable,
+                        Name = col.Name.Parts[2],
+                        IsNullable = col.Nullable,
+                        StoreType = GetStoreType(dataTypeName, col.Length, col.Precision, col.Scale)
                 };
                     
                 //TSqlDefaultConstraint
-                
                 //dbColumn.ComputedColumnSql = null;
                 //dbColumn.DefaultValueSql = null;
-                
-                //dbColumn.StoreType = null;
-                //dbColumn.ValueGenerated = null;
-                
+                                
+                dbColumn.ValueGenerated = null;
+
+                if (col.IsIdentity)
+                {
+                    dbColumn.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAdd;
+                }
+                if (dbColumn.StoreType.Contains("rowversion"))
+                {
+                    dbColumn.ValueGenerated = Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.OnAddOrUpdate;
+                    dbColumn["ConcurrencyToken"] = true;
+                }
+
                 dbTable.Columns.Add(dbColumn);
             }
+        }
+
+        private static string GetStoreType(string dataTypeName, int maxLength, int precision, int scale)
+        {
+            if (dataTypeName == "timestamp")
+            {
+                return "rowversion";
+            }
+
+            if (dataTypeName == "decimal"
+                || dataTypeName == "numeric")
+            {
+                return $"{dataTypeName}({precision}, {scale})";
+            }
+
+            if (_dateTimePrecisionTypes.Contains(dataTypeName)
+                && scale != 7)
+            {
+                return $"{dataTypeName}({scale})";
+            }
+
+            if (_maxLengthRequiredTypes.Contains(dataTypeName))
+            {
+                if (maxLength == -1)
+                {
+                    return $"{dataTypeName}(max)";
+                }
+
+                if (dataTypeName == "nvarchar"
+                    || dataTypeName == "nchar")
+                {
+                    maxLength /= 2;
+                }
+
+                return $"{dataTypeName}({maxLength})";
+            }
+
+            return dataTypeName;
+        }
+
+        private string ShowType(IEnumerable<ISqlDataType> types)
+        {
+            var builder = new StringBuilder();
+            foreach (var type in types)
+            {
+                var t = new TSqlDataType(type.Element);
+                builder.Append($"{t.Name.Parts[0].ToString()}");
+            }
+            return builder.ToString();
         }
 
         private void GetPrimaryKey(TSqlTable table, DatabaseTable dbTable)
