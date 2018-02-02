@@ -50,6 +50,7 @@ namespace EFCorePowerTools.Handlers
                 _package.Dte2.StatusBar.Text = "Loading schema information...";
 
                 var dbInfo = psd.SelectedDatabase.Value;
+                //TODO Set this properly in Dialog
                 var dacpacPath = psd.DacpacPath;
 
                 if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
@@ -89,7 +90,6 @@ namespace EFCorePowerTools.Handlers
                                 tables.Add(table);
                             }
                         }
-
                         ptd.Tables = tables;
                     }
                 }

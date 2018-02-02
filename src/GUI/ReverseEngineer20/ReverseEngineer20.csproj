@@ -142,7 +142,7 @@
       <Link>ModelBuilder\DgmlBuilder.cs</Link>
     </Compile>
     <Compile Include="EFCoreModelBuilder.cs" />
-    <Compile Include="ReverseEngineer\DacpacDatabaseModelBuilder.cs" />
+    <Compile Include="ReverseEngineer\DacpacTableListBuilder.cs" />
     <Compile Include="ReverseEngineer\SqlServerDacpacDatabaseModelFactory.cs" />
     <Compile Include="ReverseEngineer\DatabaseType.cs" />
     <Compile Include="EFCoreReverseEngineer.cs" />
