@@ -24,6 +24,9 @@ public class SQLiteScriptingTests
     private string noRowIdConnectionString = string.Format(
         @"Data Source={0}norowid.db", dbPath);
 
+    private string viewCommentConnectionString = string.Format(
+        @"Data Source={0}new3.db", dbPath);
+
     [Test]
     public void TestGetAllTableNames()
     {
@@ -34,6 +37,18 @@ public class SQLiteScriptingTests
         }
         Assert.IsTrue(list.Count == 11);
         Assert.IsTrue(list[0] == "Album");
+    }
+
+    [Test]
+    public void TestGetAllTableNamesViewComments()
+    {
+        var list = new List<string>();
+        using (IRepository repo = new SQLiteRepository(viewCommentConnectionString))
+        {
+            list = repo.GetAllTableNames();
+        }
+        Assert.IsTrue(list.Count == 1);
+        Assert.IsTrue(list[0] == "MyTable");
     }
 
     [Test]
@@ -93,6 +108,28 @@ public class SQLiteScriptingTests
             list = repo.GetAllViews();
         }
         Assert.IsTrue(list.Count == 3);
+    }
+
+    [Test]
+    public void TestGetAllViewsViewComments()
+    {
+        var list = new List<View>();
+        using (IRepository repo = new SQLiteRepository(viewCommentConnectionString))
+        {
+            list = repo.GetAllViews();
+        }
+        Assert.IsTrue(list.Count == 1);
+    }
+
+    [Test]
+    public void TestGetAllViewColumnsViewComments()
+    {
+        var list = new List<Column>();
+        using (IRepository repo = new SQLiteRepository(viewCommentConnectionString))
+        {
+            list = repo.GetAllViewColumns();
+        }
+        Assert.IsTrue(list.Count == 1);
     }
 
     [Test]

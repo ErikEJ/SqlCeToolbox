@@ -34,6 +34,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.SqlServer.Dac.Extensions">
+      <HintPath>..\packages\Microsoft.SqlServer.DacFx.x86.140.3881.1\lib\net46\Microsoft.SqlServer.Dac.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
@@ -48,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DacpacTest.cs" />
     <Compile Include="PathHelperTest.cs" />
     <Compile Include="DgmlTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -57,12 +61,19 @@
       <Link>template.dgml</Link>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="Chinook.dacpac">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="graph.dgml">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DacFxStronglyTypedModel\DacFxStronglyTypedModel.csproj">
+      <Project>{832ecf86-c071-4628-a8b7-2529d8a7bdbc}</Project>
+      <Name>DacFxStronglyTypedModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ReverseEngineer20\ReverseEngineer20.csproj">
       <Project>{4c0f2979-fcd9-4e93-8e4f-2a43055d42fe}</Project>
       <Name>ReverseEngineer20</Name>
