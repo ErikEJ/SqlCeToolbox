@@ -163,7 +163,7 @@ namespace ReverseEngineer20
             {
                 var uniqueConstraint = new DatabaseUniqueConstraint
                 {
-                    Name = uq.Name.Parts[1],
+                    Name = uq.Name.Parts[2],
                     Table = dbTable
                 };
 
@@ -195,7 +195,7 @@ namespace ReverseEngineer20
             {
                 var index = new DatabaseIndex
                 {
-                    Name = ix.Name.Parts[1],
+                    Name = ix.Name.Parts[2],
                     Table = dbTable,
                     IsUnique = ix.GetProperty<bool>(Index.Unique)
                 };
@@ -297,12 +297,6 @@ namespace ReverseEngineer20
                 if (maxLength == -1)
                 {
                     return $"{dataTypeName}(max)";
-                }
-
-                if (dataTypeName == "nvarchar"
-                    || dataTypeName == "nchar")
-                {
-                    maxLength /= 2;
                 }
 
                 return $"{dataTypeName}({maxLength})";

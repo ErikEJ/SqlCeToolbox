@@ -22,6 +22,7 @@ namespace ReverseEngineer20
         public bool UseHandleBars { get; set; }
         public bool IncludeConnectionString { get; set; }
         public int SelectedToBeGenerated { get; set; }
+        [IgnoreDataMember]
         public string Dacpac { get; set; }
     }
 }

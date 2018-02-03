@@ -58,12 +58,16 @@ namespace EFCorePowerTools.Handlers
                 }
 
                 var options = TryReadOptions(optionsPath);
+                if (options != null)
+                {
+                    options.Dacpac = dacpacPath;
+                }
 
                 var ptd = new PickTablesDialog { IncludeTables = true };
                 if (!string.IsNullOrEmpty(dacpacPath))
                 {
                     //TODO Remove later
-                    EnvDteHelper.ShowMessage("NOTE: Using dacpac is a preview feature. Please provide feedback on GitHub.");
+                    EnvDteHelper.ShowMessage($"NOTE: Using dacpac is a preview feature.{Environment.NewLine}Please provide feedback on GitHub.");
                     dbInfo.DatabaseType = DatabaseType.SQLServer;
                     dbInfo.ConnectionString = "Data Source=.;Initial Catalog=" + Path.GetFileNameWithoutExtension(dacpacPath);
                     ptd.Tables = revEng.GetDacpacTableNames(dacpacPath);

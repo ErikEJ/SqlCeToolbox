@@ -25,6 +25,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 if (!string.IsNullOrEmpty(options.Dacpac))
                 {
                     chkIncludeConnectionString.IsEnabled = false;
+                    chkIncludeConnectionString.IsChecked = false;
                 }
                 ModelName = options.ContextClassName;
                 NameSpace = options.ProjectRootNamespace;
