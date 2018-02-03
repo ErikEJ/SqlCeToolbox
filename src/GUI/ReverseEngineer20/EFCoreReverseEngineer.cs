@@ -73,7 +73,9 @@ namespace ReverseEngineer20
             var generator = serviceProvider.GetService<IModelScaffolder>();
 
             var filePaths = generator.Generate(
-                reverseEngineerOptions.ConnectionString,
+                reverseEngineerOptions.Dacpac != null
+                    ? reverseEngineerOptions.Dacpac
+                    : reverseEngineerOptions.ConnectionString,
                 reverseEngineerOptions.Tables,
                 new List<string>(), 
                 reverseEngineerOptions.ProjectPath,

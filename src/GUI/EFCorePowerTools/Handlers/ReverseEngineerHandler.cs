@@ -66,8 +66,6 @@ namespace EFCorePowerTools.Handlers
                     EnvDteHelper.ShowMessage("NOTE: Using dacpac is a preview feature. Please provide feedback on GitHub.");
                     dbInfo.DatabaseType = DatabaseType.SQLServer;
                     dbInfo.ConnectionString = "Data Source=.;Initial Catalog=" + Path.GetFileNameWithoutExtension(dacpacPath);
-                    options.IncludeConnectionString = false;
-                    options.Dacpac = dacpacPath;
                     ptd.Tables = revEng.GetDacpacTableNames(dacpacPath);
                 }
                 else
@@ -106,7 +104,7 @@ namespace EFCorePowerTools.Handlers
                     InstallNuGetPackage = !packageResult.Item1,
                     ModelName = options != null ? options.ContextClassName : model,
                     ProjectName = project.Name,
-                    NameSpace = options != null ? options.ProjectRootNamespace : project.Properties.Item("DefaultNamespace").Value.ToString()                    
+                    NameSpace = options != null ? options.ProjectRootNamespace : project.Properties.Item("DefaultNamespace").Value.ToString()
                 };
 
                 _package.Dte2.StatusBar.Text = "Getting options...";
@@ -129,6 +127,7 @@ namespace EFCorePowerTools.Handlers
                     UseHandleBars = modelDialog.UseHandelbars,
                     IncludeConnectionString = modelDialog.IncludeConnectionString,
                     SelectedToBeGenerated = modelDialog.SelectedTobeGenerated,
+                    Dacpac = dacpacPath,
                     Tables = ptd.Tables
                 };
 
@@ -271,7 +270,7 @@ namespace EFCorePowerTools.Handlers
             return false;
         }
 
-        public string WriteOptions(ReverseEngineerOptions options)
+        private string WriteOptions(ReverseEngineerOptions options)
         {
             var ms = new MemoryStream();
             var ser = new DataContractJsonSerializer(typeof(ReverseEngineerOptions));
@@ -281,7 +280,7 @@ namespace EFCorePowerTools.Handlers
             return Encoding.UTF8.GetString(json, 0, json.Length);
         }
 
-        public ReverseEngineerOptions TryReadOptions(string optionsPath)
+        private ReverseEngineerOptions TryReadOptions(string optionsPath)
         {
             if (!File.Exists(optionsPath)) return null;
             if (File.Exists(optionsPath + ".ignore")) return null;

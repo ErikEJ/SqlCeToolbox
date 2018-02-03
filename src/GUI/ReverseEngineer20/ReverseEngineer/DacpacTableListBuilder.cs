@@ -5,16 +5,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace ReverseEngineer20.ReverseEngineer
+namespace ReverseEngineer20
 {
     public class DacpacTableListBuilder
     {
-        private string _dacpacPath;
+        private readonly string _dacpacPath;
+
         public DacpacTableListBuilder(string dacpacPath)
         {
             if (string.IsNullOrEmpty(dacpacPath))
             {
-                throw new ArgumentException("invalid path", nameof(dacpacPath));
+                throw new ArgumentException(@"invalid path", nameof(dacpacPath));
             }
             if (!File.Exists(dacpacPath))
             {
