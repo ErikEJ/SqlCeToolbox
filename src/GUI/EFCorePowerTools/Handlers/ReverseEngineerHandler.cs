@@ -46,11 +46,9 @@ namespace EFCorePowerTools.Handlers
                 var diagRes = psd.ShowModal();
                 if (!diagRes.HasValue || !diagRes.Value) return;
 
-                // Show dialog with SqlClient selected by default
                 _package.Dte2.StatusBar.Text = "Loading schema information...";
 
                 var dbInfo = psd.SelectedDatabase.Value;
-                //TODO Set this properly in Dialog
                 var dacpacPath = psd.DacpacPath;
 
                 if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
@@ -61,18 +59,15 @@ namespace EFCorePowerTools.Handlers
 
                 var options = TryReadOptions(optionsPath);
 
-                bool useDacpac = false;
+                var ptd = new PickTablesDialog { IncludeTables = true };
                 if (!string.IsNullOrEmpty(dacpacPath))
                 {
-                    useDacpac = true;
+                    //TODO Remove later
+                    EnvDteHelper.ShowMessage("NOTE: Using dacpac is a preview feature. Please provide feedback on GitHub.");
                     dbInfo.DatabaseType = DatabaseType.SQLServer;
                     dbInfo.ConnectionString = "Data Source=.;Initial Catalog=" + Path.GetFileNameWithoutExtension(dacpacPath);
                     options.IncludeConnectionString = false;
-                }
-
-                var ptd = new PickTablesDialog { IncludeTables = true };
-                if (useDacpac)
-                {
+                    options.Dacpac = dacpacPath;
                     ptd.Tables = revEng.GetDacpacTableNames(dacpacPath);
                 }
                 else
@@ -134,7 +129,6 @@ namespace EFCorePowerTools.Handlers
                     UseHandleBars = modelDialog.UseHandelbars,
                     IncludeConnectionString = modelDialog.IncludeConnectionString,
                     SelectedToBeGenerated = modelDialog.SelectedTobeGenerated,
-                    Dacpac = useDacpac ? dacpacPath : null,
                     Tables = ptd.Tables
                 };
 

@@ -22,6 +22,10 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 chkHandlebars.IsChecked = options.UseHandleBars;
                 chkIdReplace.IsChecked = options.IdReplace;
                 chkIncludeConnectionString.IsChecked = options.IncludeConnectionString;
+                if (!string.IsNullOrEmpty(options.Dacpac))
+                {
+                    chkIncludeConnectionString.IsEnabled = false;
+                }
                 ModelName = options.ContextClassName;
                 NameSpace = options.ProjectRootNamespace;
                 OutputPath = options.OutputPath;

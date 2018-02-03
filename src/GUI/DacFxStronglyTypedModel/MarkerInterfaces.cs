@@ -99,7 +99,6 @@ namespace Microsoft.SqlServer.Dac.Extensions.Prototype
     #region IExtendedProprtyHost
     public interface IExtendedPropertyHost : ISqlModelElement { }
 
-    //TODO: Collect all extended property hosts. Some added but lots missing
     #endregion
 
     #region ISqlObjectAuthorizer
@@ -113,7 +112,6 @@ namespace Microsoft.SqlServer.Dac.Extensions.Prototype
         }
     }
 
-    // TODO: Collect all Authorizers
     #endregion
 
     public interface ISpecifiesStorage : ISqlModelElement

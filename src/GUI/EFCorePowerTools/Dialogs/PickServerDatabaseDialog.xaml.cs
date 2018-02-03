@@ -44,7 +44,21 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         private void comboBox1_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (comboBox1.SelectedItem != null)
+            {
                 SelectedDatabase = (KeyValuePair<string, DatabaseInfo>)comboBox1.SelectedItem;
+                DacpacPath = null;
+                comboBox2.SelectedIndex = -1;
+            };
+        }
+
+        private void comboBox2_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (comboBox2.SelectedItem != null)
+            {
+                var result = (KeyValuePair<string, string>)comboBox2.SelectedItem;
+                DacpacPath = result.Value;
+                comboBox1.SelectedIndex = -1;
+            };
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -79,5 +93,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 EnvDteHelper.ShowMessage(exception.ToString());
             }
         }
+
     }
 }

@@ -241,17 +241,21 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         private Dictionary<string, string> result = new Dictionary<string, string>();
 
         public Dictionary<string, string> GetDacpacFilesInActiveSolution(DTE dte)
-        {
-            result.Add("N/A", null);
-
+        {            
             if (!dte.Solution.IsOpen)
+            {
+                result.Add("No open Solution", null);
                 return result;
+            }
 
             string path = null;
             TryGetInitialPath(dte, out path);
 
             if (path != null)
                 DirSearch(path);
+
+            if (result.Count == 0)
+                result.Add("No .dacpac files found in Solution folders", null);
 
             return result;
         }
@@ -264,7 +268,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 {
                     foreach (string f in Directory.GetFiles(d, "*.dacpac"))
                     {
-                        result.Add(Path.GetFileName(f), f);
+                        var key = f;
+                        if (key.Length > 45)
+                        {
+                            key = "..." + key.Substring(key.Length - 45);
+                        }
+                        result.Add(key, f);
                     }
                     DirSearch(d);
                 }
