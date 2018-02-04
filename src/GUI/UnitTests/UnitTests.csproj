@@ -115,6 +115,9 @@
     <Content Include="Chinook.dacpac">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="AdventureWorks2014.dacpac">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="graph.dgml">
       <SubType>Designer</SubType>
     </None>

@@ -128,5 +128,19 @@ namespace UnitTests
             Assert.AreEqual("TestTypeAlias", dbModel.Tables[0].Columns[1].StoreType);
             Assert.AreEqual("nvarchar(max)", dbModel.Tables[0].Columns[1].GetUnderlyingStoreType());
         }
+
+        [Test]
+        public void CanBuildAW2014()
+        {
+            // Arrange
+            var factory = new SqlServerDacpacDatabaseModelFactory(null);
+            var tables = new List<string>();
+
+            // Act
+            var dbModel = factory.Create("AdventureWorks2014.dacpac", tables, new List<string>());
+
+            // Assert
+            Assert.AreEqual(71, dbModel.Tables.Count());
+        }
     }
 }

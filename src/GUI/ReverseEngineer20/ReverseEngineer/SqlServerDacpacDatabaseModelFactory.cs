@@ -182,7 +182,7 @@ namespace ReverseEngineer20
             {
                 var uniqueConstraint = new DatabaseUniqueConstraint
                 {
-                    Name = uq.Name.Parts[2],
+                    Name = uq.Name.HasName ? uq.Name.Parts[2] : null,
                     Table = dbTable
                 };
 
@@ -228,9 +228,12 @@ namespace ReverseEngineer20
                 foreach (ModelRelationshipInstance column in ix.GetReferencedRelationshipInstances(Index.Columns))
                 {
                     var dbCol = dbTable.Columns
-                        .Single(c => c.Name == column.ObjectName.Parts[2]);
+                        .SingleOrDefault(c => c.Name == column.ObjectName.Parts[2]);
 
-                    index.Columns.Add(dbCol);
+                    if (dbCol != null)
+                    {
+                        index.Columns.Add(dbCol);
+                    }
                 }
 
                 //Included columns are referenced using the relationships but are a slightly different class
