@@ -249,6 +249,7 @@ namespace ReverseEngineer20
                 .Where(i => !i.GetProperty<bool>(Column.IsHidden)
                 && i.ColumnType != ColumnType.ColumnSet
                 // Computed columns not supported for now
+                // Probably not possible: https://stackoverflow.com/questions/27259640/get-datatype-of-computed-column-from-dacpac
                 && i.ColumnType != ColumnType.ComputedColumn 
                 );
 
