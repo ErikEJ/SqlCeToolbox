@@ -197,7 +197,8 @@ namespace ReverseEngineer20
                 {
                     Name = ix.Name.Parts[2],
                     Table = dbTable,
-                    IsUnique = ix.GetProperty<bool>(Index.Unique)
+                    IsUnique = ix.GetProperty<bool>(Index.Unique),
+                    Filter = (string)ix.GetProperty(Index.FilterPredicate)
                 };
 
                 if (ix.GetProperty<bool>(Index.Clustered))
@@ -212,22 +213,14 @@ namespace ReverseEngineer20
 
                     index.Columns.Add(dbCol);
                 }
-                
-                index.Filter = (string)ix.GetProperty(Index.FilterPredicate);
+
+                //Included columns are referenced using the relationships but are a slightly different class
+                //foreach (ModelRelationshipInstance column in index.GetReferencedRelationshipInstances(Index.IncludedColumns))
+                //{
+                //    //DumpColumn(column, "Included");
+                //}
+
                 dbTable.Indexes.Add(index);
-            }
-        }
-
-        private static void DumpIndex(TSqlObject index)
-        {
-            //To get to individual properties we need to use the static schema container classes, each property can be called directly or you can ask an object for all it's child properties
-            var isClustered = index.GetProperty<bool?>(Index.Clustered);
-            var isUnique = index.GetProperty<bool?>(Index.Unique);
-
-            //Included columns are referenced using the relationships but are a slightly different class
-            foreach (ModelRelationshipInstance column in index.GetReferencedRelationshipInstances(Index.IncludedColumns))
-            {
-                //DumpColumn(column, "Included");
             }
         }
 

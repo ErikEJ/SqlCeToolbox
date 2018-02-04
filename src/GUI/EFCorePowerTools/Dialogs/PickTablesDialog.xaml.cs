@@ -32,6 +32,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             { 
                 var isChecked = !table.StartsWith("__");
                 isChecked = !table.StartsWith("dbo.__");
+                isChecked = !table.EndsWith(".sysdiagrams");
                 items.Add(new CheckListItem { IsChecked = isChecked, Label = table });                
             }
             chkTables.ItemsSource = items;
