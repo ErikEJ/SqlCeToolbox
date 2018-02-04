@@ -89,7 +89,7 @@ namespace ReverseEngineer20
             var pk = table.PrimaryKeyConstraints.First();
             var primaryKey = new DatabasePrimaryKey
             {
-                Name = pk.Name.Parts[1],
+                Name = pk.Name.HasName ? pk.Name.Parts[1] : null,
                 Table = dbTable
             };
 
@@ -213,8 +213,7 @@ namespace ReverseEngineer20
                     index.Columns.Add(dbCol);
                 }
                 
-                //TODO Filtered index
-                var filter = ix.GetProperty(Index.FilterPredicate);
+                index.Filter = ix.GetProperty<string>(Index.FilterPredicate);
 
                 dbTable.Indexes.Add(index);
             }

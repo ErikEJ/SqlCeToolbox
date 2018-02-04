@@ -11,6 +11,8 @@ namespace UnitTests
     {
         private const string  dacpac = "Chinook.dacpac";
 
+        private const string dacpacQuirk = "TestDb.dacpac";
+
         private static readonly ISet<string> _dateTimePrecisionTypes = new HashSet<string> { "datetimeoffset", "datetime2", "time" };
 
         private static readonly ISet<string> _maxLengthRequiredTypes
@@ -65,6 +67,24 @@ namespace UnitTests
             Assert.AreEqual("Album", dbModel.Tables[0].Name);
             Assert.AreEqual(1, dbModel.Tables[0].ForeignKeys.Count);
             Assert.AreEqual(3, dbModel.Tables[0].Columns.Count);
+        }
+
+        [Test]
+        public void CanEnumerateSelectedQuirkObjects()
+        {
+            // Arrange
+            var factory = new SqlServerDacpacDatabaseModelFactory(null);
+            var tables = new List<string> { "dbo.FilteredIndexTable" };
+
+            // Act
+            var dbModel = factory.Create(dacpacQuirk, tables, new List<string>());
+
+            // Assert
+            Assert.AreEqual(1, dbModel.Tables.Count());
+            Assert.AreEqual("FilteredIndexTable", dbModel.Tables[0].Name);
+            Assert.AreEqual(0, dbModel.Tables[0].ForeignKeys.Count);
+            Assert.AreEqual(2, dbModel.Tables[0].Columns.Count);
+
         }
     }
 }
