@@ -1,4 +1,5 @@
-﻿using Microsoft.SqlServer.Dac.Extensions.Prototype;
+﻿using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using Microsoft.SqlServer.Dac.Extensions.Prototype;
 using NUnit.Framework;
 using ReverseEngineer20;
 using System.Collections.Generic;
@@ -74,17 +75,41 @@ namespace UnitTests
         {
             // Arrange
             var factory = new SqlServerDacpacDatabaseModelFactory(null);
-            var tables = new List<string> { "dbo.FilteredIndexTable" };
+            var tables = new List<string> { "dbo.FilteredIndexTable", "dbo.DefaultComputedValues" };
+
+            // Act
+            var dbModel = factory.Create(dacpacQuirk, tables, new List<string>());
+
+            // Assert
+            Assert.AreEqual(2, dbModel.Tables.Count());
+
+            Assert.AreEqual("FilteredIndexTable", dbModel.Tables[1].Name);
+            Assert.AreEqual(0, dbModel.Tables[1].ForeignKeys.Count);
+            Assert.AreEqual(2, dbModel.Tables[1].Columns.Count);
+
+            //TODO Add support for computed columns (expect 7!)
+            Assert.AreEqual("DefaultComputedValues", dbModel.Tables[0].Name);
+            Assert.AreEqual(5, dbModel.Tables[0].Columns.Count);
+        }
+
+        [Test]
+        public void CanEnumerateTypeAlias()
+        {
+            // Arrange
+            var factory = new SqlServerDacpacDatabaseModelFactory(null);
+            var tables = new List<string> { "dbo.TypeAlias" };
 
             // Act
             var dbModel = factory.Create(dacpacQuirk, tables, new List<string>());
 
             // Assert
             Assert.AreEqual(1, dbModel.Tables.Count());
-            Assert.AreEqual("FilteredIndexTable", dbModel.Tables[0].Name);
-            Assert.AreEqual(0, dbModel.Tables[0].ForeignKeys.Count);
+
+            Assert.AreEqual("TypeAlias", dbModel.Tables[0].Name);
             Assert.AreEqual(2, dbModel.Tables[0].Columns.Count);
 
+            Assert.AreEqual("TestTypeAlias", dbModel.Tables[0].Columns[1].StoreType);
+            Assert.AreEqual("nvarchar(max)", dbModel.Tables[0].Columns[1].GetUnderlyingStoreType());
         }
     }
 }
