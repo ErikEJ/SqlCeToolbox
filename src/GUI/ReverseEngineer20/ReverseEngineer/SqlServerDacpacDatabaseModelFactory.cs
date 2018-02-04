@@ -213,8 +213,7 @@ namespace ReverseEngineer20
                     index.Columns.Add(dbCol);
                 }
                 
-                index.Filter = ix.GetProperty<string>(Index.FilterPredicate);
-
+                //var obj = ix.GetProperty<TSqlObject>(Index.FilterPredicate);
                 dbTable.Indexes.Add(index);
             }
         }
