@@ -269,9 +269,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     foreach (string f in Directory.GetFiles(d, "*.dacpac"))
                     {
                         var key = f;
-                        if (key.Length > 45)
+                        if (key.Length > 50)
                         {
-                            key = "..." + key.Substring(key.Length - 45);
+                            key = "..." + key.Substring(key.Length - 50);
                         }
                         result.Add(key, f);
                     }

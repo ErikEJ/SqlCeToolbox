@@ -145,7 +145,7 @@ namespace ReverseEngineer20
 
                 var foreignKey = new DatabaseForeignKey
                 {
-                    Name = fk.Name.Parts[1],
+                    Name = fk.Name.HasName ? fk.Name.Parts[1] : null,
                     Table = dbTable,
                     PrincipalTable = foreignTable,
                     OnDelete = ConvertToReferentialAction(fk.DeleteAction)
@@ -182,7 +182,7 @@ namespace ReverseEngineer20
             {
                 var uniqueConstraint = new DatabaseUniqueConstraint
                 {
-                    Name = uq.Name.HasName ? uq.Name.Parts[2] : null,
+                    Name = uq.Name.HasName ? uq.Name.Parts[1] : null,
                     Table = dbTable
                 };
 
