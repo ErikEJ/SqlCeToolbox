@@ -238,10 +238,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return new Tuple<bool, string>(false, providerPackage);
         }
 
-        private Dictionary<string, string> result = new Dictionary<string, string>();
 
         public Dictionary<string, string> GetDacpacFilesInActiveSolution(DTE dte)
-        {            
+        {
+            var result = new Dictionary<string, string>();
+
             if (!dte.Solution.IsOpen)
             {
                 result.Add("No open Solution", null);
@@ -252,7 +253,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             TryGetInitialPath(dte, out path);
 
             if (path != null)
-                DirSearch(path);
+            {
+                var files = DirSearch(path, "*.dacpac");
+                foreach (string file in files)
+                {
+                    var key = file;
+                    if (key.Length > 55)
+                    {
+                        key = "..." + key.Substring(key.Length - 55);
+                    }
+                    result.Add(key, file);
+                }
+            }
 
             if (result.Count == 0)
                 result.Add("No .dacpac files found in Solution folders", null);
@@ -260,27 +272,26 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return result;
         }
 
-        void DirSearch(string sDir)
+        List<string> DirSearch(string sDir, string pattern)
         {
+            var files = new List<String>();
+
             try
             {
+                foreach (string f in Directory.GetFiles(sDir, pattern))
+                {
+                    files.Add(f);
+                }
                 foreach (string d in Directory.GetDirectories(sDir))
                 {
-                    foreach (string f in Directory.GetFiles(d, "*.dacpac"))
-                    {
-                        var key = f;
-                        if (key.Length > 50)
-                        {
-                            key = "..." + key.Substring(key.Length - 50);
-                        }
-                        result.Add(key, f);
-                    }
-                    DirSearch(d);
+                    files.AddRange(DirSearch(d, pattern));
                 }
             }
             catch
             {
             }
+
+            return files;
         }
 
         private bool TryGetInitialPath(DTE dte, out string path)

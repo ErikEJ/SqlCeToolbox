@@ -92,6 +92,7 @@
       <DependentUpon>PickTablesDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="EFCorePowerToolsPackage.cs" />
+    <Compile Include="Extensions\ReverseEngineerOptionsExtensions.cs" />
     <Compile Include="Extensions\ProjectExtensions.cs" />
     <Compile Include="Extensions\ProjectItemsExtensions.cs" />
     <Compile Include="Guids.cs" />

@@ -24,5 +24,6 @@ namespace ReverseEngineer20
         public int SelectedToBeGenerated { get; set; }
         [IgnoreDataMember]
         public string Dacpac { get; set; }
+        public string DefaultDacpacSchema { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using EFCorePowerTools.Extensions;
+using EnvDTE;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ReverseEngineer20;
@@ -8,7 +9,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization.Json;
 using System.Text;
 
 namespace EFCorePowerTools.Handlers
@@ -50,6 +50,7 @@ namespace EFCorePowerTools.Handlers
 
                 var dbInfo = psd.SelectedDatabase.Value;
                 var dacpacPath = psd.DacpacPath;
+                string dacpacSchema = null;
 
                 if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                 {
@@ -57,10 +58,15 @@ namespace EFCorePowerTools.Handlers
                     return;
                 }
 
-                var options = TryReadOptions(optionsPath);
-                if (options != null)
+                var options = ReverseEngineerOptionsExtensions.TryRead(optionsPath);
+                if (options == null)
+                {
+                    _package.LogError(new List<string> { "Unable to load options" }, null);
+                }
+                else
                 {
                     options.Dacpac = dacpacPath;
+                    dacpacSchema = options.DefaultDacpacSchema;
                 }
 
                 var ptd = new PickTablesDialog { IncludeTables = true };
@@ -132,6 +138,7 @@ namespace EFCorePowerTools.Handlers
                     IncludeConnectionString = modelDialog.IncludeConnectionString,
                     SelectedToBeGenerated = modelDialog.SelectedTobeGenerated,
                     Dacpac = dacpacPath,
+                    DefaultDacpacSchema = dacpacSchema,
                     Tables = ptd.Tables
                 };
 
@@ -228,7 +235,7 @@ namespace EFCorePowerTools.Handlers
         {
             if (!File.Exists(optionsPath + ".ignore"))
             {
-                File.WriteAllText(optionsPath, WriteOptions(options), Encoding.UTF8);
+                File.WriteAllText(optionsPath, options.Write(), Encoding.UTF8);
                 project.ProjectItems.AddFromFile(optionsPath);
             }
         }
@@ -272,36 +279,6 @@ namespace EFCorePowerTools.Handlers
             }
 
             return false;
-        }
-
-        private string WriteOptions(ReverseEngineerOptions options)
-        {
-            var ms = new MemoryStream();
-            var ser = new DataContractJsonSerializer(typeof(ReverseEngineerOptions));
-            ser.WriteObject(ms, options);
-            byte[] json = ms.ToArray();
-            ms.Close();
-            return Encoding.UTF8.GetString(json, 0, json.Length);
-        }
-
-        private ReverseEngineerOptions TryReadOptions(string optionsPath)
-        {
-            if (!File.Exists(optionsPath)) return null;
-            if (File.Exists(optionsPath + ".ignore")) return null;
-
-            ReverseEngineerOptions deserializedOptions = null;
-            try
-            {
-                var ms = new MemoryStream(Encoding.UTF8.GetBytes(File.ReadAllText(optionsPath, Encoding.UTF8)));
-                var ser = new DataContractJsonSerializer(typeof(ReverseEngineerOptions));
-                deserializedOptions = ser.ReadObject(ms) as ReverseEngineerOptions;
-                ms.Close();
-            }
-            catch (Exception ex)
-            {
-                _package.LogError(new List<string> { "Unable to load options" }, ex);
-            }
-            return deserializedOptions;
         }
     }
 }

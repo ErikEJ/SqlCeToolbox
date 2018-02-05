@@ -72,12 +72,18 @@ namespace ReverseEngineer20
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var generator = serviceProvider.GetService<IModelScaffolder>();
 
+            var schemas = new List<string>();
+            if (reverseEngineerOptions.DefaultDacpacSchema != null)
+            {
+                schemas.Add(reverseEngineerOptions.DefaultDacpacSchema);
+            }
+
             var filePaths = generator.Generate(
                 reverseEngineerOptions.Dacpac != null
                     ? reverseEngineerOptions.Dacpac
                     : reverseEngineerOptions.ConnectionString,
                 reverseEngineerOptions.Tables,
-                new List<string>(), 
+                schemas, 
                 reverseEngineerOptions.ProjectPath,
                 reverseEngineerOptions.OutputPath,
                 reverseEngineerOptions.ProjectRootNamespace,
@@ -85,7 +91,6 @@ namespace ReverseEngineer20
                 !reverseEngineerOptions.UseFluentApiOnly,
                 overwriteFiles: true,
                 useDatabaseNames: reverseEngineerOptions.UseDatabaseNames);
-                // Explanation: Use table and column names directly from the database.
 
             foreach (var file in filePaths.EntityTypeFiles)
             {
