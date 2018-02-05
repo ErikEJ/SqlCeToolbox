@@ -39,6 +39,22 @@ namespace EFCorePowerTools.Extensions
             return null;
         }
 
+        public static string GetOutPutDacpacPath(this Project project)
+        {
+            var assemblyName = project.Properties.Item("AssemblyName").Value.ToString();
+
+            var assemblyNameDacpac = assemblyName + ".dacpac";
+
+            var outputPath = GetOutputPath(project);
+
+            if (File.Exists(Path.Combine(outputPath, assemblyNameDacpac)))
+            {
+                return Path.Combine(outputPath, assemblyNameDacpac);
+            }
+
+            return null;
+        }
+
         private static string GetOutputPath(Project project)
         {
             var configManager = project.ConfigurationManager;
@@ -51,7 +67,6 @@ namespace EFCorePowerTools.Extensions
             var absoluteOutputPath = ReverseEngineer20.PathHelper.GetAbsPath(outputPath, fullName);
 
             return absoluteOutputPath;
-        }
- 
+        } 
     }
 }

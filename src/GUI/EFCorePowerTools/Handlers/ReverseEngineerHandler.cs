@@ -28,6 +28,7 @@ namespace EFCorePowerTools.Handlers
             {
                 var dteH = new EnvDteHelper();
                 var revEng = new EfCoreReverseEngineer();
+                string dacpacSchema = null;
 
                 if (_package.Dte2.Mode == vsIDEMode.vsIDEModeDebug)
                 {
@@ -43,14 +44,23 @@ namespace EFCorePowerTools.Handlers
                 var dacpacList = new EnvDteHelper().GetDacpacFilesInActiveSolution(_package.Dte2.DTE);
 
                 var psd = new PickServerDatabaseDialog(databaseList, _package, dacpacList);
-                var diagRes = psd.ShowModal();
-                if (!diagRes.HasValue || !diagRes.Value) return;
+                if (psd.ShowModal() != true) return;
 
                 _package.Dte2.StatusBar.Text = "Loading schema information...";
 
                 var dbInfo = psd.SelectedDatabase.Value;
                 var dacpacPath = psd.DacpacPath;
-                string dacpacSchema = null;
+
+                //TODO Figure out how to get output path
+                //if (!string.IsNullOrEmpty(dacpacPath))
+                //{
+                //    dacpacPath = EnvDteHelper.BuildSqlProj(_package.Dte2.DTE, dacpacPath);
+                //    if (string.IsNullOrEmpty(dacpacPath))
+                //    {
+                //        EnvDteHelper.ShowMessage("Unable to build selected Database Project");
+                //        return;
+                //    }
+                //}
 
                 if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                 {
@@ -80,21 +90,7 @@ namespace EFCorePowerTools.Handlers
                 }
                 else
                 {
-                    using (var repository = RepositoryHelper.CreateRepository(dbInfo))
-                    {
-                        var allPks = repository.GetAllPrimaryKeys();
-                        var tableList = repository.GetAllTableNamesForExclusion();
-                        var tables = new List<string>();
-
-                        foreach (var table in tableList)
-                        {
-                            if (allPks.Where(pk => pk.TableName == table).Count() > 0)
-                            {
-                                tables.Add(table);
-                            }
-                        }
-                        ptd.Tables = tables;
-                    }
+                    ptd.Tables = GetTablesFromRepository(dbInfo);
                 }
 
                 if (options != null && options.Tables.Count > 0)
@@ -102,8 +98,7 @@ namespace EFCorePowerTools.Handlers
                     ptd.SelectedTables = options.Tables;
                 }
 
-                var res = ptd.ShowModal();
-                if (!res.HasValue || !res.Value) return;
+                if (ptd.ShowModal() != true) return;
 
                 var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
                 var model = revEng.GenerateClassName(classBasis) + "Context";
@@ -118,9 +113,7 @@ namespace EFCorePowerTools.Handlers
                 };
 
                 _package.Dte2.StatusBar.Text = "Getting options...";
-                var result = modelDialog.ShowModal();
-                if (!result.HasValue || result.Value != true)
-                    return;
+                if (modelDialog.ShowModal() != true) return;
 
                 options = new ReverseEngineerOptions
                 {
@@ -228,6 +221,25 @@ namespace EFCorePowerTools.Handlers
             catch (Exception exception)
             {
                 _package.LogError(new List<string>(), exception);
+            }
+        }
+
+        private List<string> GetTablesFromRepository(DatabaseInfo dbInfo)
+        {
+            using (var repository = RepositoryHelper.CreateRepository(dbInfo))
+            {
+                var allPks = repository.GetAllPrimaryKeys();
+                var tableList = repository.GetAllTableNamesForExclusion();
+                var tables = new List<string>();
+
+                foreach (var table in tableList)
+                {
+                    if (allPks.Where(pk => pk.TableName == table).Count() > 0)
+                    {
+                        tables.Add(table);
+                    }
+                }
+                return tables;
             }
         }
 
