@@ -87,10 +87,9 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                     i++;
                 }
             }
-
             catch (Exception exception)
             {
-                EnvDteHelper.ShowMessage(exception.ToString());
+                EnvDteHelper.ShowMessage("Unable to add connection, maybe the provider is not supported: "  + exception.Message);
             }
         }
 
