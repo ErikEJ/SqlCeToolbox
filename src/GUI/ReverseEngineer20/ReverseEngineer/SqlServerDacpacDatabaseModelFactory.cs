@@ -212,37 +212,34 @@ namespace ReverseEngineer20
                 && t.Schema == table.Name.Parts[0]);
 
             var ixs = table.Indexes.ToList();
-            foreach (var ix in ixs)
+            foreach (var sqlIx in ixs)
             {
+                var ix = sqlIx as TSqlIndex;
+
+                if (sqlIx == null) continue;
+
                 var index = new DatabaseIndex
                 {
                     Name = ix.Name.Parts[2],
                     Table = dbTable,
-                    IsUnique = ix.GetProperty<bool>(Index.Unique),
-                    Filter = (string)ix.GetProperty(Index.FilterPredicate)
+                    IsUnique = ix.Unique,
+                    Filter = ix.FilterPredicate
                 };
 
-                if (ix.GetProperty<bool>(Index.Clustered))
+                if (ix.Clustered)
                 {
                     index["SqlServer:Clustered"] = true;
                 }
-
-                foreach (ModelRelationshipInstance column in ix.GetReferencedRelationshipInstances(Index.Columns))
+                foreach (var column in ix.Columns)
                 {
                     var dbCol = dbTable.Columns
-                        .SingleOrDefault(c => c.Name == column.ObjectName.Parts[2]);
+                        .SingleOrDefault(c => c.Name == column.Name.Parts[2]);
 
                     if (dbCol != null)
                     {
                         index.Columns.Add(dbCol);
                     }
                 }
-
-                //Included columns are referenced using the relationships but are a slightly different class
-                //foreach (ModelRelationshipInstance column in index.GetReferencedRelationshipInstances(Index.IncludedColumns))
-                //{
-                //    //DumpColumn(column, "Included");
-                //}
 
                 if (index.Columns.Count > 0)
                 {

@@ -137,7 +137,7 @@ namespace UnitTests
             var tables = new List<string>();
 
             // Act
-            var dbModel = factory.Create("AdventureWorks2014.dacpac", tables, new List<string>());
+            var dbModel = factory.Create("AdventureWorks2014.dacpac", null, new List<string>());
 
             // Assert
             Assert.AreEqual(71, dbModel.Tables.Count());
