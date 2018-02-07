@@ -1,4 +1,5 @@
 ﻿using EnvDTE;
+using System.Collections.Generic;
 using System.IO;
 
 namespace EFCorePowerTools.Extensions
@@ -34,22 +35,6 @@ namespace EFCorePowerTools.Extensions
             if (File.Exists(Path.Combine(outputPath, assemblyNameDll)))
             {
                 return Path.Combine(outputPath, assemblyNameDll);
-            }
-
-            return null;
-        }
-
-        public static string GetOutPutDacpacPath(this Project project)
-        {
-            var assemblyName = project.Properties.Item("AssemblyName").Value.ToString();
-
-            var assemblyNameDacpac = assemblyName + ".dacpac";
-
-            var outputPath = GetOutputPath(project);
-
-            if (File.Exists(Path.Combine(outputPath, assemblyNameDacpac)))
-            {
-                return Path.Combine(outputPath, assemblyNameDacpac);
             }
 
             return null;

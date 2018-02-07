@@ -51,16 +51,15 @@ namespace EFCorePowerTools.Handlers
                 var dbInfo = psd.SelectedDatabase.Value;
                 var dacpacPath = psd.DacpacPath;
 
-                //TODO Figure out how to get output path
-                //if (!string.IsNullOrEmpty(dacpacPath))
-                //{
-                //    dacpacPath = EnvDteHelper.BuildSqlProj(_package.Dte2.DTE, dacpacPath);
-                //    if (string.IsNullOrEmpty(dacpacPath))
-                //    {
-                //        EnvDteHelper.ShowMessage("Unable to build selected Database Project");
-                //        return;
-                //    }
-                //}
+                if (!string.IsNullOrEmpty(dacpacPath))
+                {
+                    dacpacPath = EnvDteHelper.BuildSqlProj(_package.Dte2.DTE, dacpacPath);
+                    if (string.IsNullOrEmpty(dacpacPath))
+                    {
+                        EnvDteHelper.ShowMessage("Unable to build selected Database Project");
+                        return;
+                    }
+                }
 
                 if (dbInfo.DatabaseType == DatabaseType.SQLCE35)
                 {

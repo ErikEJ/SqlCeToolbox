@@ -257,14 +257,14 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             if (path != null)
             {
                 //TODO Implement when project inspection works
-                //var files = DirSearch(path, "*.sqlproj");
-                //foreach (string file in files)
-                //{
-                //    var key = Path.GetFileNameWithoutExtension(file);
-                //    result.Add(key, file);
-                //}
+                var files = DirSearch(path, "*.sqlproj");
+                foreach (string file in files)
+                {
+                    var key = Path.GetFileNameWithoutExtension(file);
+                    result.Add(key, file);
+                }
 
-                var files = DirSearch(path, "*.dacpac");
+                files = DirSearch(path, "*.dacpac");
                 foreach (string file in files)
                 {
                     var key = file;
@@ -282,7 +282,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return result;
         }
 
-        List<string> DirSearch(string sDir, string pattern)
+        private static List<string> DirSearch(string sDir, string pattern)
         {
             var files = new List<String>();
 
@@ -326,16 +326,26 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return Path.GetDirectoryName(dte.Solution.FullName);
         }
 
-        internal static string BuildSqlProj(DTE dte, string dacpacPath)
+        internal static string BuildSqlProj(DTE dte, string sqlprojPath)
         {
-            if (dacpacPath.EndsWith(".dacpac")) return dacpacPath;
+            if (sqlprojPath.EndsWith(".dacpac")) return sqlprojPath;
 
-            var project = GetProject(dte, dacpacPath);
+            var project = GetProject(dte, sqlprojPath);
             if (project == null) return null;
 
             if (!project.TryBuild()) return null;
 
-            return project.GetOutPutDacpacPath();
+            var files = DirSearch(Path.GetDirectoryName(project.FullName), "*.dacpac");
+
+            foreach (var file in files)
+            {
+                if (File.GetLastWriteTime(file) < DateTime.Now.AddSeconds(-15))
+                {
+                    return file;
+                }
+            }
+
+            return null;
         }
 
         private static Project GetProject(DTE dte, string projectItemPath)
