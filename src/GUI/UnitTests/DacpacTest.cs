@@ -14,11 +14,6 @@ namespace UnitTests
 
         private const string dacpacQuirk = "TestDb.dacpac";
 
-        private static readonly ISet<string> _dateTimePrecisionTypes = new HashSet<string> { "datetimeoffset", "datetime2", "time" };
-
-        private static readonly ISet<string> _maxLengthRequiredTypes
-            = new HashSet<string> { "binary", "varbinary", "char", "varchar", "nchar", "nvarchar" };
-
         private TSqlTypedModel model;
         [SetUp]
         public void Setup()

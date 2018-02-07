@@ -88,18 +88,18 @@ namespace ReverseEngineer20
         public DatabaseModel Create(DbConnection connection, IEnumerable<string> tables, IEnumerable<string> schemas) 
             => throw new NotImplementedException();
 
-        private IReadOnlyDictionary<string, string> GetTypeAliases(TSqlTypedModel model, DatabaseModel dbModel)
+        private IReadOnlyDictionary<string, (string, string)> GetTypeAliases(TSqlTypedModel model, DatabaseModel dbModel)
         {
             var items = model.GetObjects<TSqlDataType>(DacQueryScopes.UserDefined)
                 .ToList();
 
-            var typeAliasMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var typeAliasMap = new Dictionary<string, (string, string)>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var udt in items)
             {
                 int maxLength = udt.UddtIsMax ? -1 : udt.UddtLength;
                 var storeType = GetStoreType(udt.Type.First().Name.Parts[0], maxLength, udt.UddtPrecision, udt.UddtScale);
-                typeAliasMap.Add($"{udt.Name.Parts[0]}.{udt.Name.Parts[1]}", storeType);
+                typeAliasMap.Add($"{udt.Name.Parts[0]}.{udt.Name.Parts[1]}", (storeType, udt.Type.First().Name.Parts[0]));
             }
 
             return typeAliasMap;
@@ -248,7 +248,7 @@ namespace ReverseEngineer20
             }
         }
 
-        private void GetColumns(TSqlTable item, DatabaseTable dbTable, IReadOnlyDictionary<string, string> typeAliases, List<TSqlDefaultConstraint> defaultConstraints)
+        private void GetColumns(TSqlTable item, DatabaseTable dbTable, IReadOnlyDictionary<string, (string storeType, string typeName)> typeAliases, List<TSqlDefaultConstraint> defaultConstraints)
         {
             var tableColumns = item.Columns
                 .Where(i => !i.GetProperty<bool>(Column.IsHidden)
@@ -260,16 +260,18 @@ namespace ReverseEngineer20
 
             foreach (var col in tableColumns)
             {
-                //TODO Default values!
                 var def = defaultConstraints.Where(d => d.TargetColumn.First().Name.ToString() == col.Name.ToString()).FirstOrDefault();
                 string storeType = null;
-                string underlyingStoreType;
+                string underlyingStoreType = null;
+                string systemTypeName = null;
 
                 if (col.DataType.First().Name.Parts.Count > 1)
                 {
-                    if (typeAliases.TryGetValue($"{col.DataType.First().Name.Parts[0]}.{col.DataType.First().Name.Parts[1]}", out underlyingStoreType))
+                    if (typeAliases.TryGetValue($"{col.DataType.First().Name.Parts[0]}.{col.DataType.First().Name.Parts[1]}", out var value))
                     {
+                        underlyingStoreType = value.storeType;
                         storeType = col.DataType.First().Name.Parts[1];
+                        systemTypeName = value.typeName;
                     }
                 }
                 else
@@ -277,7 +279,10 @@ namespace ReverseEngineer20
                     var dataTypeName = col.DataType.First().Name.Parts[0];
                     storeType = GetStoreType(dataTypeName, col.Length, col.Precision, col.Scale);
                     underlyingStoreType = null;
+                    systemTypeName = dataTypeName;
                 }
+
+                string defaultValue = def != null ? FilterClrDefaults(systemTypeName, col.Nullable, def.Expression) : null;
 
                 var dbColumn = new DatabaseColumn
                 {
@@ -285,7 +290,7 @@ namespace ReverseEngineer20
                     Name = col.Name.Parts[2],
                     IsNullable = col.Nullable,
                     StoreType = storeType,
-                    DefaultValueSql = def != null ? def.Expression : null,
+                    DefaultValueSql = defaultValue,
                     ComputedColumnSql = col.Expression,
                     ValueGenerated = null
                 };
@@ -335,6 +340,61 @@ namespace ReverseEngineer20
             }
 
             return dataTypeName;
+        }
+
+        private static string FilterClrDefaults(string dataTypeName, bool nullable, string defaultValue)
+        {
+            if (defaultValue == null
+                || defaultValue == "(NULL)")
+            {
+                return null;
+            }
+            if (nullable)
+            {
+                return defaultValue;
+            }
+            if (defaultValue == "((0))")
+            {
+                if (dataTypeName == "bigint"
+                    || dataTypeName == "bit"
+                    || dataTypeName == "decimal"
+                    || dataTypeName == "float"
+                    || dataTypeName == "int"
+                    || dataTypeName == "money"
+                    || dataTypeName == "numeric"
+                    || dataTypeName == "real"
+                    || dataTypeName == "smallint"
+                    || dataTypeName == "smallmoney"
+                    || dataTypeName == "tinyint")
+                {
+                    return null;
+                }
+            }
+            else if (defaultValue == "((0.0))")
+            {
+                if (dataTypeName == "decimal"
+                    || dataTypeName == "float"
+                    || dataTypeName == "money"
+                    || dataTypeName == "numeric"
+                    || dataTypeName == "real"
+                    || dataTypeName == "smallmoney")
+                {
+                    return null;
+                }
+            }
+            else if ((defaultValue == "(CONVERT([real],(0)))" && dataTypeName == "real")
+                || (defaultValue == "((0.0000000000000000e+000))" && dataTypeName == "float")
+                || (defaultValue == "('0001-01-01')" && dataTypeName == "date")
+                || (defaultValue == "('1900-01-01T00:00:00.000')" && (dataTypeName == "datetime" || dataTypeName == "smalldatetime"))
+                || (defaultValue == "('0001-01-01T00:00:00.000')" && dataTypeName == "datetime2")
+                || (defaultValue == "('0001-01-01T00:00:00.000+00:00')" && dataTypeName == "datetimeoffset")
+                || (defaultValue == "('00:00:00')" && dataTypeName == "time")
+                || (defaultValue == "('00000000-0000-0000-0000-000000000000')" && dataTypeName == "uniqueidentifier"))
+            {
+                return null;
+            }
+
+            return defaultValue;
         }
 
         private static ReferentialAction? ConvertToReferentialAction(ForeignKeyAction onDeleteAction)
