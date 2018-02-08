@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
@@ -333,13 +334,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             var project = GetProject(dte, sqlprojPath);
             if (project == null) return null;
 
-            if (!project.TryBuild()) return null;
-
             var files = DirSearch(Path.GetDirectoryName(project.FullName), "*.dacpac");
-
             foreach (var file in files)
             {
-                if (File.GetLastWriteTime(file) < DateTime.Now.AddSeconds(-15))
+                File.Delete(file);
+            }
+
+            if (!project.TryBuild()) return null;
+
+            files = DirSearch(Path.GetDirectoryName(project.FullName), "*.dacpac");
+            foreach (var file in files)
+            {
+                if (File.GetLastWriteTime(file) > DateTime.Now.AddSeconds(-1))
                 {
                     return file;
                 }
