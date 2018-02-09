@@ -99,7 +99,6 @@ namespace UnitTests
             // Assert
             Assert.AreEqual(1, dbModel.Tables.Count());
 
-            //TODO Add support for computed columns (expect 7!)
             Assert.AreEqual("DefaultComputedValues", dbModel.Tables[0].Name);
             Assert.AreEqual(5, dbModel.Tables[0].Columns.Count);
         }

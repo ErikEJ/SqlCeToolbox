@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
-using System.Collections.Generic;
+using System;
 using System.IO;
+using VSLangProj;
 
 namespace EFCorePowerTools.Extensions
 {
@@ -40,6 +41,31 @@ namespace EFCorePowerTools.Extensions
             return null;
         }
 
+        public static Tuple<bool, string> ContainsEfCoreReference(this Project project, DatabaseType dbType)
+        {
+            var providerPackage = "Microsoft.EntityFrameworkCore.SqlServer";
+            if (dbType == DatabaseType.SQLCE40)
+            {
+                providerPackage = "EntityFrameworkCore.SqlServerCompact40";
+            }
+            if (dbType == DatabaseType.SQLite)
+            {
+                providerPackage = "Microsoft.EntityFrameworkCore.Sqlite";
+            }
+
+            var vsProject = project.Object as VSProject;
+            if (vsProject == null) return new Tuple<bool, string>(false, providerPackage);
+            for (var i = 1; i < vsProject.References.Count + 1; i++)
+            {
+                if (vsProject.References.Item(i).Name.Equals(providerPackage))
+                {
+                    return new Tuple<bool, string>(true, providerPackage);
+                }
+            }
+            return new Tuple<bool, string>(false, providerPackage);
+        }
+
+
         private static string GetOutputPath(Project project)
         {
             var configManager = project.ConfigurationManager;
@@ -52,6 +78,8 @@ namespace EFCorePowerTools.Extensions
             var absoluteOutputPath = ReverseEngineer20.PathHelper.GetAbsPath(outputPath, fullName);
 
             return absoluteOutputPath;
-        } 
+        }
+        
+
     }
 }

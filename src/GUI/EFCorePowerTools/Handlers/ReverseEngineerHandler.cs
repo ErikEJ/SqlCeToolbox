@@ -41,7 +41,7 @@ namespace EFCorePowerTools.Handlers
                 var optionsPath = Path.Combine(projectPath, "efpt.config.json");
 
                 var databaseList = EnvDteHelper.GetDataConnections(_package);
-                var dacpacList = new EnvDteHelper().GetDacpacFilesInActiveSolution(_package.Dte2.DTE);
+                var dacpacList = _package.Dte2.DTE.GetDacpacFilesInActiveSolution();
 
                 var psd = new PickServerDatabaseDialog(databaseList, _package, dacpacList);
                 if (psd.ShowModal() != true) return;
@@ -53,7 +53,7 @@ namespace EFCorePowerTools.Handlers
 
                 if (!string.IsNullOrEmpty(dacpacPath))
                 {
-                    dacpacPath = EnvDteHelper.BuildSqlProj(_package.Dte2.DTE, dacpacPath);
+                    dacpacPath = _package.Dte2.DTE.BuildSqlProj(dacpacPath);
                     if (string.IsNullOrEmpty(dacpacPath))
                     {
                         EnvDteHelper.ShowMessage("Unable to build selected Database Project");
@@ -81,8 +81,6 @@ namespace EFCorePowerTools.Handlers
                 var ptd = new PickTablesDialog { IncludeTables = true };
                 if (!string.IsNullOrEmpty(dacpacPath))
                 {
-                    //TODO Remove later
-                    EnvDteHelper.ShowMessage($"NOTE: Using dacpac is a preview feature.{Environment.NewLine}Please provide feedback on GitHub.");
                     dbInfo.DatabaseType = DatabaseType.SQLServer;
                     dbInfo.ConnectionString = "Data Source=.;Initial Catalog=" + Path.GetFileNameWithoutExtension(dacpacPath);
                     ptd.Tables = revEng.GetDacpacTableNames(dacpacPath);
@@ -101,7 +99,7 @@ namespace EFCorePowerTools.Handlers
 
                 var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
                 var model = revEng.GenerateClassName(classBasis) + "Context";
-                var packageResult = dteH.ContainsEfCoreReference(project, dbInfo.DatabaseType);
+                var packageResult = project.ContainsEfCoreReference(dbInfo.DatabaseType);
 
                 var modelDialog = new EfCoreModelDialog(options)
                 {
