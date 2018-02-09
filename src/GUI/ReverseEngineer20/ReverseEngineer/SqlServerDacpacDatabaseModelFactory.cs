@@ -277,12 +277,13 @@ namespace ReverseEngineer20
                 else
                 {
                     var dataTypeName = col.DataType.First().Name.Parts[0];
-                    storeType = GetStoreType(dataTypeName, col.Length, col.Precision, col.Scale);
+                    int maxLength = col.IsMax ? -1 : col.Length;
+                    storeType = GetStoreType(dataTypeName, maxLength, col.Precision, col.Scale);
                     underlyingStoreType = null;
                     systemTypeName = dataTypeName;
                 }
 
-                string defaultValue = def != null ? FilterClrDefaults(systemTypeName, col.Nullable, def.Expression) : null;
+                string defaultValue = def != null ? FilterClrDefaults(systemTypeName, col.Nullable, def.Expression.ToLowerInvariant()) : null;
 
                 var dbColumn = new DatabaseColumn
                 {

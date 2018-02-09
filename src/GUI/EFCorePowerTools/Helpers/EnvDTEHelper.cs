@@ -345,7 +345,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             files = DirSearch(Path.GetDirectoryName(project.FullName), "*.dacpac");
             foreach (var file in files)
             {
-                if (File.GetLastWriteTime(file) > DateTime.Now.AddSeconds(-1))
+                if (File.GetLastWriteTime(file) > DateTime.Now.AddSeconds(-2))
                 {
                     return file;
                 }
