@@ -9,6 +9,7 @@ using System.IO;
 using System.Globalization;
 using DbUp.Support.SqlServer;
 using System.Text.RegularExpressions;
+using System.Data.Common;
 
 namespace ErikEJ.SQLiteScripting
 {
@@ -72,6 +73,11 @@ namespace ErikEJ.SQLiteScripting
             return list;
         }
 
+        public List<Column> GetAllViewColumns()
+        {
+            return GetListOfColumns("ViewColumns");
+        }
+
         /// <summary>
         /// Retrieves view schema information for the database
         /// </summary>
@@ -128,9 +134,107 @@ namespace ErikEJ.SQLiteScripting
             return tbl;
         }
 
-        public List<Column> GetAllViewColumns()
+        private DataTable Schema_ViewColumns(SQLiteConnection cn)
         {
-            return GetListOfColumns("ViewColumns");
+            DataTable tbl = new DataTable("ViewColumns");
+            DataRow row;
+            string strSql;
+            int n;
+            DataRow schemaRow;
+            DataRow viewRow;
+
+            tbl.Locale = CultureInfo.InvariantCulture;
+            tbl.Columns.Add("VIEW_CATALOG", typeof(string));
+            tbl.Columns.Add("VIEW_SCHEMA", typeof(string));
+            tbl.Columns.Add("VIEW_NAME", typeof(string));
+            tbl.Columns.Add("VIEW_COLUMN_NAME", typeof(String));
+            tbl.Columns.Add("TABLE_CATALOG", typeof(string));
+            tbl.Columns.Add("TABLE_SCHEMA", typeof(string));
+            tbl.Columns.Add("TABLE_NAME", typeof(string));
+            tbl.Columns.Add("COLUMN_NAME", typeof(string));
+            tbl.Columns.Add("ORDINAL_POSITION", typeof(int));
+            tbl.Columns.Add("COLUMN_HASDEFAULT", typeof(bool));
+            tbl.Columns.Add("COLUMN_DEFAULT", typeof(string));
+            tbl.Columns.Add("COLUMN_FLAGS", typeof(long));
+            tbl.Columns.Add("IS_NULLABLE", typeof(bool));
+            tbl.Columns.Add("DATA_TYPE", typeof(string));
+            tbl.Columns.Add("CHARACTER_MAXIMUM_LENGTH", typeof(int));
+            tbl.Columns.Add("NUMERIC_PRECISION", typeof(int));
+            tbl.Columns.Add("NUMERIC_SCALE", typeof(int));
+            tbl.Columns.Add("DATETIME_PRECISION", typeof(long));
+            tbl.Columns.Add("CHARACTER_SET_CATALOG", typeof(string));
+            tbl.Columns.Add("CHARACTER_SET_SCHEMA", typeof(string));
+            tbl.Columns.Add("CHARACTER_SET_NAME", typeof(string));
+            tbl.Columns.Add("COLLATION_CATALOG", typeof(string));
+            tbl.Columns.Add("COLLATION_SCHEMA", typeof(string));
+            tbl.Columns.Add("COLLATION_NAME", typeof(string));
+            tbl.Columns.Add("PRIMARY_KEY", typeof(bool));
+            tbl.Columns.Add("EDM_TYPE", typeof(string));
+            tbl.Columns.Add("AUTOINCREMENT", typeof(bool));
+            tbl.Columns.Add("UNIQUE", typeof(bool));
+
+            tbl.BeginLoadData();
+
+            using (SQLiteCommand cmdViews = new SQLiteCommand("SELECT * FROM [main].[sqlite_master] WHERE [type] LIKE 'view'", cn))
+            {
+                using (SQLiteDataReader rdViews = cmdViews.ExecuteReader())
+                {
+                    while (rdViews.Read())
+                    {
+                        using (SQLiteCommand cmdViewSelect = new SQLiteCommand(string.Format(CultureInfo.InvariantCulture, "SELECT * FROM [main].[{0}]", rdViews.GetString(2)), cn))
+                        {
+                            strSql = rdViews.GetString(4);
+                            //strSql = rdViews.GetString(4).Replace('\r', ' ').Replace('\n', ' ').Replace('\t', ' ');
+
+                            n = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strSql, " AS ", CompareOptions.IgnoreCase);
+                            if (n < 0)
+                                continue;
+
+                            strSql = strSql.Substring(n + 4);
+
+                            using (SQLiteCommand cmd = new SQLiteCommand(strSql, cn))
+                            using (SQLiteDataReader rdViewSelect = cmdViewSelect.ExecuteReader(CommandBehavior.SchemaOnly))
+                            using (SQLiteDataReader rd = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
+                            using (DataTable tblSchemaView = rdViewSelect.GetSchemaTable())
+                            using (DataTable tblSchema = rd.GetSchemaTable())
+                            {
+                                for (n = 0; n < tblSchema.Rows.Count; n++)
+                                {
+                                    viewRow = tblSchemaView.Rows[n];
+                                    schemaRow = tblSchema.Rows[n];
+
+                                    row = tbl.NewRow();
+
+                                    row["VIEW_CATALOG"] = "main";
+                                    row["VIEW_NAME"] = rdViews.GetString(2);
+                                    row["TABLE_CATALOG"] = "main";
+                                    row["TABLE_SCHEMA"] = schemaRow[SchemaTableColumn.BaseSchemaName];
+                                    row["TABLE_NAME"] = schemaRow[SchemaTableColumn.BaseTableName];
+                                    row["COLUMN_NAME"] = schemaRow[SchemaTableColumn.BaseColumnName];
+                                    row["VIEW_COLUMN_NAME"] = viewRow[SchemaTableColumn.ColumnName];
+                                    row["COLUMN_HASDEFAULT"] = (viewRow[SchemaTableOptionalColumn.DefaultValue] != DBNull.Value);
+                                    row["COLUMN_DEFAULT"] = viewRow[SchemaTableOptionalColumn.DefaultValue];
+                                    row["ORDINAL_POSITION"] = viewRow[SchemaTableColumn.ColumnOrdinal];
+                                    row["IS_NULLABLE"] = viewRow[SchemaTableColumn.AllowDBNull];
+                                    row["DATA_TYPE"] = viewRow["DataTypeName"]; 
+                                    row["CHARACTER_MAXIMUM_LENGTH"] = viewRow[SchemaTableColumn.ColumnSize];
+                                    row["TABLE_SCHEMA"] = viewRow[SchemaTableColumn.BaseSchemaName];
+                                    row["PRIMARY_KEY"] = viewRow[SchemaTableColumn.IsKey];
+                                    row["AUTOINCREMENT"] = viewRow[SchemaTableOptionalColumn.IsAutoIncrement];
+                                    row["COLLATION_NAME"] = viewRow["CollationType"];
+                                    row["UNIQUE"] = viewRow[SchemaTableColumn.IsUnique];
+                                    tbl.Rows.Add(row);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            tbl.EndLoadData();
+            tbl.AcceptChanges();
+
+            return tbl;
         }
 
         public List<Trigger> GetAllTriggers()
@@ -148,12 +252,6 @@ namespace ErikEJ.SQLiteScripting
             return list;
         }
 
-
-//GetSchema returns a DataTable that contains information about the tables, columns, or whatever you specify. 
-//Valid GetSchema arguments for SQLite include:
-//•DataTypes
-//•ReservedWords
-
         public List<Column> GetAllColumns()
         {
             return GetListOfColumns("Columns");
@@ -162,13 +260,17 @@ namespace ErikEJ.SQLiteScripting
         private List<Column> GetListOfColumns(string schemaView)
         {
             var result = new List<Column>();
-            var dt = _cn.GetSchema(schemaView);
 
-            //var tables = _cn.GetSchema("Tables");
-            //for (int i = 0; i < dt.Columns.Count; i++)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(dt.Columns[i].ColumnName);
-            //}
+            var dt = new DataTable();
+
+            if (schemaView == "ViewColumns")
+            {
+                dt = Schema_ViewColumns(_cn);
+            }
+            else
+            {
+                dt = _cn.GetSchema(schemaView);
+            }   
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
@@ -229,6 +331,7 @@ namespace ErikEJ.SQLiteScripting
             }
             return result;
         }
+
 
         public DataTable GetDataFromTable(string tableName, List<Column> columns)
         {
