@@ -143,7 +143,7 @@ public class SQLiteScriptingTests
         {
             list = repo.GetAllViewColumns();
         }
-        Assert.IsTrue(list.Count == 1);
+        Assert.IsTrue(list.Count == 2);
     }
 
     [Test]

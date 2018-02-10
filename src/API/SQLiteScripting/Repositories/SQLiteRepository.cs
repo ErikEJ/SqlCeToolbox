@@ -223,7 +223,11 @@ namespace ErikEJ.SQLiteScripting
                                     row["AUTOINCREMENT"] = viewRow[SchemaTableOptionalColumn.IsAutoIncrement];
                                     row["COLLATION_NAME"] = viewRow["CollationType"];
                                     row["UNIQUE"] = viewRow[SchemaTableColumn.IsUnique];
-                                    tbl.Rows.Add(row);
+
+                                    if (!string.IsNullOrEmpty(schemaRow[SchemaTableColumn.BaseColumnName].ToString()))
+                                    { 
+                                        tbl.Rows.Add(row);
+                                    }
                                 }
                             }
                         }
