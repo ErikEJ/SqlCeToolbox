@@ -27,6 +27,9 @@ public class SQLiteScriptingTests
     private string viewCommentConnectionString = string.Format(
         @"Data Source={0}new3.db", dbPath);
 
+    private string viewComputedColConnectionString = string.Format(
+    @"Data Source={0}new4.db", dbPath);
+
     [Test]
     public void TestGetAllTableNames()
     {
@@ -126,6 +129,17 @@ public class SQLiteScriptingTests
     {
         var list = new List<Column>();
         using (IRepository repo = new SQLiteRepository(viewCommentConnectionString))
+        {
+            list = repo.GetAllViewColumns();
+        }
+        Assert.IsTrue(list.Count == 1);
+    }
+
+    [Test]
+    public void TestGetAllViewColumnsComputed()
+    {
+        var list = new List<Column>();
+        using (IRepository repo = new SQLiteRepository(viewComputedColConnectionString))
         {
             list = repo.GetAllViewColumns();
         }
