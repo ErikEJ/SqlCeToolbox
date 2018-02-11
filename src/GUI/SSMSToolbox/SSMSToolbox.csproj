@@ -191,9 +191,6 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\CheckListItem.cs">
       <Link>Helpers\CheckListItem.cs</Link>
     </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Helpers\DacFxHelper.cs">
-      <Link>Helpers\DacFxHelper.cs</Link>
-    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\DataConnectionHelper.cs">
       <Link>Helpers\DataConnectionHelper.cs</Link>
     </Compile>
@@ -439,9 +436,6 @@
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\lib\v140\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SqlServer.Dac">
-      <HintPath>..\lib\Microsoft.SqlServer.Dac.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\lib\v140\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>

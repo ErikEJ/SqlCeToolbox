@@ -55,10 +55,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(scriptDatabaseRootMenuItem);
             Items.Add(new Separator());
 
-#if VS2010
-#else
-            if (SqlCeToolboxPackage.VsSupportsEf6()) Items.Add(BuildScriptEfPocoDacPacMenuItem(databaseMenuCommandParameters, dcmd));
-#endif
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
             Items.Add(BuildExportServerMenuItem(databaseMenuCommandParameters, dcmd, isSqlCe40Installed));
 
@@ -105,24 +101,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return scriptDatabaseSchemaSqLiteMenuItem;
         }
 
-#if VS2010
-#else
-        private MenuItem BuildScriptEfPocoDacPacMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            SqlServerDatabaseMenuCommandsHandler dcmd)
-        {
-            var scriptEfDacPacCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.GenerateEfPocoFromDacPacInProject);
-            var scriptEfPocoDacPacMenuItem = new MenuItem
-            {
-                Header = "Add EF 6 DbContext (Code Based from Dacpac) to current Project... (alpha)",
-                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            scriptEfPocoDacPacMenuItem.CommandBindings.Add(scriptEfDacPacCommandBinding);
-            return scriptEfPocoDacPacMenuItem;
-        }
-#endif
         private MenuItem BuildExportServerMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             SqlServerDatabaseMenuCommandsHandler dcmd, bool isSqlCe40Installed)
         {
