@@ -25,7 +25,7 @@ namespace UnitTests
         public void ParseDebugViewSample1()
         {
             // Arrange
-            var debugView = File.ReadAllLines("Aw2014Person.txt");
+            var debugView = ReadAllLines("Aw2014Person.txt");
 
             // Act
             var result = _parser.Parse(debugView, "Test");
@@ -41,7 +41,7 @@ namespace UnitTests
         public void ParseDebugViewFkBug()
         {
             // Arrange
-            var debugView = File.ReadAllLines("Northwind.txt");
+            var debugView = ReadAllLines("Northwind.txt");
 
             // Act
             var result = _parser.Parse(debugView, "Test");
@@ -57,7 +57,7 @@ namespace UnitTests
         public void ParseDebugViewMultiColFk()
         {
             // Arrange
-            var debugView = File.ReadAllLines("Pfizer.txt");
+            var debugView = ReadAllLines("Pfizer.txt");
 
             // Act
             var result = _parser.Parse(debugView, "Test");
@@ -71,7 +71,7 @@ namespace UnitTests
         public void ParseDebugViewIssue604()
         {
             // Arrange
-            var debugView = File.ReadAllLines("Issue604.txt");
+            var debugView = ReadAllLines("Issue604.txt");
 
             // Act
             var result = _parser.Parse(debugView, "Test");
@@ -86,7 +86,7 @@ namespace UnitTests
         {
             // Act
             var builder = new DgmlBuilder.DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Aw2014Person.txt"), "test", _template);
+            var result = builder.Build(ReadAllText("Aw2014Person.txt"), "test", _template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -99,7 +99,7 @@ namespace UnitTests
         {
             // Act
             var builder = new DgmlBuilder.DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Northwind.txt"), "test", _template);
+            var result = builder.Build(ReadAllText("Northwind.txt"), "test", _template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -112,7 +112,7 @@ namespace UnitTests
         {
             // Act
             var builder = new DgmlBuilder.DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Pfizer.txt"), "test", _template);
+            var result = builder.Build(ReadAllText("Pfizer.txt"), "test", _template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -125,7 +125,7 @@ namespace UnitTests
         {
             // Act
             var builder = new DgmlBuilder.DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("NoFk.txt"), "test", _template);
+            var result = builder.Build(ReadAllText("NoFk.txt"), "test", _template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -138,7 +138,7 @@ namespace UnitTests
         {
             // Act
             var builder = new DgmlBuilder.DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("SingleNav.txt"), "test", _template);
+            var result = builder.Build(ReadAllText("SingleNav.txt"), "test", _template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -151,7 +151,7 @@ namespace UnitTests
         {
             // Act
             var builder = new DgmlBuilder.DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Samurai.txt"), "test", _template);
+            var result = builder.Build(ReadAllText("Samurai.txt"), "test", _template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -164,7 +164,7 @@ namespace UnitTests
         {
             // Act
             var builder = new DgmlBuilder.DgmlBuilder();
-            var result = builder.Build(File.ReadAllText("Issue604.txt"), "test", _template);
+            var result = builder.Build(ReadAllText("Issue604.txt"), "test", _template);
 
             // Assert
             Assert.AreNotEqual(result, null);
@@ -183,6 +183,16 @@ namespace UnitTests
                     return reader.ReadToEnd();
                 }
             }
+        }
+
+        private string[] ReadAllLines(string file)
+        {
+            return File.ReadAllLines(Path.Combine(TestContext.CurrentContext.TestDirectory, file));
+        }
+
+        private string ReadAllText(string file)
+        {
+            return File.ReadAllText(Path.Combine(TestContext.CurrentContext.TestDirectory, file));
         }
     }
 }

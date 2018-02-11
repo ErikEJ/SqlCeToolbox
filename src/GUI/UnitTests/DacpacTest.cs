@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Dac.Extensions.Prototype;
 using NUnit.Framework;
 using ReverseEngineer20;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace UnitTests
@@ -10,14 +11,16 @@ namespace UnitTests
     [TestFixture]
     public class DacpacTest
     {
-        private const string  dacpac = "Chinook.dacpac";
+        private string dacpac;
 
-        private const string dacpacQuirk = "TestDb.dacpac";
+        private string dacpacQuirk;
 
         private TSqlTypedModel model;
         [SetUp]
         public void Setup()
         {
+            dacpacQuirk = TestPath("TestDb.dacpac");
+            dacpac = TestPath("Chinook.dacpac");
             model = new TSqlTypedModel(dacpac);
         }
 
@@ -131,10 +134,15 @@ namespace UnitTests
             var tables = new List<string>();
 
             // Act
-            var dbModel = factory.Create("AdventureWorks2014.dacpac", null, new List<string>());
+            var dbModel = factory.Create(TestPath("AdventureWorks2014.dacpac"), null, new List<string>());
 
             // Assert
             Assert.AreEqual(71, dbModel.Tables.Count());
+        }
+
+        private string TestPath(string file)
+        {
+            return Path.Combine(TestContext.CurrentContext.TestDirectory, file);
         }
     }
 }
