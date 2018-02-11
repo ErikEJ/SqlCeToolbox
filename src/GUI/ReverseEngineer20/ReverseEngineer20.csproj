@@ -46,6 +46,14 @@
     <Reference Include="EntityFrameworkCore.SqlServerCompact40, Version=2.0.1.0, Culture=neutral, PublicKeyToken=9af395b34ac99006, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFrameworkCore.SqlServerCompact40.2.0.1.1\lib\net461\EntityFrameworkCore.SqlServerCompact40.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Data.Tools.Schema.Sql">
+      <HintPath>..\lib\Microsoft.Data.Tools.Schema.Sql.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Data.Tools.Utilities">
+      <HintPath>..\lib\Microsoft.Data.Tools.Utilities.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.EntityFrameworkCore.2.0.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
@@ -88,8 +96,24 @@
     <Reference Include="Microsoft.Extensions.Primitives, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.2.0.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Dac.Extensions">
-      <HintPath>..\packages\Microsoft.SqlServer.DacFx.x86.140.3881.1\lib\net46\Microsoft.SqlServer.Dac.Extensions.dll</HintPath>
+    <Reference Include="Microsoft.SqlServer.Dac">
+      <HintPath>..\lib\Microsoft.SqlServer.Dac.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Dac.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.SqlServer.Dac.Extensions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.TransactSql.ScriptDom, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.SqlServer.TransactSql.ScriptDom.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Types, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.SqlServer.Types.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.1.1\lib\net45\Remotion.Linq.dll</HintPath>
