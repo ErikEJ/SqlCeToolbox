@@ -67,16 +67,6 @@ namespace EFCorePowerTools.Handlers
                     return;
                 }
 
-                var options = ReverseEngineerOptionsExtensions.TryRead(optionsPath);
-                if (options == null)
-                {
-                    _package.LogError(new List<string> { "Unable to load options" }, null);
-                }
-                else
-                {
-                    options.Dacpac = dacpacPath;
-                    dacpacSchema = options.DefaultDacpacSchema;
-                }
 
                 var ptd = new PickTablesDialog { IncludeTables = true };
                 if (!string.IsNullOrEmpty(dacpacPath))
@@ -89,10 +79,14 @@ namespace EFCorePowerTools.Handlers
                 {
                     ptd.Tables = GetTablesFromRepository(dbInfo);
                 }
-
-                if (options != null && options.Tables.Count > 0)
+                var options = ReverseEngineerOptionsExtensions.TryRead(optionsPath);
+                if (options != null)
                 {
-                    ptd.SelectedTables = options.Tables;
+                    dacpacSchema = options.DefaultDacpacSchema;
+                    if (options.Tables.Count > 0)
+                    {
+                        ptd.SelectedTables = options.Tables;
+                    }
                 }
 
                 if (ptd.ShowModal() != true) return;
@@ -106,7 +100,8 @@ namespace EFCorePowerTools.Handlers
                     InstallNuGetPackage = !packageResult.Item1,
                     ModelName = options != null ? options.ContextClassName : model,
                     ProjectName = project.Name,
-                    NameSpace = options != null ? options.ProjectRootNamespace : project.Properties.Item("DefaultNamespace").Value.ToString()
+                    NameSpace = options != null ? options.ProjectRootNamespace : project.Properties.Item("DefaultNamespace").Value.ToString(),
+                    DacpacPath = dacpacPath
                 };
 
                 _package.Dte2.StatusBar.Text = "Getting options...";

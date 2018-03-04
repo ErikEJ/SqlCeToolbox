@@ -22,11 +22,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 chkHandlebars.IsChecked = options.UseHandleBars;
                 chkIdReplace.IsChecked = options.IdReplace;
                 chkIncludeConnectionString.IsChecked = options.IncludeConnectionString;
-                if (!string.IsNullOrEmpty(options.Dacpac))
-                {
-                    chkIncludeConnectionString.IsEnabled = false;
-                    chkIncludeConnectionString.IsChecked = false;
-                }
                 ModelName = options.ContextClassName;
                 NameSpace = options.ProjectRootNamespace;
                 OutputPath = options.OutputPath;
@@ -37,14 +32,21 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         public string ProjectName
         {
-            get
-            {
-                return Title;
-            }
-
             set
             {
                 Title = $"Generate EF Core Model in Project {value}";
+            }
+        }
+
+        public  string DacpacPath
+        {
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    chkIncludeConnectionString.IsEnabled = false;
+                    chkIncludeConnectionString.IsChecked = false;
+                }
             }
         }
 
