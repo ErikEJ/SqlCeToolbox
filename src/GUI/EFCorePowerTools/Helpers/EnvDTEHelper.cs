@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Data.Core;
 using Microsoft.VisualStudio.Data.Services;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +25,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Guid provider40Private = new Guid(Resources.SqlCompact40PrivateProvider);
             Guid providerSqLite = new Guid(Resources.SQLiteProvider);
             Guid providerSqlitePrivate = new Guid(Resources.SqlitePrivateProvider);
+            Guid providerNpgsql = new Guid("70ba90f8-3027-4aF1-9b15-37abbd48744c");
 
             bool isV40Installed = RepositoryHelper.IsV40Installed() &&
                 (DdexProviderIsInstalled(provider40) || DdexProviderIsInstalled(provider40Private));
@@ -91,6 +93,20 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                             if (!databaseList.ContainsKey(sConnectionString))
                                 databaseList.Add(sConnectionString, info);
                         }
+                        if (objProviderGuid == providerNpgsql)
+                        {
+                            var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
+                            var info = new DatabaseInfo()
+                            {
+                                Caption = connection.DisplayName,
+                                FromServerExplorer = true,
+                                DatabaseType = DatabaseType.Npgsql,
+                                ServerVersion = string.Empty,
+                                ConnectionString = sConnectionString
+                            };
+                            if (!databaseList.ContainsKey(sConnectionString))
+                                databaseList.Add(sConnectionString, info);
+                        }
                     }
                     catch (KeyNotFoundException)
                     {
@@ -131,6 +147,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             if (dialogResult == null) return new DatabaseInfo {DatabaseType = DatabaseType.SQLCE35};
 
             var info = GetDatabaseInfo(package, dialogResult.Provider, DataProtection.DecryptString(dialog.EncryptedConnectionString));
+            if (info.Size == Guid.Empty.ToString()) return new DatabaseInfo { DatabaseType = DatabaseType.SQLCE35 };
+
             SaveDataConnection(package, dialog.EncryptedConnectionString, info.DatabaseType, new Guid(info.Size));
             return info;
         }
@@ -171,6 +189,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     dbType = DatabaseType.SQLServer;
                     providerGuid = EFCorePowerTools.Resources.SqlServerDotNetProvider;
                 }
+                if (providerInvariant == "Npgsql")
+                {
+                    dbType = DatabaseType.Npgsql;
+                    //TODO Add to Resources
+                    providerGuid = "70ba90f8-3027-4aF1-9b15-37abbd48744c";
+                }
             }
             return new DatabaseInfo
             {
@@ -193,6 +217,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 var helper = new SqlServerHelper();
                 return helper.PathFromConnectionString(connectionString);
+            }
+            if (dbType == DatabaseType.Npgsql)
+            {
+                var pgBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+                return pgBuilder.Database;
             }
             var filePath = GetFilePath(connectionString, dbType);
             return Path.GetFileName(filePath);

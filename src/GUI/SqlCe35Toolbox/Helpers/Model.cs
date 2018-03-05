@@ -74,7 +74,8 @@ public enum DatabaseType
     SQLCE35,
     SQLCE40,
     SQLServer,
-    SQLite
+    SQLite,
+    Npgsql
 }
 /// <summary>
 /// A model used to communicate with DescriptionDialog for table+column descriptions

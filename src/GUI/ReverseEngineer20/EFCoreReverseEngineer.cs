@@ -52,6 +52,10 @@ namespace ReverseEngineer20
                     var sqlCeProvider = new SqlCeDesignTimeServices();
                     sqlCeProvider.ConfigureDesignTimeServices(serviceCollection);
                     break;
+                case DatabaseType.Npgsql:
+                    var npgsqlProvider = new NpgsqlDesignTimeServices();
+                    npgsqlProvider.ConfigureDesignTimeServices(serviceCollection);
+                    break;
                 case DatabaseType.SQLServer:
                     var provider = new SqlServerDesignTimeServices();
                     provider.ConfigureDesignTimeServices(serviceCollection);

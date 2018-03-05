@@ -2,9 +2,11 @@
 using EnvDTE;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
+using Npgsql;
 using ReverseEngineer20;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -67,7 +69,6 @@ namespace EFCorePowerTools.Handlers
                     return;
                 }
 
-
                 var ptd = new PickTablesDialog { IncludeTables = true };
                 if (!string.IsNullOrEmpty(dacpacPath))
                 {
@@ -91,7 +92,16 @@ namespace EFCorePowerTools.Handlers
 
                 if (ptd.ShowModal() != true) return;
 
-                var classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
+                var classBasis = string.Empty;
+                if (dbInfo.DatabaseType == DatabaseType.Npgsql)
+                {
+                    var pgBuilder = new NpgsqlConnectionStringBuilder(dbInfo.ConnectionString);
+                    classBasis = pgBuilder.Database;
+                }
+                else
+                {
+                    classBasis = RepositoryHelper.GetClassBasis(dbInfo.ConnectionString, dbInfo.DatabaseType);
+                }
                 var model = revEng.GenerateClassName(classBasis) + "Context";
                 var packageResult = project.ContainsEfCoreReference(dbInfo.DatabaseType);
 
@@ -218,6 +228,27 @@ namespace EFCorePowerTools.Handlers
 
         private List<string> GetTablesFromRepository(DatabaseInfo dbInfo)
         {
+            if (dbInfo.DatabaseType == DatabaseType.Npgsql)
+            {
+                var result = new List<string>();
+                using (var npgsqlConn = new NpgsqlConnection(dbInfo.ConnectionString))
+                {
+                    npgsqlConn.Open();
+                    var tablesDataTable = npgsqlConn.GetSchema("Tables");
+                    foreach (DataRow row in tablesDataTable.Rows)
+                    {
+                        var schema = row["table_schema"].ToString();
+                        if (schema != "pg_catalog"
+                            && schema != "information_schema")
+                        {
+                            result.Add(schema + "." + row["table_name"].ToString());
+                        }
+                    }
+                }
+
+                return result.OrderBy(l => l).ToList();
+            }
+
             using (var repository = RepositoryHelper.CreateRepository(dbInfo))
             {
                 var allPks = repository.GetAllPrimaryKeys();
