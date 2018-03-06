@@ -95,8 +95,7 @@ namespace EFCorePowerTools.Handlers
                 var classBasis = string.Empty;
                 if (dbInfo.DatabaseType == DatabaseType.Npgsql)
                 {
-                    var pgBuilder = new NpgsqlConnectionStringBuilder(dbInfo.ConnectionString);
-                    classBasis = pgBuilder.Database;
+                    classBasis = EnvDteHelper.GetNpgsqlDatabaseName(dbInfo.ConnectionString);
                 }
                 else
                 {
@@ -230,23 +229,7 @@ namespace EFCorePowerTools.Handlers
         {
             if (dbInfo.DatabaseType == DatabaseType.Npgsql)
             {
-                var result = new List<string>();
-                using (var npgsqlConn = new NpgsqlConnection(dbInfo.ConnectionString))
-                {
-                    npgsqlConn.Open();
-                    var tablesDataTable = npgsqlConn.GetSchema("Tables");
-                    foreach (DataRow row in tablesDataTable.Rows)
-                    {
-                        var schema = row["table_schema"].ToString();
-                        if (schema != "pg_catalog"
-                            && schema != "information_schema")
-                        {
-                            result.Add(schema + "." + row["table_name"].ToString());
-                        }
-                    }
-                }
-
-                return result.OrderBy(l => l).ToList();
+                return EnvDteHelper.GetNpgsqlTableNames(dbInfo.ConnectionString);
             }
 
             using (var repository = RepositoryHelper.CreateRepository(dbInfo))

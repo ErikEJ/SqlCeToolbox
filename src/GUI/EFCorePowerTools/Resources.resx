@@ -286,4 +286,7 @@ Storage size varies. It is the length of the value in bytes.</value>
   <data name="SqlitePrivateProvider" xml:space="preserve">
     <value>687EA40E-7B91-472A-9A58-2A3D43DE1ACE</value>
   </data>
+  <data name="NpgsqlProvider" xml:space="preserve">
+    <value>70ba90f8-3027-4aF1-9b15-37abbd48744c</value>
+  </data>
 </root>
