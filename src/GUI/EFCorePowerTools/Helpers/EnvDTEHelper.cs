@@ -7,7 +7,9 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 // ReSharper disable once CheckNamespace
@@ -15,8 +17,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class EnvDteHelper
     {
-        internal static Dictionary<string, DatabaseInfo> GetDataConnections(EFCorePowerToolsPackage package,
-    bool includeServerConnections = true)
+        internal static Dictionary<string, DatabaseInfo> GetDataConnections(EFCorePowerToolsPackage package)
         {
             // http://www.mztools.com/articles/2007/MZ2007018.aspx
             Dictionary<string, DatabaseInfo> databaseList = new Dictionary<string, DatabaseInfo>();
@@ -25,7 +26,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Guid provider40Private = new Guid(Resources.SqlCompact40PrivateProvider);
             Guid providerSqLite = new Guid(Resources.SQLiteProvider);
             Guid providerSqlitePrivate = new Guid(Resources.SqlitePrivateProvider);
-            Guid providerNpgsql = new Guid("70ba90f8-3027-4aF1-9b15-37abbd48744c");
+            Guid providerNpgsql = new Guid(Resources.NpgsqlProvider);
 
             bool isV40Installed = RepositoryHelper.IsV40Installed() &&
                 (DdexProviderIsInstalled(provider40) || DdexProviderIsInstalled(provider40Private));
@@ -35,77 +36,37 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 {
                     try
                     {
-                        var objProviderGuid = connection.Provider;
-                        if (objProviderGuid == provider40 && isV40Installed ||
-                            objProviderGuid == provider40Private && isV40Installed)
+                        var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
+                        var info = new DatabaseInfo()
                         {
-                            DatabaseType dbType = DatabaseType.SQLCE40;
-                            var serverVersion = "4.0";
+                            Caption = connection.DisplayName,
+                            FromServerExplorer = true,
+                            DatabaseType = DatabaseType.SQLCE35,
+                            ConnectionString = sConnectionString
+                        };
+                        var objProviderGuid = connection.Provider;
 
-                            var sConnectionString =
-                                DataProtection.DecryptString(connection.EncryptedConnectionString);
-                            if (!sConnectionString.Contains("Mobile Device"))
-                            {
-                                DatabaseInfo info = new DatabaseInfo()
-                                {
-                                    Caption = connection.DisplayName,
-                                    FromServerExplorer = true,
-                                    DatabaseType = dbType,
-                                    ServerVersion = serverVersion,
-                                    ConnectionString = sConnectionString
-                                };
-                                info.FileIsMissing = RepositoryHelper.IsMissing(info);
-                                if (!databaseList.ContainsKey(sConnectionString))
-                                    databaseList.Add(sConnectionString, info);
-                            }
+                        if ((objProviderGuid == provider40 && isV40Installed ||
+                            objProviderGuid == provider40Private && isV40Installed)
+                            && !sConnectionString.Contains("Mobile Device"))
+                        {
+                            info.DatabaseType = DatabaseType.SQLCE40;
                         }
-
                         if (objProviderGuid == providerSqLite
                             || objProviderGuid == providerSqlitePrivate)
                         {
-                            DatabaseType dbType = DatabaseType.SQLite;
+                            info.DatabaseType = DatabaseType.SQLite;
+                        }
+                        if (objProviderGuid == new Guid(Resources.SqlServerDotNetProvider)
+                            || objProviderGuid == providerNpgsql)
+                        {
+                            info.DatabaseType = objProviderGuid == providerNpgsql ? DatabaseType.Npgsql : DatabaseType.SQLServer;
+                        }
 
-                            var sConnectionString =
-                                DataProtection.DecryptString(connection.EncryptedConnectionString);
-                            DatabaseInfo info = new DatabaseInfo()
-                            {
-                                Caption = connection.DisplayName,
-                                FromServerExplorer = true,
-                                DatabaseType = dbType,
-                                ServerVersion = RepositoryHelper.SqliteEngineVersion,
-                                ConnectionString = sConnectionString
-                            };
-                            info.FileIsMissing = RepositoryHelper.IsMissing(info);
-                            if (!databaseList.ContainsKey(sConnectionString))
-                                databaseList.Add(sConnectionString, info);
-                        }
-                        if (includeServerConnections && objProviderGuid == new Guid(Resources.SqlServerDotNetProvider))
+                        if (info.DatabaseType != DatabaseType.SQLCE35
+                            && !databaseList.ContainsKey(sConnectionString))
                         {
-                            var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
-                            var info = new DatabaseInfo()
-                            {
-                                Caption = connection.DisplayName,
-                                FromServerExplorer = true,
-                                DatabaseType = DatabaseType.SQLServer,
-                                ServerVersion = string.Empty,
-                                ConnectionString = sConnectionString
-                            };
-                            if (!databaseList.ContainsKey(sConnectionString))
-                                databaseList.Add(sConnectionString, info);
-                        }
-                        if (objProviderGuid == providerNpgsql)
-                        {
-                            var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
-                            var info = new DatabaseInfo()
-                            {
-                                Caption = connection.DisplayName,
-                                FromServerExplorer = true,
-                                DatabaseType = DatabaseType.Npgsql,
-                                ServerVersion = string.Empty,
-                                ConnectionString = sConnectionString
-                            };
-                            if (!databaseList.ContainsKey(sConnectionString))
-                                databaseList.Add(sConnectionString, info);
+                            databaseList.Add(sConnectionString, info);
                         }
                     }
                     catch (KeyNotFoundException)
@@ -177,23 +138,22 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 if (providerInvariant == "System.Data.SqlServerCe.4.0")
                 {
                     dbType = DatabaseType.SQLCE40;
-                    providerGuid = EFCorePowerTools.Resources.SqlCompact40PrivateProvider;
+                    providerGuid = Resources.SqlCompact40PrivateProvider;
                 }
                 if (providerInvariant == "System.Data.SQLite.EF6")
                 {
                     dbType = DatabaseType.SQLite;
-                    providerGuid = EFCorePowerTools.Resources.SqlitePrivateProvider;
+                    providerGuid = Resources.SqlitePrivateProvider;
                 }
                 if (providerInvariant == "System.Data.SqlClient")
                 {
                     dbType = DatabaseType.SQLServer;
-                    providerGuid = EFCorePowerTools.Resources.SqlServerDotNetProvider;
+                    providerGuid = Resources.SqlServerDotNetProvider;
                 }
                 if (providerInvariant == "Npgsql")
                 {
                     dbType = DatabaseType.Npgsql;
-                    //TODO Add to Resources
-                    providerGuid = "70ba90f8-3027-4aF1-9b15-37abbd48744c";
+                    providerGuid = Resources.NpgsqlProvider;
                 }
             }
             return new DatabaseInfo
@@ -203,6 +163,33 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 ServerVersion = providerInvariant,
                 Size = providerGuid
             };
+        }
+
+        internal static string GetNpgsqlDatabaseName(string connectionString)
+        {
+            var pgBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+            return pgBuilder.Database;
+        }
+
+        internal static List<string> GetNpgsqlTableNames(string connectionString)
+        {
+            var result = new List<string>();
+            using (var npgsqlConn = new NpgsqlConnection(connectionString))
+            {
+                npgsqlConn.Open();
+                var tablesDataTable = npgsqlConn.GetSchema("Tables");
+                foreach (DataRow row in tablesDataTable.Rows)
+                {
+                    var schema = row["table_schema"].ToString();
+                    if (schema != "pg_catalog"
+                        && schema != "information_schema")
+                    {
+                        result.Add(schema + "." + row["table_name"].ToString());
+                    }
+                }
+            }
+
+            return result.OrderBy(l => l).ToList();
         }
 
         private static string GetFilePath(string connectionString, DatabaseType dbType)
@@ -219,10 +206,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 return helper.PathFromConnectionString(connectionString);
             }
             if (dbType == DatabaseType.Npgsql)
-            {
-                var pgBuilder = new NpgsqlConnectionStringBuilder(connectionString);
-                return pgBuilder.Database;
-            }
+                return GetNpgsqlDatabaseName(connectionString);
+
             var filePath = GetFilePath(connectionString, dbType);
             return Path.GetFileName(filePath);
         }

@@ -202,6 +202,15 @@ namespace EFCorePowerTools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 70ba90f8-3027-4aF1-9b15-37abbd48744c.
+        /// </summary>
+        internal static string NpgsqlProvider {
+            get {
+                return ResourceManager.GetString("NpgsqlProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable-length Unicode data with a maximum length of (2^30–2)/2 (536,870,911) characters.
         ///Storage size, in bytes, is two times the number of characters entered..
         /// </summary>
