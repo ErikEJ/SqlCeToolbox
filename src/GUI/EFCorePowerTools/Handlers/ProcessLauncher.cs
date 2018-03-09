@@ -27,6 +27,11 @@ namespace EFCorePowerTools.Handlers
                 startInfo.Arguments = "ddl \"" + outputPath + "\"";
             }
 
+            if (generationType == GenerationType.MigrationStatus)
+            {
+                startInfo.Arguments = "migrationstatus \"" + outputPath + "\"";
+            }
+
             if (isNetCore)
             {
                 startInfo.WorkingDirectory = launchPath;
@@ -35,6 +40,10 @@ namespace EFCorePowerTools.Handlers
                 if (generationType == GenerationType.Ddl)
                 {
                     startInfo.Arguments = " efpt.dll ddl \"" + outputPath + "\"";
+                }
+                if (generationType == GenerationType.MigrationStatus)
+                {
+                    startInfo.Arguments = " efpt.dll migrationstatus \"" + outputPath + "\"";
                 }
             }
 

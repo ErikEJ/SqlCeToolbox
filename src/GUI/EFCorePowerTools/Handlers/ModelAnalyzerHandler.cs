@@ -19,7 +19,6 @@ namespace EFCorePowerTools.Handlers
             _package = package;
         }
 
-
         public void Generate(string outputPath, Project project, GenerationType generationType)
         {
             try

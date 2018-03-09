@@ -27,6 +27,11 @@ namespace ReverseEngineer20
             return BuildResult(outputPath, true);
         }
 
+        public List<Tuple<string, string>> GenerateMigrationStatusList(string outputPath)
+        {
+            return GetMigrationStatus(outputPath);
+        }
+
         private List<Tuple<string, string>> BuildResult(string outputPath, bool generateDdl)
         {
             var result = new List<Tuple<string, string>>();
@@ -44,6 +49,39 @@ namespace ReverseEngineer20
             return result;
         }
 
+        private List<Tuple<string, string>> GetMigrationStatus(string outputPath)
+        {
+            var result = new List<Tuple<string, string>>();
+            var operations = GetOperations(outputPath);
+            var types = GetDbContextTypes(operations);
+
+            foreach (var type in types)
+            {
+                var dbContext = operations.CreateContext(type.Name);
+                result.Add(new Tuple<string, string>(type.Name, GetMigrationStatus(dbContext)));
+            }
+            return result;
+        }
+
+        private string GetMigrationStatus(DbContext dbContext)
+        {
+            var changes = new List<string>();
+            if (changes.Any())
+            {
+                return "Changes";
+            }
+
+            if (dbContext.Database.GetPendingMigrations().Any())
+            {
+                return "Pending";
+            }
+            return "InSync";
+        }
+
+        private void ApplyMigrations(DbContext dbContext)
+        {
+            dbContext.Database.Migrate();
+        }
 
         private static string GenerateCreateScript(DbContext dbContext)
         {

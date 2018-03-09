@@ -15,9 +15,15 @@ namespace ReverseEngineer20
                     var builder = new EfCoreModelBuilder();
                     List<Tuple<string, string>> result;
 
+
+
                     if (args.Contains("ddl") && args.Count() >= 2)
                     {
                         result = builder.GenerateDatabaseCreateScript(args[1]);
+                    }
+                    else if (args.Contains("migrationstatus") && args.Count() >= 2)
+                    {
+                        result = builder.GenerateMigrationStatusList(args[1]);
                     }
                     else
                     {

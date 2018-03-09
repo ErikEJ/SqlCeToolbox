@@ -2,5 +2,6 @@
 {
     Dgml = 0,
     Ddl = 1,
-    DebugView = 2
+    DebugView = 2,
+    MigrationStatus = 3
 }
