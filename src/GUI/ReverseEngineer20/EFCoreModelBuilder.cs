@@ -63,24 +63,40 @@ namespace ReverseEngineer20
             return result;
         }
 
-        private string GetMigrationStatus(DbContext dbContext)
+        private string GetMigrationStatus(DbContext context)
         {
-            var changes = new List<string>();
-            if (changes.Any())
+            var relationalDatabaseCreator = context.GetService<IDatabaseCreator>() as IRelationalDatabaseCreator;
+            if (relationalDatabaseCreator == null)
             {
-                return "Changes";
+                throw new Exception("Not a relational database, migrations are not supported");
             }
+            var databaseExists = relationalDatabaseCreator.Exists();
 
-            if (dbContext.Database.GetPendingMigrations().Any())
-            {
-                return "Pending";
-            }
+            var migrationsAssembly = context.GetService<IMigrationsAssembly>();
+            var modelDiffer = context.GetService<IMigrationsModelDiffer>();
+
+            var pendingModelChanges
+                = (!databaseExists || migrationsAssembly.ModelSnapshot != null)
+                    && modelDiffer.HasDifferences(migrationsAssembly.ModelSnapshot?.Model, context.Model);
+
+            if (pendingModelChanges) return "Changes";
+
+            var pendingMigrations
+                = (databaseExists
+                    ? context.Database.GetPendingMigrations()
+                    : context.Database.GetMigrations())
+                .ToArray();
+
+            if (pendingMigrations.Any()) return "Pending";
+
             return "InSync";
         }
 
         private void ApplyMigrations(DbContext dbContext)
         {
             dbContext.Database.Migrate();
+
+            //TODO return migration staus here also!
         }
 
         private static string GenerateCreateScript(DbContext dbContext)
