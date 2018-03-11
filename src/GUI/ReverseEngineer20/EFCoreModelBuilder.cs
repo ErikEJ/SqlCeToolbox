@@ -32,6 +32,16 @@ namespace ReverseEngineer20
             return GetMigrationStatus(outputPath);
         }
 
+        public List<Tuple<string, string>> Migrate(string outputPath, string contextName)
+        {
+            return BuildMigrationResult(outputPath, contextName, false, null);
+        }
+
+        public List<Tuple<string, string>> AddMigration(string outputPath, string contextName, string migrationIdentifier)
+        {
+            return BuildMigrationResult(outputPath, contextName, true, migrationIdentifier);
+        }
+
         private List<Tuple<string, string>> BuildResult(string outputPath, bool generateDdl)
         {
             var result = new List<Tuple<string, string>>();
@@ -44,6 +54,27 @@ namespace ReverseEngineer20
                 result.Add(generateDdl
                     ? new Tuple<string, string>(type.Name, GenerateCreateScript(dbContext))
                     : new Tuple<string, string>(type.Name, dbContext.Model.AsModel().DebugView.View));
+            }
+
+            return result;
+        }
+
+        private List<Tuple<string, string>> BuildMigrationResult(string outputPath, string contextName, bool addMigration, string migrationIdentifier)
+        {
+            var result = new List<Tuple<string, string>>();
+            var operations = GetOperations(outputPath);
+            var types = GetDbContextTypes(operations);
+
+            foreach (var type in types)
+            {
+                if (type.Name == contextName)
+                {
+                    var dbContext = operations.CreateContext(type.Name);
+                    result.Add(addMigration 
+                        ? new Tuple<string, string>(type.Name, ApplyMigrations(dbContext))
+                        : new Tuple<string, string>(type.Name, AddMigration(dbContext, migrationIdentifier)));
+                    break;
+                }
             }
 
             return result;
@@ -92,11 +123,18 @@ namespace ReverseEngineer20
             return "InSync";
         }
 
-        private void ApplyMigrations(DbContext dbContext)
+        private string ApplyMigrations(DbContext context)
         {
-            dbContext.Database.Migrate();
+            context.Database.Migrate();
 
-            //TODO return migration staus here also!
+            return GetMigrationStatus(context);
+        }
+
+        private string AddMigration(DbContext context, string name)
+        {
+            // ??? How to do it?? context.Database.Migrate();
+
+            return GetMigrationStatus(context);
         }
 
         private static string GenerateCreateScript(DbContext dbContext)

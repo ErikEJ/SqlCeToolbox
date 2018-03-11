@@ -9,7 +9,7 @@ namespace EFCorePowerTools.Handlers
 {
     public class ProcessLauncher
     {
-        public string GetOutput(string outputPath, bool isNetCore, GenerationType generationType)
+        public string GetOutput(string outputPath, bool isNetCore, GenerationType generationType, string migrationIdentifier, string contextName)
         {
             var launchPath = isNetCore ? DropNetCoreFiles() : DropFiles(outputPath);
 
@@ -26,10 +26,17 @@ namespace EFCorePowerTools.Handlers
             {
                 startInfo.Arguments = "ddl \"" + outputPath + "\"";
             }
-
             if (generationType == GenerationType.MigrationStatus)
             {
                 startInfo.Arguments = "migrationstatus \"" + outputPath + "\"";
+            }
+            if (generationType == GenerationType.MigrationApply)
+            {
+                startInfo.Arguments = "migrate \"" + outputPath + "\" " + migrationIdentifier;
+            }
+            if (generationType == GenerationType.MigrationAdd)
+            {
+                startInfo.Arguments = "addmigration \"" + outputPath + "\" " + contextName + " " + migrationIdentifier;
             }
 
             if (isNetCore)
@@ -37,13 +44,12 @@ namespace EFCorePowerTools.Handlers
                 startInfo.WorkingDirectory = launchPath;
                 startInfo.FileName = "dotnet";
                 startInfo.Arguments = " efpt.dll \"" + outputPath + "\"";
-                if (generationType == GenerationType.Ddl)
+                if (generationType == GenerationType.Ddl
+                    || generationType == GenerationType.MigrationApply
+                    || generationType == GenerationType.MigrationAdd
+                    || generationType == GenerationType.MigrationStatus)
                 {
-                    startInfo.Arguments = " efpt.dll ddl \"" + outputPath + "\"";
-                }
-                if (generationType == GenerationType.MigrationStatus)
-                {
-                    startInfo.Arguments = " efpt.dll migrationstatus \"" + outputPath + "\"";
+                    startInfo.Arguments = " efpt.dll " + startInfo.Arguments;
                 }
             }
 

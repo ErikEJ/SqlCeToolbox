@@ -1,11 +1,7 @@
-﻿using EFCorePowerTools.Extensions;
-using EnvDTE;
+﻿using EnvDTE;
 using ErikEJ.SqlCeToolbox.Helpers;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
 
 namespace EFCorePowerTools.Handlers
 {
@@ -44,7 +40,8 @@ namespace EFCorePowerTools.Handlers
 
                 bool isNetCore = project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETCoreApp,Version=v2.");
 
-                var processResult = _processLauncher.GetOutput(outputPath, isNetCore, GenerationType.MigrationStatus);
+                //TODO 3 different actions from dialog
+                var processResult = _processLauncher.GetOutput(outputPath, isNetCore, GenerationType.MigrationStatus, null, null);
 
                 if (processResult.StartsWith("Error:"))
                 {
