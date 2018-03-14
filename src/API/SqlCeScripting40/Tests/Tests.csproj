@@ -101,6 +101,7 @@
     <None Include="new3.db" />
     <None Include="New4.db" />
     <None Include="norowid.db" />
+    <None Include="SampleToEric.db" />
     <None Include="views.db" />
   </ItemGroup>
   <ItemGroup>

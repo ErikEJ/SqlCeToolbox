@@ -30,6 +30,9 @@ public class SQLiteScriptingTests
     private string viewComputedColConnectionString = string.Format(
     @"Data Source={0}new4.db", dbPath);
 
+    private string viewColBugConnectionString = string.Format(
+    @"Data Source={0}SampleToEric.db", dbPath);
+
     [Test]
     public void TestGetAllTableNames()
     {
@@ -144,6 +147,17 @@ public class SQLiteScriptingTests
             list = repo.GetAllViewColumns();
         }
         Assert.IsTrue(list.Count == 2);
+    }
+
+    [Test]
+    public void TestGetAllViewColumnsBug()
+    {
+        var list = new List<Column>();
+        using (IRepository repo = new SQLiteRepository(viewColBugConnectionString))
+        {
+            list = repo.GetAllViewColumns();
+        }
+        Assert.AreEqual(5, list.Count);
     }
 
     [Test]

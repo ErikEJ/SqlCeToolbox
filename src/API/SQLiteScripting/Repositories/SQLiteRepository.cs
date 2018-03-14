@@ -60,7 +60,7 @@ namespace ErikEJ.SQLiteScripting
         public List<View> GetAllViews()
         {
             var list = new List<View>();
-            var dt = Schema_Views(_cn);
+            var dt = _cn.GetSchema("Views");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 var view = new View
@@ -267,14 +267,14 @@ namespace ErikEJ.SQLiteScripting
 
             var dt = new DataTable();
 
-            if (schemaView == "ViewColumns")
-            {
-                dt = Schema_ViewColumns(_cn);
-            }
-            else
-            {
-                dt = _cn.GetSchema(schemaView);
-            }   
+            //if (schemaView == "ViewColumns")
+            //{
+            //    dt = Schema_ViewColumns(_cn);
+            //}
+            //else
+            //{
+            dt = _cn.GetSchema(schemaView);
+            //}   
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
