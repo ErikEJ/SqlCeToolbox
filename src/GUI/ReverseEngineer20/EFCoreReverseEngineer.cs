@@ -1,8 +1,8 @@
-﻿using EntityFrameworkCore.Scaffolding.Handlebars;
+﻿using EFCore.SqlCe.Scaffolding.Internal;
+using EntityFrameworkCore.Scaffolding.Handlebars;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding;
-using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using ReverseEngineer20.ReverseEngineer;
 using System;
@@ -29,7 +29,8 @@ namespace ReverseEngineer20
             var serviceCollection = new ServiceCollection();
 
             serviceCollection
-                .AddScaffolding(reporter)
+                .AddEntityFrameworkDesignTimeServices()
+                //.AddScaffolding(reporter)
                 .AddSingleton<IOperationReporter, OperationReporter>()
                 .AddSingleton<IOperationReportHandler, OperationReportHandler>();
 
@@ -74,7 +75,7 @@ namespace ReverseEngineer20
             }
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            var generator = serviceProvider.GetService<IModelScaffolder>();
+            var scaffolder = serviceProvider.GetService<IReverseEngineerScaffolder>();
 
             var schemas = new List<string>();
             if (reverseEngineerOptions.DefaultDacpacSchema != null)
@@ -82,21 +83,25 @@ namespace ReverseEngineer20
                 schemas.Add(reverseEngineerOptions.DefaultDacpacSchema);
             }
 
-            var filePaths = generator.Generate(
-                reverseEngineerOptions.Dacpac != null
-                    ? reverseEngineerOptions.Dacpac
-                    : reverseEngineerOptions.ConnectionString,
-                reverseEngineerOptions.Tables,
-                schemas, 
-                reverseEngineerOptions.ProjectPath,
-                reverseEngineerOptions.OutputPath,
-                reverseEngineerOptions.ProjectRootNamespace,
-                reverseEngineerOptions.ContextClassName,
-                !reverseEngineerOptions.UseFluentApiOnly,
-                overwriteFiles: true,
-                useDatabaseNames: reverseEngineerOptions.UseDatabaseNames);
+            var scaffoldedModel = scaffolder.ScaffoldModel(
+                    reverseEngineerOptions.Dacpac != null
+                        ? reverseEngineerOptions.Dacpac
+                        : reverseEngineerOptions.ConnectionString,
+                    reverseEngineerOptions.Tables,
+                    schemas,
+                    reverseEngineerOptions.ProjectRootNamespace,
+                    "C#",
+                    reverseEngineerOptions.OutputPath,
+                    reverseEngineerOptions.ContextClassName,
+                    !reverseEngineerOptions.UseFluentApiOnly,
+                    useDatabaseNames: reverseEngineerOptions.UseDatabaseNames);
 
-            foreach (var file in filePaths.EntityTypeFiles)
+            var filePaths = scaffolder.Save(
+                scaffoldedModel,
+                reverseEngineerOptions.OutputPath,
+                overwriteFiles: true);
+
+            foreach (var file in filePaths.AdditionalFiles)
             {
                 PostProcess(file, reverseEngineerOptions.IdReplace);
             }
@@ -111,7 +116,7 @@ namespace ReverseEngineer20
             {
                 EntityErrors = errors,
                 EntityWarnings = warnings,
-                EntityTypeFilePaths = filePaths.EntityTypeFiles,
+                EntityTypeFilePaths = filePaths.AdditionalFiles,
                 ContextFilePath = filePaths.ContextFile,
             };
 
