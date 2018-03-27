@@ -82,13 +82,17 @@ namespace ReverseEngineer20
                 schemas.Add(reverseEngineerOptions.DefaultDacpacSchema);
             }
 
+            var @nameSpace = string.IsNullOrWhiteSpace(reverseEngineerOptions.OutputPath)
+                ? reverseEngineerOptions.ProjectRootNamespace
+                : $"{reverseEngineerOptions.ProjectRootNamespace}.{reverseEngineerOptions.OutputPath}";
+
             var scaffoldedModel = scaffolder.ScaffoldModel(
                     reverseEngineerOptions.Dacpac != null
                         ? reverseEngineerOptions.Dacpac
                         : reverseEngineerOptions.ConnectionString,
                     reverseEngineerOptions.Tables,
                     schemas,
-                    reverseEngineerOptions.ProjectRootNamespace,
+                    @nameSpace,
                     "C#",
                     null,
                     reverseEngineerOptions.ContextClassName,
