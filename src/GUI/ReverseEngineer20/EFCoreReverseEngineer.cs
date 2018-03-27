@@ -1,5 +1,5 @@
 ﻿using EFCore.SqlCe.Scaffolding.Internal;
-using EntityFrameworkCore.Scaffolding.Handlebars;
+//using EntityFrameworkCore.Scaffolding.Handlebars;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding;
@@ -30,14 +30,13 @@ namespace ReverseEngineer20
 
             serviceCollection
                 .AddEntityFrameworkDesignTimeServices()
-                //.AddScaffolding(reporter)
                 .AddSingleton<IOperationReporter, OperationReporter>()
                 .AddSingleton<IOperationReportHandler, OperationReportHandler>();
 
-            if (reverseEngineerOptions.UseHandleBars)
-            {
-                serviceCollection.AddHandlebarsScaffolding(reverseEngineerOptions.ProjectPath);
-            }
+            //if (reverseEngineerOptions.UseHandleBars)
+            //{
+            //    serviceCollection.AddHandlebarsScaffolding(reverseEngineerOptions.ProjectPath);
+            //}
 
             if (reverseEngineerOptions.UseInflector)
             {
@@ -91,14 +90,14 @@ namespace ReverseEngineer20
                     schemas,
                     reverseEngineerOptions.ProjectRootNamespace,
                     "C#",
-                    reverseEngineerOptions.OutputPath,
+                    null,
                     reverseEngineerOptions.ContextClassName,
                     !reverseEngineerOptions.UseFluentApiOnly,
                     useDatabaseNames: reverseEngineerOptions.UseDatabaseNames);
 
             var filePaths = scaffolder.Save(
                 scaffoldedModel,
-                reverseEngineerOptions.OutputPath,
+                Path.Combine(reverseEngineerOptions.ProjectPath, reverseEngineerOptions.OutputPath),
                 overwriteFiles: true);
 
             foreach (var file in filePaths.AdditionalFiles)
