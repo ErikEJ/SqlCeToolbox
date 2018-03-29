@@ -9,7 +9,7 @@
     </NuGetPackageImportStamp>
     <UseCodebase>true</UseCodebase>
     <StartAction>Program</StartAction>
-    <StartProgram>C:\Program Files %28x86%29\Microsoft SQL Server\130\Tools\Binn\ManagementStudio\ssms.exe</StartProgram>
+    <StartProgram>C:\Program Files %28x86%29\Microsoft SQL Server\140\Tools\Binn\ManagementStudio\ssms.exe</StartProgram>
     <ReferencePath>$(ReferencePath);$(MSBuildThisFileDirectory)..\References\2010</ReferencePath>
   </PropertyGroup>
   <PropertyGroup>
