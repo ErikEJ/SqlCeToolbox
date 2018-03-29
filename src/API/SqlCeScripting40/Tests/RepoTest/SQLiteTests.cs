@@ -33,6 +33,9 @@ public class SQLiteScriptingTests
     private string viewColBugConnectionString = string.Format(
     @"Data Source={0}SampleToEric.db", dbPath);
 
+    private string testSchemaBugConnectionString = string.Format(
+        @"Data Source={0}Test.db", dbPath);
+
     [Test]
     public void TestGetAllTableNames()
     {
@@ -44,6 +47,19 @@ public class SQLiteScriptingTests
         Assert.IsTrue(list.Count == 11);
         Assert.IsTrue(list[0] == "Album");
     }
+
+    [Test]
+    public void TestGetAllTablesSchemaBug()
+    {
+        var list = new List<string>();
+        using (IRepository repo = new SQLiteRepository(testSchemaBugConnectionString))
+        {
+            //list = repo.GetAllTableNames();
+            var cols = repo.GetAllViewColumns();
+        }
+        Assert.IsTrue(list.Count == 1);
+    }
+
 
     [Test]
     public void TestGetAllTableNamesViewComments()
