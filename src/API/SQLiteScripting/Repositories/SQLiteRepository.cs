@@ -60,7 +60,7 @@ namespace ErikEJ.SQLiteScripting
         public List<View> GetAllViews()
         {
             var list = new List<View>();
-            var dt = _cn.GetSchema("Views");
+            var dt = Schema_Views(_cn);
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 var view = new View
