@@ -66,7 +66,8 @@ namespace ErikEJ.SQLiteScripting
                 var view = new View
                 {
                     ViewName = dt.Rows[i]["TABLE_NAME"].ToString(),
-                    Definition = dt.Rows[i]["VIEW_DEFINITION"].ToString()
+                    Definition = dt.Rows[i]["VIEW_DEFINITION"].ToString(),
+                    Select = dt.Rows[i]["VIEW_SELECT"].ToString()
                 };
                 list.Add(view);
             }
@@ -86,21 +87,18 @@ namespace ErikEJ.SQLiteScripting
         /// <returns>DataTable</returns>
         private DataTable Schema_Views(SQLiteConnection cn)
         {
-            DataTable tbl = new DataTable("Views");
+            DataTable tbl = 
+                new DataTable("Views");
             DataRow row;
-            string strItem;
+            string strSql;
             int nPos;
 
             tbl.Locale = CultureInfo.InvariantCulture;
             tbl.Columns.Add("TABLE_CATALOG", typeof(string));
-            tbl.Columns.Add("TABLE_SCHEMA", typeof(string));
             tbl.Columns.Add("TABLE_NAME", typeof(string));
             tbl.Columns.Add("VIEW_DEFINITION", typeof(string));
-            tbl.Columns.Add("CHECK_OPTION", typeof(bool));
+            tbl.Columns.Add("VIEW_SELECT", typeof(string));
             tbl.Columns.Add("IS_UPDATABLE", typeof(bool));
-            tbl.Columns.Add("DESCRIPTION", typeof(string));
-            tbl.Columns.Add("DATE_CREATED", typeof(DateTime));
-            tbl.Columns.Add("DATE_MODIFIED", typeof(DateTime));
 
             tbl.BeginLoadData();
 
@@ -111,20 +109,26 @@ namespace ErikEJ.SQLiteScripting
                 {
                     while (rd.Read())
                     {
-                        strItem = rd.GetString(4);
-                        nPos = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strItem, " AS ", CompareOptions.IgnoreCase);
-                        if (nPos > -1)
-                        {
-                            strItem = strItem.Substring(nPos + 4).Trim();
-                            row = tbl.NewRow();
+                        strSql = rd.GetString(4)
+                            .Replace('\r', ' ')
+                            .Replace('\n', ' ')
+                            .Replace('\t', ' ')
+                            .Replace(" AS(", " AS (")
+                            .Replace(" as(", " as (");
+                        nPos = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strSql, " AS ", CompareOptions.IgnoreCase);
+                        if (nPos < 0)
+                            continue;
+                        strSql = strSql.Substring(nPos + 4).Trim();
 
-                            row["TABLE_CATALOG"] = "main";
-                            row["TABLE_NAME"] = rd.GetString(2);
-                            row["IS_UPDATABLE"] = false;
-                            row["VIEW_DEFINITION"] = rd.GetString(4);
+                        row = tbl.NewRow();
 
-                            tbl.Rows.Add(row);
-                        }
+                        row["TABLE_CATALOG"] = "main";
+                        row["TABLE_NAME"] = rd.GetString(2);
+                        row["IS_UPDATABLE"] = false;
+                        row["VIEW_DEFINITION"] = rd.GetString(4);
+                        row["VIEW_SELECT"] = strSql;
+
+                        tbl.Rows.Add(row);
                     }
                 }
             }
@@ -139,7 +143,7 @@ namespace ErikEJ.SQLiteScripting
             DataTable tbl = new DataTable("ViewColumns");
             DataRow row;
             string strSql;
-            int n;
+            int nPos;
             DataRow schemaRow;
             DataRow viewRow;
 
@@ -183,14 +187,16 @@ namespace ErikEJ.SQLiteScripting
                     {
                         using (SQLiteCommand cmdViewSelect = new SQLiteCommand(string.Format(CultureInfo.InvariantCulture, "SELECT * FROM [main].[{0}]", rdViews.GetString(2)), cn))
                         {
-                            strSql = rdViews.GetString(4);
-                            //strSql = rdViews.GetString(4).Replace('\r', ' ').Replace('\n', ' ').Replace('\t', ' ');
-
-                            n = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strSql, " AS ", CompareOptions.IgnoreCase);
-                            if (n < 0)
+                            strSql = rdViews.GetString(4)
+                                .Replace('\r', ' ')
+                                .Replace('\n', ' ')
+                                .Replace('\t', ' ')
+                                .Replace(" AS(", " AS (")
+                                .Replace(" as(", " as (");
+                            nPos = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strSql, " AS ", CompareOptions.IgnoreCase);
+                            if (nPos < 0)
                                 continue;
-
-                            strSql = strSql.Substring(n + 4);
+                            strSql = strSql.Substring(nPos + 4).Trim();
 
                             using (SQLiteCommand cmd = new SQLiteCommand(strSql, cn))
                             using (SQLiteDataReader rdViewSelect = cmdViewSelect.ExecuteReader(CommandBehavior.SchemaOnly))
@@ -198,10 +204,10 @@ namespace ErikEJ.SQLiteScripting
                             using (DataTable tblSchemaView = rdViewSelect.GetSchemaTable())
                             using (DataTable tblSchema = rd.GetSchemaTable())
                             {
-                                for (n = 0; n < tblSchema.Rows.Count; n++)
+                                for (var i = 0; i < tblSchema.Rows.Count; i++)
                                 {
-                                    viewRow = tblSchemaView.Rows[n];
-                                    schemaRow = tblSchema.Rows[n];
+                                    viewRow = tblSchemaView.Rows[i];
+                                    schemaRow = tblSchema.Rows[i];
 
                                     row = tbl.NewRow();
 
@@ -264,17 +270,16 @@ namespace ErikEJ.SQLiteScripting
         private List<Column> GetListOfColumns(string schemaView)
         {
             var result = new List<Column>();
-
             var dt = new DataTable();
 
-            //if (schemaView == "ViewColumns")
-            //{
-            //    dt = Schema_ViewColumns(_cn);
-            //}
-            //else
-            //{
-            dt = _cn.GetSchema(schemaView);
-            //}   
+            if (schemaView == "ViewColumns")
+            {
+                dt = Schema_ViewColumns(_cn);
+            }
+            else
+            {
+                dt = _cn.GetSchema(schemaView);
+            }
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {

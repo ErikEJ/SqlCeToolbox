@@ -54,7 +54,7 @@ public class SQLiteScriptingTests
         var list = new List<string>();
         using (IRepository repo = new SQLiteRepository(testSchemaBugConnectionString))
         {
-            //list = repo.GetAllTableNames();
+            //var views = repo.GetAllViews();
             var cols = repo.GetAllViewColumns();
         }
         Assert.IsTrue(list.Count == 1);
