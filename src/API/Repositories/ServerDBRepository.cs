@@ -341,11 +341,6 @@ namespace ErikEJ.SqlCeScripting
             return new List<View>();
         }
 
-        public List<Column> GetAllViewColumns()
-        {
-            return new List<Column>();
-        }
-
         public List<Trigger> GetAllTriggers()
         {
             return new List<Trigger>();

@@ -10,7 +10,6 @@ namespace ErikEJ.SqlCeScripting
         List<string> GetAllTableNamesForExclusion();
         List<Column> GetAllColumns();
         List<View> GetAllViews();
-        List<Column> GetAllViewColumns();
         List<Trigger> GetAllTriggers();
         DataTable GetDataFromTable(string tableName, List<Column> columns);
         DataTable GetDataFromTable(string tableName, List<Column> tableColumns, List<PrimaryKey> tablePrimaryKeys);

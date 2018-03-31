@@ -54,8 +54,7 @@ public class SQLiteScriptingTests
         var list = new List<string>();
         using (IRepository repo = new SQLiteRepository(testSchemaBugConnectionString))
         {
-            //var views = repo.GetAllViews();
-            var cols = repo.GetAllViewColumns();
+            var views = repo.GetAllColumns();
         }
         Assert.IsTrue(list.Count == 1);
     }
@@ -144,36 +143,25 @@ public class SQLiteScriptingTests
     }
 
     [Test]
-    public void TestGetAllViewColumnsViewComments()
+    public void TestGetAllViewColumnsComputed()
     {
-        var list = new List<Column>();
-        using (IRepository repo = new SQLiteRepository(viewCommentConnectionString))
+        var list = new List<View>();
+        using (IRepository repo = new SQLiteRepository(viewComputedColConnectionString))
         {
-            list = repo.GetAllViewColumns();
+            list = repo.GetAllViews();
         }
         Assert.IsTrue(list.Count == 1);
     }
 
     [Test]
-    public void TestGetAllViewColumnsComputed()
-    {
-        var list = new List<Column>();
-        using (IRepository repo = new SQLiteRepository(viewComputedColConnectionString))
-        {
-            list = repo.GetAllViewColumns();
-        }
-        Assert.IsTrue(list.Count == 2);
-    }
-
-    [Test]
     public void TestGetAllViewColumnsBug()
     {
-        var list = new List<Column>();
+        var list = new List<View>();
         using (IRepository repo = new SQLiteRepository(viewColBugConnectionString))
         {
-            list = repo.GetAllViewColumns();
+            list = repo.GetAllViews();
         }
-        Assert.AreEqual(5, list.Count);
+        Assert.AreEqual(1, list.Count);
     }
 
     [Test]
@@ -196,17 +184,6 @@ public class SQLiteScriptingTests
             list = repo.GetAllIndexes();
         }
         Assert.IsTrue(list.Count == 0);
-    }
-
-    [Test]
-    public void TestGetAllViewColumns()
-    {
-        var list = new List<Column>();
-        using (IRepository repo = new SQLiteRepository(infoConnectionString))
-        {
-            list = repo.GetAllViewColumns();
-        }
-        Assert.IsTrue(list.Count == 11);
     }
 
     [Test]

@@ -34,7 +34,6 @@ namespace ErikEJ.SqlCeScripting
         private List<PrimaryKey> _allPrimaryKeys;
         private List<Index> _allIndexes;
         private List<View> _allViews;
-        private List<Column> _allViewColumns;
         private List<Trigger> _allTriggers;
         private bool _batchForAzure;
         private bool _sqlite;
@@ -99,7 +98,6 @@ namespace ErikEJ.SqlCeScripting
             _allPrimaryKeys = repository.GetAllPrimaryKeys();
             _allTriggers = repository.GetAllTriggers();
             _allViews = repository.GetAllViews();
-            _allViewColumns = repository.GetAllViewColumns();
             if (!repository.IsServer())
                 _allIndexes = repository.GetAllIndexes();
 
@@ -670,22 +668,11 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="viewName">Name of the view.</param>
         public void GenerateViewSelect(string viewName)
         {
-            List<Column> columns =  _allViewColumns.Where(c => c.TableName == viewName).ToList();
-            if (columns.Count > 0)
+            View view =  _allViews.Where(c => c.ViewName == viewName).SingleOrDefault();
+            if (view.ViewName != null)
             {
-                _sbScript.Append("SELECT ");
-
-                columns.ForEach(delegate (Column col)
-                {
-                    _sbScript.AppendFormat(CultureInfo.InvariantCulture,
-                        "[{0}]{1}      ,"
-                        , col.ColumnName
-                        , Environment.NewLine);
-                });
-
-                // Remove the last comma and spaces
-                _sbScript.Remove(_sbScript.Length - 7, 7);
-                _sbScript.AppendFormat("  FROM [{0}];{1}", viewName, Environment.NewLine);
+                _sbScript.Append(view.Select);
+                _sbScript.Append(Environment.NewLine);
                 _sbScript.Append(_sep);
             }
         }

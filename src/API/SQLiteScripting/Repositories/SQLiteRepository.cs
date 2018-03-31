@@ -45,6 +45,7 @@ namespace ErikEJ.SQLiteScripting
             {
                 if (dt.Rows[i]["TABLE_TYPE"].ToString() == "table")
                 {
+                    var definition = dt.Rows[i]["TABLE_DEFINITION"].ToString();
                     list.Add(dt.Rows[i]["TABLE_NAME"].ToString());
                 }
             }
@@ -109,24 +110,25 @@ namespace ErikEJ.SQLiteScripting
                 {
                     while (rd.Read())
                     {
-                        strSql = rd.GetString(4)
-                            .Replace('\r', ' ')
-                            .Replace('\n', ' ')
-                            .Replace('\t', ' ')
-                            .Replace(" AS(", " AS (")
-                            .Replace(" as(", " as (");
-                        nPos = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strSql, " AS ", CompareOptions.IgnoreCase);
-                        if (nPos < 0)
-                            continue;
-                        strSql = strSql.Substring(nPos + 4).Trim();
-
                         row = tbl.NewRow();
 
                         row["TABLE_CATALOG"] = "main";
                         row["TABLE_NAME"] = rd.GetString(2);
                         row["IS_UPDATABLE"] = false;
                         row["VIEW_DEFINITION"] = rd.GetString(4);
-                        row["VIEW_SELECT"] = strSql;
+
+                        strSql = rd.GetString(4)
+                        .Replace(@"\n", @"\n ")
+                        .Replace(Environment.NewLine, " " + Environment.NewLine + " ")
+                        .Replace('\t', ' ')
+                        .Replace(" AS(", " AS (")
+                        .Replace(" as(", " as (");
+                        nPos = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strSql, " AS ", CompareOptions.IgnoreCase);
+                        if (nPos > -1)
+                        {
+                            strSql = strSql.Substring(nPos + 4).Trim();
+                            row["VIEW_SELECT"] = strSql;
+                        }
 
                         tbl.Rows.Add(row);
                     }
@@ -134,115 +136,6 @@ namespace ErikEJ.SQLiteScripting
             }
             tbl.AcceptChanges();
             tbl.EndLoadData();
-
-            return tbl;
-        }
-
-        private DataTable Schema_ViewColumns(SQLiteConnection cn)
-        {
-            DataTable tbl = new DataTable("ViewColumns");
-            DataRow row;
-            string strSql;
-            int nPos;
-            DataRow schemaRow;
-            DataRow viewRow;
-
-            tbl.Locale = CultureInfo.InvariantCulture;
-            tbl.Columns.Add("VIEW_CATALOG", typeof(string));
-            tbl.Columns.Add("VIEW_SCHEMA", typeof(string));
-            tbl.Columns.Add("VIEW_NAME", typeof(string));
-            tbl.Columns.Add("VIEW_COLUMN_NAME", typeof(String));
-            tbl.Columns.Add("TABLE_CATALOG", typeof(string));
-            tbl.Columns.Add("TABLE_SCHEMA", typeof(string));
-            tbl.Columns.Add("TABLE_NAME", typeof(string));
-            tbl.Columns.Add("COLUMN_NAME", typeof(string));
-            tbl.Columns.Add("ORDINAL_POSITION", typeof(int));
-            tbl.Columns.Add("COLUMN_HASDEFAULT", typeof(bool));
-            tbl.Columns.Add("COLUMN_DEFAULT", typeof(string));
-            tbl.Columns.Add("COLUMN_FLAGS", typeof(long));
-            tbl.Columns.Add("IS_NULLABLE", typeof(bool));
-            tbl.Columns.Add("DATA_TYPE", typeof(string));
-            tbl.Columns.Add("CHARACTER_MAXIMUM_LENGTH", typeof(int));
-            tbl.Columns.Add("NUMERIC_PRECISION", typeof(int));
-            tbl.Columns.Add("NUMERIC_SCALE", typeof(int));
-            tbl.Columns.Add("DATETIME_PRECISION", typeof(long));
-            tbl.Columns.Add("CHARACTER_SET_CATALOG", typeof(string));
-            tbl.Columns.Add("CHARACTER_SET_SCHEMA", typeof(string));
-            tbl.Columns.Add("CHARACTER_SET_NAME", typeof(string));
-            tbl.Columns.Add("COLLATION_CATALOG", typeof(string));
-            tbl.Columns.Add("COLLATION_SCHEMA", typeof(string));
-            tbl.Columns.Add("COLLATION_NAME", typeof(string));
-            tbl.Columns.Add("PRIMARY_KEY", typeof(bool));
-            tbl.Columns.Add("EDM_TYPE", typeof(string));
-            tbl.Columns.Add("AUTOINCREMENT", typeof(bool));
-            tbl.Columns.Add("UNIQUE", typeof(bool));
-
-            tbl.BeginLoadData();
-
-            using (SQLiteCommand cmdViews = new SQLiteCommand("SELECT * FROM [main].[sqlite_master] WHERE [type] LIKE 'view'", cn))
-            {
-                using (SQLiteDataReader rdViews = cmdViews.ExecuteReader())
-                {
-                    while (rdViews.Read())
-                    {
-                        using (SQLiteCommand cmdViewSelect = new SQLiteCommand(string.Format(CultureInfo.InvariantCulture, "SELECT * FROM [main].[{0}]", rdViews.GetString(2)), cn))
-                        {
-                            strSql = rdViews.GetString(4)
-                                .Replace('\r', ' ')
-                                .Replace('\n', ' ')
-                                .Replace('\t', ' ')
-                                .Replace(" AS(", " AS (")
-                                .Replace(" as(", " as (");
-                            nPos = CultureInfo.InvariantCulture.CompareInfo.IndexOf(strSql, " AS ", CompareOptions.IgnoreCase);
-                            if (nPos < 0)
-                                continue;
-                            strSql = strSql.Substring(nPos + 4).Trim();
-
-                            using (SQLiteCommand cmd = new SQLiteCommand(strSql, cn))
-                            using (SQLiteDataReader rdViewSelect = cmdViewSelect.ExecuteReader(CommandBehavior.SchemaOnly))
-                            using (SQLiteDataReader rd = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
-                            using (DataTable tblSchemaView = rdViewSelect.GetSchemaTable())
-                            using (DataTable tblSchema = rd.GetSchemaTable())
-                            {
-                                for (var i = 0; i < tblSchema.Rows.Count; i++)
-                                {
-                                    viewRow = tblSchemaView.Rows[i];
-                                    schemaRow = tblSchema.Rows[i];
-
-                                    row = tbl.NewRow();
-
-                                    row["VIEW_CATALOG"] = "main";
-                                    row["VIEW_NAME"] = rdViews.GetString(2);
-                                    row["TABLE_CATALOG"] = "main";
-                                    row["TABLE_SCHEMA"] = schemaRow[SchemaTableColumn.BaseSchemaName];
-                                    row["TABLE_NAME"] = schemaRow[SchemaTableColumn.BaseTableName];
-                                    row["COLUMN_NAME"] = schemaRow[SchemaTableColumn.BaseColumnName];
-                                    row["VIEW_COLUMN_NAME"] = viewRow[SchemaTableColumn.ColumnName];
-                                    row["COLUMN_HASDEFAULT"] = (viewRow[SchemaTableOptionalColumn.DefaultValue] != DBNull.Value);
-                                    row["COLUMN_DEFAULT"] = viewRow[SchemaTableOptionalColumn.DefaultValue];
-                                    row["ORDINAL_POSITION"] = viewRow[SchemaTableColumn.ColumnOrdinal];
-                                    row["IS_NULLABLE"] = viewRow[SchemaTableColumn.AllowDBNull];
-                                    row["DATA_TYPE"] = viewRow["DataTypeName"]; 
-                                    row["CHARACTER_MAXIMUM_LENGTH"] = viewRow[SchemaTableColumn.ColumnSize];
-                                    row["TABLE_SCHEMA"] = viewRow[SchemaTableColumn.BaseSchemaName];
-                                    row["PRIMARY_KEY"] = viewRow[SchemaTableColumn.IsKey];
-                                    row["AUTOINCREMENT"] = viewRow[SchemaTableOptionalColumn.IsAutoIncrement];
-                                    row["COLLATION_NAME"] = viewRow["CollationType"];
-                                    row["UNIQUE"] = viewRow[SchemaTableColumn.IsUnique];
-
-                                    if (!string.IsNullOrEmpty(schemaRow[SchemaTableColumn.BaseColumnName].ToString()))
-                                    { 
-                                        tbl.Rows.Add(row);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            tbl.EndLoadData();
-            tbl.AcceptChanges();
 
             return tbl;
         }
@@ -272,14 +165,7 @@ namespace ErikEJ.SQLiteScripting
             var result = new List<Column>();
             var dt = new DataTable();
 
-            if (schemaView == "ViewColumns")
-            {
-                dt = Schema_ViewColumns(_cn);
-            }
-            else
-            {
-                dt = _cn.GetSchema(schemaView);
-            }
+            dt = _cn.GetSchema(schemaView);
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
