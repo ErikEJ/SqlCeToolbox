@@ -78,7 +78,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateViewSelect(menuInfo.Name);
-                    OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
+                    var script = generator.GeneratedScript;
+                    OpenSqlEditorToolWindow(menuInfo, script);
                     DataConnectionHelper.LogUsage("ViewScriptAsSelect");
                 }
             }
@@ -107,7 +108,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 using (var repository = Helpers.RepositoryHelper.CreateRepository(menuInfo.DatabaseInfo))
                 {
-                    sqlText = string.Format(Environment.NewLine + "SELECT * FROM [{0}]", menuInfo.Name)
+                    var generator = DataConnectionHelper.CreateGenerator(repository, menuInfo.DatabaseInfo.DatabaseType);
+                    generator.GenerateViewSelect(menuInfo.Name);
+                    OpenSqlEditorToolWindow(menuInfo, generator.GeneratedScript);
+
+                    sqlText = Environment.NewLine + generator.GeneratedScript
                         + Environment.NewLine + "GO";
                     ds = repository.ExecuteSql(sqlText);
                 }
