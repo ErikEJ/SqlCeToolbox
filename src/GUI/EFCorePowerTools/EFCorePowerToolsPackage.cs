@@ -52,14 +52,14 @@ namespace EFCorePowerTools
         {
             await base.InitializeAsync(cancellationToken, progress);
 
-            _dte2 = await ServiceProvider.GetGlobalServiceAsync<DTE, DTE2>();
+            _dte2 = await GetServiceAsync(typeof(DTE)) as DTE2;
 
             if (_dte2 == null)
             {
                 return;
             }
 
-            var oleMenuCommandService = await ServiceProvider.GetGlobalServiceAsync<IMenuCommandService, OleMenuCommandService>();
+            var oleMenuCommandService = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
 
             AssemblyBindingRedirectHelper.ConfigureBindingRedirects();
 
