@@ -12,23 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\efpt\Program.cs" Link="Program.cs" />
     <Compile Include="..\ReverseEngineer20\EFCoreModelBuilder.cs" Link="EFCoreModelBuilder.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.2" />
   </ItemGroup>
 
 </Project>
