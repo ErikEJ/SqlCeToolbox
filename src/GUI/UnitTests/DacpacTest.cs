@@ -127,6 +127,23 @@ namespace UnitTests
         }
 
         [Test]
+        public void CanHandleDefaultValues()
+        {
+            // Arrange
+            var factory = new SqlServerDacpacDatabaseModelFactory(null);
+            var tables = new List<string> { "dbo.DefaultValues" };
+
+            // Act
+            var dbModel = factory.Create(dacpacQuirk, tables, new List<string>());
+
+            // Assert
+            Assert.AreEqual(1, dbModel.Tables.Count());
+            Assert.AreEqual(1, dbModel.Tables
+                .Where(t => t.Columns.Any(c => c.DefaultValueSql != null))
+                .Count());
+        }
+
+        [Test]
         public void CanBuildAW2014()
         {
             // Arrange
