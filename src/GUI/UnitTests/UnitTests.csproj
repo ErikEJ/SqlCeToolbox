@@ -112,6 +112,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PluralizerTest.cs" />
     <Compile Include="DacpacTest.cs" />
     <Compile Include="PathHelperTest.cs" />
     <Compile Include="DgmlTest.cs" />
