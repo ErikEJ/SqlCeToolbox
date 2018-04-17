@@ -453,7 +453,6 @@ namespace Bricelam.EntityFrameworkCore.Design
             _assimilatedClassicalInflectionReverseList = Reverse(_assimilatedClassicalInflectionList);
             _oSuffixReverseList = Reverse(_oSuffixList);
             _classicalInflectionReverseList = Reverse(_classicalInflectionList);
-            _wordsEndingWithSeReverseList = Reverse(_wordsEndingWithSeReverseList);
             _knownSingularWords = new HashSet<string>(
                 _irregularPluralsList.Keys
                 .Concat(_assimilatedClassicalInflectionList.Keys)
