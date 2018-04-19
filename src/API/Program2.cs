@@ -55,7 +55,6 @@ namespace ExportSqlCE
                         }
                     }
 
-
                     using (IRepository repository = new ServerDBRepository(connectionString, keepSchemaName))
                     {
                         Helper.FinalFiles = outputFileLocation;
@@ -72,10 +71,16 @@ namespace ExportSqlCE
                                 Console.WriteLine("Generating the tables....");
                                 generator.GenerateTable(false);
                             }
-                            Console.WriteLine("Generating the data....");
-                            generator.GenerateTableContent(false);
-                            Console.WriteLine("Generating the indexes....");
-                            generator.GenerateIndex();
+                            if (includeData)
+                            {
+                                Console.WriteLine("Generating the data....");
+                                generator.GenerateTableContent(false);
+                            }
+                            if (includeSchema)
+                            {
+                                Console.WriteLine("Generating the indexes....");
+                                generator.GenerateIndex();
+                            }
                             generator.GenerateSqliteSuffix();
                         }
                         else
