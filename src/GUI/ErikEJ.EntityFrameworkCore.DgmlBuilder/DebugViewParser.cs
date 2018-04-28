@@ -62,7 +62,7 @@ namespace DgmlBuilder
                 i++;
                 if (line.TrimStart().StartsWith("EntityType:"))
                 {
-                    entityName = line.Trim().Split(' ')[1];
+                    entityName = System.Security.SecurityElement.Escape(line.Trim().Split(' ')[1]);
                     BuildEntity(debugViewLines, entityName, i, result, properties, propertyLinks, line, ref inProperties);
                 }
                 if (line.TrimStart().StartsWith("Properties:"))
