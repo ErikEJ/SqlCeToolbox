@@ -110,10 +110,7 @@ namespace ReverseEngineer20
             }
             PostProcess(filePaths.ContextFile, reverseEngineerOptions.IdReplace);
 
-            if (!reverseEngineerOptions.IncludeConnectionString)
-            {
-                PostProcessContext(filePaths.ContextFile);
-            }
+            PostProcessContext(filePaths.ContextFile, reverseEngineerOptions);
 
             var result = new EfCoreReverseEngineerResult
             {
@@ -126,20 +123,37 @@ namespace ReverseEngineer20
             return result;
         }
 
-        private void PostProcessContext(string contextFile)
+        private void PostProcessContext(string contextFile, ReverseEngineerOptions options)
         {
             var finalLines = new List<string>();
             var lines = File.ReadAllLines(contextFile);
 
+            int i = 1;            
             foreach (var line in lines)
             {
-                if (line.Trim().StartsWith("#warning To protect"))
-                    continue;
+                if (!options.IncludeConnectionString)
+                {
 
-                if (line.Trim().StartsWith("optionsBuilder.Use"))
-                    continue;
+                    if (line.Trim().StartsWith("#warning To protect"))
+                        continue;
+
+                    if (line.Trim().StartsWith("optionsBuilder.Use"))
+                        continue;
+                }
+                if (i == lines.Length - 2)
+                {
+                    finalLines.Add(string.Empty);
+                    finalLines.Add("            OnModelCreatingPartial(modelBuilder);");
+                }
+
+                if (i == lines.Length - 1)
+                {
+                    finalLines.Add(string.Empty);
+                    finalLines.Add("        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);");
+                }
 
                 finalLines.Add(line);
+                i++;
             }
             File.WriteAllLines(contextFile, finalLines, Encoding.UTF8);
         }
