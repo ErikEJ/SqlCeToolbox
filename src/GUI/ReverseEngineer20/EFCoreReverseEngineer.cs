@@ -128,25 +128,29 @@ namespace ReverseEngineer20
             var finalLines = new List<string>();
             var lines = File.ReadAllLines(contextFile);
 
-            int i = 1;            
+            int i = 1;
+            var inModelCreating = false;
+
             foreach (var line in lines)
             {
                 if (!options.IncludeConnectionString)
                 {
-
                     if (line.Trim().StartsWith("#warning To protect"))
                         continue;
 
                     if (line.Trim().StartsWith("optionsBuilder.Use"))
                         continue;
                 }
-                if (i == lines.Length - 2)
+
+                if (line.Contains("OnModelCreating")) inModelCreating = true;
+
+                if (inModelCreating && line.StartsWith("        }"))
                 {
                     finalLines.Add(string.Empty);
                     finalLines.Add("            OnModelCreatingPartial(modelBuilder);");
                 }
 
-                if (i == lines.Length - 1)
+                if (inModelCreating && line.StartsWith("    }"))
                 {
                     finalLines.Add(string.Empty);
                     finalLines.Add("        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);");
