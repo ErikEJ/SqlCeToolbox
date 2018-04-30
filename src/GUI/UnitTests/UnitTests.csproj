@@ -134,6 +134,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <Content Include="Identity.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestDb.dacpac">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

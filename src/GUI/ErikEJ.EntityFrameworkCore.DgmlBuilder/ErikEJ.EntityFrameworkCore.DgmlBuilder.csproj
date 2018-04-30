@@ -19,7 +19,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>ErikEJ.EntityFrameworkCore.DgmlBuilder</PackageId>
-    <PackageVersion>1.0.9</PackageVersion>
+    <PackageVersion>1.0.10</PackageVersion>
     <Authors>ErikEJ</Authors>
     <Description>Generate DGML (Graph) content that visualizes your DbContext. Adds the AsDgml() extension method to the DbContext class</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

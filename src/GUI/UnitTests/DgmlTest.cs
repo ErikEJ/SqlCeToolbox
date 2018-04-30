@@ -172,6 +172,19 @@ namespace UnitTests
             File.WriteAllText(@"C:\temp\Issue604.dgml", result, Encoding.UTF8);
         }
 
+        [Test]
+        public void BuildIdentity()
+        {
+            // Act
+            var builder = new DgmlBuilder.DgmlBuilder();
+            var result = builder.Build(ReadAllText("Identity.txt"), "test", _template);
+
+            // Assert
+            Assert.AreNotEqual(result, null);
+
+            File.WriteAllText(@"C:\temp\Identity.dgml", result, Encoding.UTF8);
+        }
+
         private static string GetTemplate()
         {
             var resourceName = "UnitTests.template.dgml";

@@ -254,17 +254,17 @@ namespace DgmlBuilder
 
                 if (parts.Contains("Inverse:"))
                 {
-                    inverse = parts[parts.IndexOf("Inverse:") + 1];
+                    inverse = System.Security.SecurityElement.Escape(parts[parts.IndexOf("Inverse:") + 1]);
                 }
 
                 if (parts.Contains("ToDependent"))
                 {
-                    dependent = parts[parts.IndexOf("ToDependent") + 1];
+                    dependent = System.Security.SecurityElement.Escape(parts[parts.IndexOf("ToDependent") + 1]);
                 }
 
                 if (parts.Contains("ToPrincipal"))
                 {
-                    principal = parts[parts.IndexOf("ToPrincipal") + 1];
+                    principal = System.Security.SecurityElement.Escape(parts[parts.IndexOf("ToPrincipal") + 1]);
                 }
 
                 var category = parts.Contains("Collection") ? "Navigation Collection" : "Navigation Property";
@@ -326,12 +326,12 @@ namespace DgmlBuilder
                         }
                     }
 
-                    var source = parts[0]; // + "." + parts[1];
-                    var target = parts[3]; // + "." + parts[4];
+                    var source = System.Security.SecurityElement.Escape(parts[0]); // + "." + parts[1];
+                    var target = System.Security.SecurityElement.Escape(parts[3]); // + "." + parts[4];
                     //TblFavoriteDoctor {'DoctorIdFk', 'LocationIdFk'} -> TblDoctorLocation {'DoctorId', 'LocationId'} ToDependent: TblFavoriteDoctor ToPrincipal: TblDoctorLocation
 
-                    var fromColumns = parts[1];
-                    var toColumns = parts[4];
+                    var fromColumns = System.Security.SecurityElement.Escape(parts[1]);
+                    var toColumns = System.Security.SecurityElement.Escape(parts[4]);
 
                     parts.RemoveRange(0, 5);
 
