@@ -33,6 +33,7 @@ namespace ReverseEngineer20
                 .AddSingleton<IOperationReporter, OperationReporter>()
                 .AddSingleton<IOperationReportHandler, OperationReportHandler>();
 
+            //TODO await update to 2.1
             //if (reverseEngineerOptions.UseHandleBars)
             //{
             //    serviceCollection.AddHandlebarsScaffolding(reverseEngineerOptions.ProjectPath);
@@ -142,19 +143,20 @@ namespace ReverseEngineer20
                         continue;
                 }
 
-                if (line.Contains("OnModelCreating")) inModelCreating = true;
+                //TODO Need more testing!
+                //if (line.Contains("OnModelCreating")) inModelCreating = true;
 
-                if (inModelCreating && line.StartsWith("        }"))
-                {
-                    finalLines.Add(string.Empty);
-                    finalLines.Add("            OnModelCreatingPartial(modelBuilder);");
-                }
+                //if (inModelCreating && line.StartsWith("        }"))
+                //{
+                //    finalLines.Add(string.Empty);
+                //    finalLines.Add("            OnModelCreatingPartial(modelBuilder);");
+                //}
 
-                if (inModelCreating && line.StartsWith("    }"))
-                {
-                    finalLines.Add(string.Empty);
-                    finalLines.Add("        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);");
-                }
+                //if (inModelCreating && line.StartsWith("    }"))
+                //{
+                //    finalLines.Add(string.Empty);
+                //    finalLines.Add("        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);");
+                //}
 
                 finalLines.Add(line);
                 i++;

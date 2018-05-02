@@ -53,8 +53,12 @@ namespace EFCorePowerTools.Handlers
                 var dbInfo = psd.SelectedDatabase.Value;
                 var dacpacPath = psd.DacpacPath;
 
+                if (dbInfo == null) dbInfo = new DatabaseInfo();
+
                 if (!string.IsNullOrEmpty(dacpacPath))
                 {
+                    dbInfo.DatabaseType = DatabaseType.SQLServer;
+                    dbInfo.ConnectionString = "Data Source=.;Initial Catalog=" + Path.GetFileNameWithoutExtension(dacpacPath);
                     dacpacPath = _package.Dte2.DTE.BuildSqlProj(dacpacPath);
                     if (string.IsNullOrEmpty(dacpacPath))
                     {
@@ -72,8 +76,6 @@ namespace EFCorePowerTools.Handlers
                 var ptd = new PickTablesDialog { IncludeTables = true };
                 if (!string.IsNullOrEmpty(dacpacPath))
                 {
-                    dbInfo.DatabaseType = DatabaseType.SQLServer;
-                    dbInfo.ConnectionString = "Data Source=.;Initial Catalog=" + Path.GetFileNameWithoutExtension(dacpacPath);
                     ptd.Tables = revEng.GetDacpacTableNames(dacpacPath);
                 }
                 else
@@ -142,14 +144,15 @@ namespace EFCorePowerTools.Handlers
                 bool isNetCore = tfm.Contains(".NETCoreApp,Version=v2.0");
                 bool isNetStandard = tfm.Contains(".NETStandard,Version=v2.0");
 
-                if (modelDialog.UseHandelbars)
-                {
-                    var dropped = (DropTemplates(projectPath));
-                    if (dropped && !isNetCore && !isNetStandard)
-                    {
-                        project.ProjectItems.AddFromDirectory(Path.Combine(projectPath, "CodeTemplates"));
-                    }
-                }
+                //TODO await update
+                //if (modelDialog.UseHandelbars)
+                //{
+                //    var dropped = (DropTemplates(projectPath));
+                //    if (dropped && !isNetCore && !isNetStandard)
+                //    {
+                //        project.ProjectItems.AddFromDirectory(Path.Combine(projectPath, "CodeTemplates"));
+                //    }
+                //}
 
                 var revEngResult = revEng.GenerateFiles(options);
 
