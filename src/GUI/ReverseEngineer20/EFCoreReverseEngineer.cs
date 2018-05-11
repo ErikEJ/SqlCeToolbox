@@ -83,9 +83,13 @@ namespace ReverseEngineer20
                 schemas.Add(reverseEngineerOptions.DefaultDacpacSchema);
             }
 
-            var @nameSpace = string.IsNullOrWhiteSpace(reverseEngineerOptions.OutputPath)
-                ? reverseEngineerOptions.ProjectRootNamespace
-                : $"{reverseEngineerOptions.ProjectRootNamespace}.{reverseEngineerOptions.OutputPath}";
+            var @namespace = reverseEngineerOptions.ProjectRootNamespace;
+
+            var subNamespace = SubnamespaceFromOutputPath(reverseEngineerOptions.ProjectPath, reverseEngineerOptions.OutputPath);
+            if (!string.IsNullOrEmpty(subNamespace))
+            {
+                @namespace += "." + subNamespace;
+            }
 
             var scaffoldedModel = scaffolder.ScaffoldModel(
                     reverseEngineerOptions.Dacpac != null
@@ -93,7 +97,7 @@ namespace ReverseEngineer20
                         : reverseEngineerOptions.ConnectionString,
                     reverseEngineerOptions.Tables,
                     schemas,
-                    @nameSpace,
+                    @namespace,
                     "C#",
                     null,
                     reverseEngineerOptions.ContextClassName,
@@ -203,6 +207,23 @@ namespace ReverseEngineer20
         {
             var builder = new DacpacTableListBuilder(dacpacPath);
             return builder.GetTableNames();
+        }
+
+        // if outputDir is a subfolder of projectDir, then use each subfolder as a subnamespace
+        // --output-dir $(projectFolder)/A/B/C
+        // => "namespace $(rootnamespace).A.B.C"
+        private static string SubnamespaceFromOutputPath(string projectDir, string outputDir)
+        {
+            if (!outputDir.StartsWith(projectDir, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            var subPath = outputDir.Substring(projectDir.Length);
+
+            return !string.IsNullOrWhiteSpace(subPath)
+                ? string.Join(".", subPath.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries))
+                : null;
         }
     }
 }
