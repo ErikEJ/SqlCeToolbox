@@ -54,20 +54,7 @@ If you have trouble installing the SSMS extension, try the following command lin
 
 ## EF Core Power Tools for Visual Studio 2017 
 
-The EF Core Power Tools contains DbContext design time feature: Reverse Engineering, Model inspection and more to come - see the [wiki page](https://github.com/ErikEJ/SqlCeToolbox/wiki/EF-Core-Power-Tools) for more information
-
-**Release**
-
-Download the latest version of the Visual Studio 2017 extension from [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=ErikEJ.EFCorePowerTools)
-
-Or just install from Tools, Extensions and Updates in Visual Studio! ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/ext.png)
-
-
-**Daily build**
-
-You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/f4c4712c-ceae-4803-8e52-0e2049d5de9f/extension.vsix)
-
-You can also automatically get the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
+The EF Core Power Tools hav moved to [this repository](https://github.com/ErikEJ/EFCorePowerTools)
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
