@@ -54,7 +54,7 @@ If you have trouble installing the SSMS extension, try the following command lin
 
 ## EF Core Power Tools for Visual Studio 2017 
 
-The EF Core Power Tools hav moved to [this repository](https://github.com/ErikEJ/EFCorePowerTools)
+The EF Core Power Tools have moved to [this repository](https://github.com/ErikEJ/EFCorePowerTools)
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
