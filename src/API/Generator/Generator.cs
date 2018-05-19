@@ -1321,7 +1321,14 @@ namespace ErikEJ.SqlCeScripting
             {
                 _sbScript.AppendLine("-- Adding as column with NOT NULL is not allowed, set a default value or allow NULL");
             }
-            _sbScript.Append(string.Format("ALTER TABLE [{0}] ADD {1};{2}", column.TableName, GenerateColumLine(false, column, _batchForAzure), Environment.NewLine));
+            if (_sqlite)
+            {
+                _sbScript.Append(string.Format("ALTER TABLE [{0}] ADD COLUMN {1};{2}", column.TableName, GenerateColumLine(false, column, _batchForAzure), Environment.NewLine));
+            }
+            else
+            {
+                _sbScript.Append(string.Format("ALTER TABLE [{0}] ADD {1};{2}", column.TableName, GenerateColumLine(false, column, _batchForAzure), Environment.NewLine));
+            }
             _sbScript.Append(_sep);
         }
 
