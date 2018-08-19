@@ -2086,6 +2086,9 @@ namespace ErikEJ.SqlCeScripting
                     if (idx.Clustered)
                         _sbScript.Append("CLUSTERED ");
 
+                    var indexName = idx.IndexName;
+                    if (_sqlite)
+                        indexName = idx.IndexName + "_" + idx.TableName;
                     _sbScript.AppendFormat("INDEX [{0}] ON [{1}] (", idx.IndexName, idx.TableName);
                     foreach (Index col in indexesByName)
                     {

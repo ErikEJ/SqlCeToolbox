@@ -10,7 +10,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     public partial class AboutDialog
     {
-
         public AboutDialog()
         {
             InitializeComponent();
@@ -196,7 +195,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void GalleryLink_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details");
+            Process.Start("https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolboxforSSMS#review-details");
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
