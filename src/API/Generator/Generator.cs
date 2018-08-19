@@ -1658,7 +1658,7 @@ namespace ErikEJ.SqlCeScripting
                 }
                 if (col.ColumnDefault.ToLowerInvariant().Contains("getdate()"))
                 {
-                    colDefault = "current_timestamp ";
+                    colDefault = "DEFAULT current_timestamp ";
                 }
             }
             string colNull = col.IsNullable == YesNoOption.YES ? "NULL " : "NOT NULL ";

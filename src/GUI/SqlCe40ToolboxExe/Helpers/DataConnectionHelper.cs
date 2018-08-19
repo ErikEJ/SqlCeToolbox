@@ -177,7 +177,16 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
             catch
             {
-                return false;
+                try
+                {
+                    var assembly = Assembly.Load("System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    if (assembly.GetName().Version.ToString(2) != "4.0")
+                        return false;
+                }
+                catch
+                {
+                    return false;
+                }
             }
             return true;
         }
