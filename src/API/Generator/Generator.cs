@@ -1174,8 +1174,9 @@ namespace ErikEJ.SqlCeScripting
             {
                 if (_sqlite)
                 {
-                    _sbScript.AppendFormat(CultureInfo.InvariantCulture, "{0}, FOREIGN KEY ({1}) REFERENCES [{2}] ({3}) ON DELETE {4} ON UPDATE {5}"
+                    _sbScript.AppendFormat(CultureInfo.InvariantCulture, "{0}, CONSTRAINT [{1}] FOREIGN KEY ({2}) REFERENCES [{3}] ({4}) ON DELETE {5} ON UPDATE {6}"
                         , Environment.NewLine
+                        , constraint.ConstraintName
                         , constraint.Columns
                         , constraint.UniqueConstraintTableName
                         , constraint.UniqueColumns
