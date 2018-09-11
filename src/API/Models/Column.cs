@@ -50,6 +50,7 @@ namespace ErikEJ.SqlCeScripting
                 }
             }
         }
+        public bool IsCaseSensitivite { get; set; }
     }
 
     // Custom comparer for the Column class

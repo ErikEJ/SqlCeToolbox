@@ -100,6 +100,21 @@ namespace ErikEJ.SqlCeScripting
 
         private void AddToListColumns(ref List<Column> list, SqlDataReader dr)
         {
+            //0  COLUMN_NAME
+            //1  IS_NULLABLE
+            //2  DATA_TYPE
+            //3  CHARACTER_MAXIMUM_LENGTH
+            //4  NUMERIC_PRECISION
+            //5  AUTOINC_INCREMENT
+            //6  AUTOINC_SEED
+            //7  COLUMN_HASDEFAULT
+            //8  COLUMN_FLAGS
+            //9  NUMERIC_SCALE
+            //10 TABLE_NAME
+            //11 AUTOINC_NEXT
+            //12 TABLE_SCHEMA
+            //13 ORDINAL_POSITION
+            //14 CASE_SENSITIVE
             string defValue = string.Empty;
             bool hasDefault = false;
             if (!dr.IsDBNull(8))
@@ -160,6 +175,7 @@ namespace ErikEJ.SqlCeScripting
                 , RowGuidCol = (dr.IsDBNull(9) ? false : dr.GetInt32(9) == 378 || dr.GetInt32(9) == 282)
                 , NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], System.Globalization.CultureInfo.InvariantCulture))
                 , TableName = table
+                , IsCaseSensitivite = dr.IsDBNull(14) ? false : dr.GetInt32(14) == 1
             });
         }
 
@@ -360,12 +376,14 @@ namespace ErikEJ.SqlCeScripting
                 COLUMN_FLAGS = CASE cols.is_rowguidcol WHEN 0 THEN 0 ELSE 378 END,
                 NUMERIC_SCALE, col.TABLE_NAME, 
                 AUTOINC_NEXT = CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_CURRENT('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') + IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') END, 
-                col.TABLE_SCHEMA, col.ORDINAL_POSITION
+                col.TABLE_SCHEMA, col.ORDINAL_POSITION,
+                CASE_SENSITIVE = CASE WHEN collations.description like '%case-sensitive%' THEN 1 WHEN collations.description like '%case-insensitive%' THEN 0 END
                 FROM INFORMATION_SCHEMA.COLUMNS col  
                 JOIN sys.columns cols on col.COLUMN_NAME = cols.name 
                 AND cols.object_id = OBJECT_ID('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  
                 JOIN sys.schemas schms on schms.name = col.TABLE_SCHEMA                
                 JOIN sys.tables tab ON col.TABLE_NAME = tab.name and tab.schema_id = schms.schema_id 
+                LEFT JOIN sys.fn_helpcollations() collations ON collations.name = col.COLLATION_NAME
                 WHERE SUBSTRING(COLUMN_NAME, 1,5) <> '__sys' 
                 AND tab.type = 'U' AND is_ms_shipped = 0 
                 AND (cols.is_computed = 0)
@@ -378,12 +396,14 @@ namespace ErikEJ.SqlCeScripting
                 COLUMN_FLAGS = CASE cols.is_rowguidcol WHEN 0 THEN 0 ELSE 378 END,
                 NUMERIC_SCALE, col.TABLE_NAME, 
                 AUTOINC_NEXT = CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_CURRENT('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') + IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']') END, 
-                col.TABLE_SCHEMA, col.ORDINAL_POSITION
+                col.TABLE_SCHEMA, col.ORDINAL_POSITION,
+                CASE_SENSITIVE = CASE WHEN collations.description like '%case-sensitive%' THEN 1 WHEN collations.description like '%case-insensitive%' THEN 0 END
                 FROM INFORMATION_SCHEMA.COLUMNS col  
                 JOIN sys.columns cols on col.COLUMN_NAME = cols.name 
                 AND cols.object_id = OBJECT_ID('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  
                 JOIN sys.schemas schms on schms.name = col.TABLE_SCHEMA                
                 JOIN sys.tables tab ON col.TABLE_NAME = tab.name and tab.schema_id = schms.schema_id 
+                LEFT JOIN sys.fn_helpcollations() collations ON collations.name = col.COLLATION_NAME
 			    JOIN sys.computed_columns cc on cc.object_id = cols.object_id 
                 WHERE SUBSTRING(COLUMN_NAME, 1,5) <> '__sys' 
                 AND tab.type = 'U' AND is_ms_shipped = 0 

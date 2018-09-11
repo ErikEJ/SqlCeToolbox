@@ -1646,7 +1646,7 @@ namespace ErikEJ.SqlCeScripting
         {
             string line;
 
-            string colDefault = col.ColumnHasDefault ? "DEFAULT " + col.ColumnDefault + " " : string.Empty;
+            string colDefault = col.ColumnHasDefault ? " DEFAULT " + col.ColumnDefault : string.Empty;
             if (_sqlite && col.ColumnHasDefault)
             {
                 if (col.ColumnDefault.ToLowerInvariant().Contains("newid()"))
@@ -1655,32 +1655,39 @@ namespace ErikEJ.SqlCeScripting
                 }
                 if (col.ColumnDefault.ToLowerInvariant().StartsWith("n'"))
                 {
-                    colDefault = "DEFAULT " + col.ColumnDefault.Remove(0, 1);
+                    colDefault = " DEFAULT " + col.ColumnDefault.Remove(0, 1);
                 }
                 if (col.ColumnDefault.ToLowerInvariant().Contains("getdate()"))
                 {
-                    colDefault = "DEFAULT current_timestamp ";
+                    colDefault = " DEFAULT current_timestamp";
                 }
             }
-            string colNull = col.IsNullable == YesNoOption.YES ? "NULL " : "NOT NULL ";
+            string colNull = col.IsNullable == YesNoOption.YES ? " NULL" : " NOT NULL";
+            string collate = string.Empty;
             switch (col.DataType)
             {
                 case "nvarchar":
                 case "nchar":
                 case "binary":
                 case "varbinary":
+                    if (_sqlite)
+                    {
+                        collate = col.IsCaseSensitivite ? string.Empty : " COLLATE NOCASE";
+                    }
+
                     line = string.Format(CultureInfo.InvariantCulture,
-                        "[{0}] {1}({2}) {3} {4}"
+                        "[{0}] {1}({2}){3}{4}{5}"
                         , col.ColumnName
                         , col.DataType
                         , col.CharacterMaxLength == -1 ? 4000 : col.CharacterMaxLength
                         , colDefault
                         , colNull
+                        , collate
                         );
                     break;
                 case "numeric":
                     line = string.Format(CultureInfo.InvariantCulture,
-                        "[{0}] {1}({2},{3}) {4} {5}"
+                        "[{0}] {1}({2},{3}){4}{5}"
                         , col.ColumnName
                         , col.DataType
                         , col.NumericPrecision
@@ -1693,10 +1700,10 @@ namespace ErikEJ.SqlCeScripting
                     string rowGuidCol = string.Empty;
                     if (col.RowGuidCol && !azure && !_sqlite)
                     {
-                        rowGuidCol = "ROWGUIDCOL ";
+                        rowGuidCol = " ROWGUIDCOL";
                     }
                     line = string.Format(CultureInfo.InvariantCulture,
-                        "[{0}] {1} {2}{3}{4}"
+                        "[{0}] {1}{2}{3}{4}"
                         , col.ColumnName
                         , col.DataType
                         , colDefault
@@ -1716,29 +1723,29 @@ namespace ErikEJ.SqlCeScripting
                     if (includeData)
                     {
                         line = string.Format(CultureInfo.InvariantCulture,
-                            "[{0}] {1} {2}{3} {4}"
+                            "[{0}] {1}{2}{3}{4}"
                             , col.ColumnName
                             , col.DataType
                             , colDefault
-                            , (col.AutoIncrementBy > 0 ? string.Format(CultureInfo.InvariantCulture, "IDENTITY ({0},{1}) ", col.AutoIncrementNext, col.AutoIncrementBy) : string.Empty)
+                            , (col.AutoIncrementBy > 0 ? string.Format(CultureInfo.InvariantCulture, " IDENTITY ({0},{1})", col.AutoIncrementNext, col.AutoIncrementBy) : string.Empty)
                             , colNull
                             );
                     }
                     else
                     {
                         line = string.Format(CultureInfo.InvariantCulture,
-                            "[{0}] {1} {2}{3} {4}"
+                            "[{0}] {1}{2}{3}{4}"
                             , col.ColumnName
                             , col.DataType
                             , colDefault
-                            , (col.AutoIncrementBy > 0 ? string.Format(CultureInfo.InvariantCulture, "IDENTITY ({0},{1}) ", col.AutoIncrementSeed, col.AutoIncrementBy) : string.Empty)
+                            , (col.AutoIncrementBy > 0 ? string.Format(CultureInfo.InvariantCulture, " IDENTITY ({0},{1})", col.AutoIncrementSeed, col.AutoIncrementBy) : string.Empty)
                             , colNull
                             );
                     }
                     break;
                 default:
                     line = string.Format(CultureInfo.InvariantCulture,
-                        "[{0}] {1} {2}{3}"
+                        "[{0}] {1}{2}{3}"
                         , col.ColumnName
                         , col.DataType
                         , colDefault

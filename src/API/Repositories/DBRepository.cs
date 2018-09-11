@@ -87,6 +87,7 @@ namespace ErikEJ.SqlCeScripting
                     , NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], CultureInfo.InvariantCulture))
                     , TableName = dr.GetString(11)
                     , Ordinal = dr.GetInt32(13)
+                    , IsCaseSensitivite = dr.GetBoolean(14)
                 });
             }
         }
