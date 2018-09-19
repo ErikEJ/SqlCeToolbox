@@ -95,7 +95,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
         void item_Click(object sender, EventArgs e)
         {
             var scope = Scope.DataOnly;
-            var item = sender as MenuItem;
+            var item = sender as ToolStripMenuItem;
             if (item != null)
             {
                 scope = (Scope)item.Tag;
