@@ -87,7 +87,6 @@ namespace ErikEJ.SqlCeScripting
                     , NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], CultureInfo.InvariantCulture))
                     , TableName = dr.GetString(11)
                     , Ordinal = dr.GetInt32(13)
-                    , IsCaseSensitivite = dr.GetBoolean(14)
                 });
             }
         }
@@ -103,7 +102,7 @@ namespace ErikEJ.SqlCeScripting
                 , UniqueConstraintName = dr.GetString(4)
                 , UniqueColumnName = dr.GetString(5)
                 , UpdateRule = dr.GetString(6)
-                , DeleteRule  = dr.GetString(7)
+                , DeleteRule = dr.GetString(7)
                 , Columns = new ColumnList()
                 , UniqueColumns = new ColumnList()
             });
@@ -118,15 +117,15 @@ namespace ErikEJ.SqlCeScripting
                 , Unique = dr.GetBoolean(3)
                 , Clustered = dr.GetBoolean(4)
                 , OrdinalPosition = dr.GetInt32(5)
-                , ColumnName = dr.GetString(6)                
-                , SortOrder = (dr.GetInt16(7) == 1 ? SortOrderEnum.ASC : SortOrderEnum.DESC) 
+                , ColumnName = dr.GetString(6)
+                , SortOrder = (dr.GetInt16(7) == 1 ? SortOrderEnum.ASC : SortOrderEnum.DESC)
             });
 
         }
 
         private void AddToListPrimaryKeys(ref List<PrimaryKey> list, SqlCeDataReader dr)
         {
-            list.Add(new PrimaryKey 
+            list.Add(new PrimaryKey
             {
                 ColumnName = dr.GetString(0)
                 , KeyName = dr.GetString(1)
@@ -176,7 +175,7 @@ namespace ErikEJ.SqlCeScripting
             {
                 if (dt != null)
                     dt.Dispose();
-				throw;
+                throw;
             }
             return dt;
         }
@@ -207,12 +206,12 @@ namespace ErikEJ.SqlCeScripting
 #else
             valueList = _cn.GetDatabaseInfo();
 #endif
-            valueList.Add(new KeyValuePair<string,string>("Database", _cn.Database));
+            valueList.Add(new KeyValuePair<string, string>("Database", _cn.Database));
             valueList.Add(new KeyValuePair<string, string>("ServerVersion", _cn.ServerVersion));
             if (System.IO.File.Exists(_cn.Database))
-            { 
+            {
                 System.IO.FileInfo fi = new System.IO.FileInfo(_cn.Database);
-                valueList.Add(new KeyValuePair<string, string>("DatabaseSize",  RepositoryHelper.GetSizeReadable(fi.Length)));
+                valueList.Add(new KeyValuePair<string, string>("DatabaseSize", RepositoryHelper.GetSizeReadable(fi.Length)));
                 valueList.Add(new KeyValuePair<string, string>("SpaceAvailable", RepositoryHelper.GetSizeReadable(4294967296 - fi.Length)));
                 valueList.Add(new KeyValuePair<string, string>("Created", fi.CreationTime.ToShortDateString() + " " + fi.CreationTime.ToShortTimeString()));
             }
@@ -321,7 +320,7 @@ namespace ErikEJ.SqlCeScripting
         {
             var list = ExecuteReader(
                 "SELECT     Column_name, is_nullable, data_type, character_maximum_length, numeric_precision, autoinc_increment, autoinc_seed, column_hasdefault, column_default, column_flags, numeric_scale, table_name, autoinc_next, ordinal_position " +
-                "FROM         information_schema.columns " 
+                "FROM         information_schema.columns "
                 //+
                 //"WHERE      SUBSTRING(COLUMN_NAME, 1,5) <> '__sys'  " 
                 //+
@@ -364,7 +363,7 @@ namespace ErikEJ.SqlCeScripting
             if (tablePrimaryKeys.Count > 0)
             {
                 sb.Append(" ORDER BY ");
-                tablePrimaryKeys.ForEach(delegate(PrimaryKey column)
+                tablePrimaryKeys.ForEach(delegate (PrimaryKey column)
                 {
                     sb.AppendFormat("[{0}],", column.ColumnName);
                 });
@@ -465,7 +464,7 @@ namespace ErikEJ.SqlCeScripting
         {
             return ExecuteReader(
                 "SELECT     TABLE_NAME, INDEX_NAME, PRIMARY_KEY, [UNIQUE], [CLUSTERED], ORDINAL_POSITION, COLUMN_NAME, COLLATION AS SORT_ORDER " + // Weird column name COLLATION FOR SORT_ORDER
-                "FROM         Information_Schema.Indexes "+
+                "FROM         Information_Schema.Indexes " +
                 "WHERE     (PRIMARY_KEY = 0) " +
                 "   AND (TABLE_NAME = '" + tableName + "')  " +
                 "   AND (SUBSTRING(COLUMN_NAME, 1,5) <> '__sys')   " +
@@ -479,7 +478,7 @@ namespace ErikEJ.SqlCeScripting
                 "SELECT     TABLE_NAME, INDEX_NAME, PRIMARY_KEY, [UNIQUE], [CLUSTERED], ORDINAL_POSITION, COLUMN_NAME, COLLATION AS SORT_ORDER " + // Weird column name COLLATION FOR SORT_ORDER
                 "FROM         Information_Schema.Indexes " +
                 " WHERE     (PRIMARY_KEY = 0) " +
-                " AND (SUBSTRING(COLUMN_NAME, 1,5) <> '__sys') " 
+                " AND (SUBSTRING(COLUMN_NAME, 1,5) <> '__sys') "
                 , new AddToListDelegate<Index>(AddToListIndexes));
             return list.OrderBy(i => i.TableName).ThenBy(i => i.IndexName).ThenBy(i => i.OrdinalPosition).ToList();
         }
@@ -501,7 +500,7 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="newName">The new name.</param>
         public void RenameTable(string oldName, string newName)
         {
-            ExecuteNonQuery(string.Format(CultureInfo.InvariantCulture, "sp_rename '{0}', '{1}';", oldName, newName));            
+            ExecuteNonQuery(string.Format(CultureInfo.InvariantCulture, "sp_rename '{0}', '{1}';", oldName, newName));
         }
 
         /// <summary>
@@ -550,7 +549,7 @@ namespace ErikEJ.SqlCeScripting
             {
                 if (schemaSet != null)
                     schemaSet.Dispose();
-				throw;
+                throw;
             }
             return schemaSet;
         }
@@ -597,7 +596,7 @@ namespace ErikEJ.SqlCeScripting
                     ds.Dispose();
                 throw;
             }
-            return ds;            
+            return ds;
         }
 
         public string ParseSql(string script)
@@ -622,7 +621,7 @@ namespace ErikEJ.SqlCeScripting
             {
                 if (ds != null)
                     ds.Dispose();
-				throw;
+                throw;
             }
             return ds;
         }
@@ -734,7 +733,7 @@ namespace ErikEJ.SqlCeScripting
                 if (checkSyntax)
                 {
                     cmd.CommandText = "SELECT @@SHOWPLAN;";
-                    
+
                     var obj = cmd.ExecuteScalar();
                     var s = obj as string;
                     if (s != null)
@@ -798,7 +797,7 @@ namespace ErikEJ.SqlCeScripting
                             if (table != null)
                                 table.Dispose();
                             if (ignoreDdlErrors && execute == CommandExecute.NonQuerySchemaChanged)
-                            {}
+                            { }
                             else
                             {
                                 throw;
@@ -821,7 +820,7 @@ namespace ErikEJ.SqlCeScripting
             if (vals.Length != 3)
                 return DateTime.MinValue;
 
-            using ( var cmd = _cn.CreateCommand())
+            using (var cmd = _cn.CreateCommand())
             {
                 cmd.Connection = _cn;
 
@@ -836,12 +835,12 @@ namespace ErikEJ.SqlCeScripting
 
                 cmd.CommandText = "SELECT LastSuccessfulSync FROM __sysMergeSubscriptions " +
                     "WHERE Publisher=@publisher AND PublisherDatabase=@database AND Publication=@publication";
-                
+
                 cmd.Parameters.Add("@publisher", SqlDbType.NVarChar, 4000);
                 cmd.Parameters["@publisher"].Value = vals[0];
 
                 cmd.Parameters.Add("@database", SqlDbType.NVarChar, 4000);
-                cmd.Parameters["@database"].Value = vals[1];                
+                cmd.Parameters["@database"].Value = vals[1];
 
                 cmd.Parameters.Add("@publication", SqlDbType.NVarChar, 4000);
                 cmd.Parameters["@publication"].Value = vals[2];
@@ -856,7 +855,7 @@ namespace ErikEJ.SqlCeScripting
 
         public bool KeepSchema()
         {
-            return  false;
+            return false;
         }
         #endregion
     }

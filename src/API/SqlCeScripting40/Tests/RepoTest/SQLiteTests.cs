@@ -4,37 +4,29 @@ using System.Data;
 using System.Collections.Generic;
 using ErikEJ.SQLiteScripting;
 using ErikEJ.SqlCeScripting;
+using System.IO;
 
 public class SQLiteScriptingTests
 {
-    private const string dbPath = @"C:\Code\SqlCeToolbox\src\API\SqlCeScripting40\Tests\";
+    private static string dbPath = Directory.GetCurrentDirectory();
 
-    private string chinookConnectionString = string.Format(
-        @"Data Source={0}chinook.db", dbPath);
+    private string chinookConnectionString = $"Data Source={Path.Combine(dbPath, "chinook.db")}";
 
-    private string infoConnectionString = string.Format(
-        @"Data Source={0}inf2700_orders-1.db", dbPath);
-    
-    private string fkConnectionString = string.Format(
-        @"Data Source={0}FkMultiKey.db", dbPath);
+    private string infoConnectionString = $"Data Source={Path.Combine(dbPath, "inf2700_orders-1.db")}";
 
-    private string viewsConnectionString = string.Format(
-        @"Data Source={0}views.db", dbPath);
+    private string fkConnectionString = $"Data Source={Path.Combine(dbPath, "FkMultiKey.db")}";
 
-    private string noRowIdConnectionString = string.Format(
-        @"Data Source={0}norowid.db", dbPath);
+    private string viewsConnectionString = $"Data Source={Path.Combine(dbPath, "views.db")}";
 
-    private string viewCommentConnectionString = string.Format(
-        @"Data Source={0}new3.db", dbPath);
+    private string noRowIdConnectionString = $"Data Source={Path.Combine(dbPath, "norowid.db")}";
 
-    private string viewComputedColConnectionString = string.Format(
-    @"Data Source={0}new4.db", dbPath);
+    private string viewCommentConnectionString = $"Data Source={Path.Combine(dbPath, "new3.db")}";
 
-    private string viewColBugConnectionString = string.Format(
-    @"Data Source={0}SampleToEric.db", dbPath);
+    private string viewComputedColConnectionString = $"Data Source={Path.Combine(dbPath, "new4.db")}";
 
-    private string testSchemaBugConnectionString = string.Format(
-        @"Data Source={0}Test.db", dbPath);
+    private string viewColBugConnectionString = $"Data Source={Path.Combine(dbPath, "SampleToEric.db")}";
+
+    private string testSchemaBugConnectionString = $"Data Source={Path.Combine(dbPath, "Test.db")}";
 
     [Test]
     public void TestGetAllTableNames()
@@ -54,7 +46,7 @@ public class SQLiteScriptingTests
         var list = new List<string>();
         using (IRepository repo = new SQLiteRepository(testSchemaBugConnectionString))
         {
-            var views = repo.GetAllColumns();
+            list = repo.GetAllTableNames();
         }
         Assert.IsTrue(list.Count == 1);
     }
@@ -326,11 +318,11 @@ public class SQLiteScriptingTests
     [Test]
     public void TestGetDataFromReader()
     {
-        var columns = new List<Column> 
+        var columns = new List<Column>
         {   new Column { ColumnName = "AlbumId"},
             new Column { ColumnName = "Title"},
             new Column { ColumnName = "ArtistId"},
-        };       
+        };
 
         IDataReader reader = null;
 
