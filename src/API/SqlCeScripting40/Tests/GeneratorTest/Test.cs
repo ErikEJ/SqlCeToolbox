@@ -24,6 +24,7 @@ public class SqlCeScriptingTestFixture
     private string dtoConnectionString = $"Data Source={Path.Combine(dbPath, "dto.db")}";
     private string infoConnectionString = $"Data Source={Path.Combine(dbPath, "inf2700_orders-1.db")}";
     private string db21Conn = $"Data Source={Path.Combine(dbPath, "DB21.sqlite")}";
+    private string northwindConn = $"Data Source={Path.Combine(dbPath, "Northwind.sdf")}";
 
     private const string sdfConnectionString = @"Data Source=C:\data\sqlce\test\ams40.sdf;Max Database Size=512";
     private const string sdfConnectionString2 = @"Data Source=C:\data\sqlce\test\PFIZER_DB40.sdf";
@@ -37,6 +38,17 @@ public class SqlCeScriptingTestFixture
     private const string chinookConnectionString = @"Data Source=C:\projects\Chinook\Chinook40.sdf;";
     private const string migrateConnectionString = @"data source=.\SQL2008R2;Initial Catalog=MigrateTest;Integrated Security=true";
 
+    [Test]
+    public void TestGetAllColumns()
+    {
+        var list = new List<Column>();
+        using (IRepository repo = new DB4Repository(northwindConn))
+        {
+            list = repo.GetAllColumns();
+        }
+        Assert.AreEqual(74, list.Count);
+        Assert.AreEqual("int", list[0].DataType);
+    }
 
     [Test]
     public void TestServerMigration()
@@ -493,7 +505,7 @@ GO";
     {
         //cloud_service_product_infos
         //;DateFormatString=yyyy-MM-dd HH:mm:ss zzz
-        using (IRepository sourceRepository = new SQLiteRepository(@"Data Source=C:\Code\SqlCeToolbox\src\API\SqlCeScripting40\Tests\chinook.db"))
+        using (IRepository sourceRepository = new SQLiteRepository(chinookSQLiteConnectionString))
         {
             var generator = new Generator4(sourceRepository, "sw.sql", false, false, true);
             generator.GenerateTableCreate("Artist");
