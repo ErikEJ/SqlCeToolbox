@@ -74,8 +74,9 @@ namespace ErikEJ.SqlCeToolbox
                     }
                 }
             }
-            if (message != null)
-                OutputStringInGeneralPane(message);
+            // Attempt to fix issue with new VS versions #725
+            //if (message != null)
+            //    OutputStringInGeneralPane(message);
         }
 
         private void OutputStringInGeneralPane(string text)
