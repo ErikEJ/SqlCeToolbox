@@ -153,13 +153,24 @@ namespace ErikEJ.SqlCeScripting
         public void ExcludeTables(IList<string> tablesToExclude)
         {
             var allTables = _repository.GetAllTableNamesForExclusion();
-
             foreach (string tableToExclude in tablesToExclude)
             {
                 allTables.Remove(tableToExclude);
             }
+            FinalizeTableNames(allTables);
+        }
+
+        public void IncludeTables(IList<string> tablesToInclude)
+        {
+            var allTables = _repository.GetAllTableNamesForExclusion(); // Probably need to add another method for inclusion or rename the existing one
+            allTables = allTables.Where(tableName => tablesToInclude.Contains(tableName)).ToList();
+            FinalizeTableNames(allTables);
+        }
+
+        private void FinalizeTableNames(IList<string> tablesNamesToAssign)
+        {
             var finalTables = new List<string>();
-            foreach (string table in allTables)
+            foreach (string table in tablesNamesToAssign)
             {
                 finalTables.Add(GetLocalName(table));
             }

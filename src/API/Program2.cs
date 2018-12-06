@@ -26,7 +26,10 @@ namespace ExportSqlCE
                     bool keepSchemaName = false;
                     bool preserveDateAndDateTime2 = false;
                     bool sqlite = false;
+                    bool toExcludeTables = true;
+                    bool toIncludeTables = false;
                     System.Collections.Generic.List<string> exclusions = new System.Collections.Generic.List<string>();
+                    System.Collections.Generic.List<string> inclusions = new System.Collections.Generic.List<string>();
 
                     for (int i = 2; i < args.Length; i++)
                     {
@@ -47,7 +50,17 @@ namespace ExportSqlCE
                         if (args[i].StartsWith("preservedateanddatetime2"))
                             preserveDateAndDateTime2 = true;
                         if (args[i].StartsWith("exclude:"))
+                        {
                             ParseExclusions(exclusions, args[i]);
+                            toExcludeTables = true;
+                            toIncludeTables = false;
+                        }
+                        if (args[i].StartsWith("include:"))
+                        {
+                            ParseInclusions(inclusions, args[i]);
+                            toIncludeTables = true;
+                            toExcludeTables = false;
+                        }
                         if (args[i].StartsWith("sqlite"))
                         {
                             sqlite = true;
@@ -62,7 +75,15 @@ namespace ExportSqlCE
                         sw.Start();
                         var generator = new Generator(repository, outputFileLocation, false, preserveDateAndDateTime2, sqlite);
 
-                        generator.ExcludeTables(exclusions);
+                        if (toExcludeTables)
+                        {
+                            generator.ExcludeTables(exclusions);
+                        }
+                        else if (toIncludeTables)
+                        {
+                            generator.IncludeTables(inclusions);
+                        }
+
                         if (sqlite)
                         {
                             generator.GenerateSqlitePrefix();
@@ -126,13 +147,23 @@ namespace ExportSqlCE
 
         private static void ParseExclusions(System.Collections.Generic.List<string> exclusions, string excludeParam)
         {
-            excludeParam = excludeParam.Replace("exclude:", string.Empty);
-            if (!string.IsNullOrEmpty(excludeParam))
+            ParseTableNames(exclusions, "exclude", excludeParam);
+        }
+
+        private static void ParseInclusions(System.Collections.Generic.List<string> inclusions, string includeParam)
+        {
+            ParseTableNames(inclusions, "include", includeParam);
+        }
+
+        private static void ParseTableNames(System.Collections.Generic.List<string> tokens, string argumentName, string argumentParam)
+        {
+            argumentParam = argumentParam.Replace($"{argumentName}:", string.Empty);
+            if (!string.IsNullOrEmpty(argumentParam))
             {
-                string[] tables = excludeParam.Split(',');
+                string[] tables = argumentParam.Split(',');
                 foreach (var item in tables)
                 {
-                    exclusions.Add(item);
+                    tokens.Add(item);
                 }
             }
         }
@@ -163,8 +194,8 @@ namespace ExportSqlCE
         private static void PrintUsageGuide()
         {
             Console.WriteLine("Usage : ");
-            Console.WriteLine(" Export2SQLCE.exe [SQL Server Connection String] [output file location] [[exclude]] [[schemaonly]] [[dataonly]] [[saveimages]] [[sqlite]] [[preservedateanddatetime2]] [[keepschema]]");
-            Console.WriteLine(" (exclude, schemaonly, dataonly, saveimages, sqlite, keepschema and preservedateanddatetime2 are optional parameters)");
+            Console.WriteLine(" Export2SQLCE.exe [SQL Server Connection String] [output file location] [[exclude]]|[[include]] [[schemaonly]] [[dataonly]] [[saveimages]] [[sqlite]] [[preservedateanddatetime2]] [[keepschema]]");
+            Console.WriteLine(" (exclude, include, schemaonly, dataonly, saveimages, sqlite, keepschema and preservedateanddatetime2 are optional parameters)");
             Console.WriteLine("");
             Console.WriteLine("Examples : ");
             Console.WriteLine(" Export2SQLCE.exe \"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True\" Northwind.sql");
