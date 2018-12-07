@@ -99,6 +99,7 @@
     <Compile Include="Models\Column.cs" />
     <Compile Include="Models\ColumnList.cs" />
     <Compile Include="Models\Constraint.cs" />
+    <Compile Include="Models\TableParameter.cs" />
     <Compile Include="Models\Trigger.cs" />
     <Compile Include="Models\View.cs" />
     <Compile Include="Models\DbDescription.cs" />

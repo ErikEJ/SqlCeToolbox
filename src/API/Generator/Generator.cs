@@ -28,6 +28,7 @@ namespace ErikEJ.SqlCeScripting
         private StringBuilder _sbScript;
         private String _sep = "GO" + Environment.NewLine;
         private List<string> _tableNames;
+        private List<string> _whereClauses; // must be of the same length as _tableNames
         private Int32 _fileCounter = -1;
         private List<Column> _allColumns;
         private List<Constraint> _allForeignKeys;
@@ -157,33 +158,64 @@ namespace ErikEJ.SqlCeScripting
             {
                 allTables.Remove(tableToExclude);
             }
-            FinalizeTableNames(allTables);
+            FinalizeTableNames(allTables, Enumerable.Empty<TableParameter>());
         }
 
-        public void IncludeTables(IList<string> tablesToInclude)
+        public void IncludeTables(IList<string> tablesToInclude, IList<string> whereClauses)
         {
+            if (tablesToInclude.Count != whereClauses.Count)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Numbers of elements in {0} and {1} do not match", nameof(tablesToInclude), nameof(whereClauses)));
+            }
+            var tablesAndWhereClauses = tablesToInclude
+                .Zip(whereClauses, (table, whereClause) => new TableParameter(table, whereClause))
+                .ToArray();
+
             var allTables = _repository.GetAllTableNamesForExclusion(); // Probably need to add another method for inclusion or rename the existing one
             allTables = allTables.Where(tableName => tablesToInclude.Contains(tableName)).ToList();
-            FinalizeTableNames(allTables);
+            FinalizeTableNames(allTables, tablesAndWhereClauses);
         }
 
-        private void FinalizeTableNames(IList<string> tablesNamesToAssign)
+        private void FinalizeTableNames(IList<string> tablesNamesToAssign, IEnumerable<TableParameter> tableParameters)
         {
             var finalTables = new List<string>();
+            _whereClauses = new List<string>();
             foreach (string table in tablesNamesToAssign)
             {
-                finalTables.Add(GetLocalName(table));
+                var localName = GetLocalName(table);
+                finalTables.Add(localName);
+                var tableParam = tableParameters.FirstOrDefault(x => x.TableName == table);
+                if (tableParam != null)
+                {
+                    tableParam.TableName = localName;
+                    _whereClauses.Add(tableParam.WhereClause);
+                }
+                else
+                {
+                    _whereClauses.Add(null);
+                }
             }
             _tableNames = finalTables;
             try
             {
                 var sortedTables = new List<string>();
+                var whereClauses = new List<string>();
                 var g = FillSchemaDataSet(finalTables).ToGraph();
                 foreach (var table in g.TopologicalSort())
                 {
                     sortedTables.Add(table.TableName);
+                    var tableParam = tableParameters.FirstOrDefault(x => x.TableName == table.TableName);
+                    if (tableParam != null)
+                    {
+                        whereClauses.Add(tableParam.WhereClause);
+                    }
+                    else
+                    {
+                        whereClauses.Add(null);
+                    }
                 }
                 _tableNames = sortedTables;
+                _whereClauses = whereClauses;
             }
             catch (QuickGraph.NonAcyclicGraphException)
             {
@@ -1769,9 +1801,15 @@ namespace ErikEJ.SqlCeScripting
 
         public void GenerateTableContent(bool saveImageFiles, bool ignoreIdentity = false)
         {
+            if (_tableNames.Count != _whereClauses.Count)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Numbers of elements in {0} and {1} do not match", nameof(_tableNames), nameof(_whereClauses)));
+            }
+            int index = 0;
             foreach (var tableName in _tableNames)
             {
-                GenerateTableContent(tableName, saveImageFiles, ignoreIdentity);
+                GenerateTableContent(tableName, saveImageFiles, ignoreIdentity, _whereClauses[index]);
+                index++;
             }
         }
 

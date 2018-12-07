@@ -30,6 +30,7 @@ namespace ExportSqlCE
                     bool toIncludeTables = false;
                     System.Collections.Generic.List<string> exclusions = new System.Collections.Generic.List<string>();
                     System.Collections.Generic.List<string> inclusions = new System.Collections.Generic.List<string>();
+                    System.Collections.Generic.List<string> whereClauses = new System.Collections.Generic.List<string>();
 
                     for (int i = 2; i < args.Length; i++)
                     {
@@ -51,13 +52,13 @@ namespace ExportSqlCE
                             preserveDateAndDateTime2 = true;
                         if (args[i].StartsWith("exclude:"))
                         {
-                            ParseExclusions(exclusions, args[i]);
+                            ParseExclusions(exclusions, args[i], whereClauses);
                             toExcludeTables = true;
                             toIncludeTables = false;
                         }
                         if (args[i].StartsWith("include:"))
                         {
-                            ParseInclusions(inclusions, args[i]);
+                            ParseInclusions(inclusions, args[i], whereClauses);
                             toIncludeTables = true;
                             toExcludeTables = false;
                         }
@@ -81,7 +82,7 @@ namespace ExportSqlCE
                         }
                         else if (toIncludeTables)
                         {
-                            generator.IncludeTables(inclusions);
+                            generator.IncludeTables(inclusions, whereClauses);
                         }
 
                         if (sqlite)
@@ -145,25 +146,28 @@ namespace ExportSqlCE
             }
         }
 
-        private static void ParseExclusions(System.Collections.Generic.List<string> exclusions, string excludeParam)
+        private static void ParseExclusions(System.Collections.Generic.List<string> exclusions, string excludeParam, System.Collections.Generic.List<string> whereClauses)
         {
-            ParseTableNames(exclusions, "exclude", excludeParam);
+            ParseTableNames(exclusions, "exclude", excludeParam, whereClauses);
         }
 
-        private static void ParseInclusions(System.Collections.Generic.List<string> inclusions, string includeParam)
+        private static void ParseInclusions(System.Collections.Generic.List<string> inclusions, string includeParam, System.Collections.Generic.List<string> whereClauses)
         {
-            ParseTableNames(inclusions, "include", includeParam);
+            ParseTableNames(inclusions, "include", includeParam, whereClauses);
         }
 
-        private static void ParseTableNames(System.Collections.Generic.List<string> tokens, string argumentName, string argumentParam)
+        private static void ParseTableNames(System.Collections.Generic.List<string> tableNames, string argumentName, string argumentParam, System.Collections.Generic.List<string> whereClauses)
         {
             argumentParam = argumentParam.Replace($"{argumentName}:", string.Empty);
+            argumentParam = argumentParam.Replace($"\"", string.Empty);
             if (!string.IsNullOrEmpty(argumentParam))
             {
                 string[] tables = argumentParam.Split(',');
                 foreach (var item in tables)
                 {
-                    tokens.Add(item);
+                    var tableParams = item.Split(':');
+                    tableNames.Add(tableParams[0]);
+                    whereClauses.Add(tableParams.Length > 1 ? tableParams[1] : null);
                 }
             }
         }
@@ -203,6 +207,8 @@ namespace ExportSqlCE
             Console.WriteLine(" Export2SQLCE.exe \"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True\" Northwind.sql dataonly");
             Console.WriteLine(" Export2SQLCE.exe \"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True\" Northwind.sql exclude:dbo.Shippers,dbo.Suppliers");
             Console.WriteLine(" Export2SQLCE.exe \"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True\" Northwind.sql sqlite");
+            Console.WriteLine(" Export2SQLCE.exe \"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True\" Northwind.sql include:dbo.Shippers,dbo.Suppliers");
+            Console.WriteLine(" Export2SQLCE.exe \"Data Source=(local);Initial Catalog=Northwind;Integrated Security=True\" Northwind.sql include:\"dbo.Shippers:ID=1 OR ID=2,dbo.Suppliers:Title LIKE 'Company%'\" sqlite");
             Console.WriteLine("");
         }
     }

@@ -26,7 +26,11 @@ namespace ExportSqlCE
                     bool saveImageFiles = false;
                     bool sqlAzure = false;
                     bool sqlite = false;
+                    bool toExcludeTables = true;
+                    bool toIncludeTables = false;
                     System.Collections.Generic.List<string> exclusions = new System.Collections.Generic.List<string>();
+                    System.Collections.Generic.List<string> inclusions = new System.Collections.Generic.List<string>();
+                    System.Collections.Generic.List<string> whereClauses = new System.Collections.Generic.List<string>();
 
                     System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                     sw.Start();
@@ -132,7 +136,17 @@ namespace ExportSqlCE
                             if (args[i].Contains("sqlite"))
                                 sqlite = true;
                             if (args[i].StartsWith("exclude:"))
-                                ParseExclusions(exclusions, args[i]);
+                            {
+                                ParseExclusions(exclusions, args[i], whereClauses);
+                                toExcludeTables = true;
+                                toIncludeTables = false;
+                            }
+                            if (args[i].StartsWith("include:"))
+                            {
+                                ParseInclusions(inclusions, args[i], whereClauses);
+                                toIncludeTables = true;
+                                toExcludeTables = false;
+                            }
                         }
 
                         using (IRepository repository = Helper.CreateRepository(connectionString))
@@ -144,7 +158,14 @@ namespace ExportSqlCE
 #else
                             var generator = new Generator(repository, outputFileLocation, sqlAzure, false, sqlite);
 #endif
-                            generator.ExcludeTables(exclusions);
+                            if (toExcludeTables)
+                            {
+                                generator.ExcludeTables(exclusions);
+                            }
+                            else if (toIncludeTables)
+                            {
+                                generator.IncludeTables(inclusions, whereClauses);
+                            }
                             Console.WriteLine("Generating the tables....");
                             if (sqlite)
                             {
@@ -222,15 +243,28 @@ namespace ExportSqlCE
             }
         }
 
-        private static void ParseExclusions(System.Collections.Generic.List<string> exclusions, string excludeParam)
+        private static void ParseExclusions(System.Collections.Generic.List<string> exclusions, string excludeParam, System.Collections.Generic.List<string> whereClauses)
         {
-            excludeParam = excludeParam.Replace("exclude:", string.Empty);
-            if (!string.IsNullOrEmpty(excludeParam))
+            ParseTableNames(exclusions, "exclude", excludeParam, whereClauses);
+        }
+
+        private static void ParseInclusions(System.Collections.Generic.List<string> inclusions, string includeParam, System.Collections.Generic.List<string> whereClauses)
+        {
+            ParseTableNames(inclusions, "include", includeParam, whereClauses);
+        }
+
+        private static void ParseTableNames(System.Collections.Generic.List<string> tableNames, string argumentName, string argumentParam, System.Collections.Generic.List<string> whereClauses)
+        {
+            argumentParam = argumentParam.Replace($"{argumentName}:", string.Empty);
+            argumentParam = argumentParam.Replace($"\"", string.Empty);
+            if (!string.IsNullOrEmpty(argumentParam))
             {
-                string[] tables = excludeParam.Split(',');
+                string[] tables = argumentParam.Split(',');
                 foreach (var item in tables)
                 {
-                    exclusions.Add(item);
+                    var tableParams = item.Split(':');
+                    tableNames.Add(tableParams[0]);
+                    whereClauses.Add(tableParams.Length > 1 ? tableParams[1] : null);
                 }
             }
         }
@@ -239,13 +273,15 @@ namespace ExportSqlCE
         {
             var exeName = " " + System.AppDomain.CurrentDomain.FriendlyName + " ";
             Console.WriteLine("Usage : (To script an entire database)");
-            Console.WriteLine(exeName + "[SQL CE Connection String] [output file location] [[exclude]] [[schemaonly|dataonly|dataonlyserver]] [[saveimages]] [[sqlazure]]");
+            Console.WriteLine(exeName + "[SQL CE Connection String] [output file location] [[exclude]]|[[include]] [[schemaonly|dataonly|dataonlyserver]] [[saveimages]] [[sqlazure]]");
             Console.WriteLine(" (exclude, schemaonly|dataonly, saveimages and sqlazure are optional parameters)");
             Console.WriteLine("");
             Console.WriteLine("Examples : ");
             Console.WriteLine(exeName +"\"Data Source=D:\\Northwind.sdf;\" Northwind.sql");
             Console.WriteLine("");
             Console.WriteLine(exeName + "\"Data Source=D:\\Northwind.sdf;\" Northwind.sql exclude:Shippers,Suppliers");
+            Console.WriteLine(exeName + "\"Data Source=D:\\Northwind.sdf;\" Northwind.sql include:Shippers,Suppliers");
+            Console.WriteLine(exeName + "\"Data Source=D:\\Northwind.sdf;\" Northwind.sql include:\"dbo.Shippers:ID=1 OR ID=2,dbo.Suppliers:Title LIKE 'Company%'\"");
             Console.WriteLine("");
 #if V31
 #else
