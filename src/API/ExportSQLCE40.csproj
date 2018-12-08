@@ -110,6 +110,7 @@
     <Compile Include="Models\DbDescription.cs" />
     <Compile Include="Models\Index.cs" />
     <Compile Include="Models\PrimaryKey.cs" />
+    <Compile Include="Models\TableParameter.cs" />
     <Compile Include="Models\Trigger.cs" />
     <Compile Include="Models\View.cs" />
     <Compile Include="Models\YesNoOptionEnum.cs" />
