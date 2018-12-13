@@ -9,9 +9,9 @@ namespace ErikEJ.SqlCeScripting
     public class RepositoryHelper
     {
         // Contrib from hugo on CodePlex - thanks!
-        public static List<Constraint> GetGroupForeingKeys(List<Constraint> foreignKeys, List<string> allTables)
+        public static List<Constraint> GetGroupForeignKeys(List<Constraint> foreignKeys, List<string> allTables)
         {
-            var groupedForeingKeys = new List<Constraint>();
+            var groupedForeignKeys = new List<Constraint>();
 
             var uniqueTables = (from c in foreignKeys
                                 select c.ConstraintTableName).Distinct().ToList();
@@ -32,7 +32,7 @@ namespace ErikEJ.SqlCeScripting
                             Constraint constraint = constraints[0];
                             constraint.Columns.Add(constraint.ColumnName);
                             constraint.UniqueColumns.Add(constraint.UniqueColumnName);
-                            var found = groupedForeingKeys.Where(fk => fk.ConstraintName == constraint.ConstraintName && fk.ConstraintTableName != constraint.ConstraintTableName).Any();
+                            var found = groupedForeignKeys.Where(fk => fk.ConstraintName == constraint.ConstraintName && fk.ConstraintTableName != constraint.ConstraintTableName).Any();
                             if (found)
                             {
                                 constraint.ConstraintName = constraint.ConstraintName + i.ToString();
@@ -48,7 +48,7 @@ namespace ErikEJ.SqlCeScripting
                                 }
                             }
 
-                            groupedForeingKeys.Add(constraint);
+                            groupedForeignKeys.Add(constraint);
                         }
                         else
                         {
@@ -58,18 +58,18 @@ namespace ErikEJ.SqlCeScripting
                                 newConstraint.Columns.Add(c.ColumnName);
                                 newConstraint.UniqueColumns.Add(c.UniqueColumnName);
                             }
-                            var found = groupedForeingKeys.Where(fk => fk.ConstraintName == newConstraint.ConstraintName && fk.ConstraintTableName != newConstraint.ConstraintTableName).Any();
+                            var found = groupedForeignKeys.Where(fk => fk.ConstraintName == newConstraint.ConstraintName && fk.ConstraintTableName != newConstraint.ConstraintTableName).Any();
                             if (found)
                             {
                                 newConstraint.ConstraintName = newConstraint.ConstraintName + i.ToString();
                                 i++;
                             }
-                            groupedForeingKeys.Add(newConstraint);
+                            groupedForeignKeys.Add(newConstraint);
                         }
                     }
                 }
             }
-            return groupedForeingKeys;
+            return groupedForeignKeys;
         }
 
         // Returns the human-readable file size for an arbitrary, 64-bit file size

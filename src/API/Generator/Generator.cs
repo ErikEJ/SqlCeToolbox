@@ -711,7 +711,7 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="viewName">Name of the view.</param>
         public void GenerateViewSelect(string viewName)
         {
-            View view =  _allViews.Where(c => c.ViewName == viewName).SingleOrDefault();
+            View view = _allViews.Where(c => c.ViewName == viewName).SingleOrDefault();
             if (view.ViewName != null)
             {
                 _sbScript.Append(view.Select);
@@ -1211,9 +1211,9 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="tableName">Name of the table.</param>
         public void GenerateForeignKeys(string tableName)
         {
-            List<Constraint> foreingKeys = _allForeignKeys.Where(fk => fk.ConstraintTableName == tableName).ToList();
+            List<Constraint> foreignKeys = _allForeignKeys.Where(fk => fk.ConstraintTableName == tableName).ToList();
 
-            foreach (Constraint constraint in foreingKeys)
+            foreach (Constraint constraint in foreignKeys)
             {
                 if (_sqlite)
                 {
@@ -1271,8 +1271,8 @@ namespace ErikEJ.SqlCeScripting
         /// <param name="indexName">Name of the index.</param>
         public void GenerateIndexDrop(string tableName, string indexName)
         {
-            var tableIndexes = _repository.IsServer() 
-                ? _repository.GetIndexesFromTable(tableName) 
+            var tableIndexes = _repository.IsServer()
+                ? _repository.GetIndexesFromTable(tableName)
                 : _allIndexes.Where(i => i.TableName == tableName).ToList();
 
             var indexesByName = tableIndexes
