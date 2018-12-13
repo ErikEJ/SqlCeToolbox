@@ -162,20 +162,20 @@ namespace ErikEJ.SqlCeScripting
                 table = dr.GetString(13) + "." + table;
             list.Add(new Column
             {
-                ColumnName = dr.GetString(0)
-                , IsNullable = (YesNoOption)Enum.Parse(typeof(YesNoOption), dr.GetString(1))
-                , DataType = dr.GetString(2)
-                , CharacterMaxLength = (dr.IsDBNull(3) ? 0 : dr.GetInt32(3))
-                , NumericPrecision = (dr.IsDBNull(4) ? 0 : Convert.ToInt32(dr[4], System.Globalization.CultureInfo.InvariantCulture))
-                , AutoIncrementBy = (dr.IsDBNull(5) ? 0 : Convert.ToInt64(dr[5], System.Globalization.CultureInfo.InvariantCulture))
-                , AutoIncrementSeed = (dr.IsDBNull(6) ? 0 : Convert.ToInt64(dr[6], System.Globalization.CultureInfo.InvariantCulture))
-                , AutoIncrementNext = (dr.IsDBNull(12) ? 0 : Convert.ToInt64(dr[12], System.Globalization.CultureInfo.InvariantCulture))
-                , ColumnHasDefault = hasDefault
-                , ColumnDefault = defValue
-                , RowGuidCol = (dr.IsDBNull(9) ? false : dr.GetInt32(9) == 378 || dr.GetInt32(9) == 282)
-                , NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], System.Globalization.CultureInfo.InvariantCulture))
-                , TableName = table
-                , IsCaseSensitivite = dr.IsDBNull(14) ? false : dr.GetInt32(14) == 1
+                ColumnName = dr.GetString(0),
+                IsNullable = (YesNoOption)Enum.Parse(typeof(YesNoOption), dr.GetString(1)),
+                DataType = dr.GetString(2),
+                CharacterMaxLength = (dr.IsDBNull(3) ? 0 : dr.GetInt32(3)),
+                NumericPrecision = (dr.IsDBNull(4) ? 0 : Convert.ToInt32(dr[4], System.Globalization.CultureInfo.InvariantCulture)),
+                AutoIncrementBy = (dr.IsDBNull(5) ? 0 : Convert.ToInt64(dr[5], System.Globalization.CultureInfo.InvariantCulture)),
+                AutoIncrementSeed = (dr.IsDBNull(6) ? 0 : Convert.ToInt64(dr[6], System.Globalization.CultureInfo.InvariantCulture)),
+                AutoIncrementNext = (dr.IsDBNull(12) ? 0 : Convert.ToInt64(dr[12], System.Globalization.CultureInfo.InvariantCulture)),
+                ColumnHasDefault = hasDefault,
+                ColumnDefault = defValue,
+                RowGuidCol = (dr.IsDBNull(9) ? false : dr.GetInt32(9) == 378 || dr.GetInt32(9) == 282),
+                NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], System.Globalization.CultureInfo.InvariantCulture)),
+                TableName = table,
+                IsCaseSensitivite = dr.IsDBNull(14) ? false : dr.GetInt32(14) == 1
             });
         }
 
@@ -191,16 +191,16 @@ namespace ErikEJ.SqlCeScripting
 
             list.Add(new Constraint
             {
-                ConstraintTableName = table
-                , ConstraintName = dr.GetString(1)
-                , ColumnName = string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}]", dr.GetString(2))
-                , UniqueConstraintTableName = uniqueTable
-                , UniqueConstraintName = dr.GetString(4)
-                , UniqueColumnName = string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}]", dr.GetString(5))
-                , UpdateRule = dr.GetString(6)
-                , DeleteRule  = dr.GetString(7)
-                , Columns = new ColumnList()
-                , UniqueColumns = new ColumnList()
+                ConstraintTableName = table,
+                ConstraintName = dr.GetString(1),
+                ColumnName = string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}]", dr.GetString(2)),
+                UniqueConstraintTableName = uniqueTable,
+                UniqueConstraintName = dr.GetString(4),
+                UniqueColumnName = string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}]", dr.GetString(5)),
+                UpdateRule = dr.GetString(6),
+                DeleteRule = dr.GetString(7),
+                Columns = new ColumnList(),
+                UniqueColumns = new ColumnList()
             });
         }
 
@@ -213,13 +213,14 @@ namespace ErikEJ.SqlCeScripting
             }
             list.Add(new Index
             {
-                TableName = table
-                , IndexName = dr.GetString(1)
-                , Unique = dr.GetBoolean(3)
-                , Clustered = dr.GetBoolean(4)
-                , OrdinalPosition = dr.GetInt32(5)
-                , ColumnName = dr.GetString(6)                
-                , SortOrder = (dr.GetBoolean(7) ? SortOrderEnum.DESC : SortOrderEnum.ASC) 
+                TableName = table,
+                IndexName = dr.GetString(1),
+                Unique = dr.GetBoolean(3),
+                Filter = dr.GetBoolean(4) ? dr.GetString(5) : null,
+                Clustered = dr.GetBoolean(6),
+                OrdinalPosition = dr.GetInt32(7),
+                ColumnName = dr.GetString(8),
+                SortOrder = (dr.GetBoolean(9) ? SortOrderEnum.DESC : SortOrderEnum.ASC)
             });
 
         }
@@ -522,7 +523,7 @@ namespace ErikEJ.SqlCeScripting
         {
             return ExecuteReader(
                 "select top 4096	OBJECT_NAME(i.object_id) AS TABLE_NAME, i.name AS INDEX_NAME, 0 AS PRIMARY_KEY, " +
-                "i.is_unique AS [UNIQUE], CAST(0 AS bit) AS [CLUSTERED], CAST(ic.key_ordinal AS int) AS ORDINAL_POSITION, c.name AS COLUMN_NAME, ic.is_descending_key AS SORT_ORDER, '" + tableName + "' AS original " +
+                "i.is_unique AS [UNIQUE], i.has_filter AS [HAS_FILTER], i.filter_definition AS [FILTER], CAST(0 AS bit) AS [CLUSTERED], CAST(ic.key_ordinal AS int) AS ORDINAL_POSITION, c.name AS COLUMN_NAME, ic.is_descending_key AS SORT_ORDER, '" + tableName + "' AS original " +
                 "from sys.indexes i left outer join     sys.index_columns ic on i.object_id = ic.object_id and i.index_id = ic.index_id " +
                 "left outer join sys.columns c on c.object_id = ic.object_id and c.column_id = ic.column_id " +
                 "where  i.is_disabled = 0 AND i.is_hypothetical = 0 AND i.object_id = object_id('[" + GetSchemaAndTableName(tableName) + "]') AND i.name IS NOT NULL AND i.is_primary_key = 0  AND ic.is_included_column  = 0 " +

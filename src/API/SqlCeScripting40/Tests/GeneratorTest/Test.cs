@@ -598,6 +598,29 @@ GO";
         //}
 
         [Test]
+        public void GenerateDatabaseScript_FromMsSqlToSqlite_IncludesFilteredIndex()
+        {
+            string createTableQuery =
+                @"CREATE TABLE [Test]
+                (
+                     [TestId]  BIGINT         IDENTITY (1, 1) NOT NULL,
+                     [Column1] nvarchar(256)  NULL
+                );
+                CREATE UNIQUE INDEX [Test_UK_Test_Column1] ON [Test] ([Column1] ASC) WHERE ([Column1] IS NOT NULL);";
+
+            string expectedSql = string.Join(Environment.NewLine, new[]
+            {
+                "CREATE TABLE [Test] (",
+                "  [TestId] INTEGER NOT NULL",
+                ", [Column1] nvarchar(256) NULL COLLATE NOCASE",
+                ");",
+                "CREATE UNIQUE INDEX [Test_Test_UK_Test_Column1] ON [Test] ([Column1] ASC) WHERE ([Column1] IS NOT NULL);"
+            });
+
+            AssertMsSqlToSqliteGeneratorContains(createTableQuery, "Test", expectedSql);
+        }
+
+        [Test]
         public void GenerateDatabaseScript_FromMsSqlToSqlite_IdentityColumn()
         {
             string createTableQuery =
