@@ -130,7 +130,7 @@ namespace ErikEJ.SqlCeScripting
                 }
                 if (t.ToUpperInvariant().ContainsAny(_sqlCeFunctions.ToArray()))
                 {
-                    defValue = t;    
+                    defValue = t;
                 }
                 t = t.Replace("(", string.Empty);
                 t = t.Replace(")", string.Empty);
@@ -315,7 +315,7 @@ namespace ErikEJ.SqlCeScripting
             if (value != null)
             {
                 int offsetOrdinal = 0;
-                object offset = ExecuteScalar("SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "' AND (DATA_TYPE = 'sql_variant') AND ORDINAL_POSITION < "+ value + ";");
+                object offset = ExecuteScalar("SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + tableName + "' AND (DATA_TYPE = 'sql_variant') AND ORDINAL_POSITION < " + value + ";");
                 if (offset != null)
                     offsetOrdinal = (int)offset;
                 return (int)value - 1 - offsetOrdinal;
@@ -364,7 +364,7 @@ namespace ErikEJ.SqlCeScripting
 
         public List<KeyValuePair<string, string>> GetDatabaseInfo()
         {
-            return new List<KeyValuePair<string,string>>();
+            return new List<KeyValuePair<string, string>>();
         }
 
         public List<Column> GetAllColumns()
@@ -454,7 +454,7 @@ namespace ErikEJ.SqlCeScripting
                 else
                 {
                     sb.Append(string.Format(System.Globalization.CultureInfo.InvariantCulture, "[{0}], ", col.ColumnName));
-                }                
+                }
             }
             sb.Remove(sb.Length - 2, 2);
 
@@ -475,7 +475,7 @@ namespace ErikEJ.SqlCeScripting
             if (tablePrimaryKeys.Count > 0)
             {
                 sb.Append(" ORDER BY ");
-                tablePrimaryKeys.ForEach(delegate(PrimaryKey column)
+                tablePrimaryKeys.ForEach(delegate (PrimaryKey column)
                 {
                     sb.AppendFormat("[{0}],", column.ColumnName);
                 });
@@ -511,7 +511,7 @@ namespace ErikEJ.SqlCeScripting
                 "AND tab.is_ms_shipped = 0 AND tab.type = 'U' " +
                 "ORDER BY FK_TABLE_NAME, FK_CONSTRAINT_NAME, fc.constraint_column_id"
                 , new AddToListDelegate<Constraint>(AddToListConstraints));
-            return RepositoryHelper.GetGroupForeingKeys(list, GetAllTableNames());
+            return RepositoryHelper.GetGroupForeignKeys(list, GetAllTableNames());
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace ErikEJ.SqlCeScripting
 
         public void RenameTable(string oldName, string newName)
         {
-            ExecuteNonQuery(string.Format(System.Globalization.CultureInfo.InvariantCulture, "sp_rename '{0}', '{1}';", oldName, newName));            
+            ExecuteNonQuery(string.Format(System.Globalization.CultureInfo.InvariantCulture, "sp_rename '{0}', '{1}';", oldName, newName));
         }
 
         public bool IsServer()
@@ -661,7 +661,7 @@ namespace ErikEJ.SqlCeScripting
                 }
             }
             catch (SqlException ex)
-            { 
+            {
                 throw new Exception(FormatSqlException(ex, sql));
             }
         }
@@ -690,7 +690,7 @@ namespace ErikEJ.SqlCeScripting
         {
             //TODO This could probably be improved
             if (_keepSchemaName)
-            {                
+            {
                 var parts = tableName.Split('.');
                 if (parts.Length > 1)
                 {
@@ -721,7 +721,7 @@ namespace ErikEJ.SqlCeScripting
 
         public bool KeepSchema()
         {
-            return  _keepSchemaName;
+            return _keepSchemaName;
         }
         #endregion
     }

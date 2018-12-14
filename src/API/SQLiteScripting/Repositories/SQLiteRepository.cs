@@ -392,7 +392,7 @@ namespace ErikEJ.SQLiteScripting
                 fk.UniqueColumns = new ColumnList();
                 result.Add(fk);
             }
-            return RepositoryHelper.GetGroupForeingKeys(result, GetAllTableNames());
+            return RepositoryHelper.GetGroupForeignKeys(result, GetAllTableNames());
         }
 
         public List<Index> GetIndexesFromTable(string tableName)

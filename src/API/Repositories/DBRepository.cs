@@ -432,7 +432,7 @@ namespace ErikEJ.SqlCeScripting
                 "ORDER BY FK_TABLE_NAME, FK_CONSTRAINT_NAME, FK_ORDINAL_POSITION"
                 , new AddToListDelegate<Constraint>(AddToListConstraints));
 
-            return RepositoryHelper.GetGroupForeingKeys(list, GetAllTableNames());
+            return RepositoryHelper.GetGroupForeignKeys(list, GetAllTableNames());
         }
 
         ///// <summary>
@@ -452,7 +452,7 @@ namespace ErikEJ.SqlCeScripting
         //        "WHERE KCU1.TABLE_NAME = '" + tableName + "' " +
         //        "ORDER BY FK_TABLE_NAME, FK_CONSTRAINT_NAME, FK_ORDINAL_POSITION"
         //        , new AddToListDelegate<Constraint>(AddToListConstraints));
-        //    return Helper.GetGroupForeingKeys(list, GetAllTableNames());
+        //    return Helper.GetGroupForeignKeys(list, GetAllTableNames());
         //}
 
         /// <summary>
