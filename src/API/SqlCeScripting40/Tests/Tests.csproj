@@ -66,6 +66,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeneratorTest\SqlConnectionExtensionMethods.cs" />
+    <Compile Include="GeneratorTest\TempDatabase.cs" />
     <Compile Include="GeneratorTest\Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepoTest\SQLiteTests.cs" />
