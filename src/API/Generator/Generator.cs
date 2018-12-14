@@ -1167,6 +1167,16 @@ namespace ErikEJ.SqlCeScripting
             {
                 if (_sqlite)
                 {
+                    if (primaryKeys.Count == 1)
+                    {
+                        Column column = _allColumns.Single(c => c.TableName == tableName && c.ColumnName == primaryKeys[0].ColumnName);
+                        if (column.DataType == "INTEGER PRIMARY KEY AUTOINCREMENT")
+                        {
+                            // primary key already defined in the column line
+                            return;
+                        }
+                    }
+
                     _sbScript.AppendFormat("{0}, CONSTRAINT [{1}] PRIMARY KEY (", Environment.NewLine, primaryKeys[0].KeyName);
                 }
                 else
@@ -1756,35 +1766,42 @@ namespace ErikEJ.SqlCeScripting
                     break;
                 case "int":
                 case "bigint":
-                    // http://www.sqlite.org/lang_createtable.html#rowid
-                    if (_sqlite && col.AutoIncrementBy > 0)
+
+                    string colIdentity = string.Empty;
+                    if (col.AutoIncrementBy > 0)
                     {
-                        col.DataType = "INTEGER";
-                        //Prevent scripting IDENTITY
-                        col.AutoIncrementBy = int.MinValue;
+                        if (_sqlite)
+                        {
+                            // http://www.sqlite.org/lang_createtable.html#rowid
+                            col.DataType = "INTEGER";
+
+                            List<PrimaryKey> primaryKeys = _allPrimaryKeys.Where(p => p.TableName == col.TableName).ToList();
+                            if ((primaryKeys.Count == 1) && (primaryKeys.Select(x => x.ColumnName).Contains(col.ColumnName)))
+                            {
+                                col.DataType += " PRIMARY KEY AUTOINCREMENT";
+                            }
+                        }
+                        else
+                        {
+                            if (includeData)
+                            {
+                                colIdentity = string.Format(CultureInfo.InvariantCulture, " IDENTITY ({0},{1})", col.AutoIncrementNext, col.AutoIncrementBy);
+                            }
+                            else
+                            {
+                                colIdentity = string.Format(CultureInfo.InvariantCulture, " IDENTITY ({0},{1})", col.AutoIncrementSeed, col.AutoIncrementBy);
+                            }
+                        }
                     }
-                    if (includeData)
-                    {
-                        line = string.Format(CultureInfo.InvariantCulture,
-                            "[{0}] {1}{2}{3}{4}"
-                            , col.ColumnName
-                            , col.DataType
-                            , colDefault
-                            , (col.AutoIncrementBy > 0 ? string.Format(CultureInfo.InvariantCulture, " IDENTITY ({0},{1})", col.AutoIncrementNext, col.AutoIncrementBy) : string.Empty)
-                            , colNull
-                            );
-                    }
-                    else
-                    {
-                        line = string.Format(CultureInfo.InvariantCulture,
-                            "[{0}] {1}{2}{3}{4}"
-                            , col.ColumnName
-                            , col.DataType
-                            , colDefault
-                            , (col.AutoIncrementBy > 0 ? string.Format(CultureInfo.InvariantCulture, " IDENTITY ({0},{1})", col.AutoIncrementSeed, col.AutoIncrementBy) : string.Empty)
-                            , colNull
-                            );
-                    }
+
+                    line = string.Format(CultureInfo.InvariantCulture,
+                        "[{0}] {1}{2}{3}{4}"
+                        , col.ColumnName
+                        , col.DataType
+                        , colDefault
+                        , colIdentity
+                        , colNull
+                        );
                     break;
                 default:
                     line = string.Format(CultureInfo.InvariantCulture,
