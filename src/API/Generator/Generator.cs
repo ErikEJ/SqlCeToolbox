@@ -1507,6 +1507,7 @@ namespace ErikEJ.SqlCeScripting
                     }
                     GenerateIndex();
                     GenerateTriggers(_allTriggers);
+                    GenerateTriggersForForeignKeys();
                     GenerateViews();
                 }
                 GenerateSqliteSuffix();
@@ -1541,6 +1542,90 @@ namespace ErikEJ.SqlCeScripting
                 }
             }
             Helper.WriteIntoFile(GeneratedScript, _outFile, FileCounter, _sqlite);
+        }
+
+        private void GenerateTriggersForForeignKeys()
+        {
+            foreach (string tableName in _tableNames)
+            {
+                GenerateTriggersForForeignKeys(tableName);
+            }
+        }
+
+        private void GenerateTriggersForForeignKeys(string tableName)
+        {
+            List<Constraint> foreignKeys = _allForeignKeys.Where(fk => fk.ConstraintTableName == tableName).ToList();
+
+            foreach (Constraint constraint in foreignKeys)
+            {
+                GenerateInsertTriggerForForeignKey(constraint);
+                GenerateUpdateTriggerForForeignKey(constraint);
+            }
+        }
+
+        private void GenerateInsertTriggerForForeignKey(Constraint constraint)
+        {
+            GenerateTriggerForForeignKey("fki", TriggerType.Insert, constraint);
+        }
+
+        private void GenerateUpdateTriggerForForeignKey(Constraint constraint)
+        {
+            GenerateTriggerForForeignKey("fku", TriggerType.Update, constraint);
+        }
+
+        private void GenerateTriggerForForeignKey(string prefix, string triggerType, Constraint constraint)
+        {
+            string constraintName = constraint.ConstraintName;
+            string tableName = constraint.ConstraintTableName;
+            string foreignTableName = constraint.UniqueConstraintTableName;
+
+            string columnName = constraint.Columns[0];
+            Column column = _allColumns.Single(c => c.TableName == tableName && c.ColumnName == RemoveBrackets(columnName));
+
+            string foreignColumnName = constraint.UniqueColumns[0];
+            Column foreignColumn = _allColumns.Single(c => c.TableName == foreignTableName && c.ColumnName == RemoveBrackets(foreignColumnName));
+
+            string triggerName = prefix + "_" + tableName + "_" + RemoveBrackets(columnName) + "_" + foreignTableName + "_" + RemoveBrackets(foreignColumnName);
+
+            _sbScript.Append(
+                $"CREATE TRIGGER [{triggerName}] BEFORE {triggerType} ON [{tableName}] FOR EACH ROW BEGIN" +
+                $" SELECT RAISE(ROLLBACK, '{triggerType} on table {tableName} violates foreign key constraint {constraintName}')" +
+                " WHERE ");
+
+            if (column.IsNullable == YesNoOption.YES)
+            {
+                _sbScript.Append(string.Join(" ", constraint.Columns.Select(x => $"NEW.{x} IS NOT NULL AND").ToArray()));
+            }
+
+            _sbScript.Append($"(SELECT {string.Join(", ", constraint.UniqueColumns.ToArray())} FROM {foreignTableName} WHERE ");
+
+            for (int i = 0; i < constraint.Columns.Count; i++)
+            {
+                int j = i;
+                if (j > constraint.UniqueColumns.Count - 1)
+                {
+                    // different foreign keys are using the same columns from the same table
+                    // re-use the last foreign column name
+                    j = constraint.UniqueColumns.Count - 1;
+                }
+
+                _sbScript.Append($" {constraint.UniqueColumns[j]} = NEW.{constraint.Columns[i]}");
+
+                if (i < constraint.Columns.Count - 1)
+                {
+                    _sbScript.Append(" AND");
+                }
+            }
+
+            _sbScript.Append(") IS NULL;");
+            _sbScript.AppendLine(" END;");
+        }
+
+        private class TriggerType
+        {
+            public const string Insert = "Insert";
+
+            public const string Update = "Update";
         }
 
         public IList<string> GeneratedFiles
