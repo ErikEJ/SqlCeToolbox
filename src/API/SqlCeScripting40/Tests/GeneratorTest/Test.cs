@@ -626,7 +626,7 @@ GO";
                 (
                         [TestId]  BIGINT         IDENTITY NOT NULL,
                         [Column1] nvarchar(256)  NULL,
-                        CONSTRAINT [PK_Test] PRIMARY KEY CLUSTERED ([TestId] ASC),
+                        CONSTRAINT [PK_Test] PRIMARY KEY CLUSTERED ([TestId] ASC)
                 );";
 
             string expectedSql = string.Join(Environment.NewLine, new[]
@@ -634,6 +634,29 @@ GO";
                 "CREATE TABLE [Test] (",
                 "  [TestId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
                 ", [Column1] nvarchar(256) NULL COLLATE NOCASE",
+                ")"
+            });
+
+            AssertMsSqlToSqliteGeneratorContains(createTableQuery, "Test", expectedSql);
+        }
+
+        [Test]
+        public void GenerateDatabaseScript_FromMsSqlToSqlite_PrimaryKeyColumn()
+        {
+            string createTableQuery =
+                @"CREATE TABLE [Test]
+                (
+                        [TestId]  BIGINT         NOT NULL,
+                        [Column1] nvarchar(256)  NULL,
+                        CONSTRAINT [PK_Test] PRIMARY KEY CLUSTERED ([TestId] ASC)
+                );";
+
+            string expectedSql = string.Join(Environment.NewLine, new[]
+            {
+                "CREATE TABLE [Test] (",
+                "  [TestId] bigint NOT NULL",
+                ", [Column1] nvarchar(256) NULL COLLATE NOCASE",
+                ", CONSTRAINT [PK_Test] PRIMARY KEY ([TestId])",
                 ")"
             });
 
