@@ -70,23 +70,23 @@ namespace ErikEJ.SqlCeScripting
             {
                 list.Add(new Column
                 {
-                    ColumnName = dr.GetString(0)
-                    , IsNullable = (YesNoOption)Enum.Parse(typeof(YesNoOption), dr.GetString(1))
-                    , DataType = dr.GetString(2)
-                    , CharacterMaxLength = (dr.IsDBNull(3) ? 0 : dr.GetInt32(3))
-                    , NumericPrecision = (dr.IsDBNull(4) ? 0 : Convert.ToInt32(dr[4], CultureInfo.InvariantCulture))
+                    ColumnName = dr.GetString(0),
+                    IsNullable = (YesNoOption)Enum.Parse(typeof(YesNoOption), dr.GetString(1)),
+                    DataType = dr.GetString(2),
+                    CharacterMaxLength = (dr.IsDBNull(3) ? 0 : dr.GetInt32(3)),
+                    NumericPrecision = (dr.IsDBNull(4) ? 0 : Convert.ToInt32(dr[4], CultureInfo.InvariantCulture)),
 #if V31
 #else
-                    , AutoIncrementBy = (dr.IsDBNull(5) ? 0 : Convert.ToInt64(dr[5], CultureInfo.InvariantCulture))
-                    , AutoIncrementSeed = (dr.IsDBNull(6) ? 0 : Convert.ToInt64(dr[6], CultureInfo.InvariantCulture))
-                    , AutoIncrementNext = (dr.IsDBNull(12) ? 0 : Convert.ToInt64(dr[12], CultureInfo.InvariantCulture))
+                    AutoIncrementBy = (dr.IsDBNull(5) ? 0 : Convert.ToInt64(dr[5], CultureInfo.InvariantCulture)),
+                    AutoIncrementSeed = (dr.IsDBNull(6) ? 0 : Convert.ToInt64(dr[6], CultureInfo.InvariantCulture)),
+                    AutoIncrementNext = (dr.IsDBNull(12) ? 0 : Convert.ToInt64(dr[12], CultureInfo.InvariantCulture)),
 #endif
-                    , ColumnHasDefault = (dr.IsDBNull(7) ? false : dr.GetBoolean(7))
-                    , ColumnDefault = (dr.IsDBNull(8) ? string.Empty : dr.GetString(8).Trim())
-                    , RowGuidCol = (dr.IsDBNull(9) ? false : dr.GetInt32(9) == 378 || dr.GetInt32(9) == 282)
-                    , NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], CultureInfo.InvariantCulture))
-                    , TableName = dr.GetString(11)
-                    , Ordinal = dr.GetInt32(13)
+                    ColumnHasDefault = (dr.IsDBNull(7) ? false : dr.GetBoolean(7)),
+                    ColumnDefault = (dr.IsDBNull(8) ? string.Empty : dr.GetString(8).Trim()),
+                    RowGuidCol = (dr.IsDBNull(9) ? false : dr.GetInt32(9) == 378 || dr.GetInt32(9) == 282),
+                    NumericScale = (dr.IsDBNull(10) ? 0 : Convert.ToInt32(dr[10], CultureInfo.InvariantCulture)),
+                    TableName = dr.GetString(11),
+                    Ordinal = dr.GetInt32(13)
                 });
             }
         }
@@ -95,16 +95,16 @@ namespace ErikEJ.SqlCeScripting
         {
             list.Add(new Constraint
             {
-                ConstraintTableName = dr.GetString(0)
-                , ConstraintName = dr.GetString(1)
-                , ColumnName = dr.GetString(2)
-                , UniqueConstraintTableName = dr.GetString(3)
-                , UniqueConstraintName = dr.GetString(4)
-                , UniqueColumnName = dr.GetString(5)
-                , UpdateRule = dr.GetString(6)
-                , DeleteRule = dr.GetString(7)
-                , Columns = new ColumnList()
-                , UniqueColumns = new ColumnList()
+                ConstraintTableName = dr.GetString(0),
+                ConstraintName = dr.GetString(1),
+                ColumnName = dr.GetString(2),
+                UniqueConstraintTableName = dr.GetString(3),
+                UniqueConstraintName = dr.GetString(4),
+                UniqueColumnName = dr.GetString(5),
+                UpdateRule = dr.GetString(6),
+                DeleteRule = dr.GetString(7),
+                Columns = new ColumnList(),
+                UniqueColumns = new ColumnList()
             });
         }
 
@@ -112,13 +112,13 @@ namespace ErikEJ.SqlCeScripting
         {
             list.Add(new Index
             {
-                TableName = dr.GetString(0)
-                , IndexName = dr.GetString(1)
-                , Unique = dr.GetBoolean(3)
-                , Clustered = dr.GetBoolean(4)
-                , OrdinalPosition = dr.GetInt32(5)
-                , ColumnName = dr.GetString(6)
-                , SortOrder = (dr.GetInt16(7) == 1 ? SortOrderEnum.ASC : SortOrderEnum.DESC)
+                TableName = dr.GetString(0),
+                IndexName = dr.GetString(1),
+                Unique = dr.GetBoolean(3),
+                Clustered = dr.GetBoolean(4),
+                OrdinalPosition = dr.GetInt32(5),
+                ColumnName = dr.GetString(6),
+                SortOrder = (dr.GetInt16(7) == 1 ? SortOrderEnum.ASC : SortOrderEnum.DESC)
             });
 
         }
@@ -127,9 +127,9 @@ namespace ErikEJ.SqlCeScripting
         {
             list.Add(new PrimaryKey
             {
-                ColumnName = dr.GetString(0)
-                , KeyName = dr.GetString(1)
-                , TableName = dr.GetString(2)
+                ColumnName = dr.GetString(0),
+                KeyName = dr.GetString(1),
+                TableName = dr.GetString(2)
             });
         }
 

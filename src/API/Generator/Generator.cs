@@ -2256,7 +2256,15 @@ namespace ErikEJ.SqlCeScripting
                 }
                 // Remove the last comma
                 _sbScript.Remove(_sbScript.Length - 1, 1);
-                _sbScript.AppendLine(");");
+                _sbScript.Append(")");
+
+                if (!string.IsNullOrEmpty(idx.Filter))
+                {
+                    _sbScript.Append($" WHERE {idx.Filter}");
+                }
+
+                _sbScript.Append(";");
+                _sbScript.AppendLine();
                 _sbScript.Append(_sep);
             }
             else

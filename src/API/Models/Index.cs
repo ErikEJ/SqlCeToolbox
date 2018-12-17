@@ -8,11 +8,11 @@
         public string TableName { get; set; }
         public string IndexName { get; set; }
         public bool Unique { get; set; }
+        public string Filter { get; set; }
         public bool Clustered { get; set; }
         public int OrdinalPosition { get; set; }
         public string ColumnName { get; set; }
         public SortOrderEnum SortOrder { get; set; }
-
     }
 
     public enum SortOrderEnum
