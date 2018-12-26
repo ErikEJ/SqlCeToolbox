@@ -204,11 +204,6 @@ namespace ErikEJ.SqlCeToolbox
             return VisualStudioVersion >= new Version(11, 0);
         }
 
-        public static bool VsSupportsEfCore()
-        {
-            return VisualStudioVersion >= new Version(14, 0);
-        }
-
         public bool VsSupportsSimpleDdex4Provider()
         {
             return ( VisualStudioVersion >= new Version(12, 0))
