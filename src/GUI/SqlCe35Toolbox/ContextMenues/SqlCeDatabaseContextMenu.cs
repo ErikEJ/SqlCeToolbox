@@ -146,11 +146,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
 
             Items.Add(BuildCopyConnectionMenuItem(databaseMenuCommandParameters, cecmd));
 
-            if (!databaseMenuCommandParameters.DatabaseInfo.FromServerExplorer)
-            {
-                Items.Add(itemBuilder.BuildRenameConnectionMenuItem(databaseMenuCommandParameters, dcmd));
-            }
-
             Items.Add(itemBuilder.BuildRemoveConnectionMenuItem(databaseMenuCommandParameters, dcmd));
         }
 

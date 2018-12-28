@@ -222,22 +222,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             return generateInfoMenuItem;
         }
 
-        public MenuItem BuildRenameConnectionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
-        {
-            var renameConnectionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.RenameConnection);
-            var renameConnectionMenuItem = new MenuItem
-            {
-                Header = "Rename Connection...",
-                Icon = ImageHelper.GetImageFromResource("../resources/Rename_6779.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters
-            };
-            renameConnectionMenuItem.CommandBindings.Add(renameConnectionCommandBinding);
-            return renameConnectionMenuItem;
-        }
-
         public MenuItem BuildRemoveConnectionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
             DatabaseMenuCommandsHandler dcmd)
         {

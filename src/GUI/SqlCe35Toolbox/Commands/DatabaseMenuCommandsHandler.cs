@@ -85,29 +85,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        public void RenameConnection(object sender, ExecutedRoutedEventArgs e)
-        {
-            var databaseInfo = ValidateMenuInfo(sender);
-            if (databaseInfo == null) return;
-            if (databaseInfo.DatabaseInfo.FromServerExplorer) return;
-            try
-            {
-                var ro = new RenameDialog(databaseInfo.DatabaseInfo.Caption);
-                ro.ShowModal();
-                if (ro.DialogResult.HasValue && ro.DialogResult.Value && !string.IsNullOrWhiteSpace(ro.NewName) && !databaseInfo.DatabaseInfo.Caption.Equals(ro.NewName))
-                {
-                    DataConnectionHelper.RenameDataConnection(databaseInfo.DatabaseInfo.ConnectionString, ro.NewName);
-                    var control = _parentWindow.Content as ExplorerControl;
-                    if (control != null) control.BuildDatabaseTree();
-                    DataConnectionHelper.LogUsage("DatabaseRenameConnection");
-                }
-            }
-            catch (Exception ex)
-            {
-                DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType);
-            }
-        }
-
 #region Maintenance menu items
 
         public void ShrinkDatabase(object sender, ExecutedRoutedEventArgs e)

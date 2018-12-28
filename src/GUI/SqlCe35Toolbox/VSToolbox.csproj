@@ -208,6 +208,9 @@
     <Compile Include="Dialogs\EfCoreModelDialog.xaml.cs">
       <DependentUpon>EfCoreModelDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\RenameDialog.xaml.cs">
+      <DependentUpon>RenameDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\CheckListItem.cs" />
     <Compile Include="Helpers\NuGetHelper.cs" />
     <Compile Include="Helpers\RepositoryHelper.cs" />
@@ -262,10 +265,6 @@
     </Compile>
     <Compile Include="Dialogs\ImportDialog.xaml.cs">
       <DependentUpon>ImportDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\RenameDialog.xaml.cs">
-      <DependentUpon>RenameDialog.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Guids.cs" />
     <Compile Include="Helpers\AppConfigHelper.cs" />
@@ -517,6 +516,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Dialogs\RenameDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Dialogs\SQLiteConnectionDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -552,10 +555,6 @@
     <Page Include="Dialogs\ImportDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\RenameDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToolWindows\ExtEditControl.xaml">
       <Generator>MSBuild:Compile</Generator>

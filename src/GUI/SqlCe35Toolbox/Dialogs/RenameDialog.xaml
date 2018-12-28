@@ -2,8 +2,6 @@
         xmlns:dw="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.10.0"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:self="clr-namespace:ErikEJ.SqlCeToolbox"
-        xmlns:Dialogs="clr-namespace:ErikEJ.SqlCeToolbox.Dialogs"
         Icon="../Resources/gear_16xLG.png"
         Title="Rename" 
         WindowStyle="SingleBorderWindow"

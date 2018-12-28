@@ -446,13 +446,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             helper.DeleteDataConnnection(CreateStore(storeType), connectionString);
         }
 
-        internal static void RenameDataConnection(string connectionString, string description)
-        {
-            var storeType = GetPreferredDatabaseType();
-            var helper = RepositoryHelper.CreateEngineHelper(storeType);
-            helper.UpdateDataConnection(CreateStore(storeType), connectionString, description);
-        }
-
         internal static void RemoveDataConnection(SqlCeToolboxPackage package, string connectionString, Guid provider)
         {
             var removals = new List<IVsDataExplorerConnection>();
