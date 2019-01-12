@@ -384,7 +384,7 @@ namespace ErikEJ.SqlCeScripting
                 AND cols.object_id = OBJECT_ID('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  
                 JOIN sys.schemas schms on schms.name = col.TABLE_SCHEMA                
                 JOIN sys.tables tab ON col.TABLE_NAME = tab.name and tab.schema_id = schms.schema_id 
-                LEFT JOIN sys.fn_helpcollations() collations ON collations.name = col.COLLATION_NAME
+                LEFT JOIN sys.fn_helpcollations() collations ON collations.name = col.COLLATION_NAME COLLATE SQL_Latin1_General_CP1_CI_AS
                 WHERE SUBSTRING(COLUMN_NAME, 1,5) <> '__sys' 
                 AND tab.type = 'U' AND is_ms_shipped = 0 
                 AND (cols.is_computed = 0)
@@ -404,7 +404,7 @@ namespace ErikEJ.SqlCeScripting
                 AND cols.object_id = OBJECT_ID('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  
                 JOIN sys.schemas schms on schms.name = col.TABLE_SCHEMA                
                 JOIN sys.tables tab ON col.TABLE_NAME = tab.name and tab.schema_id = schms.schema_id 
-                LEFT JOIN sys.fn_helpcollations() collations ON collations.name = col.COLLATION_NAME
+                LEFT JOIN sys.fn_helpcollations() collations ON collations.name = col.COLLATION_NAME COLLATE SQL_Latin1_General_CP1_CI_AS
 			    JOIN sys.computed_columns cc on cc.object_id = cols.object_id 
                 WHERE SUBSTRING(COLUMN_NAME, 1,5) <> '__sys' 
                 AND tab.type = 'U' AND is_ms_shipped = 0 
