@@ -81,6 +81,18 @@ namespace Tests.GeneratorTest
         }
 
         [Test]
+        public void TestExportToSqlServer()
+        {
+            var path = @"C:\temp\testnw.sql";
+            using (var sourceRepository = new DB4Repository(northwindConn))
+            {
+                var generator = new Generator4(sourceRepository, path, false, false, false);
+                generator.ExcludeTables(new List<string>());
+                generator.ScriptDatabaseToFile(Scope.SchemaData);
+            }
+        }
+
+        [Test]
         public void TestServerExportToSqlite()
         {
             var path = @"C:\temp\testAW2012.sql";
