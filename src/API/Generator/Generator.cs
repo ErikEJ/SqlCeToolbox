@@ -1903,14 +1903,21 @@ namespace ErikEJ.SqlCeScripting
 
         public void GenerateTableContent(bool saveImageFiles, bool ignoreIdentity = false)
         {
-            if (_tableNames.Count != _whereClauses.Count)
+            if (_whereClauses != null && _tableNames.Count != _whereClauses.Count)
             {
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Numbers of elements in {0} and {1} do not match", nameof(_tableNames), nameof(_whereClauses)));
             }
             int index = 0;
             foreach (var tableName in _tableNames)
             {
-                GenerateTableContent(tableName, saveImageFiles, ignoreIdentity, _whereClauses[index]);
+                if (_whereClauses != null)
+                {
+                    GenerateTableContent(tableName, saveImageFiles, ignoreIdentity, _whereClauses[index]);
+                }
+                else
+                {
+                    GenerateTableContent(tableName, saveImageFiles, ignoreIdentity);
+                }
                 index++;
             }
         }

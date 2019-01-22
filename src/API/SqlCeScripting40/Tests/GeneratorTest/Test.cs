@@ -28,6 +28,7 @@ namespace Tests.GeneratorTest
         private string infoConnectionString = $"Data Source={Path.Combine(dbPath, "inf2700_orders-1.db")}";
         private string db21Conn = $"Data Source={Path.Combine(dbPath, "DB21.sqlite")}";
         private string northwindConn = $"Data Source={Path.Combine(dbPath, "Northwind.sdf")}";
+        private string umbracoConn = $"Data Source={Path.Combine(dbPath, "UmbracoSqlCe.sdf")}";
 
         private const string sdfConnectionString = @"Data Source=C:\data\sqlce\test\ams40.sdf;Max Database Size=512";
         private const string sdfConnectionString2 = @"Data Source=C:\data\sqlce\test\PFIZER_DB40.sdf";
@@ -85,6 +86,17 @@ namespace Tests.GeneratorTest
         {
             var path = @"C:\temp\testnw.sql";
             using (var sourceRepository = new DB4Repository(northwindConn))
+            {
+                var generator = new Generator4(sourceRepository, path);
+                generator.ScriptDatabaseToFile(Scope.SchemaData);
+            }
+        }
+
+        [Test]
+        public void TestExportToSqlServer2()
+        {
+            var path = @"C:\temp\testum.sql";
+            using (var sourceRepository = new DB4Repository(umbracoConn))
             {
                 var generator = new Generator4(sourceRepository, path, false, false, false);
                 generator.ExcludeTables(new List<string>());
