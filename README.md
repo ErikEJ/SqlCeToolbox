@@ -48,6 +48,8 @@ Download the latest version of the SSMS extension (for both 3.5, 4.0, SQLite and
 
 You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/d6c77c32-fe4b-4f6d-ad5d-f7b755212760/extension.vsix)
 
+You find the extension under the View menu in SSMS.
+
 If you have trouble installing the SSMS extension, try the following command line:
 
 `"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
