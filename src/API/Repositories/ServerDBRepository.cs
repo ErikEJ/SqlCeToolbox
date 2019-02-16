@@ -370,7 +370,8 @@ namespace ErikEJ.SqlCeScripting
 
         public List<Column> GetAllColumns()
         {
-            return ExecuteReader(@"SELECT COLUMN_NAME, col.IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, 
+            return ExecuteReader(@"
+                SELECT COLUMN_NAME, col.IS_NULLABLE, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, 
                 AUTOINC_INCREMENT =  CASE cols.is_identity  WHEN 0 THEN 0 WHEN 1 THEN IDENT_INCR('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  END, 
                 AUTOINC_SEED =     CASE cols.is_identity WHEN 0 THEN 0 WHEN 1 THEN IDENT_SEED('[' + col.TABLE_SCHEMA + '].[' + col.TABLE_NAME + ']')  END, 
                 COLUMN_HASDEFAULT =  CASE WHEN col.COLUMN_DEFAULT IS NULL THEN CAST(0 AS bit) ELSE CAST (1 AS bit) END, COLUMN_DEFAULT, 
@@ -411,6 +412,7 @@ namespace ErikEJ.SqlCeScripting
                 AND (cc.is_computed = 1 AND cc.is_persisted = 1)
                 AND DATA_TYPE <> 'sql_variant' 
 				ORDER BY col.TABLE_NAME, col.ORDINAL_POSITION ASC
+                OPTION (MERGE JOIN)
 "
                 , new AddToListDelegate<Column>(AddToListColumns));
         }
