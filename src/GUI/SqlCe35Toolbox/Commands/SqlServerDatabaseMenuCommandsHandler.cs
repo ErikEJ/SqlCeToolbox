@@ -243,10 +243,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         dbRepository.ExecuteSqlFile(tempScript);
                         TryDeleteFile(tempScript);
                     }
-                    else // possibly multiple files - tmp2BB9.tmp_0.sqlce
+                    else // possibly multiple files - tmp2BB9.tmp_0001.sqlce
                     {
                         var count = Directory.GetFiles(Path.GetDirectoryName(scriptRoot),  Path.GetFileName(scriptRoot) + "*", SearchOption.AllDirectories).Count();
-                        for (var i = 0; i < 400; i++)
+                        for (var i = 0; i < count + 1; i++)
                         {
                             var testFile = string.Format("{0}_{1}{2}", scriptRoot, i.ToString("D4"), ".sqlce");
                             if (File.Exists(testFile))
@@ -254,6 +254,10 @@ namespace ErikEJ.SqlCeToolbox.Commands
                                 dbRepository.ExecuteSqlFile(testFile);
                                 _package.SetProgress("Importing data...", (uint)i + 1, (uint)count - 1);
                                 TryDeleteFile(testFile);
+                            }
+                            else
+                            {
+                                if (i > 0) break;
                             }
                         }
                         _package.SetStatus(null);
