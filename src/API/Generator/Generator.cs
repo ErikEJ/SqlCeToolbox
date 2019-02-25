@@ -1784,7 +1784,7 @@ namespace ErikEJ.SqlCeScripting
         {
             string line;
 
-            string colDefault = col.ColumnHasDefault ? " DEFAULT " + col.ColumnDefault : string.Empty;
+            string colDefault = col.ColumnHasDefault ? " DEFAULT (" + col.ColumnDefault + ")" : string.Empty;
             if (_sqlite && col.ColumnHasDefault)
             {
                 if (col.ColumnDefault.ToLowerInvariant().Contains("newid()"))
