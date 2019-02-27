@@ -190,6 +190,11 @@ namespace ErikEJ.SQLiteScripting
                 {
                     col.DataType = "bit";
                 }
+                if (col.DataType.ToLowerInvariant() == "text")
+                {
+                    var isWithinNvarcharRange = col.CharacterMaxLength > 0 && col.CharacterMaxLength < Int32.MaxValue;
+                    col.DataType = isWithinNvarcharRange ? "nvarchar" : "ntext";
+                }
                 if (col.DataType.ToLowerInvariant() == "varchar")
                 {
                     col.DataType = "nvarchar";
