@@ -8,7 +8,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
     internal static class RepositoryHelper
     {
         //TODO Update this when SQLite provider is updated!
-        public static string SqliteEngineVersion = "3.22";
+        public static string SqliteEngineVersion = "3.27";
 
         internal static IRepository CreateRepository(DatabaseInfo databaseInfo)
         {
