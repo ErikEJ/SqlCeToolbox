@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using System;
+using System.Security;
 
 namespace ErikEJ.SqlCeScripting
 {
@@ -18,10 +19,8 @@ namespace ErikEJ.SqlCeScripting
 
         internal void WriteNode(string id, string label)
         {
-            xtw.WriteStartElement("Node");
-
-            xtw.WriteAttributeString("Id", id);
-            xtw.WriteAttributeString("Label", label);
+            xtw.WriteAttributeString("Id", SecurityElement.Escape(id));
+            xtw.WriteAttributeString("Label", SecurityElement.Escape(label));
 
             xtw.WriteEndElement();
         }
@@ -30,17 +29,17 @@ namespace ErikEJ.SqlCeScripting
         {
             xtw.WriteStartElement("Node");
 
-            xtw.WriteAttributeString("Id", id);
+            xtw.WriteAttributeString("Id", SecurityElement.Escape(id));
             if (!string.IsNullOrEmpty(label))
-                xtw.WriteAttributeString("Label", label);
+                xtw.WriteAttributeString("Label", SecurityElement.Escape(label));
             if (!string.IsNullOrEmpty(reference))
-                xtw.WriteAttributeString("Reference", reference);
+                xtw.WriteAttributeString("Reference", SecurityElement.Escape(reference));
             if (!string.IsNullOrEmpty(category))
-                xtw.WriteAttributeString("Category", category);
+                xtw.WriteAttributeString("Category", SecurityElement.Escape(category));
             if (!string.IsNullOrEmpty(group))
-                xtw.WriteAttributeString("Group", group);
+                xtw.WriteAttributeString("Group", SecurityElement.Escape(group));
             if (!string.IsNullOrEmpty(description))
-                xtw.WriteAttributeString("Description", description);
+                xtw.WriteAttributeString("Description", SecurityElement.Escape(description));
 
             xtw.WriteEndElement();
         }
@@ -49,19 +48,19 @@ namespace ErikEJ.SqlCeScripting
         {
             xtw.WriteStartElement("Link");
             
-            xtw.WriteAttributeString("Source", source);
-            xtw.WriteAttributeString("Target", target);
+            xtw.WriteAttributeString("Source", SecurityElement.Escape(source));
+            xtw.WriteAttributeString("Target", SecurityElement.Escape(target));
             if (!string.IsNullOrEmpty(label))
-                xtw.WriteAttributeString("Label", label);
+                xtw.WriteAttributeString("Label", SecurityElement.Escape(label));
             if (!string.IsNullOrEmpty(category))
-                xtw.WriteAttributeString("Category", category);
+                xtw.WriteAttributeString("Category", SecurityElement.Escape(category));
 
             xtw.WriteEndElement();
         }
 
         internal void BeginElement(string element)
         {
-            xtw.WriteStartElement(element);
+            xtw.WriteStartElement(SecurityElement.Escape(element));
         }
 
         internal void EndElement()
