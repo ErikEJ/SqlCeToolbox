@@ -355,7 +355,17 @@ namespace ErikEJ.SqlCeScripting
 
         public List<View> GetAllViews()
         {
-            return new List<View>();
+            var names = ExecuteReader(
+                "SELECT S.name + '.' + T.name  from sys.views T INNER JOIN sys.schemas S ON T.schema_id = S.schema_id WHERE [type] = 'U' AND is_ms_shipped = 0 ORDER BY S.name, T.[name];"
+                , new AddToListDelegate<string>(AddToListString));
+
+            var result = new List<View>();
+            foreach (var name in names)
+            {
+                result.Add(new View { ViewName = name });
+            }
+
+            return result;
         }
 
         public List<Trigger> GetAllTriggers()
