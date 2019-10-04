@@ -356,7 +356,7 @@ namespace ErikEJ.SqlCeScripting
         public List<View> GetAllViews()
         {
             var names = ExecuteReader(
-                "SELECT S.name + '.' + T.name  from sys.views T INNER JOIN sys.schemas S ON T.schema_id = S.schema_id WHERE [type] = 'U' AND is_ms_shipped = 0 ORDER BY S.name, T.[name];"
+                "SELECT S.name + '.' + T.name  from sys.views T INNER JOIN sys.schemas S ON T.schema_id = S.schema_id WHERE [type] = 'V' AND is_ms_shipped = 0 ORDER BY S.name, T.[name];"
                 , new AddToListDelegate<string>(AddToListString));
 
             var result = new List<View>();
