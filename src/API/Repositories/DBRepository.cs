@@ -857,6 +857,11 @@ namespace ErikEJ.SqlCeScripting
         {
             return false;
         }
+
+        public List<Table> GetTableNamesForExclusion()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

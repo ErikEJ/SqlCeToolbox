@@ -1092,5 +1092,10 @@ namespace ErikEJ.SQLiteScripting
         {
             return false;
         }
+
+        public List<Table> GetTableNamesForExclusion()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

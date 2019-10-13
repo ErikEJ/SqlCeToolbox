@@ -98,6 +98,16 @@ namespace ErikEJ.SqlCeScripting
             list.Add(dr.GetString(0));
         }
 
+        private static void AddToListTables(ref List<Table> list, SqlDataReader dr)
+        {
+            var table = new Table();
+            table.TableName = dr.GetString(0);
+            table.Schema = dr.GetString(1);
+            table.Name = dr.GetString(2);
+
+            list.Add(table);
+        }
+
         private void AddToListColumns(ref List<Column> list, SqlDataReader dr)
         {
             //0  COLUMN_NAME
@@ -346,6 +356,13 @@ namespace ErikEJ.SqlCeScripting
             return ExecuteReader(
                 "SELECT S.name + '.' + T.name  from sys.tables T INNER JOIN sys.schemas S ON T.schema_id = S.schema_id WHERE [type] = 'U' AND is_ms_shipped = 0 ORDER BY S.name, T.[name];"
                 , new AddToListDelegate<string>(AddToListString));
+        }
+
+        public List<Table> GetTableNamesForExclusion()
+        {
+            return ExecuteReader(
+                "SELECT S.name + '.' + T.name AS TableName, S.Name AS Schema, T.Name AS Name from sys.tables T INNER JOIN sys.schemas S ON T.schema_id = S.schema_id WHERE [type] = 'U' AND is_ms_shipped = 0 ORDER BY S.name, T.[name];"
+                , new AddToListDelegate<Table>(AddToListTables));
         }
 
         public List<string> GetAllSubscriptionNames()
@@ -736,6 +753,7 @@ namespace ErikEJ.SqlCeScripting
         {
             return _keepSchemaName;
         }
+
         #endregion
     }
 

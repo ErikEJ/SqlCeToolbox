@@ -8,6 +8,7 @@ namespace ErikEJ.SqlCeScripting
     {
         List<string> GetAllTableNames();
         List<string> GetAllTableNamesForExclusion();
+        List<Table> GetTableNamesForExclusion();
         List<Column> GetAllColumns();
         List<View> GetAllViews();
         List<Trigger> GetAllTriggers();
