@@ -860,7 +860,19 @@ namespace ErikEJ.SqlCeScripting
 
         public List<Table> GetTableNamesForExclusion()
         {
-            throw new NotImplementedException();
+            var result = new List<Table>();
+            var tables = GetAllTableNames();
+
+            foreach (var table in tables)
+            {
+                result.Add(new Table
+                {
+                    Name =  table,
+                    TableName = table,
+                });
+            }
+
+            return result;
         }
         #endregion
     }
