@@ -11,7 +11,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     public partial class PickTablesDialog
     {
-        public PickTablesDialog()
+        public PickTablesDialog(bool allowWindow = false)
         {
             Telemetry.TrackPageView(nameof(PickTablesDialog));
             InitializeComponent();
@@ -21,6 +21,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         private List<CheckListItem> items = new List<CheckListItem>();
 
         public List<string> Tables { get; set; }
+
+        public bool ToWindow { get; set; } = false;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
