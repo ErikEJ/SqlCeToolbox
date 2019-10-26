@@ -248,7 +248,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 int totalCount;
-                var ptd = new PickTablesDialog();
+                var ptd = new PickTablesDialog(true);
                 using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
@@ -258,26 +258,45 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var res = ptd.ShowModal();
                 if (res == true && (ptd.Tables.Count < totalCount))
                 {
-                    var fd = new SaveFileDialog
+                    if (ptd.ToWindow)
                     {
-                        Title = "Save generated script as",
-                        Filter =
-                            "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*"
-                    };
-                    if (scope == Scope.SchemaDataSQLite || scope == Scope.SchemaSQLite || databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
-                    {
-                        fd.Filter = "SQLite Script (*.sql)|*.sql|All Files(*.*)|*.*";    
+                        using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                        {
+                            var fileName = Path.GetTempFileName();
+                            var generator = DataConnectionHelper.CreateGenerator(repository, fileName, databaseInfo.DatabaseInfo.DatabaseType);
+                            generator.ExcludeTables(ptd.Tables);
+                            generator.ScriptDatabaseToFile(scope);
+                            if (generator.GeneratedFiles.Count > 1)
+                            {
+                                EnvDteHelper.ShowError("Multiple files were generated, cannot script to window, script to file(s) instead.");
+                            }
+                            SpawnSqlEditorWindow(databaseInfo.DatabaseInfo, File.ReadAllText(generator.GeneratedFiles[0], Encoding.UTF8));
+                            DataConnectionHelper.LogUsage("DatabaseScriptCe");
+                        }
                     }
-                    fd.OverwritePrompt = true;
-                    fd.ValidateNames = true;
-                    var result = fd.ShowDialog();
-                    if (!result.HasValue || result.Value != true) return;
-                    using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                    else
                     {
-                        var generator = DataConnectionHelper.CreateGenerator(repository, fd.FileName, databaseInfo.DatabaseInfo.DatabaseType);
-                        generator.ExcludeTables(ptd.Tables);
-                        EnvDteHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
-                        DataConnectionHelper.LogUsage("DatabaseScriptCe");
+                        var fd = new SaveFileDialog
+                        {
+                            Title = "Save generated script as",
+                            Filter =
+                            "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*"
+                        };
+                        if (scope == Scope.SchemaDataSQLite || scope == Scope.SchemaSQLite || databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLite)
+                        {
+                            fd.Filter = "SQLite Script (*.sql)|*.sql|All Files(*.*)|*.*";
+                        }
+                        fd.OverwritePrompt = true;
+                        fd.ValidateNames = true;
+                        var result = fd.ShowDialog();
+                        if (!result.HasValue || result.Value != true) return;
+                        using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
+                        {
+                            var generator = DataConnectionHelper.CreateGenerator(repository, fd.FileName, databaseInfo.DatabaseInfo.DatabaseType);
+                            generator.ExcludeTables(ptd.Tables);
+                            EnvDteHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
+                            DataConnectionHelper.LogUsage("DatabaseScriptCe");
+                        }
                     }
                 }
             }

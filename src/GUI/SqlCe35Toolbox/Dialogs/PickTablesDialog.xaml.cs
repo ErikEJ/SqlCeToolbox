@@ -11,11 +11,16 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     public partial class PickTablesDialog
     {
-        public PickTablesDialog()
+        public PickTablesDialog(bool allowWindow)
         {
             Telemetry.TrackPageView(nameof(PickTablesDialog));
             InitializeComponent();
             Background = VsThemes.GetWindowBackground();
+            if (!allowWindow)
+            {
+                button1.Content = "OK";
+                btnWindow.Visibility = Visibility.Collapsed;
+            };
         }
 
         public bool IncludeTables { get; set; }
@@ -23,6 +28,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         private List<CheckListItem> items = new List<CheckListItem>();
 
         public List<string> Tables { get; set; }
+
+        public bool ToWindow { get; private set; } = false;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -38,21 +45,34 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
+            AddTables();
+            Close();
+        }
+
+        private void AddTables()
+        {
             Tables.Clear();
             foreach (var item in chkTables.Items)
             {
                 var checkItem = (CheckListItem)item;
-                if ((!checkItem.IsChecked && !IncludeTables) 
+                if ((!checkItem.IsChecked && !IncludeTables)
                     || (checkItem.IsChecked && IncludeTables))
                 {
                     Tables.Add(checkItem.Label);
                 }
             }
-            Close();
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
+            Close();
+        }
+
+        private void BtnWindow_Click(object sender, RoutedEventArgs e)
+        {
+            ToWindow = true;
+            DialogResult = true;
+            AddTables();
             Close();
         }
 
@@ -123,5 +143,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             chkTables.ItemsSource = null;
             chkTables.ItemsSource = items;
         }
+
+        
     }
 }

@@ -21,10 +21,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
 {
     public class SqlServerDatabaseMenuCommandsHandler
     {
+        private readonly ExplorerToolWindow _parentWindow;
         private readonly SqlCeToolboxPackage _package;
 
         public SqlServerDatabaseMenuCommandsHandler(ExplorerToolWindow parent)
         {
+            _parentWindow = parent;
             _package = parent.Package as SqlCeToolboxPackage;
         }
 
@@ -48,7 +50,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     ? databaseInfo.DatabaseInfo.ConnectionString :
                     DataConnectionHelper.PromptForConnectionString(_package);
                 if (string.IsNullOrEmpty(connectionString)) return;
-                var ptd = new PickTablesDialog();
+                var ptd = new PickTablesDialog(true);
                 int totalCount;
                 using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                 {
@@ -59,30 +61,49 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 var res = ptd.ShowModal();
                 if (!res.HasValue || res.Value != true || (ptd.Tables.Count >= totalCount)) return;
                 {
-                    var fd = new SaveFileDialog
+                    if (ptd.ToWindow)
                     {
-                        Title = "Save generated script as",
-                        Filter =
-                            "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*"
-                    };
-                    if (scope == Scope.SchemaDataSQLite || scope == Scope.SchemaSQLite)
-                        fd.Filter = "SQL Script (*.sql)|*.sql|All Files(*.*)|*.*";
-                    fd.OverwritePrompt = true;
-                    fd.ValidateNames = true;
-                    var result = fd.ShowDialog();
-                    if (!result.HasValue || result.Value != true) return;
-                    using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
-                    {
-                        try
+                        using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                         {
-                            var generator = DataConnectionHelper.CreateGenerator(repository, fd.FileName, DatabaseType.SQLServer);
+                            var fileName = Path.GetTempFileName();
+                            var generator = DataConnectionHelper.CreateGenerator(repository, fileName, databaseInfo.DatabaseInfo.DatabaseType);
                             generator.ExcludeTables(ptd.Tables);
-                            EnvDteHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
-                            DataConnectionHelper.LogUsage("DatabasesScriptServer");
+                            generator.ScriptDatabaseToFile(scope);
+                            if (generator.GeneratedFiles.Count > 1)
+                            {
+                                EnvDteHelper.ShowError("Multiple files were generated, cannot script to window, script to file(s) instead.");
+                            }
+                            SpawnSqlEditorWindow(databaseInfo.DatabaseInfo, File.ReadAllText(generator.GeneratedFiles[0], Encoding.UTF8));
+                            DataConnectionHelper.LogUsage("DatabaseScriptServer");
                         }
-                        catch (Exception ex)
+                    }
+                    else
+                    {
+                        var fd = new SaveFileDialog
                         {
-                            DataConnectionHelper.SendError(ex, DatabaseType.SQLServer, false);
+                            Title = "Save generated script as",
+                            Filter =
+                            "SQL Server Compact Script (*.sqlce)|*.sqlce|SQL Server Script (*.sql)|*.sql|All Files(*.*)|*.*"
+                        };
+                        if (scope == Scope.SchemaDataSQLite || scope == Scope.SchemaSQLite)
+                            fd.Filter = "SQL Script (*.sql)|*.sql|All Files(*.*)|*.*";
+                        fd.OverwritePrompt = true;
+                        fd.ValidateNames = true;
+                        var result = fd.ShowDialog();
+                        if (!result.HasValue || result.Value != true) return;
+                        using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
+                        {
+                            try
+                            {
+                                var generator = DataConnectionHelper.CreateGenerator(repository, fd.FileName, DatabaseType.SQLServer);
+                                generator.ExcludeTables(ptd.Tables);
+                                EnvDteHelper.ShowMessage(generator.ScriptDatabaseToFile(scope));
+                                DataConnectionHelper.LogUsage("DatabasesScriptServer");
+                            }
+                            catch (Exception ex)
+                            {
+                                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer, false);
+                            }
                         }
                     }
                 }
@@ -110,7 +131,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     DataConnectionHelper.PromptForConnectionString(_package);
                 if (!string.IsNullOrEmpty(connectionString))
                 {
-                    var ptd = new PickTablesDialog();
+                    var ptd = new PickTablesDialog(false);
                     int totalCount;
                     using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo
                     { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
@@ -300,7 +321,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     DataConnectionHelper.PromptForConnectionString(_package);
 
                 if (string.IsNullOrEmpty(connectionString)) return;
-                var ptd = new PickTablesDialog();
+                var ptd = new PickTablesDialog(false);
                 using (var repository = Helpers.RepositoryHelper.CreateRepository(new DatabaseInfo { ConnectionString = connectionString, DatabaseType = DatabaseType.SQLServer }))
                 {
                     ptd.Tables = repository.GetAllTableNamesForExclusion();
@@ -357,6 +378,28 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 return menuItem.CommandParameter as DatabaseMenuCommandParameters;
             }
             return null;
+        }
+
+        private void SpawnSqlEditorWindow(DatabaseInfo databaseInfo, string sqlScript)
+        {
+            try
+            {
+                if (databaseInfo == null) return;
+                if (_package == null) return;
+                var sqlEditorWindow = _package.CreateWindow<SqlEditorWindow>();
+                if (sqlEditorWindow == null) return;
+                var editorControl = sqlEditorWindow.Content as SqlEditorControl;
+                Debug.Assert(editorControl != null);
+                editorControl.DatabaseInfo = databaseInfo;
+                editorControl.ExplorerControl = _parentWindow.Content as ExplorerControl;
+                editorControl.SqlText = sqlScript;
+                DataConnectionHelper.LogUsage("DatabaseOpenEditor");
+                Debug.Assert(editorControl != null, "The SqlEditorWindow *should* have a editorControl with content.");
+            }
+            catch (Exception ex)
+            {
+                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
+            }
         }
     }
 }
