@@ -11,11 +11,16 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 {
     public partial class PickTablesDialog
     {
-        public PickTablesDialog(bool allowWindow = false)
+        public PickTablesDialog(bool allowWindow)
         {
             Telemetry.TrackPageView(nameof(PickTablesDialog));
             InitializeComponent();
             Background = VsThemes.GetWindowBackground();
+            if (!allowWindow)
+            {
+                button1.Content = "OK";
+                btnWindow.Visibility = Visibility.Collapsed;
+            };
         }
 
         private List<CheckListItem> items = new List<CheckListItem>();
@@ -38,6 +43,12 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
+            AddTables();
+            Close();
+        }
+
+        private void AddTables()
+        {
             Tables.Clear();
             foreach (object item in chkTables.Items)
             {
@@ -47,11 +58,18 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                     Tables.Add(checkItem.Label);
                 }
             }
-            Close();
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
+            Close();
+        }
+
+        private void BtnWindow_Click(object sender, RoutedEventArgs e)
+        {
+            ToWindow = true;
+            DialogResult = true;
+            AddTables();
             Close();
         }
 
