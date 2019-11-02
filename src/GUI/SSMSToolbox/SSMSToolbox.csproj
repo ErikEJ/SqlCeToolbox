@@ -426,17 +426,24 @@
       <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\lib\v140\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=15.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\v150\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\lib\v140\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=15.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\v150\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.Smo, Version=14.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\lib\v140\Microsoft.SqlServer.Smo.dll</HintPath>
+    <Reference Include="Microsoft.SqlServer.Smo, Version=15.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\v150\Microsoft.SqlServer.Smo.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.SqlTools.VSIntegration, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\lib\v140\Microsoft.SqlServer.SqlTools.VSIntegration.dll</HintPath>
+    <Reference Include="Microsoft.SqlServer.SqlTools.VSIntegration, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\lib\v150\Microsoft.SqlServer.SqlTools.VSIntegration.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Data.Core, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -474,15 +481,17 @@
     <Reference Include="SqlCeToolBoxSyncFxLib">
       <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
     </Reference>
-    <Reference Include="SQLEditors, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="SQLEditors, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\v140\SQLEditors.dll</HintPath>
+      <HintPath>..\lib\v150\SQLEditors.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SQLiteScripting">
       <HintPath>..\lib\SQLiteScripting.dll</HintPath>
     </Reference>
-    <Reference Include="SqlWorkbench.Interfaces, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\lib\v140\SqlWorkbench.Interfaces.dll</HintPath>
+    <Reference Include="SqlWorkbench.Interfaces, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\lib\v150\SqlWorkbench.Interfaces.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
