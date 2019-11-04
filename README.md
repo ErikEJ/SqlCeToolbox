@@ -50,13 +50,13 @@ Download the latest version of the SSMS 17 extension (for both 3.5, 4.0, SQLite 
 
 You can download the daily build of the SSMS 18 extension from [VSIX Gallery](http://vsixgallery.com/extensions/d6c77c32-fe4b-4f6d-ad5d-f7b755212760/extension.vsix)
 
-**Installing the SSMS 17 extension**
+### **Installing the SSMS 17 extension**
 
 Use the following command line:
 
 `"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
 
-**Installing the SSMS 18 extension**
+### **Installing the SSMS 18 extension**
 
 As the VSIX 2017 installer does not support into a VS Shell edition, and generally because SSMS extensions are unsupported, you will have to manually install the extension (at least until I decide to create an installer)
 
