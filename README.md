@@ -40,6 +40,8 @@ If you need the Visual Studio 2010 extension, please contact me, and I can provi
 
 ## SQL Server Management Studio (SSMS) 17/18 Extension
 
+You find the extension under the View menu in SSMS.
+
 **Release**
 
 Download the latest version of the SSMS 17 extension (for both 3.5, 4.0, SQLite and SQL Server) from [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolboxforSSMS)
@@ -48,13 +50,25 @@ Download the latest version of the SSMS 17 extension (for both 3.5, 4.0, SQLite 
 
 You can download the daily build of the SSMS 18 extension from [VSIX Gallery](http://vsixgallery.com/extensions/d6c77c32-fe4b-4f6d-ad5d-f7b755212760/extension.vsix)
 
-You find the extension under the View menu in SSMS.
-
 **Installing the SSMS 17 extension**
 
 Use the following command line:
 
 `"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
+
+**Installing the SSMS 18 extension**
+
+As the VSIX 2017 installer does not support into a VS Shell edition, and generally because SSMS extensions are unsupported, you will have to manually install the extension (at least until I decide to create an installer)
+
+From an administrator command prompt:
+
+Create a folder called "SqlCeToolbox" under `C:\Program Files (x86)\Microsoft SQL Server Management Studio 18\Common7\IDE\Extensions\`
+
+Copy the extension.vsix that you downloaded from VSIX Gallery to the new folder.
+
+Unzip the extension.vsix to the new folder. For example: `"C:\program files\7-zip\7z.exe" e extension.vsix -y`
+
+You should now have 48 files in the SqlCeToolbox folder, and the extension is "installed".
 
 ## EF Core Power Tools for Visual Studio 2017 and later
 
