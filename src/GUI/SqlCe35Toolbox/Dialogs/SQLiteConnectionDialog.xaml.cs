@@ -55,7 +55,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 using (var conn = new SQLiteConnection(_builder.ConnectionString))
                 {
                     conn.Open();
-                    _builder.ConnectionString.Replace(";DateTime Format=", ";DateTimeFormat=");
+                    ConnectionString = _builder.ConnectionString.Replace(";DateTime Format=", ";DateTimeFormat=");
                     if (showMessage)
                     {
                         EnvDteHelper.ShowMessage("Test succeeded!");
