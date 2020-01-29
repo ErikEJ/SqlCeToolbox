@@ -6,14 +6,12 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using EnvDTE;
-using EnvDTE80;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.Win32;
 using System.ComponentModel;
-using System.Data.SqlClient;
 using System.Text;
 
 namespace ErikEJ.SqlCeToolbox.Commands
@@ -606,101 +604,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
             catch (Exception ex)
             {
                 DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35, false);
-            }
-        }
-
-        public void GenerateEfPocoInProject(object sender, ExecutedRoutedEventArgs e)
-        {
-            EnvDteHelper.LaunchUrl("https://github.com/ErikEJ/SqlCeToolbox/wiki/EntityFramework-Reverse-POCO-Code-First-Generator");
-
-            var databaseInfo = ValidateMenuInfo(sender);
-            if (databaseInfo == null) return;
-
-            var isEf6 = SqlCeToolboxPackage.VsSupportsEf6();
-            try
-            {
-                if (package == null) return;
-                var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
-                if (dte == null) return;
-                if (dte.Mode == vsIDEMode.vsIDEModeDebug)
-                {
-                    EnvDteHelper.ShowError("Cannot generate code while debugging");
-                    return;
-                }
-
-                var dteH = new EnvDteHelper();
-
-                var project = dteH.GetProject(dte);
-                if (project == null)
-                {
-                    EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the code to be placed");
-                    return;
-                }
-                if (dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateNotStarted)
-                {
-                    EnvDteHelper.ShowError("Please build the project before proceeding");
-                    return;
-                }
-                if (isEf6)
-                {
-                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE40 && !dteH.ContainsEfSqlCeReference(project))
-                    {
-                        EnvDteHelper.ShowError("Please add the EntityFramework.SqlServerCompact NuGet package to the project");
-                        return;
-                    }
-                    if (databaseInfo.DatabaseInfo.DatabaseType == DatabaseType.SQLCE35 && !dteH.ContainsEfSqlCeLegacyReference(project))
-                    {
-                        EnvDteHelper.ShowError("Please add the EntityFramework.SqlServerCompact.Legacy NuGet package to the project");
-                        return;
-                    }
-                    if (!File.Exists(Path.Combine(dteH.GetVisualStudioInstallationDir(SqlCeToolboxPackage.VisualStudioVersion), "ItemTemplates\\CSharp\\Data\\1033\\DbCtxCSEF6\\CSharpDbContext.Context.tt")))
-                    {
-                        EnvDteHelper.ShowError("Please install the Entity Framework 6 Tools in order to proceed");
-                        return;
-                    }
-                }
-                if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
-                {
-                    EnvDteHelper.ShowError("The selected project type does not support Entity Framework (please let me know if I am wrong)");
-                    return;
-                }
-
-                if (project.Properties.Item("TargetFrameworkMoniker") == null)
-                {
-                    EnvDteHelper.ShowError("The selected project type does not have a TargetFrameworkMoniker");
-                    return;
-                }
-                if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
-                {
-                    EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
-                    return;
-                }
-
-                var dte2 = (DTE2)package.GetServiceHelper(typeof(DTE));
-                // ReSharper disable once SuspiciousTypeConversion.Global
-                var solution2 = dte2.Solution as Solution2;
-
-                if (solution2 != null)
-                {
-                    var projectItemTemplate = solution2.GetProjectItemTemplate("EntityFramework Reverse POCO Code First Generator", "CSharp");
-                    if (!string.IsNullOrEmpty(projectItemTemplate))
-                    {
-                        project.ProjectItems.AddFromTemplate(projectItemTemplate, "Database.tt");
-                    }
-                }
-                DataConnectionHelper.LogUsage("DatabaseCreateEFPOCO");
-            }
-            // EDM end
-            catch (Exception ex)
-            {
-                if (ex.GetType() == typeof(FileNotFoundException))
-                {
-                    EnvDteHelper.ShowMessage("Unable to find the EF Reverse POCO Template, is it installed?");
-                }
-                else
-                {
-                    DataConnectionHelper.SendError(ex, databaseInfo.DatabaseInfo.DatabaseType, false);
-                }
             }
         }
 

@@ -105,9 +105,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
             };
 
-            if (SqlCeToolboxPackage.VsSupportsEf6())
-                generateCodeRootMenuItem.Items.Add(BuildScriptEfPocoMenuItem(databaseMenuCommandParameters, dcmd));
-
 #if SSMS
 #else
             var scriptDcCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
@@ -314,23 +311,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             scriptUpgradeMenuItem.CommandBindings.Add(scriptUpgradeCommandBinding);
             scriptUpgradeMenuItem.ToolTip = "Create a copy of this database in 4.0 format";
             return scriptUpgradeMenuItem;
-        }
-
-        private MenuItem BuildScriptEfPocoMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
-        {
-            var scriptEfPocoCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.GenerateEfPocoInProject);
-
-            var scriptEfPocoMenuItem = new MenuItem
-            {
-                Header = "Add EF 6 DbContext (Code First from Database) to current Project... (beta)",
-                Icon = ImageHelper.GetImageFromResource("../resources/Schema_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            scriptEfPocoMenuItem.CommandBindings.Add(scriptEfPocoCommandBinding);
-            return scriptEfPocoMenuItem;
         }
 
         private MenuItem BuildScriptDcMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
