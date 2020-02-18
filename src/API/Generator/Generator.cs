@@ -2305,7 +2305,7 @@ namespace ErikEJ.SqlCeScripting
 
         private void GenerateViews()
         {
-            foreach (var view in _allViews)
+            foreach (var view in _allViews.Where(v => !string.IsNullOrEmpty(v.Definition)))
             {
                 _sbScript.AppendFormat(view.Definition);
                 _sbScript.AppendFormat(";" + Environment.NewLine);
