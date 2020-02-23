@@ -349,19 +349,19 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
                     sw.Stop();
                     FormatTime(sw);
-                    if (dataset != null)
-                    {
-                        ParseDataSetResultsToResultsBox(dataset);
-                    }
                     try
                     {
+                        if (dataset != null)
+                        {
+                            ParseDataSetResultsToResultsBox(dataset);
+                        }
+
                         TryLaunchSqlplan(showPlan, false);
                     }
                     catch (Exception ex)
                     {
                         DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
                     }
-
                 }
             }
             catch (Exception ex)
