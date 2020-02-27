@@ -1,15 +1,13 @@
-﻿using System;
+﻿using DbUp.Support.SqlServer;
+using ErikEJ.SqlCeScripting;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SQLite;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
-using ErikEJ.SqlCeScripting;
-using System.Data.SQLite;
-using System.Data;
-using System.IO;
-using System.Globalization;
-using DbUp.Support.SqlServer;
-using System.Text.RegularExpressions;
-using System.Data.Common;
 
 namespace ErikEJ.SQLiteScripting
 {
