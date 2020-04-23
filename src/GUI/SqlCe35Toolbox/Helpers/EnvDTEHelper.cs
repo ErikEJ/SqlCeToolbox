@@ -152,17 +152,24 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
             foreach (ProjectItem item in projectItems)
             {
-                if (item.Kind == Constants.vsProjectItemKindPhysicalFile)
+                try
                 {
-                    string path = item.Properties.Item("FullPath").Value.ToString();
-                    foreach (var extension in GetFileExtensions())
+                    if (item.Kind == Constants.vsProjectItemKindPhysicalFile)
                     {
-                        if (path.EndsWith(extension, true, CultureInfo.InvariantCulture))
+                        string path = item.Properties.Item("FullPath").Value.ToString();
+                        foreach (var extension in GetFileExtensions())
                         {
-                            if (!list.Contains(path))
-                                list.Add(path);
+                            if (path.EndsWith(extension, true, CultureInfo.InvariantCulture))
+                            {
+                                if (!list.Contains(path))
+                                    list.Add(path);
+                            }
                         }
                     }
+                }
+                catch
+                {
+                    // Ignore - see https://github.com/ErikEJ/SqlCeToolbox/issues/842 
                 }
                 if (item.SubProject != null)
                 {
