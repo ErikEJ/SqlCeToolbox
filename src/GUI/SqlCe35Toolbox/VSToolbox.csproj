@@ -481,7 +481,6 @@
     </Content>
     <Content Include="Resources\data_out.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\license.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

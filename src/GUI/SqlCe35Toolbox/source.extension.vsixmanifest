@@ -8,7 +8,7 @@
         <License>Resources\license.txt</License>
         <GettingStartedGuide>https://github.com/ErikEJ/SqlCeToolbox/wiki</GettingStartedGuide>
         <ReleaseNotes>https://github.com/ErikEJ/SqlCeToolbox/wiki/Release-notes</ReleaseNotes>
-        <Icon>Resources\data_out.png</Icon>
+        <Icon>data_out.png</Icon>
         <PreviewImage>Resources\toolbox2.png</PreviewImage>
         <Tags>sql sqlite sqlce entityframework ef linq codegeneration database ssdt ssms </Tags>
     </Metadata>
