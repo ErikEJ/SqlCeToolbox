@@ -19,6 +19,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
         private DbDataAdapter _adapter;
         private DataTable _table;
         private SqlPanel _pnlSql;
+        private string _sqlText;
 
         public ResultsetGrid()
         {
@@ -29,7 +30,21 @@ namespace ErikEJ.SqlCeToolbox.WinForms
         public DatabaseInfo DatabaseInfo { get; set; }
         public bool ReadOnly { get; set; }
         public List<int> ReadOnlyColumns { get; set; }
-        public string SqlText { get; set; }
+        public string SqlText 
+        {
+            private get
+            {
+                return _sqlText;
+            }
+
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    _sqlText = value.Replace(Environment.NewLine + "      ,[", " ,[");
+                }
+            } 
+        }
         // delegate declaration 
         public delegate void LinkClickedHandler(object sender, LinkArgs e);
         // event declaration 
@@ -46,7 +61,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
                 _imageContext.Items.Add("Export Image", null, ExportImage);
                 _imageContext.Items.Add("Delete Image", null, DeleteImage);
 
-                LoadData(SqlText);
+                LoadData(_sqlText);
                 
                 dataGridView1.ReadOnly = ReadOnly;
                 if (ReadOnlyColumns != null)
@@ -349,7 +364,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
         {
             try
             {
-                LoadData(SqlText);
+                LoadData(_sqlText);
             }
             catch (Exception ex)
             {
@@ -373,7 +388,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             {
                 _pnlSql = new SqlPanel();
                 Controls.Add(_pnlSql);
-                _pnlSql.SqlText = SqlText;
+                _pnlSql.SqlText = _sqlText;
                 _pnlSql.SqlChanged += pnlSql_SqlChanged;
             }
             _pnlSql.Show();
@@ -382,7 +397,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
 
         void pnlSql_SqlChanged(string sqlText)
         {
-            SqlText = sqlText;
+            _sqlText = sqlText;
             LoadData(sqlText);
         }
     }
