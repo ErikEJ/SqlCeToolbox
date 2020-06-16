@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using ErikEJ.SqlCeToolbox.Helpers;
@@ -40,13 +41,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         public int OnClose(ref uint pgrfSaveOptions)
         {
             var editControl = control as DataEditControl;
-            if (editControl != null)
-            {
-                if (editControl.ResultsetGrid != null)
-                {
-                    editControl.ResultsetGrid.Dispose();
-                }
-            }
+            
+            editControl?.Dispose();
+            
             return Microsoft.VisualStudio.VSConstants.S_OK;
         }
 
