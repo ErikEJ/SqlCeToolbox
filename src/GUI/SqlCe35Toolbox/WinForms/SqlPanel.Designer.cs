@@ -37,10 +37,10 @@
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(286, 206);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
+            this.button1.Location = new System.Drawing.Point(393, 309);
+            this.button1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 28);
+            this.button1.Size = new System.Drawing.Size(138, 42);
             this.button1.TabIndex = 0;
             this.button1.Text = "OK";
             this.button1.UseVisualStyleBackColor = true;
@@ -50,10 +50,10 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Location = new System.Drawing.Point(178, 206);
-            this.button2.Margin = new System.Windows.Forms.Padding(4);
+            this.button2.Location = new System.Drawing.Point(245, 309);
+            this.button2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 28);
+            this.button2.Size = new System.Drawing.Size(138, 42);
             this.button2.TabIndex = 1;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
@@ -65,25 +65,25 @@
             this.txtSql.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSql.Location = new System.Drawing.Point(16, 14);
-            this.txtSql.Margin = new System.Windows.Forms.Padding(4);
+            this.txtSql.Location = new System.Drawing.Point(22, 21);
+            this.txtSql.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.txtSql.Multiline = true;
             this.txtSql.Name = "txtSql";
             this.txtSql.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSql.Size = new System.Drawing.Size(399, 184);
+            this.txtSql.Size = new System.Drawing.Size(547, 274);
             this.txtSql.TabIndex = 2;
             // 
             // SqlPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(168F, 168F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.txtSql);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "SqlPanel";
-            this.Size = new System.Drawing.Size(433, 282);
+            this.Size = new System.Drawing.Size(595, 423);
             this.ResumeLayout(false);
             this.PerformLayout();
 
