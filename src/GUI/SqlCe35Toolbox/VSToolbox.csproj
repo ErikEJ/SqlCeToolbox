@@ -473,6 +473,7 @@
     </Content>
     <Content Include="Resources\data_out.png">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\show_table_data.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
