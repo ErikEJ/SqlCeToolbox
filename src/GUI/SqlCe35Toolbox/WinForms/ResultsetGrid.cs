@@ -63,27 +63,6 @@ namespace ErikEJ.SqlCeToolbox.WinForms
 
                 LoadData(_sqlText);
                 
-                dataGridView1.ReadOnly = ReadOnly;
-                if (ReadOnlyColumns != null)
-                {
-                    foreach (int x in ReadOnlyColumns)
-                    {
-                        dataGridView1.Columns[x].ReadOnly = true;
-                        dataGridView1.Columns[x].DefaultCellStyle.ForeColor = SystemColors.GrayText;
-                    }
-                }
-                if (Properties.Settings.Default.MultiLineTextEntry)
-                {
-                    foreach (DataGridViewColumn col in dataGridView1.Columns)
-                    {
-                        if (col is DataGridViewTextBoxColumn)
-                        {
-                            col.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-                        }
-                    }
-                    dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                }
-
                 bindingNavigatorAddNewItem.Enabled = !ReadOnly;
                 bindingNavigatorDeleteItem.Enabled = !ReadOnly;
                 toolStripButton1.Enabled = !ReadOnly;
@@ -121,6 +100,31 @@ namespace ErikEJ.SqlCeToolbox.WinForms
                 _table = new DataTable();
                 _adapter.Fill(_table);
                 bindingSource1.DataSource = _table;
+
+                dataGridView1.DataSource = null;
+                dataGridView1.DataSource = bindingSource1;
+
+                dataGridView1.ReadOnly = ReadOnly;
+                if (ReadOnlyColumns != null)
+                {
+                    foreach (int x in ReadOnlyColumns)
+                    {
+                        dataGridView1.Columns[x].ReadOnly = true;
+                        dataGridView1.Columns[x].DefaultCellStyle.ForeColor = SystemColors.GrayText;
+                    }
+                }
+                if (Properties.Settings.Default.MultiLineTextEntry)
+                {
+                    foreach (DataGridViewColumn col in dataGridView1.Columns)
+                    {
+                        if (col is DataGridViewTextBoxColumn)
+                        {
+                            col.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                        }
+                    }
+                    dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                }
+
                 if (Properties.Settings.Default.MaxColumnWidth > 0)
                 {
                     dataGridView1.AutoResizeColumns();
