@@ -58,7 +58,7 @@ Use the following command line:
 
 ### **Installing the SSMS 18 extension**
 
-As the VSIX 2017 installer does not support into a VS Shell edition, and generally because SSMS extensions are unsupported, you will have to manually install the extension (at least until I decide to create an installer)
+As the VSIX 2017 installer does not support installation into a VS Shell edition, and generally because SSMS extensions are unsupported, you will have to manually install the extension (at least until I or someone else decides to create an installer)
 
 From an administrator command prompt:
 
