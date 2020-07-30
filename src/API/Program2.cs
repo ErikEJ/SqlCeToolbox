@@ -102,6 +102,9 @@ namespace ExportSqlCE
                             {
                                 Console.WriteLine("Generating the indexes....");
                                 generator.GenerateIndex();
+                                generator.GenerateTriggers();
+                                generator.GenerateTriggersForForeignKeys();
+                                generator.GenerateViews();
                             }
                             generator.GenerateSqliteSuffix();
                         }

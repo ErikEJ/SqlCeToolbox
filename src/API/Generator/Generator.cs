@@ -1554,7 +1554,7 @@ namespace ErikEJ.SqlCeScripting
             Helper.WriteIntoFile(GeneratedScript, _outFile, FileCounter, _sqlite);
         }
 
-        private void GenerateTriggersForForeignKeys()
+        public void GenerateTriggersForForeignKeys()
         {
             foreach (string tableName in _tableNames)
             {
@@ -2303,7 +2303,7 @@ namespace ErikEJ.SqlCeScripting
             return sbScriptTemplate.ToString();
         }
 
-        private void GenerateViews()
+        public void GenerateViews()
         {
             foreach (var view in _allViews.Where(v => !string.IsNullOrEmpty(v.Definition)))
             {
@@ -2311,6 +2311,11 @@ namespace ErikEJ.SqlCeScripting
                 _sbScript.AppendFormat(";" + Environment.NewLine);
                 _sbScript.Append(_sep);
             }
+        }
+
+        public void GenerateTriggers()
+        {
+            GenerateTriggers(_allTriggers);
         }
 
         private void GenerateTriggers(List<Trigger> triggers)
