@@ -80,12 +80,13 @@ namespace ErikEJ.SqlCeToolbox.WinForms
                 if (ReadOnly)
                 {
                     dataGridView1.DefaultCellStyle.ForeColor = SystemColors.GrayText;
-                    EnvDteHelper.ShowError("No primary keys on table, data is read-only");
+                    MessageBox.Show("No primary keys on table, data is read-only");
                 }
             }
             catch (Exception ex)
             {
-                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                AddSqlPanel();
+                _pnlSql.SqlText = ex.ToString();
             }
         }
 
@@ -143,7 +144,8 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             }
             catch (Exception ex)
             {
-                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                AddSqlPanel();
+                _pnlSql.SqlText = ex.ToString();
             }
         }
 
@@ -316,7 +318,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             }
             catch (Exception ex)
             {
-                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                EnvDteHelper.ShowError(ex.ToString());
             }
         }
 
@@ -360,7 +362,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             }
             catch (Exception ex)
             {
-                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                EnvDteHelper.ShowError(ex.ToString());
             }
         }
 
@@ -372,7 +374,7 @@ namespace ErikEJ.SqlCeToolbox.WinForms
             }
             catch (Exception ex)
             {
-                DataConnectionHelper.SendError(ex, DatabaseInfo.DatabaseType, false);
+                EnvDteHelper.ShowError(ex.ToString());
             }
         }
 
