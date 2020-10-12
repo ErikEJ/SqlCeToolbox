@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
   <Identifier Id="45521019-e4c7-480c-8ea8-fc4a2c6f50aa">
-    <Name>SQL Server Compact/SQLite Toolbox</Name>
+    <Name>SQL Server Compact and SQLite Toolbox</Name>
     <Author>ErikEJ</Author>
     <Version>4.7.210.0</Version>
     <Description xml:space="preserve">SQL Server Compact/SQLite Toolbox add-in for Visual Studio. This add-in adds several features to help your embedded database development efforts: Scripting of tables and data, import from SQL Server and CSV files and much, much more.</Description>
