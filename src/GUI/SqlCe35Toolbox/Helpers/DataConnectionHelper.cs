@@ -143,6 +143,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     catch (NullReferenceException)
                     {
                     }
+                    catch (ArgumentException)
+                    {
+                    }
                 }
             }
 #if SSMS
