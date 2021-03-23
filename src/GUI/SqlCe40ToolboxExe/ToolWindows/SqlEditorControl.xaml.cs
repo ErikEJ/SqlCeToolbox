@@ -211,10 +211,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void FormatTime(Stopwatch sw)
         {
-            var ts = new TimeSpan(sw.ElapsedTicks);
-            txtTime.Text = string.Format("Duration: {0:00}:{1:00}.{2:000}", ts.Minutes, ts.Seconds, ts.Milliseconds);
+            txtTime.Text = $"Duration: {sw.Elapsed.Minutes:00}:{sw.Elapsed.Seconds:00}.{sw.Elapsed.Milliseconds:000}";
         }
-
         private void OpenScript()
         {
             OpenFileDialog ofd = new OpenFileDialog();
