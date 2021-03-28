@@ -1,7 +1,6 @@
 set ORIGINAL_DIR=%CD% 
 
-rem call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\vsvars32.bat"
-call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\vsdevcmd.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\vsdevcmd.bat"
 
 chdir /d %ORIGINAL_DIR% 
 
