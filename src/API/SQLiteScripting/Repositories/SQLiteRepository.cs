@@ -11,7 +11,7 @@ using System.Text;
 
 namespace ErikEJ.SQLiteScripting
 {
-    //uses sqlite-netFx46-static-binary-bundle-Win32-2015-1.0.1xx.0.zip
+    //uses sqlite-netFx451-static-binary-bundle-Win32-2013-1.0.113.0.zip
     public class SQLiteRepository : IRepository
     { 
         private SQLiteConnection _cn;
