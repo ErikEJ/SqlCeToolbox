@@ -182,8 +182,11 @@ namespace ExportSqlCE
                             }
                             if (sqlite)
                             {
-                                Console.WriteLine("Generating the data....");
-                                generator.GenerateTableContent(false);
+                                if (includeData)
+                                {
+                                    Console.WriteLine("Generating the data....");
+                                    generator.GenerateTableContent(false);
+                                }
                                 Console.WriteLine("Generating the indexes....");
                                 generator.GenerateIndex();
                                 generator.GenerateSqliteSuffix();

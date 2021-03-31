@@ -11,9 +11,9 @@ using System.Text;
 
 namespace ErikEJ.SQLiteScripting
 {
-    //uses sqlite-netFx40-static-binary-bundle-Win32-2010-1.0.XXX.0.zip
+    //uses sqlite-netFx46-static-binary-bundle-Win32-2015-1.0.1xx.0.zip
     public class SQLiteRepository : IRepository
-    {
+    { 
         private SQLiteConnection _cn;
         private readonly SQLiteCommand _cmd;
         private readonly string _showPlan = string.Empty;
