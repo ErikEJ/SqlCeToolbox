@@ -148,17 +148,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 txtStatus.Text += "No\n";
             }
 
-            txtStatus.Text += "\n\nSQLite ADO.NET Provider installed: ";
-            try
-            {
-                Assembly asm = Assembly.Load("System.Data.SQLite");
-                txtStatus.Text += string.Format("{0}\n", asm.GetName().Version);
-            }
-            catch
-            {
-                txtStatus.Text += "No\n";
-            }
-
             txtStatus.Text += "SQLite EF6 DbProvider in GAC - ";
             try
             {
