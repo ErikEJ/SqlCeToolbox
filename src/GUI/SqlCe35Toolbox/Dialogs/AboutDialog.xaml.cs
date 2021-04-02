@@ -148,6 +148,8 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 txtStatus.Text += "No\n";
             }
 
+            txtStatus.Text += $"\n\nSQLite ADO.NET Provider used: {Helpers.RepositoryHelper.SqliteEngineVersion}\n";
+
             txtStatus.Text += "SQLite EF6 DbProvider in GAC - ";
             try
             {
