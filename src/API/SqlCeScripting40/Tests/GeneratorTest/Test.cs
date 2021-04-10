@@ -1,16 +1,16 @@
-﻿using System;
-using System.IO;
-using NUnit.Framework;
-using ErikEJ.SqlCeScripting;
-using System.Collections.Generic;
+﻿using ErikEJ.SqlCeScripting;
 using ErikEJ.SQLiteScripting;
-using System.Text.RegularExpressions;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Tests.GeneratorTest
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Ce"), TestFixture]
+    [TestFixture]
     public class SqlCeScriptingTestFixture
     {
         private enum SchemaType
@@ -21,7 +21,7 @@ namespace Tests.GeneratorTest
             DataReaderTest
         }
 
-        private static string dbPath = Directory.GetCurrentDirectory();
+        private static string dbPath = TestContext.CurrentContext.TestDirectory;
 
         private string chinookSQLiteConnectionString = $"Data Source={Path.Combine(dbPath, "chinook.db")}";
         private string dtoConnectionString = $"Data Source={Path.Combine(dbPath, "dto.db")}";
@@ -177,6 +177,18 @@ namespace Tests.GeneratorTest
                 Assert.AreEqual(18, lines.Length, result);
             }
         }
+
+        [Test]
+        public void TestCreateSqliteServerExport()
+        {
+            using (IRepository sourceRepository = new SQLiteRepository(db21Conn))
+            {
+                var generator = new Generator4(sourceRepository, "C:\\temp\\script.sql");
+                generator.ScriptDatabaseToFile(Scope.SchemaData);
+                var result = generator.GeneratedScript;
+            }
+        }
+
 
         [Test]
         public void TestSQLiteNetCodeGen()
