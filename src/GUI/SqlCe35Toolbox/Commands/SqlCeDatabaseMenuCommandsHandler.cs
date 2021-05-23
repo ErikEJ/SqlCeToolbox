@@ -549,21 +549,28 @@ namespace ErikEJ.SqlCeToolbox.Commands
         {
             var paths = new List<string>
             {
+                @"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\sqlmetal.exe",
                 @"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.2 Tools\sqlmetal.exe",
                 @"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\sqlmetal.exe",
                 @"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\sqlmetal.exe"
             };
 
-            var sqlMetalRegPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0A", "InstallationFolder", string.Empty);
+            var sqlMetalRegPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\NETFXSDK\4.8\WinSDK-NetFx40Tools", "InstallationFolder", string.Empty);
             if (!string.IsNullOrEmpty(sqlMetalRegPath))
             {
-                paths.Add(Path.Combine(sqlMetalRegPath, "bin\\NETFX 4.6 Tools", "sqlmetal.exe"));
+                paths.Add(Path.Combine(sqlMetalRegPath, "sqlmetal.exe"));
             }
 
             sqlMetalRegPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0A", "InstallationFolder", string.Empty);
             if (!string.IsNullOrEmpty(sqlMetalRegPath))
             {
-                paths.Add(Path.Combine(sqlMetalRegPath, "bin\\NETFX 4.6 Tools", "sqlmetal.exe"));
+                paths.Add(Path.Combine(sqlMetalRegPath, "bin\\NETFX 4.6.2 Tools", "sqlmetal.exe"));
+            }
+
+            sqlMetalRegPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0A", "InstallationFolder", string.Empty);
+            if (!string.IsNullOrEmpty(sqlMetalRegPath))
+            {
+                paths.Add(Path.Combine(sqlMetalRegPath, "bin\\NETFX 4.6.1 Tools", "sqlmetal.exe"));
             }
 
             sqlMetalRegPath = (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0A", "InstallationFolder", string.Empty);
