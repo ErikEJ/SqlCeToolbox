@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2003
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCeToolbox.Common", "SqlCeToolbox.Common\SqlCeToolbox.Common.csproj", "{C6031278-5612-429F-A485-5169392DB51C}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSMSToolbox", "SSMSToolbox\SSMSToolbox.csproj", "{B8CA7C7C-2A27-46B4-899F-BF5999E3D3A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSToolbox", "SqlCe35Toolbox\VSToolbox.csproj", "{CF9BB696-A1DC-4923-83BF-F223B18EE618}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSToolbox2010", "SqlCe35Toolbox\VSToolbox2010.csproj", "{A633A9DF-98DB-42A5-91E4-853258C47854}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3CE39BB8-C857-47C5-A3CB-71CB8E34DABB}"
 EndProject
@@ -55,12 +53,6 @@ Global
 		{CF9BB696-A1DC-4923-83BF-F223B18EE618}.Release|Any CPU.ActiveCfg = Release|x86
 		{CF9BB696-A1DC-4923-83BF-F223B18EE618}.Release|x86.ActiveCfg = Release|x86
 		{CF9BB696-A1DC-4923-83BF-F223B18EE618}.Release|x86.Build.0 = Release|x86
-		{A633A9DF-98DB-42A5-91E4-853258C47854}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A633A9DF-98DB-42A5-91E4-853258C47854}.Debug|x86.ActiveCfg = Debug|x86
-		{A633A9DF-98DB-42A5-91E4-853258C47854}.Debug|x86.Build.0 = Debug|x86
-		{A633A9DF-98DB-42A5-91E4-853258C47854}.Release|Any CPU.ActiveCfg = Release|x86
-		{A633A9DF-98DB-42A5-91E4-853258C47854}.Release|x86.ActiveCfg = Release|x86
-		{A633A9DF-98DB-42A5-91E4-853258C47854}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
