@@ -18,6 +18,8 @@ using System.Data.SqlClient;
 using System.Data.SQLite;
 using Microsoft.VisualStudio.Shell;
 using System.Linq;
+using EnvDTE80;
+using EnvDTE;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
@@ -342,7 +344,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal void ScanConnections(SqlCeToolboxPackage package)
         {
-            var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
             var helper = RepositoryHelper.CreateEngineHelper(DatabaseType.SQLCE40);
             EnvDteHelper dteHelper = new EnvDteHelper();
             var list = dteHelper.GetSqlCeFilesInActiveSolution(dte);

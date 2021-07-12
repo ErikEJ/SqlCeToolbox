@@ -313,7 +313,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             var originalValue = Properties.Settings.Default.KeepSchemaNames;
-            var dte = _package.GetServiceHelper(typeof(DTE)) as DTE;
+            var dte = _package.GetServiceHelper(typeof(DTE)) as DTE2;
             try
             {
                 var connectionString = databaseInfo.DatabaseInfo != null

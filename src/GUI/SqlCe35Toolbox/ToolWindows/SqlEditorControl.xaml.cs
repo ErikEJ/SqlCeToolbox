@@ -13,6 +13,7 @@ using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Xml;
 using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ExecutionPlanVisualizer;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -141,7 +142,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             try
             {
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
-                var dte = package?.GetServiceHelper(typeof(DTE)) as DTE;
+                var dte = package?.GetServiceHelper(typeof(DTE)) as DTE2;
                 if (dte == null) return;
                 var properties = dte.Properties["FontsAndColors", "TextEditor"];
                 _fontFamiliy = GetFontFamily(properties, _fontSize);

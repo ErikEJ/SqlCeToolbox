@@ -1,15 +1,16 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Input;
-using EnvDTE;
+﻿using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.VisualStudio.Data.Services;
 using Microsoft.Win32;
+using System;
+using System.IO;
+using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -174,7 +175,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         private bool TryGetInitialPath(SqlCeToolboxPackage package, out string path)
         {
-            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
             var dteHelper = new EnvDteHelper();
             try
             {
@@ -252,7 +253,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
             var menuItem = sender as MenuItem;
             if (menuItem == null) return;
-            var dte = _package.GetServiceHelper(typeof(DTE)) as DTE;
+            var dte = _package.GetServiceHelper(typeof(DTE)) as DTE2;
             var dteH = new EnvDteHelper();
             var project = dteH.GetProject(dte);
             if (project == null)

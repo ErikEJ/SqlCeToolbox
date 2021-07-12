@@ -1,17 +1,18 @@
-﻿using System;
+﻿using EnvDTE;
+using EnvDTE80;
+using ErikEJ.SqlCeScripting;
+using ErikEJ.SqlCeToolbox.Dialogs;
+using ErikEJ.SqlCeToolbox.Helpers;
+using ErikEJ.SqlCeToolbox.ToolWindows;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using EnvDTE;
-using ErikEJ.SqlCeScripting;
-using ErikEJ.SqlCeToolbox.Dialogs;
-using ErikEJ.SqlCeToolbox.Helpers;
-using ErikEJ.SqlCeToolbox.ToolWindows;
-using Microsoft.Win32;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -235,7 +236,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             var isDesktop = (bool)((MenuItem)sender).Tag;
 
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
             if (dte == null) return;
             if (dte.Mode == vsIDEMode.vsIDEModeDebug)
             {
@@ -741,7 +742,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
 
             var dteH = new EnvDteHelper();
 

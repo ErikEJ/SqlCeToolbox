@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.VisualStudio;
@@ -180,7 +181,7 @@ namespace ErikEJ.SqlCeToolbox
         {
             get
             {
-                var dte = GetGlobalService(typeof(DTE)) as DTE;
+                var dte = GetGlobalService(typeof(DTE)) as DTE2;
                 return dte != null 
                     ? new Version(int.Parse(dte.Version.Split('.')[0], CultureInfo.InvariantCulture), 0) 
                     : new Version(0,0,0,0);

@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Input;
-using EnvDTE;
+﻿using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -519,7 +520,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
 
             var fd = new SaveFileDialog
             {
@@ -613,7 +614,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(DTE)) as DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
 
             var dteH = new EnvDteHelper();
 

@@ -2,6 +2,8 @@
 using System.Windows;
 using ErikEJ.SqlCeScripting;
 using System;
+using EnvDTE80;
+using EnvDTE;
 
 namespace ErikEJ.SqlCeToolbox.ToolWindows
 {
@@ -89,7 +91,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             txtStatus.Text = string.Empty;
             var package = _parentWindow.Package as SqlCeToolboxPackage;
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
 
             var fileName = System.IO.Path.GetTempFileName();
             fileName = fileName + ".cs";

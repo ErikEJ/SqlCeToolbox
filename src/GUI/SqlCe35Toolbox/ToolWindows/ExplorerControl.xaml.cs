@@ -145,7 +145,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         databaseList.Add(info.Key, info.Value);
                 }
                 //Boot Telemetry
-                var dte = (DTE2)package.GetServiceHelper(typeof(DTE));
+                var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
                 Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
                 if (Telemetry.Enabled)
                 {

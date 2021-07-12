@@ -11,7 +11,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
     public static class Telemetry
     {
         private static TelemetryClient _telemetry;
-        private static DTEEvents _events;
+        //private static DTEEvents _events;
 
         /// <summary>
         /// Initializes the telemetry client.
@@ -30,8 +30,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             _telemetry.InstrumentationKey = telemetryKey;
             _telemetry.Context.Component.Version = version;
 
-            _events = dte.Events.DTEEvents;
-            _events.OnBeginShutdown += delegate { _telemetry.Flush(); };
+            //_events = dte.Events.DTEEvents;
+            //_events.OnBeginShutdown += delegate { _telemetry.Flush(); };
 
             Enabled = true;
         }
@@ -68,6 +68,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 var telex = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
                 telex.HandledAt = Microsoft.ApplicationInsights.DataContracts.ExceptionHandledAt.UserCode;
                 _telemetry.TrackException(telex);
+                _telemetry.Flush();
             }
 #endif
         }

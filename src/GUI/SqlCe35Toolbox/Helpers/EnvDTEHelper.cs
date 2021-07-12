@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Properties;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -15,7 +16,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class EnvDteHelper
     {
-        public Project GetProject(DTE dte)
+        public Project GetProject(DTE2 dte)
         {
             foreach (SelectedItem item in dte.SelectedItems)
             {
@@ -117,7 +118,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
-        public HashSet<string> GetSqlCeFilesInActiveSolution(DTE dte)
+        public HashSet<string> GetSqlCeFilesInActiveSolution(DTE2 dte)
         {
             var list = new HashSet<string>();
 
@@ -132,7 +133,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return list;
         }
 
-        public string GetInitialFolder(DTE dte)
+        public string GetInitialFolder(DTE2 dte)
         {
             if (!dte.Solution.IsOpen)
                 return null;
@@ -227,7 +228,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public static void LaunchUrl(string url)
         {
-            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
             if (dte != null)
             {
                 dte.ItemOperations.Navigate(url);
