@@ -13,9 +13,10 @@
         <Tags>sql sqlite sqlce entityframework ef linq codegeneration database ssdt ssms </Tags>
     </Metadata>
     <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[15.0,17.0)" />
         <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Community" />
-        <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.IntegratedShell" />
+		<InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+			<ProductArchitecture>amd64</ProductArchitecture>
+		</InstallationTarget>
     </Installation>
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.7.2,)" />
