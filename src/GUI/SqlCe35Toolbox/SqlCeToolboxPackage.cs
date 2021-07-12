@@ -6,7 +6,9 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Helpers;
+using ErikEJ.SqlCeToolbox.Properties;
 using ErikEJ.SqlCeToolbox.ToolWindows;
+using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -44,6 +46,7 @@ namespace ErikEJ.SqlCeToolbox
         public void SetProgress(string label, uint progress, uint total)
         {
             var statusBar = (IVsStatusbar)GetService(typeof(SVsStatusbar));
+            Assumes.Present(statusBar);
             uint cookie = 0;
 
             if (label == null)
@@ -192,12 +195,12 @@ namespace ErikEJ.SqlCeToolbox
 
         public bool VsSupportsDdex40()
         {
-            return Properties.Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
+            return Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
         }
 
         public bool VsSupportsDdex35()
         {
-            return Properties.Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider));
+            return Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider));
         }
 
         public static bool VsSupportsEf6()
@@ -209,8 +212,8 @@ namespace ErikEJ.SqlCeToolbox
         {
             return ( VisualStudioVersion >= new Version(12, 0))
                 && (DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40PrivateProvider)))
-                && (Helpers.RepositoryHelper.IsV40Installed())
-                && (Helpers.RepositoryHelper.IsV40DbProviderInstalled());
+                && (RepositoryHelper.IsV40Installed())
+                && (RepositoryHelper.IsV40DbProviderInstalled());
         }
 
         public static bool IsVsExtension => true;

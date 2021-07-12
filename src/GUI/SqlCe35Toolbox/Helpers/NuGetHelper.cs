@@ -1,9 +1,7 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using EnvDTE;
+﻿using EnvDTE;
 using Microsoft.VisualStudio.ComponentModelHost;
 using NuGet.VisualStudio;
+using System;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
@@ -14,11 +12,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             var componentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
             var nuGetInstaller = componentModel.GetService<IVsPackageInstaller>();
             nuGetInstaller?.InstallPackage(null, project, packageId, (Version)null, false);
-        }
-
-        public Task InstallPackageAsync(string packageId, Project project, CancellationToken ct = default(CancellationToken))
-        {
-            return Task.Factory.StartNew(() => InstallPackage(packageId, project), ct); 
         }
     }
 }
