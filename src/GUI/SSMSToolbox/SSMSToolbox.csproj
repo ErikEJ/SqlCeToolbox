@@ -356,6 +356,7 @@
     <Compile Include="Dialogs\TableBuilderDialog.xaml.cs">
       <DependentUpon>TableBuilderDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Package\OtherWindowsCommand.cs" />
     <Compile Include="Package\SqlCeToolboxPackage.cs" />
     <Compile Include="Package\ViewMenuCommand.cs" />
