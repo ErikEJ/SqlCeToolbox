@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace ErikEJ.SqlCeToolbox
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "4.7", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "4.8", IconResourceID = 400)]
     [SqlCe40ProviderRegistration]
     [SqliteProviderRegistration]
     [ProvideMenuResource("Menus.ctmenu", 1)]
