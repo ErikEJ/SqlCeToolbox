@@ -61,7 +61,6 @@ Global
 		{E525A015-2E1E-45D4-A52A-87DB3610408D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{E525A015-2E1E-45D4-A52A-87DB3610408D}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{E525A015-2E1E-45D4-A52A-87DB3610408D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E525A015-2E1E-45D4-A52A-87DB3610408D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E525A015-2E1E-45D4-A52A-87DB3610408D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E525A015-2E1E-45D4-A52A-87DB3610408D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E525A015-2E1E-45D4-A52A-87DB3610408D}.Release|x86.ActiveCfg = Release|Any CPU
