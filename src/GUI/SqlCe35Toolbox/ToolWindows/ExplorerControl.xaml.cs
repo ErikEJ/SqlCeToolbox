@@ -543,27 +543,28 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void FillTableItems(KeyValuePair<string, DatabaseInfo> database, DatabaseTreeViewItem parentItem, Exception ex, RoutedEventArgs args)
         {
-            if (ex != null)
-            {
-                var error = Helpers.RepositoryHelper.CreateEngineHelper(database.Value.DatabaseType).FormatError(ex);
-                if (error.Contains("Minor Err.: 25028"))
-                {
-                    var pwd = new PasswordDialog();
-                    pwd.ShowModal();
-                    if (pwd.DialogResult.HasValue && pwd.DialogResult.Value && !string.IsNullOrWhiteSpace(pwd.Password))
-                    {
-                        database.Value.ConnectionString = database.Value.ConnectionString + ";Password=" + pwd.Password;
-                        GetTableItems(parentItem, args, database);
-                    }
-                }
-                else
-                {
-                    DataConnectionHelper.SendError(ex, database.Value.DatabaseType, false);
-                }
-                return;
-            }
             try
             {
+                if (ex != null)
+                {
+                    var error = Helpers.RepositoryHelper.CreateEngineHelper(database.Value.DatabaseType).FormatError(ex);
+                    if (error.Contains("Minor Err.: 25028"))
+                    {
+                        var pwd = new PasswordDialog();
+                        pwd.ShowModal();
+                        if (pwd.DialogResult.HasValue && pwd.DialogResult.Value && !string.IsNullOrWhiteSpace(pwd.Password))
+                        {
+                            database.Value.ConnectionString = database.Value.ConnectionString + ";Password=" + pwd.Password;
+                            GetTableItems(parentItem, args, database);
+                        }
+                    }
+                    else
+                    {
+                        DataConnectionHelper.SendError(ex, database.Value.DatabaseType, false);
+                    }
+                    return;
+                }
+
                 parentItem.Items.Clear();
 
                 using (var repository = Helpers.RepositoryHelper.CreateRepository(database.Value))
