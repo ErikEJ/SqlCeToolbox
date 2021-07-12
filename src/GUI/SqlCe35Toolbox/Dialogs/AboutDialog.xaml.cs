@@ -58,23 +58,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 txtStatus.Text += "No\n";
             }
 
-            txtStatus.Text += "\nSQL Server Compact 4.0 DDEX provider - ";
-            try
-            {
-                if (DataConnectionHelper.DdexProviderIsInstalled(new Guid(SqlCeToolbox.Resources.SqlCompact40Provider)))
-                {
-                    txtStatus.Text += "Yes\n";
-                }
-                else
-                {
-                    txtStatus.Text += "No\n";
-                }
-            }
-            catch
-            {
-                txtStatus.Text += "No\n";
-            }
-
             txtStatus.Text += "SQL Server Compact 4.0 Simple DDEX provider - ";
             try
             {
@@ -115,23 +98,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             {
                 System.Data.Common.DbProviderFactories.GetFactory(SqlCeToolbox.Resources.SqlCompact35InvariantName);
                 txtStatus.Text += "Yes\n";
-            }
-            catch
-            {
-                txtStatus.Text += "No\n";
-            }
-
-            txtStatus.Text += "\nSQL Server Compact 3.5 DDEX provider - ";
-            try
-            {
-                if (DataConnectionHelper.DdexProviderIsInstalled(new Guid(SqlCeToolbox.Resources.SqlCompact35Provider)))
-                {
-                    txtStatus.Text += "Yes\n";
-                }
-                else
-                {
-                    txtStatus.Text += "No\n";
-                }
             }
             catch
             {

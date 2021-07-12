@@ -115,9 +115,6 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
-    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
@@ -238,6 +235,12 @@
     <Compile Include="Helpers\DataConnectionHelper.cs" />
     <Compile Include="Helpers\DescriptionHelper.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
+    <Content Include="x64\SQLite.Interop.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Resource Include="Resources\TypeDefinition_521.png" />
     <Resource Include="Resources\data_out_small.png" />
     <Resource Include="Resources\gear_16xLG.png" />
@@ -567,6 +570,9 @@
       <Version>16.9.1050</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.114.3</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
