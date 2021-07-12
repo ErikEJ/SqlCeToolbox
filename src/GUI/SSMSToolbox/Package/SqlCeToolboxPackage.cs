@@ -9,6 +9,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ErikEJ.SqlCeToolbox.SSMSEngine;
 using ErikEJ.SqlCeToolbox.Helpers;
+using Microsoft;
+using System.Drawing;
 
 // ReSharper disable once CheckNamespace
 namespace ErikEJ.SqlCeToolbox
@@ -74,6 +76,9 @@ namespace ErikEJ.SqlCeToolbox
         public void SetProgress(string label, uint progress, uint total)
         {
             var statusBar = (IVsStatusbar)GetService(typeof(SVsStatusbar));
+            
+            Assumes.Present(statusBar);
+
             uint cookie = 0;
 
             if (label == null)
@@ -200,9 +205,9 @@ namespace ErikEJ.SqlCeToolbox
             ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
-        public static System.Drawing.Bitmap Logo { get; private set; }
-        public static System.Drawing.Bitmap ExportImage { get; private set; }
-        public static System.Drawing.Bitmap ScriptImage { get; private set; }
+        public static Bitmap Logo { get; private set; }
+        public static Bitmap ExportImage { get; private set; }
+        public static Bitmap ScriptImage { get; private set; }
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
