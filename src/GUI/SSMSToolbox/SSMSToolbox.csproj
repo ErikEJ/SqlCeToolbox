@@ -398,6 +398,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Core">
+      <Version>1.0.114.3</Version>
+    </PackageReference>
     <Reference Include="ExtendedGrid">
       <HintPath>..\lib\ExtendedGrid.dll</HintPath>
     </Reference>
@@ -455,11 +458,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\2010\Microsoft.VisualStudio.Data.Services.dll</HintPath>
     </Reference>
-    <Reference Include="NuGet.VisualStudio, Version=3.5.0.1484, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\References\2010\NuGet.VisualStudio.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
@@ -500,9 +498,6 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Entity.Design" />
-    <Reference Include="System.Data.SQLite, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
-    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
