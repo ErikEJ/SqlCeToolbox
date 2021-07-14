@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Threading;
 using EnvDTE;
 using EnvDTE80;
 using ErikEJ.SqlCeToolbox.Helpers;
@@ -15,7 +16,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ErikEJ.SqlCeToolbox
 {
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "4.8", IconResourceID = 400)]
     [SqlCe40ProviderRegistration]
     [SqliteProviderRegistration]
@@ -29,7 +30,7 @@ namespace ErikEJ.SqlCeToolbox
     [ProvideOptionPage(typeof(OptionsPageAdvanced), "SQLite/SQLCE Toolbox", "Advanced", 100, 102, true)]
     [Guid(GuidList.guidSqlCeToolboxPkgString)]
 
-    public sealed class SqlCeToolboxPackage : Package
+    public sealed class SqlCeToolboxPackage : AsyncPackage
     {
         /// <summary>
         /// Default constructor of the package.
@@ -76,37 +77,6 @@ namespace ErikEJ.SqlCeToolbox
                     {
                         statusBar.SetText(message);
                     }
-                }
-            }
-            // Attempt to fix issue with new VS versions #725
-            //if (message != null)
-            //    OutputStringInGeneralPane(message);
-        }
-
-        private void OutputStringInGeneralPane(string text)
-        {
-            const int visible = 1;
-            const int doNotClearWithSolution = 0;
-
-            // Get the output window
-            var outputWindow = GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-
-            // The General pane is not created by default. We must force its creation
-            if (outputWindow != null)
-            {
-                var hr = outputWindow.CreatePane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, "General", visible, doNotClearWithSolution);
-                ErrorHandler.ThrowOnFailure(hr);
-
-                // Get the pane
-                IVsOutputWindowPane outputWindowPane;
-                hr = outputWindow.GetPane(VSConstants.OutputWindowPaneGuid.GeneralPane_guid, out outputWindowPane);
-                ErrorHandler.ThrowOnFailure(hr);
-
-                // Output the text
-                if (outputWindowPane != null)
-                {
-                    outputWindowPane.Activate();
-                    outputWindowPane.OutputString(text + Environment.NewLine);
                 }
             }
         }
@@ -217,20 +187,19 @@ namespace ErikEJ.SqlCeToolbox
         }
 
         public static bool IsVsExtension => true;
-        /////////////////////////////////////////////////////////////////////////////
-        // Overriden Package Implementation
-        #region Package Members
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initilaization code that rely on services provided by VisualStudio.
         /// </summary>
-        protected override void Initialize()
+        protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", ToString()));
 
-            // Add our command handlers for menu (commands must exist in the .vsct file)
-            var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            var mcs = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             if (null != mcs)
             {
                 // Create the command for the menu item.
@@ -249,6 +218,5 @@ namespace ErikEJ.SqlCeToolbox
             }
             base.Initialize();
         }
-        #endregion
     }
 }
