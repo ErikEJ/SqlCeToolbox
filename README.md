@@ -76,11 +76,9 @@ The EF Core Power Tools have moved to [this repository](https://github.com/ErikE
 
 ## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
 
-**Daily build**
+**Release**
 
-You can download the latest 4.0 daily build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe40ToolBox.zip?branch=master)
-
-You can download the latest 3.5 daily build [from AppVeyor here](https://ci.appveyor.com/api/projects/ErikEJ/sqlcetoolbox/artifacts/SqlCe35ToolBox.zip?branch=master)
+You can download the latest release of the standalone tools from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
 
 ## Command line tools
 
