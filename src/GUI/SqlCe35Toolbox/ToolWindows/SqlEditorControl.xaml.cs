@@ -1,9 +1,14 @@
-﻿using System;
+﻿using ErikEJ.SqlCeToolbox.Helpers;
+using ExecutionPlanVisualizer;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Search;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,14 +17,6 @@ using System.Windows.Controls;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Xml;
-using EnvDTE;
-using EnvDTE80;
-using ErikEJ.SqlCeToolbox.Helpers;
-using ExecutionPlanVisualizer;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using ICSharpCode.AvalonEdit.Search;
-using Microsoft.Win32;
 using Brushes = System.Windows.Media.Brushes;
 using FontFamily = System.Windows.Media.FontFamily;
 
@@ -118,7 +115,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 {
                     overflowGrid.Visibility = Visibility.Collapsed;
                 }
-                SetEditorFont();
+                //SetEditorFont();
                 toolBar1.Background = toolTray.Background = VsThemes.GetCommandBackground();
                 dock1.Background = VsThemes.GetWindowBackground();
                 sep4.Background = VsThemes.GetToolbarSeparatorBackground();
@@ -134,45 +131,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 DataConnectionHelper.SendError(ex,
                     DatabaseInfo?.DatabaseType ?? DatabaseType.SQLServer);
-            }
-        }
-
-        private void SetEditorFont()
-        {
-            try
-            {
-                var package = _parentWindow.Package as SqlCeToolboxPackage;
-                var dte = package?.GetServiceHelper(typeof(DTE)) as DTE2;
-                if (dte == null) return;
-                var properties = dte.Properties["FontsAndColors", "TextEditor"];
-                _fontFamiliy = GetFontFamily(properties, _fontSize);
-                SqlTextBox.FontFamily = _fontFamiliy;
-                _fontSize = Convert.ToSingle(properties.Item("FontSize").Value) * (float)1.333333;
-                SqlTextBox.FontSize = _fontSize;
-            }
-            catch
-            {
-                //Ignored
-            }
-        }
-
-        private FontFamily GetFontFamily(EnvDTE.Properties properties, float fontSize)
-        {
-            try
-            {
-                var fontName = properties.Item("FontFamily").Value.ToString();
-                using (var fontTester = new Font(
-                    new System.Drawing.FontFamily(fontName),
-                    fontSize, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel))
-                {
-                    return fontTester.Name == fontName
-                        ? new FontFamily(fontName)
-                        : new FontFamily("Consolas");
-                }
-            }
-            catch 
-            {
-                return new FontFamily("Consolas");
             }
         }
 

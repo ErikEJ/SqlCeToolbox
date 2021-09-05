@@ -1,9 +1,10 @@
-﻿using ErikEJ.SqlCeScripting;
+﻿using EnvDTE;
+using EnvDTE80;
+using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft.VisualStudio.Data.Services;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.Win32;
 using System;
 using System.IO;
@@ -174,10 +175,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         private bool TryGetInitialPath(SqlCeToolboxPackage package, out string path)
         {
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
             var dteHelper = new EnvDteHelper();
             try
             {
-                path = dteHelper.GetInitialFolder();
+                path = dteHelper.GetInitialFolder(dte);
                 return true;
             }
             catch
@@ -251,29 +253,32 @@ namespace ErikEJ.SqlCeToolbox.Commands
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
             var menuItem = sender as MenuItem;
             if (menuItem == null) return;
+            var dte = _package.GetServiceHelper(typeof(DTE)) as DTE2;
             var dteH = new EnvDteHelper();
-            var project = dteH.GetProject();
+            var project = dteH.GetProject(dte);
             if (project == null)
             {
                 EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the SyncFx classes to be placed");
                 return;
             }
-            if (!dteH.ContainsAllowed(project))
+            if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
             {
                 EnvDteHelper.ShowError("The selected project type does not support Sync Framework (please let me know if I am wrong)");
                 return;
             }
-
-            var tfm = ThreadHelper.JoinableTaskFactory.Run(() => project.GetAttributeAsync("TargetFrameworkMoniker"));
-
-            if (string.IsNullOrEmpty(tfm))
+            if (project.CodeModel.Language != CodeModelLanguageConstants.vsCMLanguageCSharp)
+            {
+                EnvDteHelper.ShowError("Unsupported code language, only C# is currently supported");
+                return;
+            }
+            if (project.Properties.Item("TargetFrameworkMoniker") == null)
             {
                 EnvDteHelper.ShowError("The selected project type does not support Sync Framework - missing TargetFrameworkMoniker");
                 return;
             }
-            if (!tfm.Contains(".NETFramework"))
+            if (!project.Properties.Item("TargetFrameworkMoniker").Value.ToString().Contains(".NETFramework"))
             {
-                EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + tfm);
+                EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + project.Properties.Item("TargetFrameworkMoniker").Value);
                 return;
             }
 
@@ -313,11 +318,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 if (res.HasValue && res.Value && (sfd.Tables.Count > 0) && !string.IsNullOrWhiteSpace(sfd.ModelName))
                 {
                     model = sfd.ModelName;
-                    var defaultNamespace = ThreadHelper.JoinableTaskFactory.Run(() => project.GetAttributeAsync("DefaultNamespace"));
+                    var defaultNamespace = project.Properties.Item("DefaultNamespace").Value.ToString();
 
                     var columns = sfd.Columns.Where(c => sfd.Tables.Contains(c.TableName)).ToList();
                     var classes = new SyncFxHelper().GenerateCodeForScope(serverConnectionString, clientConnectionString, "SQL", model, columns, defaultNamespace);
-                    var projectPath = Path.GetDirectoryName(project.FullPath);
+                    var projectPath = project.Properties.Item("FullPath").Value.ToString();
 
                     foreach (var item in classes)
                     {
@@ -327,7 +332,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                             File.Delete(fileName);
                         }
                         File.WriteAllText(fileName, item.Value);
-                        ThreadHelper.JoinableTaskFactory.Run(() => project.AddExistingFilesAsync(fileName));
+                        project.ProjectItems.AddFromFile(fileName);
                     }
                     //Adding references - http://blogs.msdn.com/b/murat/archive/2008/07/30/envdte-adding-a-refernce-to-a-project.aspx
                     EnvDteHelper.AddReference(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");

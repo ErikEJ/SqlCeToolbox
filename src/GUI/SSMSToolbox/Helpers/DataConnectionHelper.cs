@@ -11,8 +11,6 @@ using Microsoft.VisualStudio.Data.Services;
 #if SSMS
 using Microsoft.Data.ConnectionUI;
 using ErikEJ.SqlCeToolbox.SSMSEngine;
-using EnvDTE80;
-using EnvDTE;
 #else
 using ErikEJ.SqlCeToolbox.Dialogs;
 #endif
@@ -20,6 +18,8 @@ using System.Data.SqlClient;
 using System.Data.SQLite;
 using Microsoft.VisualStudio.Shell;
 using System.Linq;
+using EnvDTE80;
+using EnvDTE;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
@@ -344,9 +344,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal void ScanConnections(SqlCeToolboxPackage package)
         {
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
             var helper = RepositoryHelper.CreateEngineHelper(DatabaseType.SQLCE40);
             EnvDteHelper dteHelper = new EnvDteHelper();
-            var list = dteHelper.GetSqlCeFilesInActiveSolution();
+            var list = dteHelper.GetSqlCeFilesInActiveSolution(dte);
             foreach (var path in list)
             {
                 if (File.Exists(path))

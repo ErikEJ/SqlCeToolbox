@@ -82,12 +82,6 @@
     <Compile Include="..\SqlCe35Toolbox\Commands\DatabaseMenuCommands.cs">
       <Link>Commands\DatabaseMenuCommands.cs</Link>
     </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Commands\DatabaseMenuCommandsHandler.cs">
-      <Link>Commands\DatabaseMenuCommandsHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Commands\DatabasesMenuCommandsHandler.cs">
-      <Link>Commands\DatabasesMenuCommandsHandler.cs</Link>
-    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Commands\IndexMenuCommands.cs">
       <Link>Commands\IndexMenuCommands.cs</Link>
     </Compile>
@@ -108,12 +102,6 @@
     </Compile>
     <Compile Include="..\SqlCe35Toolbox\Commands\ScopesMenuCommandsHandler.cs">
       <Link>Commands\ScopesMenuCommandsHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Commands\SqlCeDatabaseMenuCommandsHandler.cs">
-      <Link>Commands\SqlCeDatabaseMenuCommandsHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Commands\SqlServerDatabaseMenuCommandsHandler.cs">
-      <Link>Commands\SqlServerDatabaseMenuCommandsHandler.cs</Link>
     </Compile>
     <Compile Include="..\SqlCe35Toolbox\Commands\SubscriptionsMenuCommands.cs">
       <Link>Commands\SubscriptionsMenuCommands.cs</Link>
@@ -190,14 +178,8 @@
     <Compile Include="..\SqlCe35Toolbox\Helpers\CheckListItem.cs">
       <Link>Helpers\CheckListItem.cs</Link>
     </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Helpers\DataConnectionHelper.cs">
-      <Link>Helpers\DataConnectionHelper.cs</Link>
-    </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\DescriptionHelper.cs">
       <Link>Helpers\DescriptionHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\SqlCe35Toolbox\Helpers\EnvDTEHelper.cs">
-      <Link>Helpers\EnvDTEHelper.cs</Link>
     </Compile>
     <Compile Include="..\SqlCe35Toolbox\Helpers\Model.cs">
       <Link>Helpers\Model.cs</Link>
@@ -314,6 +296,10 @@
       <Link>WinForms\SqlPanel.Designer.cs</Link>
       <DependentUpon>SqlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Commands\DatabaseMenuCommandsHandler.cs" />
+    <Compile Include="Commands\DatabasesMenuCommandsHandler.cs" />
+    <Compile Include="Commands\SqlCeDatabaseMenuCommandsHandler.cs" />
+    <Compile Include="Commands\SqlServerDatabaseMenuCommandsHandler.cs" />
     <Compile Include="Dialogs\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
@@ -357,6 +343,8 @@
       <DependentUpon>TableBuilderDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\DataConnectionHelper.cs" />
+    <Compile Include="Helpers\EnvDTEHelper.cs" />
     <Compile Include="Package\OtherWindowsCommand.cs" />
     <Compile Include="Package\SqlCeToolboxPackage.cs" />
     <Compile Include="Package\ViewMenuCommand.cs" />

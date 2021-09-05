@@ -3,44 +3,39 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
-using EnvDTE;
-using EnvDTE80;
-using ErikEJ.SqlCeToolbox.Properties;
+using Community.VisualStudio.Toolkit;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
-using VSLangProj;
-using Constants = EnvDTE.Constants;
 
 namespace ErikEJ.SqlCeToolbox.Helpers
 {
     internal class EnvDteHelper
     {
-        public Project GetProject(DTE2 dte)
+        public Project GetProject()
         {
-            foreach (SelectedItem item in dte.SelectedItems)
-            {
-                if (item.Project != null) return item.Project;
-                if (item.ProjectItem != null) return item.ProjectItem.ContainingProject;
-            }
-            return null;
+            return ThreadHelper.JoinableTaskFactory.Run(() => VS.Solutions.GetActiveProjectAsync());
         }
 
-        public ProjectItem GetProjectConfig(Project project)
+        public static bool IsDebugMode()
         {
-            foreach (ProjectItem item in project.ProjectItems)
+            IVsDebugger debugger = ThreadHelper.JoinableTaskFactory.Run(() => VS.Services.GetDebuggerAsync());
+
+            DBGMODE[] mode = new DBGMODE[1];
+            ErrorHandler.ThrowOnFailure(debugger.GetMode(mode));
+
+            if (mode[0] != DBGMODE.DBGMODE_Design)
             {
-                if (item.Name.ToLowerInvariant() == "app.config")
-                {
-                    return item;
-                }
+                return true;
             }
-            return null;
+
+            return false;
         }
 
-        public ProjectItem GetProjectDc(Project project, string model, string extension)
+
+        public SolutionItem GetProjectDc(Project project, string model, string extension)
         {
-            foreach (ProjectItem item in project.ProjectItems)
+            foreach (var item in project.Children)
             {
                 if (item.Name.ToLowerInvariant() == model.ToLowerInvariant() + extension)
                 {
@@ -50,9 +45,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return null;
         }
 
-        public ProjectItem GetProjectDataContextClass(Project project, string classFileName)
+        public SolutionItem GetProjectDataContextClass(Project project, string classFileName)
         {
-            foreach (ProjectItem item in project.ProjectItems)
+            foreach (var item in project.Children)
             {
                 if (item.Name.ToLowerInvariant() == classFileName)
                 {
@@ -64,100 +59,49 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         public static void AddReference(Project project, string reference)
         {
-            var vsProject = project.Object as VSProject;
-            vsProject?.References.Add(reference);
+            //TODO Fix?
+            //var vsProject = project.Object as VSProject;
+            //vsProject?.References.Add(reference);
         }
 
-        public bool ContainsEf6Reference(Project project)
-        {
-            var vsProject = project.Object as VSProject;
-            if (vsProject == null) return false;
-            for (var i = 1; i < vsProject.References.Count + 1; i++)
-            {
-                if (vsProject.References.Item(i).Name.Equals("EntityFramework.SqlServer")
-                    && new Version(vsProject.References.Item(i).Version) >= new Version(6, 0, 0, 0))
-                    return true;
-            }
-            return false;
-        }
-
-        public Tuple<bool, string> ContainsEfCoreReference(Project project, DatabaseType dbType)
-        {
-            var providerPackage = "Microsoft.EntityFrameworkCore.SqlServer";
-            if (dbType == DatabaseType.SQLCE40)
-            {
-                providerPackage = "EntityFrameworkCore.SqlServerCompact40";
-            }
-            if (dbType == DatabaseType.SQLite)
-            {
-                providerPackage = "Microsoft.EntityFrameworkCore.Sqlite";
-            }
-
-            var vsProject = project.Object as VSProject;
-            if (vsProject == null) return new Tuple<bool, string>(false, providerPackage);
-            for (var i = 1; i < vsProject.References.Count + 1; i++)
-            {
-                if (vsProject.References.Item(i).Name.Equals(providerPackage))
-                {
-                    return new Tuple<bool, string>(true, providerPackage);
-                }
-            }
-            return new Tuple<bool, string>(false, providerPackage);
-        }
-
-        public bool ContainsEfSqlCeReference(Project project)
-        {
-            var vsProject = project.Object as VSProject;
-            if (vsProject == null) return false;
-            for (var i = 1; i < vsProject.References.Count + 1; i++)
-            {
-                if (vsProject.References.Item(i).Name.StartsWith("EntityFramework.SqlServerCompact")
-                    && new Version(vsProject.References.Item(i).Version) >= new Version(6, 0, 0, 0))
-                    return true;
-            }
-            return false;
-        }
-
-        public HashSet<string> GetSqlCeFilesInActiveSolution(DTE2 dte)
+        public HashSet<string> GetSqlCeFilesInActiveSolution()
         {
             var list = new HashSet<string>();
 
-            if (!dte.Solution.IsOpen)
+            var solution = VS.Solutions.GetCurrentSolution();
+
+            if (solution is null)
                 return list;
 
-            foreach (Project project in dte.Solution.Projects)
+            var projects = ThreadHelper.JoinableTaskFactory.Run(() => VS.Solutions.GetAllProjectsAsync());
+
+            foreach (var item in projects)
             {
-                GetSqlCeFilesInProject(project, list);
+                GetSqlCeFilesInProject(item, list);
             }
 
             return list;
         }
 
-        public string GetInitialFolder(DTE2 dte)
+        public string GetInitialFolder()
         {
-            if (!dte.Solution.IsOpen)
+            var solution = VS.Solutions.GetCurrentSolution();
+
+            if (solution is null)
                 return null;
-            return Path.GetDirectoryName(dte.Solution.FullName);
+
+            return Path.GetDirectoryName(solution.FullPath);
         }
 
         private void GetSqlCeFilesInProject(Project project, HashSet<string> list)
         {
-            if (project.ProjectItems != null)
-                GetSqlCeFilesInProjectItems(project.ProjectItems, list);
- 	    }
-
-        private void GetSqlCeFilesInProjectItems(ProjectItems projectItems, HashSet<string> list)
-        {
-            if (projectItems == null)
-                return;
-
-            foreach (ProjectItem item in projectItems)
+            foreach (var item in project.Children)
             {
                 try
                 {
-                    if (item.Kind == Constants.vsProjectItemKindPhysicalFile)
+                    if (item.Type == SolutionItemType.PhysicalFile)
                     {
-                        string path = item.Properties.Item("FullPath").Value.ToString();
+                        string path = item.FullPath;
                         foreach (var extension in GetFileExtensions())
                         {
                             if (path.EndsWith(extension, true, CultureInfo.InvariantCulture))
@@ -172,26 +116,18 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 {
                     // Ignore - see https://github.com/ErikEJ/SqlCeToolbox/issues/842 
                 }
-                if (item.SubProject != null)
-                {
-                    GetSqlCeFilesInProject(item.SubProject, list);
-                }
-                else
-                {
-                    GetSqlCeFilesInProjectItems(item.ProjectItems, list);
-                }
             }
         }
 
         private List<string> GetFileExtensions()
         {
             var list = new List<string>();
-            var sdfExtensions = Settings.Default.FileFilterSqlCe.Split(';');
+            var sdfExtensions = Properties.Settings.Default.FileFilterSqlCe.Split(';');
             foreach (var ext in sdfExtensions)
             {
                 list.Add(ext.Replace("*", string.Empty));
             }
-            var sqliteExtensions = Settings.Default.FileFilterSqlite.Split(';');
+            var sqliteExtensions = Properties.Settings.Default.FileFilterSqlite.Split(';');
             foreach (var ext in sqliteExtensions)
             {
                 list.Add(ext.Replace("*", string.Empty));
@@ -199,40 +135,24 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return list;
         }
 
-        public bool ContainsEfSqlCeLegacyReference(Project project)
-        {
-            var vsProject = project.Object as VSProject;
-            if (vsProject == null) return false;
-            for (var i = 1; i < vsProject.References.Count + 1; i++)
-            {
-                if (vsProject.References.Item(i).Name == "EntityFramework.SqlServerCompact.Legacy"
-                    && new Version(vsProject.References.Item(i).Version) >= new Version(6, 0, 0, 0))
-                    return true;
-            }
-            return false;
-        }
-
-        public List<Guid> AllowedWpProjectKinds
-        {
-            get
-            {
-                return new List<Guid>
-                {
-                    new Guid("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"),
-                    new Guid("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}")
-                };
-            }
-        }
-
         public static Guid VbProject = new Guid("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}");
 
         public static void LaunchUrl(string url)
         {
-            var dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
-            if (dte != null)
+            System.Diagnostics.Process.Start(url);
+        }
+
+        public bool ContainsAllowed(Project project)
+        {
+            foreach (var id in AllowedProjectKinds)
             {
-                dte.ItemOperations.Navigate(url);
+                if (ThreadHelper.JoinableTaskFactory.Run(() => project.IsKindAsync(id.ToString())))
+                {
+                    return true;
+                }
             }
+
+            return false;
         }
 
         public List<Guid> AllowedProjectKinds
@@ -265,37 +185,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
-        public List<Guid> WebProjectKinds
-        {
-            get
-            {
-                return new List<Guid>
-                {
-                    new Guid("{349C5851-65DF-11DA-9384-00065B846F21}"),
-                    new Guid("{E24C65DC-7377-472B-9ABA-BC803B73C61A}")                    
-                };
-            }
-        }
-
-
-        /// <summary>
-        /// Gets the installation directory of a given Visual Studio Version
-        /// </summary>
-        /// <param name="version">Visual Studio Version</param>
-        /// <returns>Null if not installed the installation directory otherwise</returns>
-        internal string GetVisualStudioInstallationDir(Version version)
-        {
-            string registryKeyString = String.Format(@"SOFTWARE{0}Microsoft\VisualStudio\{1}",
-                Environment.Is64BitProcess ? @"\Wow6432Node\" : @"\",
-                version.ToString(2));
-
-            using (RegistryKey localMachineKey = Registry.LocalMachine.OpenSubKey(registryKeyString))
-            {
-                if (localMachineKey != null) return localMachineKey.GetValue("InstallDir") as string;
-            }
-            return null;
-        }
-
         // <summary>
         //     Helper method to show an error message within the shell.  This should be used
         //     instead of MessageBox.Show();
@@ -303,14 +192,12 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         // <param name="errorText">Text to display.</param>
         public static void ShowError(string errorText)
         {
-            ShowMessageBox(
-                errorText, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                OLEMSGICON.OLEMSGICON_CRITICAL);
+            VS.MessageBox.ShowError(errorText);
         }
 
-        public static DialogResult ShowMessage(string messageText)
+        public static bool ShowMessage(string messageText)
         {
-            return ShowMessageBox(messageText, null, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST, OLEMSGICON.OLEMSGICON_INFO);
+            return VS.MessageBox.ShowConfirm(messageText);
         }
 
         // <summary>
