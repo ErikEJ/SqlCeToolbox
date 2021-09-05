@@ -1,9 +1,14 @@
-﻿using System.Text;
-using System.Windows;
-using ErikEJ.SqlCeScripting;
-using System;
+﻿#if SSMS
 using EnvDTE80;
 using EnvDTE;
+#else
+using Community.VisualStudio.Toolkit;
+#endif
+using ErikEJ.SqlCeScripting;
+using Microsoft.VisualStudio.Shell;
+using System;
+using System.Text;
+using System.Windows;
 
 namespace ErikEJ.SqlCeToolbox.ToolWindows
 {
@@ -79,7 +84,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 }
             }
         }
-        #region Form events
+#region Form events
 
         private void btnSync_Click(object sender, RoutedEventArgs e)
         {
@@ -91,7 +96,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             txtStatus.Text = string.Empty;
             var package = _parentWindow.Package as SqlCeToolboxPackage;
             if (package == null) return;
-            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
 
             var fileName = System.IO.Path.GetTempFileName();
             fileName = fileName + ".cs";
@@ -99,11 +103,17 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 CreateSampleFile(fileName);
 
+#if SSMS
+                var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
+
                 if (dte != null)
                 {
                     dte.ItemOperations.OpenFile(fileName);
                     dte.ActiveDocument.Activate();
                 }
+#else
+                ThreadHelper.JoinableTaskFactory.Run(() => VS.Documents.OpenAsync(fileName));
+#endif
             }
             catch (Exception ex)
             {
@@ -122,9 +132,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             BeginSynchronize(SqlCeReplicationHelper.ReinitializeOption.DiscardSubscriberChanges);
         }
 
-        #endregion
+#endregion
 
-        #region private methods
+#region private methods
         private void BeginSynchronize(SqlCeReplicationHelper.ReinitializeOption option)
         {
             try
@@ -231,7 +241,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
             _replHelper.Dispose();
         }
-        #endregion
+#endregion
 
         private void CreateSampleFile(string fileName)
         {

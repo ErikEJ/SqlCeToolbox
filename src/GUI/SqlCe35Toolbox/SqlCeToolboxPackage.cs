@@ -4,10 +4,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading;
-using EnvDTE;
-using EnvDTE80;
+using Community.VisualStudio.Toolkit;
 using ErikEJ.SqlCeToolbox.Helpers;
-using ErikEJ.SqlCeToolbox.Properties;
 using ErikEJ.SqlCeToolbox.ToolWindows;
 using Microsoft;
 using Microsoft.VisualStudio;
@@ -154,10 +152,7 @@ namespace ErikEJ.SqlCeToolbox
         {
             get
             {
-                var dte = GetGlobalService(typeof(DTE)) as DTE2;
-                return dte != null 
-                    ? new Version(int.Parse(dte.Version.Split('.')[0], CultureInfo.InvariantCulture), 0) 
-                    : new Version(0,0,0,0);
+                return ThreadHelper.JoinableTaskFactory.Run(() => VS.Shell.GetVsVersionAsync());
             }
         }
 
@@ -165,12 +160,12 @@ namespace ErikEJ.SqlCeToolbox
 
         public bool VsSupportsDdex40()
         {
-            return Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
+            return Properties.Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider));
         }
 
         public bool VsSupportsDdex35()
         {
-            return Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider));
+            return Properties.Settings.Default.PreferDDEX && DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider));
         }
 
         public static bool VsSupportsEf6()

@@ -1,20 +1,21 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Controls;
+using System.Windows.Input;
+using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
-using ErikEJ.SQLiteScripting;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Text;
-using System.Windows.Controls;
-using System.Windows.Input;
+using ErikEJ.SQLiteScripting;
+using System.Linq;
 
 namespace ErikEJ.SqlCeToolbox.Commands
 {
@@ -312,6 +313,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             var originalValue = Properties.Settings.Default.KeepSchemaNames;
+            var dte = _package.GetServiceHelper(typeof(DTE)) as DTE2;
             try
             {
                 var connectionString = databaseInfo.DatabaseInfo != null
@@ -344,9 +346,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         {
                             var generator = DataConnectionHelper.CreateGenerator(repository, fileName, DatabaseType.SQLServer);
                             generator.GenerateSchemaGraph(connectionString, ptd.Tables);
-
-                            ThreadHelper.JoinableTaskFactory.Run(() => VS.Documents.OpenAsync(fileName));
-
+                            if (dte != null)
+                            {
+                                dte.ItemOperations.OpenFile(fileName);
+                                dte.ActiveDocument.Activate();
+                            }
                             DataConnectionHelper.LogUsage("DatabasesScriptDGML");
                         }
                         catch (Exception ex)

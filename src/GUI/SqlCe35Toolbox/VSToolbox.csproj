@@ -553,6 +553,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Community.VisualStudio.Toolkit">
+      <Version>15.0.76.268-pre</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.ApplicationInsights">
       <Version>2.1.0</Version>
     </PackageReference>

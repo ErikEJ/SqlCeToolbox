@@ -7,8 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
-using EnvDTE;
-using EnvDTE80;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Commands;
 using ErikEJ.SqlCeToolbox.ContextMenues;
@@ -145,11 +143,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         databaseList.Add(info.Key, info.Value);
                 }
                 //Boot Telemetry
-                var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
                 Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
                 if (Telemetry.Enabled)
                 {
-                    Telemetry.Initialize(dte,
+                    Telemetry.Initialize(
                         Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                         package.TelemetryVersion().ToString(),
                         "d4881a82-2247-42c9-9272-f7bc8aa29315");

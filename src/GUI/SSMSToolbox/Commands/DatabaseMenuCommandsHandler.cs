@@ -1,9 +1,9 @@
-﻿using Community.VisualStudio.Toolkit;
+﻿using EnvDTE;
+using EnvDTE80;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -520,7 +520,8 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             if (package == null) return;
-            
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
+
             var fd = new SaveFileDialog
             {
                 Title = "Save generated DGML file as",
@@ -537,9 +538,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, fileName, databaseInfo.DatabaseInfo.DatabaseType);
                     generator.GenerateSchemaGraph(databaseInfo.DatabaseInfo.Caption, Properties.Settings.Default.IncludeSystemTablesInDocumentation, false);
-
-                    ThreadHelper.JoinableTaskFactory.Run(() => VS.Documents.OpenAsync(fileName));
-
+                    if (dte != null)
+                    {
+                        dte.ItemOperations.OpenFile(fileName);
+                        dte.ActiveDocument.Activate();
+                    }
                     DataConnectionHelper.LogUsage("DatabaseScriptDGML");
                 }
             }
@@ -611,18 +614,24 @@ namespace ErikEJ.SqlCeToolbox.Commands
             if (databaseInfo == null) return;
 
             if (package == null) return;
+            var dte = package.GetServiceHelper(typeof(DTE)) as DTE2;
 
             var dteH = new EnvDteHelper();
 
-            var project = dteH.GetProject();
+            var project = dteH.GetProject(dte);
             if (project == null)
             {
                 EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the DataAccess.cs to be placed");
                 return;
             }
-            if (!dteH.ContainsAllowed(project))
+            if (!dteH.AllowedProjectKinds.Contains(new Guid(project.Kind)))
             {
-                EnvDteHelper.ShowError("The selected project type does not support sqlite-net (please let me know if I am wrong)");
+                EnvDteHelper.ShowError(string.Format("The selected project type {0} does not support sqlite-net (please let me know if I am wrong)", project.Kind));
+                return;
+            }
+            if (project.CodeModel != null && project.CodeModel.Language != CodeModelLanguageConstants.vsCMLanguageCSharp)
+            {
+                EnvDteHelper.ShowError("Unsupported code language, only C# is currently supported");
                 return;
             }
             if (databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLite)
@@ -633,13 +642,11 @@ namespace ErikEJ.SqlCeToolbox.Commands
             try
             {
                 var defaultNamespace = "Model";
-                var projectNamespace = ThreadHelper.JoinableTaskFactory.Run(() => project.GetAttributeAsync("DefaultNamespace"));
-
-                if (projectNamespace != null)
+                if (project.Properties.Item("DefaultNamespace") != null)
                 {
-                    defaultNamespace = projectNamespace;
+                    defaultNamespace = project.Properties.Item("DefaultNamespace").Value.ToString();
                 }
-                var projectPath = Path.GetDirectoryName(project.FullPath);
+                var projectPath = project.Properties.Item("FullPath").Value.ToString();
                 using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
                 {
                     var generator = DataConnectionHelper.CreateGenerator(repository, databaseInfo.DatabaseInfo.DatabaseType);
@@ -657,7 +664,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 + Environment.NewLine;
 
                     File.WriteAllText(fileName, warning + generator.GeneratedScript);
-                    ThreadHelper.JoinableTaskFactory.Run(() => project.AddExistingFilesAsync(fileName));
+                    project.ProjectItems.AddFromFile(fileName);
                     EnvDteHelper.ShowMessage("DataAccess.cs generated.");
                     DataConnectionHelper.LogUsage("DatabaseSqliteNetCodegen");
                 }
