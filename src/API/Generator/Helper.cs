@@ -28,7 +28,7 @@ namespace ErikEJ.SqlCeScripting
             }
         }
 
-        private static string finalFiles;
+        private static string finalFiles = string.Empty;
 
         public static void WriteIntoFile(string script, string fileLocation, int increment, bool sqlite)
         {
