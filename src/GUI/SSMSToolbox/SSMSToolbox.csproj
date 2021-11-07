@@ -9,7 +9,7 @@
     <UseCodebase>true</UseCodebase>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files %28x86%29\Microsoft SQL Server\140\Tools\Binn\ManagementStudio\ssms.exe</StartProgram>
-    <ReferencePath>$(ReferencePath);$(MSBuildThisFileDirectory)..\References\2010</ReferencePath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -386,9 +386,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Data.SQLite.Core">
-      <Version>1.0.114.3</Version>
-    </PackageReference>
     <Reference Include="ExtendedGrid">
       <HintPath>..\lib\ExtendedGrid.dll</HintPath>
     </Reference>
@@ -484,6 +481,9 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.114.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
+    </Reference>    
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Entity.Design" />
     <Reference Include="System.Design" />
