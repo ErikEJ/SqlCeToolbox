@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Shell;
 namespace ErikEJ.SqlCeToolbox
 {
     [Guid(GuidList.GuidPageAdvanced)]
+    [ComVisible(true)]
     public class OptionsPageAdvanced : DialogPage
     {
         protected override void OnActivate(CancelEventArgs e)

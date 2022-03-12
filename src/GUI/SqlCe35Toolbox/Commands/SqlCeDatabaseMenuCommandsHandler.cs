@@ -228,7 +228,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
         }
 #if SSMS
 #else
-        public void GenerateDataContextInProject(object sender, ExecutedRoutedEventArgs e)
+        public async void GenerateDataContextInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
@@ -455,7 +455,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                             }
                         }
                     }
-                    EnvDteHelper.AddReference(project, "System.Data.Linq");
+                    await EnvDteHelper.AddReferenceAsync(project, "System.Data.Linq");
                     if (dcDialog.AddConnectionStringBuilder)
                     {
                         var projectPath = Path.GetDirectoryName(project.FullPath);
@@ -703,7 +703,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             }
         }
 
-        public void SyncFxGenerateSyncCodeInProject(object sender, ExecutedRoutedEventArgs e)
+        public async void SyncFxGenerateSyncCodeInProject(object sender, ExecutedRoutedEventArgs e)
         {
             var databaseInfo = ValidateMenuInfo(sender);
             if (databaseInfo == null) return;
@@ -768,12 +768,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         ThreadHelper.JoinableTaskFactory.Run(() =>  project.AddExistingFilesAsync(fileName));
                     }
                     //Adding references - http://blogs.msdn.com/b/murat/archive/2008/07/30/envdte-adding-a-refernce-to-a-project.aspx
-                    EnvDteHelper.AddReference(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper.AddReferenceAsync(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
 
-                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper.AddReferenceAsync(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper.AddReferenceAsync(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper.AddReferenceAsync(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper.AddReferenceAsync(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
                     EnvDteHelper.ShowMessage("Scope: " + model + " code generated.");
                     DataConnectionHelper.LogUsage("DatabaseSyncCodegen");
                 }

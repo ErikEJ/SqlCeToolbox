@@ -246,7 +246,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             EnvDteHelper.LaunchUrl("http://sqlcompact.dk/sqldesigner/");
         }
 
-        public void SyncFxGenerateLocalDatabaseCacheCode(object sender, ExecutedRoutedEventArgs e)
+        public async void SyncFxGenerateLocalDatabaseCacheCode(object sender, ExecutedRoutedEventArgs e)
         {
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
             var menuItem = sender as MenuItem;
@@ -330,12 +330,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
                         ThreadHelper.JoinableTaskFactory.Run(() => project.AddExistingFilesAsync(fileName));
                     }
                     //Adding references - http://blogs.msdn.com/b/murat/archive/2008/07/30/envdte-adding-a-refernce-to-a-project.aspx
-                    EnvDteHelper.AddReference(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper.AddReferenceAsync(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
 
-                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDteHelper.AddReference(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper.AddReferenceAsync(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper .AddReferenceAsync(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper.AddReferenceAsync(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
+                    await EnvDteHelper .AddReferenceAsync(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
                     EnvDteHelper.ShowMessage("Scope: " + model + " code generated.");
                     DataConnectionHelper.LogUsage("DatabasesSyncAddLocalDBCache");
                 }

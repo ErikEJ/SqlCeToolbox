@@ -32,7 +32,6 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return false;
         }
 
-
         public SolutionItem GetProjectDc(Project project, string model, string extension)
         {
             foreach (var item in project.Children)
@@ -57,11 +56,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             return null;
         }
 
-        public static void AddReference(Project project, string reference)
+        public static async System.Threading.Tasks.Task AddReferenceAsync(Project project, string reference)
         {
-            //TODO Fix?
-            //var vsProject = project.Object as VSProject;
-            //vsProject?.References.Add(reference);
+            await project.References.AddAsync(reference);
         }
 
         public HashSet<string> GetSqlCeFilesInActiveSolution()
