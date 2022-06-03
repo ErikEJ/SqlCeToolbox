@@ -1,6 +1,10 @@
 # SQLite & SQL Server Compact Toolbox
 
-[![Twitter Follow](https://img.shields.io/twitter/follow/ErikEJ.svg?style=social&label=Follow)](http://twitter.com/ErikEJ) [![Join the chat at https://gitter.im/SqlCeToolbox](https://badges.gitter.im/SqlCEToolbox/Lobby.svg)](https://gitter.im/SqlCeToolbox/Lobby)  [![AppVeyor](https://ci.appveyor.com/api/projects/status/r3pv323quuaoqw4f?svg=true)](https://ci.appveyor.com/project/ErikEJ/sqlcetoolbox/branch/master) 
+[![Visual Studio Marketplace](http://vsmarketplacebadge.apphb.com/version/ErikEJ.SQLServerCompactSQLiteToolbox.svg)](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox)
+[![Visual Studio Marketplace Rating](http://vsmarketplacebadge.apphb.com/rating-star/ErikEJ.SQLServerCompactSQLiteToolbox.svg)](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/ErikEJ.SQLServerCompactSQLiteToolbox)](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox) 
+
+[![Twitter Follow](https://img.shields.io/twitter/follow/ErikEJ.svg?style=social&label=Follow)](http://twitter.com/ErikEJ) 
 
 [My tools and utilities for embedded database development](http://erikej.github.io/SqlCeToolbox/)
 
