@@ -11,9 +11,8 @@ using System.Text;
 
 namespace ErikEJ.SQLiteScripting
 {
-    //uses sqlite-netFx451-static-binary-bundle-Win32-2013-1.0.113.0.zip
-    // daily builds uses sqlite-netFx451-static-binary-bundle-Win32-2013-1.0.112.0.zip
-    // because encryption was removed from .113!
+        //SSMS extnsion uses sqlite-netFx46-static-binary-bundle-Win32-2013-1.0.116.0.zip still, all others use NuGet package
+
     public class SQLiteRepository : IRepository
     { 
         private SQLiteConnection _cn;
