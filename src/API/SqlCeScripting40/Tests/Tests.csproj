@@ -70,7 +70,7 @@
       <Name>ISqlCeScripting</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SQLiteScripting\SQLiteScripting.csproj">
-      <Project>{5F76E1F7-866C-42A5-8A19-3D732310844E}</Project>
+      <Project>{5f76e1f7-866c-42a5-8a19-3d732310844e}</Project>
       <Name>SQLiteScripting</Name>
     </ProjectReference>
     <ProjectReference Include="..\SqlCeScripting40.csproj">
