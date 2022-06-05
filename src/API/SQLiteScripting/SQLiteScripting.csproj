@@ -50,12 +50,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-<<<<<<< HEAD
-=======
     <Reference Include="System.Data.SQLite, Version=1.0.116.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\lib\net451\System.Data.SQLite.dll</HintPath>
     </Reference>
->>>>>>> master
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
