@@ -25,7 +25,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
     {
         private string _fatalError = string.Empty;
         private static ExplorerToolWindow _parentWindow;
-        private Storyboard _myStoryboard;
         private SelectionContainer _mySelContainer;
         private System.Collections.ArrayList _mySelItems;
         private IVsWindowFrame _frame;
