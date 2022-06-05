@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using ErikEJ.SQLiteScripting;
 using ErikEJ.SqlCeScripting;
 using System.IO;
+using System.Data.SQLite;
 
 public class SQLiteScriptingTests
 {
@@ -51,6 +52,26 @@ public class SQLiteScriptingTests
         Assert.IsTrue(list.Count == 1);
     }
 
+    [Test]
+    public void TestStrict()
+    {
+        var fileName = Guid.NewGuid().ToString() + ".db";
+        SQLiteConnection.CreateFile(fileName);
+
+        var conn = new SQLiteConnection($"Data Source={fileName}");
+
+        conn.Open();
+
+        var cmd = conn.CreateCommand();
+
+        cmd.CommandText = "CREATE TABLE yay ( col1 TEXT, col2 INT ) STRICT;";
+
+        cmd.ExecuteNonQuery();
+
+        cmd.CommandText = "INSERT INTO yay ( col1, col2 ) VALUES ('this works', 'this is the wrong type');";
+
+        Assert.Throws<SQLiteException>(() => cmd.ExecuteNonQuery());
+    }
 
     [Test]
     public void TestGetAllTableNamesViewComments()
