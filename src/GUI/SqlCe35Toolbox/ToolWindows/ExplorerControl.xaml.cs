@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Commands;
 using ErikEJ.SqlCeToolbox.ContextMenues;

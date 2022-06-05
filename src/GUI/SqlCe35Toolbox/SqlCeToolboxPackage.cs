@@ -189,11 +189,11 @@ namespace ErikEJ.SqlCeToolbox
         /// </summary>
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", ToString()));
-
             var mcs = await GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            Trace.WriteLine($"ver: {System.Data.SQLite.SQLiteConnection.SQLiteVersion} eng: {System.Data.SQLite.SQLiteConnection.ProviderVersion}");
 
             if (null != mcs)
             {

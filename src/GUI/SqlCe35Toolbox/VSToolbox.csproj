@@ -103,10 +103,10 @@
     <Reference Include="SqlCeToolBoxSyncFxLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=55f9af0144148fde, processorArchitecture=MSIL">
       <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
     </Reference>
-	<Reference Include="SQLiteScripting">
+    <Reference Include="SQLiteScripting">
       <HintPath>..\lib\SQLiteScripting.dll</HintPath>
     </Reference>
-	<Reference Include="System" />
+    <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -229,11 +229,10 @@
     <Compile Include="Helpers\DataConnectionHelper.cs" />
     <Compile Include="Helpers\DescriptionHelper.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
-    <Content Include="x64\SQLite.Interop.dll">
+    <Content Include="..\lib\sqlite\x64\SQLite.Interop.dll">
+      <Link>x64\SQLite.Interop.dll</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="x86\SQLite.Interop.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\TypeDefinition_521.png" />
     <Resource Include="Resources\data_out_small.png" />
@@ -266,6 +265,11 @@
     <Resource Include="Resources\GroupBy_284.png" />
     <Resource Include="Resources\AddDatabase_16x.png" />
     <Resource Include="Resources\CopyLongTextToClipboard_16x.png" />
+    <Content Include="..\lib\sqlite\x86\SQLite.Interop.dll">
+      <Link>x86\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\LocalDatabaseConnectionStringBuilder.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
