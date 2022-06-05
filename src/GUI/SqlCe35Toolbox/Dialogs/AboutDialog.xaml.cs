@@ -75,7 +75,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 txtStatus.Text += "No\n";
             }
 
-            txtStatus.Text += "\n\nSQL Server Compact 3.5 in GAC - ";
+            txtStatus.Text += "\nSQL Server Compact 3.5 in GAC - ";
             try
             {
                 var version = new SqlCeHelper().IsV35Installed();
@@ -104,7 +104,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 txtStatus.Text += "No\n";
             }
 
-            txtStatus.Text += "\n\nSync Framework 2.1 SqlCe 3.5 provider - ";
+            txtStatus.Text += "Sync Framework 2.1 SqlCe 3.5 provider - ";
             if (DataConnectionHelper.IsSyncFx21Installed())
             {
                 txtStatus.Text += "Yes\n";
@@ -114,7 +114,9 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 txtStatus.Text += "No\n";
             }
 
-            txtStatus.Text += $"\n\nSQLite ADO.NET Provider used: {Helpers.RepositoryHelper.SqliteEngineVersion}\n";
+            txtStatus.Text += $"\nSQLite Engine in use - {DataConnectionHelper.SQLiteVersion()}";
+
+            txtStatus.Text += $"\nSQLite ADO.NET provider loaded - {DataConnectionHelper.SQLiteAdoNetVersion()}\n";
 
             txtStatus.Text += "SQLite EF6 DbProvider in GAC - ";
             try

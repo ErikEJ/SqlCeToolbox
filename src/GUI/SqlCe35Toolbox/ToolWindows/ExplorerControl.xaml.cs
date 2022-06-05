@@ -57,70 +57,16 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 #if SSMS
             AddConnections.Visibility = Visibility.Collapsed;
 #endif
-            // Look for update async
-            var bw = new BackgroundWorker();
-            bw.DoWork += bw_DoWork;
-            bw.RunWorkerCompleted += (s, ea) =>
-            {
-                try
-                {
-                    PrepareTreeView("Data Connections");
-                    Refresh.IsEnabled = true;
-                    if ((bool)ea.Result)
-                    {
-                        Updated.Visibility = Visibility.Visible;
-                        _myStoryboard.Begin(this);
-                    }
-                    else
-                    {
-                        Updated.Visibility = Visibility.Collapsed;
-                    }
-                }
-                finally
-                {
-                    bw.Dispose();
-                }
-            };
-
-            // Animate updated button
-            var myDoubleAnimation = new DoubleAnimation
-            {
-                From = 0.1,
-                To = 1.0,
-                Duration = new Duration(TimeSpan.FromSeconds(5)),
-                AutoReverse = true,
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-
-            _myStoryboard = new Storyboard();
-            _myStoryboard.Children.Add(myDoubleAnimation);
-            Storyboard.SetTargetName(myDoubleAnimation, UpdatedText.Name);
-            Storyboard.SetTargetProperty(myDoubleAnimation, new PropertyPath(OpacityProperty));
-
             PrepareTreeView("Loading...");
-            bw.RunWorkerAsync();
+
+            BuildDatabaseTree(false);
+
+            PrepareTreeView("Data Connections");
+            Refresh.IsEnabled = true;
 
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
             txtConnections.Focus();
             _loaded = true;
-        }
-
-        private void bw_DoWork(object sender, DoWorkEventArgs e)
-        {
-            try
-            {
-                BuildDatabaseTree(false);
-                // ReSharper disable once RedundantAssignment
-                var product = "addin35";
-#if SSMS
-                product = "ssmsaddin";                
-#endif
-                e.Result = DataConnectionHelper.CheckVersion(product);
-            }
-            catch
-            {
-                e.Result = false;
-            }
         }
 
         public void BuildDatabaseTree()
@@ -136,12 +82,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
                 if (package == null) return;
-                databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
-                foreach (var info in DataConnectionHelper.GetOwnDataConnections())
-                {
-                    if (!databaseList.ContainsKey(info.Key))
-                        databaseList.Add(info.Key, info.Value);
-                }
+
                 //Boot Telemetry
                 Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
                 if (Telemetry.Enabled)
@@ -150,6 +91,13 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                         package.TelemetryVersion().ToString(),
                         "d4881a82-2247-42c9-9272-f7bc8aa29315");
+                }
+
+                databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
+                foreach (var info in DataConnectionHelper.GetOwnDataConnections())
+                {
+                    if (!databaseList.ContainsKey(info.Key))
+                        databaseList.Add(info.Key, info.Value);
                 }
 #if SSMS
                 DataConnectionHelper.LogUsage("Platform: SSMS " + package.TelemetryVersion().ToString(1));

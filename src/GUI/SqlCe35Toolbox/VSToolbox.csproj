@@ -103,10 +103,11 @@
     <Reference Include="SqlCeToolBoxSyncFxLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=55f9af0144148fde, processorArchitecture=MSIL">
       <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
     </Reference>
-    <Reference Include="SQLiteScripting">
+	<Reference Include="SQLiteScripting">
       <HintPath>..\lib\SQLiteScripting.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+	<Reference Include="System.Data.SQLite, Version=1.0.116.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL" />
+	<Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />

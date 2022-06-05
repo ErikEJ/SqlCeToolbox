@@ -116,7 +116,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                     Caption = connection.DisplayName,
                                     FromServerExplorer = true,
                                     DatabaseType = dbType,
-                                    ServerVersion = RepositoryHelper.SqliteEngineVersion,
+                                    ServerVersion = SQLiteVersion(),
                                     ConnectionString = sConnectionString
                                 };
                                 info.FileIsMissing = RepositoryHelper.IsMissing(info);
@@ -226,7 +226,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     if (foundType == DatabaseType.SQLCE35)
                         info.ServerVersion = "3.5.1.0";
                     if (foundType == DatabaseType.SQLite)
-                        info.ServerVersion = RepositoryHelper.SqliteEngineVersion;
+                        info.ServerVersion = SQLiteVersion();
                     info.FileIsMissing = RepositoryHelper.IsMissing(info);
                     if (!databaseList.ContainsKey(key) && !info.FileIsMissing)
                     {
@@ -649,7 +649,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 // ignored
             }
-            return string.Format("- more than {0:0,0} downloads", 900000d);
+            return string.Format("- more than {0:0,0} downloads", 1100000d);
         }
 
         public static string GetSqlCeFileFilter()
@@ -698,6 +698,16 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 return false;
             }
             return true;
+        }
+
+        internal static string SQLiteAdoNetVersion()
+        {
+            return SQLiteConnection.ProviderVersion ?? "N/A";
+        }
+
+        internal static string SQLiteVersion()
+        {
+            return SQLiteConnection.SQLiteVersion ?? "N/A";
         }
 
         internal static bool IsSyncFx21Installed()
