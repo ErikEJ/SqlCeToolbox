@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Commands;
 using ErikEJ.SqlCeToolbox.ContextMenues;
@@ -23,6 +25,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
     {
         private string _fatalError = string.Empty;
         private static ExplorerToolWindow _parentWindow;
+        private Storyboard _myStoryboard;
         private SelectionContainer _mySelContainer;
         private System.Collections.ArrayList _mySelItems;
         private IVsWindowFrame _frame;
@@ -54,16 +57,70 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 #if SSMS
             AddConnections.Visibility = Visibility.Collapsed;
 #endif
+            // Look for update async
+            var bw = new BackgroundWorker();
+            bw.DoWork += bw_DoWork;
+            bw.RunWorkerCompleted += (s, ea) =>
+            {
+                try
+                {
+                    PrepareTreeView("Data Connections");
+                    Refresh.IsEnabled = true;
+                    if ((bool)ea.Result)
+                    {
+                        Updated.Visibility = Visibility.Visible;
+                        _myStoryboard.Begin(this);
+                    }
+                    else
+                    {
+                        Updated.Visibility = Visibility.Collapsed;
+                    }
+                }
+                finally
+                {
+                    bw.Dispose();
+                }
+            };
+
+            // Animate updated button
+            var myDoubleAnimation = new DoubleAnimation
+            {
+                From = 0.1,
+                To = 1.0,
+                Duration = new Duration(TimeSpan.FromSeconds(5)),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever
+            };
+
+            _myStoryboard = new Storyboard();
+            _myStoryboard.Children.Add(myDoubleAnimation);
+            Storyboard.SetTargetName(myDoubleAnimation, UpdatedText.Name);
+            Storyboard.SetTargetProperty(myDoubleAnimation, new PropertyPath(OpacityProperty));
+
             PrepareTreeView("Loading...");
-
-            BuildDatabaseTree(false);
-
-            PrepareTreeView("Data Connections");
-            Refresh.IsEnabled = true;
+            bw.RunWorkerAsync();
 
             AddHandler(Keyboard.KeyDownEvent, (KeyEventHandler)HandleKeyDownEvent);
             txtConnections.Focus();
             _loaded = true;
+        }
+
+        private void bw_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                BuildDatabaseTree(false);
+                // ReSharper disable once RedundantAssignment
+                var product = "addin35";
+#if SSMS
+                product = "ssmsaddin";                
+#endif
+                e.Result = DataConnectionHelper.CheckVersion(product);
+            }
+            catch
+            {
+                e.Result = false;
+            }
         }
 
         public void BuildDatabaseTree()
@@ -79,22 +136,32 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
                 if (package == null) return;
-
-                //Boot Telemetry
-                Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
-                if (Telemetry.Enabled)
+                
+                if (fromUiThread)
                 {
-                    Telemetry.Initialize(
-                        Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                        package.TelemetryVersion().ToString(),
-                        "d4881a82-2247-42c9-9272-f7bc8aa29315");
+                    databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
                 }
-
-                databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
                 foreach (var info in DataConnectionHelper.GetOwnDataConnections())
                 {
                     if (!databaseList.ContainsKey(info.Key))
                         databaseList.Add(info.Key, info.Value);
+                }
+
+                try
+                {
+                    //Boot Telemetry
+                    Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
+                    if (Telemetry.Enabled)
+                    {
+                        Telemetry.Initialize(
+                            Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                            package.TelemetryVersion().ToString(),
+                            "d4881a82-2247-42c9-9272-f7bc8aa29315");
+                    }
+                }
+                catch 
+                {
+                    // Ignore
                 }
 #if SSMS
                 DataConnectionHelper.LogUsage("Platform: SSMS " + package.TelemetryVersion().ToString(1));
@@ -226,13 +293,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 databaseTreeViewItem.ContextMenu = new SqlServerDatabaseContextMenu(new DatabaseMenuCommandParameters
                 {
-                    ExplorerControl = this, DatabaseInfo = database.Value
+                    ExplorerControl = this,
+                    DatabaseInfo = database.Value
                 }, _parentWindow);
                 databaseTreeViewItem.Items.Clear();
                 return databaseTreeViewItem;
             }
 
-            if (database.Value.DatabaseType == DatabaseType.SQLCE35 
+            if (database.Value.DatabaseType == DatabaseType.SQLCE35
                 || database.Value.DatabaseType == DatabaseType.SQLCE40)
             {
                 databaseTreeViewItem.ContextMenu = new SqlCeDatabaseContextMenu(new DatabaseMenuCommandParameters
@@ -256,7 +324,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             var tables = TreeViewHelper.CreateTreeViewItemWithImage("Tables", "../Resources/folder_Closed_16xLG.png", true);
             tables.ContextMenu = new TablesContextMenu(new DatabaseMenuCommandParameters
             {
-                DatabaseInfo = database.Value, ExplorerControl = this
+                DatabaseInfo = database.Value,
+                ExplorerControl = this
             }, _parentWindow);
 
             tables.Expanded += (sender, args) => new GetTableItemsHandler(GetTableItems).BeginInvoke(sender, args, database, null, null);
@@ -267,7 +336,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 var subscriptions = TreeViewHelper.CreateTreeViewItemWithImage("Subscriptions", "../Resources/folder_Closed_16xLG.png", true);
                 subscriptions.ContextMenu = new SubscriptionsContextMenu(new MenuCommandParameters
                 {
-                    MenuItemType = MenuType.Function, DatabaseInfo = database.Value
+                    MenuItemType = MenuType.Function,
+                    DatabaseInfo = database.Value
                 }, _parentWindow);
                 subscriptions.Expanded += (sender, args) => new GetSubsItemsHandler(GetSubscriptions).BeginInvoke(sender, args, database, null, null);
                 databaseTreeViewItem.Items.Add(subscriptions);
@@ -327,7 +397,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             foreach (var sub in nameList)
             {
                 var item = TreeViewHelper.CreateTreeViewItemWithImage(sub, "../Resources/arrow_Sync_16xLG.png", false);
-                item.ContextMenu = new SubscriptionsContextMenu(new MenuCommandParameters {DatabaseInfo = database.Value, Name = sub, MenuItemType = MenuType.Manage}, _parentWindow);
+                item.ContextMenu = new SubscriptionsContextMenu(new MenuCommandParameters { DatabaseInfo = database.Value, Name = sub, MenuItemType = MenuType.Manage }, _parentWindow);
                 parentItem.Items.Add(item);
             }
         }
@@ -364,7 +434,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             foreach (var scope in scopeList)
             {
                 var item = TreeViewHelper.CreateTreeViewItemWithImage(scope, "../Resources/Synchronize_16xLG.png", true);
-                item.ContextMenu = new ScopesContextMenu(new MenuCommandParameters {DatabaseInfo = database.Value, Name = scope, MenuItemType = MenuType.Manage}, _parentWindow);
+                item.ContextMenu = new ScopesContextMenu(new MenuCommandParameters { DatabaseInfo = database.Value, Name = scope, MenuItemType = MenuType.Manage }, _parentWindow);
                 parentItem.Items.Add(item);
                 var tables = SyncFxHelper.GetSqlCeScopeDefinition(database.Value.ConnectionString, scope).Select(s => s.TableName).Distinct();
                 item.Expanded += (s, e) => GetScopeTables(s, e, tables, database);
@@ -447,7 +517,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             foreach (var view in viewList)
             {
                 var item = TreeViewHelper.CreateTreeViewItemWithImage(view.ViewName, "../Resources/table_16xLG.png", false);
-                item.ContextMenu = new ViewContextMenu(new MenuCommandParameters {DatabaseInfo = database.Value, Name = view.ViewName, MenuItemType = MenuType.Manage, Description = view.Definition}, _parentWindow);
+                item.ContextMenu = new ViewContextMenu(new MenuCommandParameters { DatabaseInfo = database.Value, Name = view.ViewName, MenuItemType = MenuType.Manage, Description = view.Definition }, _parentWindow);
                 parentItem.Items.Add(item);
             }
         }
@@ -461,7 +531,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             Exception ex = null;
 
             // Prevent loading again and again
-            var doShow = args != null && viewItem != null && (viewItem.Items.Count > 0 && viewItem.Items[0].ToString() == "Loading...") 
+            var doShow = args != null && viewItem != null && (viewItem.Items.Count > 0 && viewItem.Items[0].ToString() == "Loading...")
                 || args == null && viewItem != null;
             if (doShow)
             {
@@ -565,9 +635,9 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                             continue;
                         }
                         var item = TreeViewHelper.CreateTreeViewItemWithImage(table, "../Resources/table_16xLG.png", true);
-                        item.ContextMenu = new TableContextMenu(new MenuCommandParameters {DatabaseInfo = database.Value, Name = table, MenuItemType = MenuType.Table}, _parentWindow);
+                        item.ContextMenu = new TableContextMenu(new MenuCommandParameters { DatabaseInfo = database.Value, Name = table, MenuItemType = MenuType.Table }, _parentWindow);
                         item.ToolTip = table;
-                        item.Tag = new TableInfo {Name = table, RowCount = repository.GetRowCount(table)};
+                        item.Tag = new TableInfo { Name = table, RowCount = repository.GetRowCount(table) };
                         if (DescriptionCache != null)
                         {
                             var desc = DescriptionCache.Where(dc => dc.Parent == null && dc.Object == table).Select(dc => dc.Description).SingleOrDefault();
@@ -630,7 +700,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     display = column.ColumnName + " (" + display + nullable;
                     var i = TreeViewHelper.CreateTreeViewItemWithImage(display, image, false);
                     if (database.Value.DatabaseType != DatabaseType.SQLite)
-                        i.ContextMenu = new ColumnContextMenu(new MenuCommandParameters {Description = tableName, DatabaseInfo = database.Value, Name = column.ColumnName, MenuItemType = MenuType.Table}, _parentWindow);
+                        i.ContextMenu = new ColumnContextMenu(new MenuCommandParameters { Description = tableName, DatabaseInfo = database.Value, Name = column.ColumnName, MenuItemType = MenuType.Table }, _parentWindow);
                     i.ToolTip = column.ColumnName;
                     if (DescriptionCache != null)
                     {
@@ -654,7 +724,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         var display = primaryKey.KeyName + " (Primary Key)";
                         var indexItem = TreeViewHelper.CreateTreeViewItemWithImage(display, "../Resources/Index_8287_16x.png", false);
                         if (database.Value.DatabaseType != DatabaseType.SQLite)
-                            indexItem.ContextMenu = new IndexContextMenu(new MenuCommandParameters {Description = primaryKey.KeyName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Table}, _parentWindow);
+                            indexItem.ContextMenu = new IndexContextMenu(new MenuCommandParameters { Description = primaryKey.KeyName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Table }, _parentWindow);
                         indexItem.ToolTip = primaryKey.KeyName;
                         indexesItem.Items.Add(indexItem);
                         oldName = primaryKey.KeyName;
@@ -676,7 +746,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         display = index.IndexName + " (Non-Unique)";
                     }
                     var indexItem = TreeViewHelper.CreateTreeViewItemWithImage(display, "../Resources/Index_8287_16x.png", false);
-                    indexItem.ContextMenu = new IndexContextMenu(new MenuCommandParameters {Description = index.IndexName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Table}, _parentWindow);
+                    indexItem.ContextMenu = new IndexContextMenu(new MenuCommandParameters { Description = index.IndexName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Table }, _parentWindow);
                     indexItem.ToolTip = index.IndexName;
                     indexesItem.Items.Add(indexItem);
                     oldName = index.IndexName;
@@ -692,7 +762,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var display = primaryKey.KeyName;
                     var keyItem = TreeViewHelper.CreateTreeViewItemWithImage(display, "../Resources/KeyDown_8461.png", false);
                     if (database.Value.DatabaseType != DatabaseType.SQLite)
-                        keyItem.ContextMenu = new KeyContextMenu(new MenuCommandParameters {Description = primaryKey.KeyName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Pk}, _parentWindow);
+                        keyItem.ContextMenu = new KeyContextMenu(new MenuCommandParameters { Description = primaryKey.KeyName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Pk }, _parentWindow);
                     keyItem.ToolTip = primaryKey.KeyName;
                     keysItem.Items.Add(keyItem);
                     oldName = primaryKey.KeyName;
@@ -703,7 +773,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var display = fk.ConstraintName;
                     var keyItem = TreeViewHelper.CreateTreeViewItemWithImage(display, "../Resources/KeyDownFk_8461.png", false);
                     if (database.Value.DatabaseType != DatabaseType.SQLite)
-                        keyItem.ContextMenu = new KeyContextMenu(new MenuCommandParameters {Description = fk.ConstraintName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Fk}, _parentWindow);
+                        keyItem.ContextMenu = new KeyContextMenu(new MenuCommandParameters { Description = fk.ConstraintName, DatabaseInfo = database.Value, Name = viewItem.MetaData, MenuItemType = MenuType.Fk }, _parentWindow);
                     keyItem.ToolTip = fk.ConstraintName;
                     keysItem.Items.Add(keyItem);
                 }
@@ -712,7 +782,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
                 if (database.Value.DatabaseType == DatabaseType.SQLite)
                 {
-                    var triggersItem = TreeViewHelper.CreateTreeViewItemWithImage("Triggers", 
+                    var triggersItem = TreeViewHelper.CreateTreeViewItemWithImage("Triggers",
                         "../Resources/folder_Closed_16xLG.png", true);
                     triggersItem.Items.Clear();
 
@@ -777,7 +847,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         private void TreeViewItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ((TreeViewItem) sender).IsSelected = true;
+            ((TreeViewItem)sender).IsSelected = true;
             e.Handled = true;
         }
 
@@ -809,11 +879,11 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
         {
             var package = _parentWindow.Package as SqlCeToolboxPackage;
             if (package == null) return;
-            package.ShowOptionPage(typeof (OptionsPageGeneral));
+            package.ShowOptionPage(typeof(OptionsPageGeneral));
             DataConnectionHelper.LogUsage("ToolbarOptions");
         }
 
-#region Properties Windows
+        #region Properties Windows
         private void TreeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             NewQuery.IsEnabled = false;
@@ -823,7 +893,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             if (dbInfo != null && dbInfo.DatabaseType != DatabaseType.SQLServer)
             {
                 NewQuery.IsEnabled = true;
-                NewQuery.Tag = dbInfo;                
+                NewQuery.Tag = dbInfo;
                 if (image != null) image.Opacity = 1;
             }
             if (Properties.Settings.Default.DisplayObjectProperties)
@@ -939,7 +1009,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             _mySelContainer.SelectedObjects = _mySelItems;
 
             //Must use the GetService of the Window to get the ITrackSelection reference
-            var track = _parentWindow.GetServiceHelper(typeof (STrackSelection)) as ITrackSelection;
+            var track = _parentWindow.GetServiceHelper(typeof(STrackSelection)) as ITrackSelection;
             track?.OnSelectChange(_mySelContainer);
         }
 
@@ -949,14 +1019,14 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             var package = _parentWindow.Package as SqlCeToolboxPackage;
             if (package == null) return;
             if (_frame != null) return;
-            var shell = package.GetServiceHelper(typeof (SVsUIShell)) as IVsUIShell;
+            var shell = package.GetServiceHelper(typeof(SVsUIShell)) as IVsUIShell;
             if (shell == null) return;
             var guidPropertyBrowser = new Guid(ToolWindowGuids.PropertyBrowser);
-            shell.FindToolWindow((uint) __VSFINDTOOLWIN.FTW_fForceCreate, ref guidPropertyBrowser, out _frame);
+            shell.FindToolWindow((uint)__VSFINDTOOLWIN.FTW_fForceCreate, ref guidPropertyBrowser, out _frame);
             _frame.Show();
         }
 
-#endregion
+        #endregion
 
         private void HandleKeyDownEvent(object sender, KeyEventArgs e)
         {
@@ -971,7 +1041,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     {
                         var helper = Helpers.RepositoryHelper.CreateEngineHelper(databaseInfo.DatabaseType);
                         Clipboard.Clear();
-                        Clipboard.SetData(DataFormats.FileDrop, new[] {helper.PathFromConnectionString(databaseInfo.ConnectionString)});
+                        Clipboard.SetData(DataFormats.FileDrop, new[] { helper.PathFromConnectionString(databaseInfo.ConnectionString) });
                     }
                 }
             }
@@ -1027,7 +1097,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 };
                 dbCommandHandler.SpawnSqlEditorWindow(theSender, null);
             }
-            
+
         }
     }
 }
