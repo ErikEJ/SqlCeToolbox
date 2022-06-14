@@ -136,6 +136,22 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 var package = _parentWindow.Package as SqlCeToolboxPackage;
                 if (package == null) return;
+
+                try
+                {
+                    //Boot Telemetry
+                    if (Properties.Settings.Default.ParticipateInTelemetry)
+                    {
+                        Telemetry.Initialize(
+                            Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                            package.TelemetryVersion().ToString(),
+                            "d4881a82-2247-42c9-9272-f7bc8aa29315");
+                    }
+                }
+                catch
+                {
+                    // Ignore
+                }
                 
                 if (fromUiThread)
                 {
@@ -147,22 +163,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                         databaseList.Add(info.Key, info.Value);
                 }
 
-                try
-                {
-                    //Boot Telemetry
-                    Telemetry.Enabled = Properties.Settings.Default.ParticipateInTelemetry;
-                    if (Telemetry.Enabled)
-                    {
-                        Telemetry.Initialize(
-                            Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                            package.TelemetryVersion().ToString(),
-                            "d4881a82-2247-42c9-9272-f7bc8aa29315");
-                    }
-                }
-                catch 
-                {
-                    // Ignore
-                }
 #if SSMS
                 DataConnectionHelper.LogUsage("Platform: SSMS " + package.TelemetryVersion().ToString(1));
 #else

@@ -33,7 +33,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             Enabled = true;
         }
 
-        public static bool Enabled { get; set; }
+        private static bool Enabled { get; set; }
 
         /// <summary>Tracks an event to ApplicationInsights.</summary>
         public static void TrackEvent(string key)
