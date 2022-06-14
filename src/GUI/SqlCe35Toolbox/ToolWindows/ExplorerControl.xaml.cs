@@ -103,12 +103,12 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                 {
                     databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
                 }
+
                 foreach (var info in DataConnectionHelper.GetOwnDataConnections())
                 {
                     if (!databaseList.ContainsKey(info.Key))
                         databaseList.Add(info.Key, info.Value);
                 }
-
 #if SSMS
                 DataConnectionHelper.LogUsage("Platform: SSMS " + package.TelemetryVersion().ToString(1));
 #else
