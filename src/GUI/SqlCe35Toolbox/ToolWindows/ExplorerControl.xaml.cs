@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Commands;
 using ErikEJ.SqlCeToolbox.ContextMenues;
@@ -25,7 +23,6 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
     {
         private string _fatalError = string.Empty;
         private static ExplorerToolWindow _parentWindow;
-        private Storyboard _myStoryboard;
         private SelectionContainer _mySelContainer;
         private System.Collections.ArrayList _mySelItems;
         private IVsWindowFrame _frame;
@@ -99,10 +96,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     // Ignore
                 }
                 
-                if (fromUiThread)
-                {
-                    databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
-                }
+                databaseList = DataConnectionHelper.GetDataConnections(package, true, false);
 
                 foreach (var info in DataConnectionHelper.GetOwnDataConnections())
                 {
