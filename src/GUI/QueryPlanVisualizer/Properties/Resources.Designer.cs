@@ -19,7 +19,7 @@ namespace ExecutionPlanVisualizer.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -62,7 +62,7 @@ namespace ExecutionPlanVisualizer.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to /*! jQuery v1.12.1 | (c) jQuery Foundation | jquery.org/license */
-        ///!function(a,b){&quot;object&quot;==typeof module&amp;&amp;&quot;object&quot;==typeof module.exports?module.exports=a.document?b(a,!0):function(a){if(!a.document)throw new Error(&quot;jQuery requires a window with a document&quot;);return b(a)}:b(a)}(&quot;undefined&quot;!=typeof window?window:this,function(a,b){var c=[],d=a.document,e=c.slice,f=c.concat,g=c.push,h=c.indexOf,i={},j=i.toString,k=i.hasOwnProperty,l={},m=&quot;1.12.1&quot;,n=function(a,b){return new n.fn.init(a,b)},o=/^[\s\uFEFF\xA0]+| [rest of string was truncated]&quot;;.
+        ///!function(a,b){&quot;object&quot;==typeof module&amp;&amp;&quot;object&quot;==typeof module.exports?module.exports=a.document?b(a,!0):function(a){if(!a.document)throw new Error(&quot;jQuery requires a window with a document&quot;);return b(a)}:b(a)}(&quot;undefined&quot;!=typeof window?window:this,function(a,b){var c=[],d=a.document,e=c.slice,f=c.concat,g=c.push,h=c.indexOf,i={},j=i.toString,k=i.hasOwnProperty,l={},m=&quot;1.12.1&quot;,n=function(a,b){return new n.fn.init(a,b)},o=/^[\s\uFEFF\xA0]+ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string jquery {
             get {
@@ -86,7 +86,7 @@ namespace ExecutionPlanVisualizer.Properties {
         ///            // Make sure the object passed is jQuery wrapped
         ///            root = $(root);
         ///        }
-        ///        internalDraw [rest of string was truncated]&quot;;.
+        ///      [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string qpJavascript {
             get {
@@ -127,10 +127,7 @@ namespace ExecutionPlanVisualizer.Properties {
         ///}
         ///.qp-tt div, .qp-tt table
         ///{
-        ///	font-family: Sans-Serif;
-        ///	text-align: left;
-        ///}
-        ///.qp [rest of string was truncated]&quot;;.
+        ///	font-family: Sans [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string qpStyleSheet {
             get {
@@ -148,7 +145,7 @@ namespace ExecutionPlanVisualizer.Properties {
         ///
         ///  &lt;!-- Disable built-in recursive processing templates --&gt;
         ///  &lt;xsl:template match=&quot;*|/|text()|@*&quot; mode=&quot;NodeLabel&quot; /&gt;
-        ///  &lt;xsl:template match=&quot;*|/|text()|@*&quot; mode=&quot;ToolTi [rest of string was truncated]&quot;;.
+        ///  &lt;xsl:template match=&quot;*|/|text()|@*&quot; mod [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string qpXslt {
             get {
@@ -164,7 +161,7 @@ namespace ExecutionPlanVisualizer.Properties {
         ///      The following schema for Microsoft SQL Server describes output from the
         ///      showplan functionality in XML format.
         ///
-        ///      M [rest of string was truncated]&quot;;.
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string showplanxml {
             get {
@@ -189,8 +186,7 @@ namespace ExecutionPlanVisualizer.Properties {
         ///                QP.drawLines($(&quot;.qp-root&quot;));
         ///            }});
         ///    &lt;/script&gt;
-        ///&lt;/body&gt;
-        ///&lt;/html&gt;.
+        ///&lt;/ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string template {
             get {

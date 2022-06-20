@@ -36,7 +36,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         {
             foreach (var item in project.Children)
             {
-                if (item.Name.ToLowerInvariant() == model.ToLowerInvariant() + extension)
+                if (item.Name?.ToLowerInvariant() == model.ToLowerInvariant() + extension)
                 {
                     return item;
                 }
