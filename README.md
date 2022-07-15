@@ -1,8 +1,8 @@
 # SQLite & SQL Server Compact Toolbox
 
 [![Visual Studio Marketplace](http://vsmarketplacebadge.apphb.com/version/ErikEJ.SQLServerCompactSQLiteToolbox.svg)](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox)
-[![Visual Studio Marketplace Rating](http://vsmarketplacebadge.apphb.com/rating-star/ErikEJ.SQLServerCompactSQLiteToolbox.svg)](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox)
-[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/ErikEJ.SQLServerCompactSQLiteToolbox)](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox) 
+[![Visual Studio Marketplace Rating](http://vsmarketplacebadge.apphb.com/rating-short/ErikEJ.SQLServerCompactSQLiteToolbox.svg)](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox&ssr=false#review-details)
+![Visual Studio Marketplace Downloads](https://vsmarketplacebadge.apphb.com/installs-short/ErikEJ.SQLServerCompactSQLiteToolbox.svg) 
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/ErikEJ.svg?style=social&label=Follow)](http://twitter.com/ErikEJ) 
 
