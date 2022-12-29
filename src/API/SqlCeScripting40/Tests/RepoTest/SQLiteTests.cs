@@ -9,7 +9,7 @@ using System.Data.SQLite;
 
 public class SQLiteScriptingTests
 {
-    private static string dbPath = Directory.GetCurrentDirectory();
+    private static string dbPath = TestContext.CurrentContext.TestDirectory;
 
     private string chinookConnectionString = $"Data Source={Path.Combine(dbPath, "chinook.db")}";
 

@@ -179,7 +179,7 @@ namespace ErikEJ.SQLiteScripting
                 }
                 col.ColumnName = dt.Rows[i]["COLUMN_NAME"].ToString();
                 col.DataType = dt.Rows[i]["DATA_TYPE"].ToString();
-                if ((bool)dt.Rows[i]["PRIMARY_KEY"] && col.DataType.ToLowerInvariant() == "integer")
+                if ((bool)dt.Rows[i]["AUTOINCREMENT"])
                 {
                     col.AutoIncrementBy = 1;
                     col.AutoIncrementSeed = 1;
@@ -207,10 +207,10 @@ namespace ErikEJ.SQLiteScripting
                 if (dt.Rows[i]["NUMERIC_PRECISION"].GetType() != typeof(DBNull))
                 {
                     col.NumericPrecision = (int)dt.Rows[i]["NUMERIC_PRECISION"];
-                    if (dt.Rows[i]["NUMERIC_SCALE"].GetType() != typeof(DBNull))
-                    {
-                        col.NumericScale = (int)dt.Rows[i]["NUMERIC_SCALE"];
-                    }
+                }
+                if (dt.Rows[i]["NUMERIC_SCALE"].GetType() != typeof(DBNull))
+                {
+                    col.NumericScale = (int)dt.Rows[i]["NUMERIC_SCALE"];
                 }
                 col.Ordinal = (int)dt.Rows[i]["ORDINAL_POSITION"];
                 if (schemaView == "Columns")
