@@ -192,9 +192,9 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             VS.MessageBox.ShowError(errorText);
         }
 
-        public static bool ShowMessage(string messageText)
+        public static void ShowMessage(string messageText)
         {
-            return VS.MessageBox.ShowConfirm(messageText);
+            VS.MessageBox.Show(messageText, buttons: OLEMSGBUTTON.OLEMSGBUTTON_OK);
         }
 
         // <summary>
