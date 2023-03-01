@@ -477,7 +477,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
                     }
                     else // possibly multiple files - tmp2BB9.tmp_0001.sqltb
                     {
-                        var count = Directory.GetFiles(Path.GetDirectoryName(scriptRoot), Path.GetFileName(scriptRoot) + "*", SearchOption.AllDirectories).Count();
+                        var count = Directory.GetFiles(Path.GetDirectoryName(scriptRoot), Path.GetFileName(scriptRoot) + "*", SearchOption.TopDirectoryOnly).Count();
                         for (var i = 0; i < count + 1; i++)
                         {
                             var testFile = string.Format("{0}_{1}{2}", scriptRoot, i.ToString("D4"), ".sqltb");
