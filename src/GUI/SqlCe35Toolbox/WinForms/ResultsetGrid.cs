@@ -80,7 +80,6 @@ namespace ErikEJ.SqlCeToolbox.WinForms
                 if (ReadOnly)
                 {
                     dataGridView1.DefaultCellStyle.ForeColor = SystemColors.GrayText;
-                    EnvDteHelper.ShowMessage("No primary keys on table, data is read-only");
                 }
             }
             catch (Exception ex)
