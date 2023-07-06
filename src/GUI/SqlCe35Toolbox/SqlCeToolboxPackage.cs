@@ -193,7 +193,7 @@ namespace ErikEJ.SqlCeToolbox
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            Trace.WriteLine($"ver: {System.Data.SQLite.SQLiteConnection.SQLiteVersion} eng: {System.Data.SQLite.SQLiteConnection.ProviderVersion}");
+            // Trace.WriteLine($"ver: {System.Data.SQLite.SQLiteConnection.SQLiteVersion} eng: {System.Data.SQLite.SQLiteConnection.ProviderVersion}");
 
             if (null != mcs)
             {
