@@ -36,7 +36,7 @@ Or just install from Tools, Extensions and Updates in Visual Studio! ![](https:/
 
 **Daily build**
 
-You can download the daily build from [VSIX Gallery](http://vsixgallery.com/extensions/41521019-e4c7-480c-8ea8-fc4a2c6f50aa/extension.vsix). 
+You can download the daily build from [VSIX Gallery](https://www.vsixgallery.com/extension/41521019-e4c7-480c-8ea8-fc4a2c6f50aa). 
 
 You can also automatically get the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
 
