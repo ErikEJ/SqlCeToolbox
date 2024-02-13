@@ -1604,10 +1604,10 @@ namespace ErikEJ.SqlCeScripting
 
             if (column.IsNullable == YesNoOption.YES)
             {
-                _sbScript.Append(string.Join(" ", constraint.Columns.Select(x => $"NEW.{x} IS NOT NULL AND").ToArray()));
+                _sbScript.Append(string.Join("", constraint.Columns.Select(x => $"NEW.{x} IS NOT NULL AND ").ToArray()));
             }
 
-            _sbScript.Append($"EXISTS (SELECT * FROM {foreignTableName} WHERE ");
+            _sbScript.Append($"NOT EXISTS (SELECT * FROM {foreignTableName} WHERE ");
 
             for (int i = 0; i < constraint.Columns.Count; i++)
             {
