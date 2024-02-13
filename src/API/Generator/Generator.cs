@@ -1607,7 +1607,7 @@ namespace ErikEJ.SqlCeScripting
                 _sbScript.Append(string.Join(" ", constraint.Columns.Select(x => $"NEW.{x} IS NOT NULL AND").ToArray()));
             }
 
-            _sbScript.Append($"(SELECT {string.Join(", ", constraint.UniqueColumns.ToArray())} FROM {foreignTableName} WHERE ");
+            _sbScript.Append($"EXISTS (SELECT * FROM {foreignTableName} WHERE ");
 
             for (int i = 0; i < constraint.Columns.Count; i++)
             {
@@ -1627,7 +1627,7 @@ namespace ErikEJ.SqlCeScripting
                 }
             }
 
-            _sbScript.Append(") IS NULL;");
+            _sbScript.Append(");");
             _sbScript.AppendLine(" END;");
         }
 
