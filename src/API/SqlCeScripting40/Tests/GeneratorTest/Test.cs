@@ -4,7 +4,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Data.SQLite;
+using System.Data.SqlServerCe;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -113,6 +116,53 @@ namespace Tests.GeneratorTest
                 var generator = new Generator4(sourceRepository, path, false, false, true);
                 generator.ExcludeTables(new List<string>());
                 generator.ScriptDatabaseToFile(Scope.SchemaDataSQLite);
+            }
+        }
+
+        [Test]
+        public void TestCompactExportToSqliteCompositeForeignKey()
+        {
+            // Script SQL CE DB with composite foreign key
+            var sourceConnectionString = new SqlCeConnectionStringBuilder
+            {
+                DataSource = Path.Combine(dbPath, "composite_foreign_key.sdf"),
+                MaxDatabaseSize = 4091
+            }.ToString();
+            var path = @"C:\temp\composite_foreign_key.sql";
+
+            IList<string> generatedFiles;
+            using (var sourceRepository = new DB4Repository(sourceConnectionString))
+            {
+                var generator = new Generator4(sourceRepository, path, false, false, true);
+                generator.ScriptDatabaseToFile(Scope.SchemaDataSQLite);
+                generatedFiles = generator.GeneratedFiles.ToList();
+            }
+
+            // Generate SQLite DB and test data insertion
+            var targetConnectionString = new SQLiteConnectionStringBuilder
+            {
+                DataSource = ":memory:",
+                Version = 3
+            }.ToString();
+            using (var targetRepository = new SQLiteRepository(targetConnectionString))
+            {
+                foreach (var generatedFile in generatedFiles)
+                {
+                    targetRepository.ExecuteSqlFile(generatedFile);
+                }
+
+                // The owner table has only one entry with ID (0, 0)
+                targetRepository.ExecuteSql(
+                    "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (0, 0, 0); GO;");
+                Assert.Throws<SQLiteException>(() =>
+                    targetRepository.ExecuteSql(
+                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (1, 0, 1); GO;"));
+                Assert.Throws<SQLiteException>(() =>
+                    targetRepository.ExecuteSql(
+                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (2, 1, 0); GO;"));
+                Assert.Throws<SQLiteException>(() =>
+                    targetRepository.ExecuteSql(
+                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (3, 1, 1); GO;"));
             }
         }
 
