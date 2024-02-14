@@ -156,13 +156,13 @@ namespace Tests.GeneratorTest
                     "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (0, 0, 0); GO;");
                 Assert.Throws<SQLiteException>(() =>
                     targetRepository.ExecuteSql(
-                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (0, 0, 1); GO;"));
+                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (1, 0, 1); GO;"));
                 Assert.Throws<SQLiteException>(() =>
                     targetRepository.ExecuteSql(
-                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (0, 1, 0); GO;"));
+                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (2, 1, 0); GO;"));
                 Assert.Throws<SQLiteException>(() =>
                     targetRepository.ExecuteSql(
-                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (0, 1, 1); GO;"));
+                        "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (3, 1, 1); GO;"));
             }
         }
 
