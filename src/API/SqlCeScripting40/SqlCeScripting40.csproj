@@ -111,6 +111,7 @@
     <Compile Include="..\Repositories\ServerDBRepository.cs">
       <Link>Repositories\ServerDBRepository.cs</Link>
     </Compile>
+    <Compile Include="Generator\SqlConnectionStringBuilderHelper.cs" />
     <Compile Include="Generator\SqlServerHelper.cs" />
   </ItemGroup>
   <ItemGroup>

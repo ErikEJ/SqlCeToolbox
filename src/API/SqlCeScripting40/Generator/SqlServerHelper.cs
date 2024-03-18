@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ErikEJ.SqlCeScripting.Generator;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
@@ -63,34 +64,39 @@ namespace ErikEJ.SqlCeScripting
 
         public string PathFromConnectionString(string connectionString)
         {
-            var builder = new SqlConnectionStringBuilder(connectionString);
-            string server;
+            var builder = new SqlConnectionStringBuilderHelper().GetBuilder(connectionString);
+
             var database = builder.InitialCatalog;
-            if (string.IsNullOrEmpty(database))
+            if (string.IsNullOrEmpty(database) && !string.IsNullOrEmpty(builder.AttachDBFilename))
             {
-                if (!string.IsNullOrEmpty(builder.AttachDBFilename))
-                {
-                    database = Path.GetFileName(builder.AttachDBFilename);
-                }
+                return Path.GetFileName(builder.AttachDBFilename);
             }
-            if (builder.DataSource.ToLowerInvariant().StartsWith("(localdb)"))
+
+            if (builder.DataSource.StartsWith("(localdb)", StringComparison.OrdinalIgnoreCase))
             {
-                server = builder.DataSource;
+                return builder.DataSource + "." + database;
             }
             else
             {
-                using (var cmd = new SqlCommand(connectionString))
+                using (var cmd = new SqlCommand())
                 {
-                    using (var conn = new SqlConnection(connectionString))
+                    using (var conn = new SqlConnection(builder.ConnectionString))
                     {
                         cmd.Connection = conn;
-                        cmd.CommandText = "SELECT SERVERPROPERTY('ServerName')";
+                        cmd.CommandText = "SELECT ISNULL(LOWER(CAST(SERVERPROPERTY('ServerName') AS NVARCHAR(128))), '') + '.' + ISNULL(DB_NAME(), '') + '.' + ISNULL(SCHEMA_NAME(), '')";
                         conn.Open();
-                        server = (string)cmd.ExecuteScalar();
+
+                        object res = cmd.ExecuteScalar();
+
+                        if (res != null && res != DBNull.Value)
+                        {
+                            return (string)res;
+                        }
+
+                        return builder.DataSource + "." + database;
                     }
                 }
             }
-            return server + "." + database;
         }
 
         public void UpgradeTo40(string connectionString)
