@@ -124,7 +124,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                                     databaseList.Add(sConnectionString, info);
                             }
                         }
-                        if (includeServerConnections && objProviderGuid == new Guid(Resources.SqlServerDotNetProvider))
+                        if (includeServerConnections && objProviderGuid == new Guid(Resources.SqlServerDotNetProvider)
+                            || objProviderGuid == new Guid(Resources.MicrosoftSqlServerDotNetProvider))
                         {
                             var sConnectionString = DataProtection.DecryptString(connection.EncryptedConnectionString);
                             var info = new DatabaseInfo()

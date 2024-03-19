@@ -16,7 +16,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                 case DatabaseType.SQLCE40:
                     return new DB4Repository(databaseInfo.ConnectionString);
                 case DatabaseType.SQLServer:
-                    return new ServerDBRepository(databaseInfo.ConnectionString, Properties.Settings.Default.KeepSchemaNames);
+                    return new ServerDBRepository(SqlConnectionStringBuilderHelper.GetBuilder(databaseInfo.ConnectionString).ConnectionString, Properties.Settings.Default.KeepSchemaNames);
                 case DatabaseType.SQLite:
                     return new SQLiteRepository(databaseInfo.ConnectionString);
                 default:
@@ -103,6 +103,22 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             catch
             {
                 return false;
+            }
+        }
+
+        internal static class SqlConnectionStringBuilderHelper
+        {
+            public static SqlConnectionStringBuilder GetBuilder(string connectionString)
+            {
+                connectionString = ReplaceMdsKeywords(connectionString);
+                return new SqlConnectionStringBuilder(connectionString);
+            }
+
+            private static string ReplaceMdsKeywords(string connectionString)
+            {
+                connectionString = connectionString.Replace("Multiple Active Result Sets=", "MultipleActiveResultSets=");
+                connectionString = connectionString.Replace("Trust Server Certificate=", "TrustServerCertificate=");
+                return connectionString;
             }
         }
 
