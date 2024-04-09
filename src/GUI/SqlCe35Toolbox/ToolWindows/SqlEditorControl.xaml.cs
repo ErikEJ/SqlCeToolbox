@@ -497,7 +497,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
-        private async void ExecuteSqlScriptInEditor()
+        private void ExecuteSqlScriptInEditor()
         {
             try
             {
@@ -516,9 +516,10 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
                     var sw = new Stopwatch();
                     sw.Start();
 
-                    var dataset = await Task.Run(()
-                        // ReSharper disable once AccessToDisposedClosure
-                        => repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors));
+                    var dataset = repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors);
+                        //await Task.Run(()
+                        //// ReSharper disable once AccessToDisposedClosure
+                        //=> repository.ExecuteSql(sql, out schemaChanged, _ignoreDdlErrors));
                     sw.Stop();
                     FormatTime(sw);
                     if (dataset == null) return;
