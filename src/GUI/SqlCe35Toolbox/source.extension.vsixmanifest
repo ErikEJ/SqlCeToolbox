@@ -13,7 +13,6 @@
         <Tags>sql sqlite sqlce entityframework ef linq codegeneration database ssdt ssms </Tags>
     </Metadata>
     <Installation>
-        <InstallationTarget Version="[15.0,17.0)" Id="Microsoft.VisualStudio.Community" />
 		<InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
 			<ProductArchitecture>amd64</ProductArchitecture>
 		</InstallationTarget>
@@ -25,8 +24,8 @@
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     </Assets>
     <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
-        <Prerequisite Id="Microsoft.VisualStudio.Component.VisualStudioData" Version="[15.0,)" DisplayName="Data sources and service references" />
-        <Prerequisite Id="Microsoft.VisualStudio.Component.ManagedDesktop.Prerequisites" Version="[15.0,)" DisplayName=".NET desktop development tools" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.VisualStudioData" Version="[17.0,)" DisplayName="Data sources and service references" />
+        <Prerequisite Id="Microsoft.VisualStudio.Component.ManagedDesktop.Prerequisites" Version="[17.0,)" DisplayName=".NET desktop development tools" />
     </Prerequisites>
 </PackageManifest>

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Community.VisualStudio.Toolkit;
@@ -81,10 +79,7 @@ namespace ErikEJ.SqlCeToolbox
 
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            // Get the instance number 0 of this tool window. This window is single instance so this instance
-            // is actually the only one.
-            // The last flag is set to true so that if the tool window does not exists it will be created.
-            var window = FindToolWindow(typeof(ExplorerToolWindow), 0, true);
+            var window = (ToolWindowPane)CreateToolWindow(typeof(ExplorerToolWindow), 0);
             if (window?.Frame == null)
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
@@ -199,16 +194,16 @@ namespace ErikEJ.SqlCeToolbox
             {
                 // Create the command for the menu item.
                 var menuCommandId = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyCommand);
-                var menuItem = new MenuCommand(ShowToolWindow, menuCommandId);
+                var menuItem = new OleMenuCommand(ShowToolWindow, menuCommandId);
                 mcs.AddCommand(menuItem);
                 // Create the command for the tool window
                 var toolwndCommandId = new CommandID(GuidList.guidSqlCeToolboxCmdSet, (int)PkgCmdIDList.cmdidMyTool);
-                var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
+                var menuToolWin = new OleMenuCommand(ShowToolWindow, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
 
                 // Server Explorer button 
                 var seCommandId = new CommandID(GuidList.guidSEPlusCmdSet, (int)PkgCmdIDList.cmdidSEHello);
-                var seItem = new MenuCommand(ShowToolWindow, seCommandId);
+                var seItem = new OleMenuCommand(ShowToolWindow, seCommandId);
                 mcs.AddCommand(seItem);
             }
             base.Initialize();
