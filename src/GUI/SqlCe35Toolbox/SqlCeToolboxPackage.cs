@@ -79,11 +79,7 @@ namespace ErikEJ.SqlCeToolbox
 
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            // Get the instance number 0 of this tool window. This window is single instance so this instance
-            // is actually the only one.
-            // The last flag is set to true so that if the tool window does not exists it will be created.
-            var window = FindToolWindow(typeof(ExplorerToolWindow), 0, true);
-
+            var window = (ToolWindowPane)CreateToolWindow(typeof(ExplorerToolWindow), 0);
             if (window?.Frame == null)
             {
                 throw new NotSupportedException(Resources.CanNotCreateWindow);
