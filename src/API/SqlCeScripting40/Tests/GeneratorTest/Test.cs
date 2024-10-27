@@ -807,7 +807,7 @@ GO";
                             null,
                             false,
                             false,
-                            true);
+                            sqlite: true);
                         generator.GenerateTableScript(tableName);
                         sql = generator.GeneratedScript;
                     }
