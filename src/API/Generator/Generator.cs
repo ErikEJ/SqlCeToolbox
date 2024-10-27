@@ -2253,8 +2253,9 @@ namespace ErikEJ.SqlCeScripting
                         _sbScript.Append("CLUSTERED ");
 
                     var indexName = idx.IndexName;
-                    if (_sqlite)
+                    if (_sqlite && _repository.IsServer()) // #994
                         indexName = idx.TableName + "_" + idx.IndexName;
+
                     _sbScript.AppendFormat("INDEX [{0}] ON [{1}] (", indexName, idx.TableName);
                     foreach (Index col in indexesByName)
                     {
