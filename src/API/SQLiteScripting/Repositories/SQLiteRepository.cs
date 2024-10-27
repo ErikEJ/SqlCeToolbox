@@ -7,12 +7,12 @@ using System.Data.SQLite;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace ErikEJ.SQLiteScripting
 {
-        //SSMS extnsion uses sqlite-netFx46-static-binary-bundle-Win32-2013-1.0.116.0.zip still, all others use NuGet package
-
+    //SSMS extension uses sqlite-netFx46-static-binary-bundle-Win32-2013-1.0.116.0.zip still, all others use NuGet package
     public class SQLiteRepository : IRepository
     { 
         private SQLiteConnection _cn;
@@ -23,7 +23,16 @@ namespace ErikEJ.SQLiteScripting
         public SQLiteRepository(string connectionString)
         {
             _cn = new SQLiteConnection(connectionString);
+
             _cn.Open();
+
+            var dllFullFileName = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "x64", "SQLite.Interop.dll");
+            if (File.Exists(dllFullFileName))
+            {
+                _cn.EnableExtensions(true);
+                _cn.LoadExtension(dllFullFileName, "sqlite3_fts5_init");
+            }
+
             _cmd = new SQLiteCommand();
             _cmd.Connection = _cn;
         }
