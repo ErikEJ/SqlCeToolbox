@@ -26,6 +26,7 @@ namespace ExportSqlCE
                     bool saveImageFiles = false;
                     bool sqlAzure = false;
                     bool sqlite = false;
+                    bool binaryGuid = false;
                     bool toExcludeTables = true;
                     bool toIncludeTables = false;
                     System.Collections.Generic.List<string> exclusions = new System.Collections.Generic.List<string>();
@@ -135,6 +136,8 @@ namespace ExportSqlCE
                                 sqlAzure = true;
                             if (args[i].Contains("sqlite"))
                                 sqlite = true;
+                            if (args[i].Contains("binaryguid"))
+                                binaryGuid = true;
                             if (args[i].StartsWith("exclude:"))
                             {
                                 ParseExclusions(exclusions, args[i], whereClauses);
@@ -154,7 +157,7 @@ namespace ExportSqlCE
                             Console.WriteLine("Initializing....");
                             Helper.FinalFiles = outputFileLocation;
 #if V40
-                            var generator = new Generator4(repository, outputFileLocation, sqlAzure, false, sqlite);
+                            var generator = new Generator4(repository, outputFileLocation, sqlAzure, false, sqlite, binaryGuid);
 #else
                             var generator = new Generator(repository, outputFileLocation, sqlAzure, false, sqlite);
 #endif
@@ -276,8 +279,8 @@ namespace ExportSqlCE
         {
             var exeName = " " + System.AppDomain.CurrentDomain.FriendlyName + " ";
             Console.WriteLine("Usage : (To script an entire database)");
-            Console.WriteLine(exeName + "[SQL CE Connection String] [output file location] [[exclude]]|[[include]] [[schemaonly|dataonly|dataonlyserver]] [[saveimages]] [[sqlazure]]");
-            Console.WriteLine(" (exclude, schemaonly|dataonly, saveimages and sqlazure are optional parameters)");
+            Console.WriteLine(exeName + "[SQL CE Connection String] [output file location] [[exclude]]|[[include]] [[schemaonly|dataonly|dataonlyserver]] [[saveimages]] [[sqlazure]] [[binaryguid]]");
+            Console.WriteLine(" (exclude, schemaonly|dataonly, saveimages, binaryguid and sqlazure are optional parameters)");
             Console.WriteLine("");
             Console.WriteLine("Examples : ");
             Console.WriteLine(exeName +"\"Data Source=D:\\Northwind.sdf;\" Northwind.sql");
