@@ -40,6 +40,7 @@ namespace ErikEJ.SqlCeScripting
         private bool _sqlite;
         private bool _preserveDateAndDateTime2;
         private bool _truncateSqLiteStrings;
+        private bool _binaryGuid = false;
 
 #if V40
         /// <summary>
@@ -74,14 +75,15 @@ namespace ErikEJ.SqlCeScripting
         }
 
 #if V40
-        public Generator4(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false)
+        public Generator4(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false, bool binaryGuid = false)
 #else
 
-        public Generator(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false)
+        public Generator(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false, bool binaryGuid = false)
 #endif
         {
             _batchForAzure = azure;
             _sqlite = sqlite;
+            _binaryGuid = binaryGuid;
             if (sqlite)
                 _sep = string.Empty;
             _preserveDateAndDateTime2 = preserveSqlDates;
@@ -2190,6 +2192,17 @@ namespace ErikEJ.SqlCeScripting
                     { sb.Append("1"); }
                     else
                     { sb.Append("0"); }
+                }
+                else if (_binaryGuid && fieldType == typeof(Guid))
+                {
+                    Guid guid = (Guid)row[iColumn];
+                    var bytes = guid.ToByteArray();
+                    sb.Append("X'");
+                    foreach (var b in bytes)
+                    {
+                        sb.AppendFormat("{0:x2}", b);
+                    }
+                    sb.Append("'");
                 }
                 else
                 {
