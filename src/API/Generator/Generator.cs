@@ -78,7 +78,7 @@ namespace ErikEJ.SqlCeScripting
         public Generator4(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false, bool binaryGuid = false)
 #else
 
-        public Generator(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false)
+        public Generator(IRepository repository, string outFile, bool azure, bool preserveSqlDates, bool sqlite = false, bool binaryGuid = false)
 #endif
         {
             _batchForAzure = azure;
