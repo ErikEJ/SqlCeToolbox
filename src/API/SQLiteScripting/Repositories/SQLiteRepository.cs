@@ -12,7 +12,8 @@ using System.Text;
 
 namespace ErikEJ.SQLiteScripting
 {
-    //SSMS extension uses sqlite-netFx46-static-binary-bundle-Win32-2013-1.0.116.0.zip still, all others use NuGet package
+    //download sqlite-netFx46-static-binary-bundle-Win32-2015-1.0.119.0.zip to extract System.Data.Sqlite.dll for SSMS
+    //download sqlite-netFx46-binary-x64-2015-1.0.119.0.zip to extract SQLite.Interop.dll for VS (lib folder x64)
     public class SQLiteRepository : IRepository
     { 
         private SQLiteConnection _cn;
