@@ -265,6 +265,11 @@
     <Resource Include="Resources\GroupBy_284.png" />
     <Resource Include="Resources\AddDatabase_16x.png" />
     <Resource Include="Resources\CopyLongTextToClipboard_16x.png" />
+    <Content Include="..\lib\sqlite\x86\SQLite.Interop.dll">
+      <Link>x86\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\LocalDatabaseConnectionStringBuilder.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -354,11 +359,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\PanelQuickSearch.resx">
       <DependentUpon>PanelQuickSearch.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\ReportGrid.resx">
       <DependentUpon>ReportGrid.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\ResultsetGrid.resx">
       <DependentUpon>ResultsetGrid.cs</DependentUpon>
@@ -570,7 +573,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
-      <Version>1.0.119</Version>
+      <Version>1.0.118</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
