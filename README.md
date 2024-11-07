@@ -46,11 +46,13 @@ You find the extension under the View menu in SSMS.
 
 **Release**
 
-Download the latest version of the SSMS 17 extension (for both 3.5, 4.0, SQLite and SQL Server) from [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolboxforSSMS)
+Download the latest version of the **SSMS 17** extension (for both 3.5, 4.0, SQLite and SQL Server) from [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolboxforSSMS)
 
 **Daily build**
 
-You can download the daily build of the SSMS 20 extension from [VSIX Gallery](https://www.vsixgallery.com/extension/d6c77c32-fe4b-4f6d-ad5d-f7b755212760)
+You can download the daily build of the **SSMS 20** extension from [VSIX Gallery](https://www.vsixgallery.com/extension/d6c77c32-fe4b-4f6d-ad5d-f7b755212760)
+
+Make sure to "Unblock" the downloaded file before proceeding!
 
 ### **Installing the SSMS 20 extension**
 
