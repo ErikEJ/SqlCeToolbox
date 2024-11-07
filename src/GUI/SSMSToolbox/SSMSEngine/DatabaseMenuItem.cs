@@ -119,7 +119,11 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             var parent = Parent;
             if (parent?.Connection == null) return null;
 
-            var builder = new SqlConnectionStringBuilder(parent.Connection.ConnectionString);
+            var connectionString = parent.Connection.ConnectionString;
+
+            connectionString = ReplaceMdsKeywords(connectionString);
+
+            var builder = new SqlConnectionStringBuilder(connectionString);
             builder.InitialCatalog = parent.InvariantName;
 
             var dbInfo = new DatabaseInfo
@@ -174,6 +178,13 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             scriptItem.DropDownItems.Add(scriptItem2);
             scriptItem.DropDownItems.Add(scriptItem5);
             return scriptItem;
+        }
+
+        private string ReplaceMdsKeywords(string connectionString)
+        {
+            connectionString = connectionString.Replace("Multiple Active Result Sets=", "MultipleActiveResultSets=");
+            connectionString = connectionString.Replace("Trust Server Certificate=", "TrustServerCertificate=");
+            return connectionString;
         }
     }
 }
