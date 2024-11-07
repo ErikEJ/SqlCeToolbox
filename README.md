@@ -58,9 +58,9 @@ Sine SSMS extensions are unsupported, you will have to manually install this ext
 
 From an administrator command prompt:
 
-Create a folder called "SqlCeToolbox" under `C:\Program Files (x86)\Microsoft SQL Server Management Studio 20\Common7\IDE\Extensions\`
+Create a folder called `SqlCeToolbox` under `C:\Program Files (x86)\Microsoft SQL Server Management Studio 20\Common7\IDE\Extensions\`
 
-Copy the extension.vsix that you downloaded from VSIX Gallery to the new folder.
+Copy the extension.vsix that you downloaded from VSIX Gallery to the new folder `C:\Program Files (x86)\Microsoft SQL Server Management Studio 20\Common7\IDE\Extensions\SqlCeToolbox`.
 
 Unzip the extension.vsix to the new folder. For example: `"C:\program files\7-zip\7z.exe" e extension.vsix -y`
 
