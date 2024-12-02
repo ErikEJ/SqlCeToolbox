@@ -6,7 +6,7 @@
 
 [My tools and utilities for embedded database development](http://erikej.github.io/SqlCeToolbox/)
 
-Visual Studio & SSMS 20.x extension, standalone app and command line tools, for managing all aspects of your SQL Server Compact/SQLite database files' data and schema, including generation of code, database diagrams and database documentation.
+Visual Studio & SSMS 21 extension, standalone app and command line tools, for managing all aspects of your SQL Server Compact/SQLite database files' data and schema, including generation of code, database diagrams and database documentation.
 
 If you use my free tools, I would be very grateful for a [rating or review here](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details)
 
@@ -40,39 +40,29 @@ You can also automatically get the [latest build of the Master branch directly i
 
 If you need the Visual Studio 2010 extension, please contact me, and I can provide a link! 
 
-## SQL Server Management Studio (SSMS) 20 and 17 Extension
+## SQL Server Management Studio (SSMS) 21
 
-You find the extension under the View menu in SSMS.
-
-**Release**
-
-Download the latest version of the **SSMS 17** extension (for both 3.5, 4.0, SQLite and SQL Server) from [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolboxforSSMS)
+Once installed, you find the extension under the View menu in SSMS, and from the context menu of a database in Object Explorer.
 
 **Daily build**
 
-You can download the daily build of the **SSMS 20** extension from [VSIX Gallery](https://www.vsixgallery.com/extension/d6c77c32-fe4b-4f6d-ad5d-f7b755212760)
+You can download the daily build of the **SSMS 21** extension from [VSIX Gallery](https://www.vsixgallery.com/extension/d6c77c32-fe4b-4f6d-ad5d-f7b755212760)
 
 Make sure to "Unblock" the downloaded file before proceeding!
 
-### **Installing the SSMS 20 extension**
+### **Installing the SSMS 21 extension**
 
-Sine SSMS extensions are unsupported, you will have to manually install this extension version (at least until I or someone else decides to create an installer)
+Since SSMS extensions are unsupported, you must to manually install this extension version (at least until I or someone else decides to create an installer)
 
 From an administrator command prompt:
 
-Create a folder called `SqlCeToolbox` under `C:\Program Files (x86)\Microsoft SQL Server Management Studio 20\Common7\IDE\Extensions\`
+Create a folder called `SqlCeToolbox` in the `C:\Program Files\Microsoft SQL Server Management Studio 21\Preview\Common7\IDE\Extensions` folder.
 
-Copy the extension.vsix that you downloaded from VSIX Gallery to the new folder `C:\Program Files (x86)\Microsoft SQL Server Management Studio 20\Common7\IDE\Extensions\SqlCeToolbox`.
+Copy the extension.vsix that you downloaded from VSIX Gallery to the new folder `C:\Program Files\Microsoft SQL Server Management Studio 21\Preview\Common7\IDE\Extensions\SqlCeToolbox`.
 
 Unzip the extension.vsix to the new folder. For example: `"C:\program files\7-zip\7z.exe" e extension.vsix -y`
 
-You should now have 48 files in the SqlCeToolbox folder, and the extension is "installed".
-
-### **Installing the SSMS 17 extension**
-
-Use the following command line:
-
-`"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\vsixinstaller.exe" "full path to extension.vsix"`
+You should now have 36 items in the SqlCeToolbox folder, and the extension is "installed".
 
 ## EF Core Power Tools for Visual Studio 2022
 
