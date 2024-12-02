@@ -229,11 +229,6 @@
     <Compile Include="Helpers\DataConnectionHelper.cs" />
     <Compile Include="Helpers\DescriptionHelper.cs" />
     <Compile Include="Helpers\EnvDTEHelper.cs" />
-    <Content Include="..\lib\sqlite\x64\SQLite.Interop.dll">
-      <Link>x64\SQLite.Interop.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Resources\TypeDefinition_521.png" />
     <Resource Include="Resources\data_out_small.png" />
     <Resource Include="Resources\gear_16xLG.png" />

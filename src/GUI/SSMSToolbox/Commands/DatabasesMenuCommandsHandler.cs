@@ -4,7 +4,9 @@ using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
+#if !SSMS
 using Microsoft.VisualStudio.Data.Services;
+#endif
 using Microsoft.Win32;
 using System;
 using System.IO;
@@ -82,6 +84,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
 
         public void AddCe35Database(object sender, ExecutedRoutedEventArgs e)
         {
+#if !SSMS
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
             if (!DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact35Provider)))
             {
@@ -110,10 +113,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 DataConnectionHelper.SendError(ex, DatabaseType.SQLCE35);
             }
+#endif
         }
 
         public void AddSqlServerDatabase(object sender, ExecutedRoutedEventArgs e)
         {
+#if !SSMS
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
             try
             {
@@ -137,10 +142,12 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
             }
+#endif
         }
 
         public void AddCe40Database(object sender, ExecutedRoutedEventArgs e)
         {
+#if !SSMS
             // http://www.mztools.com/articles/2007/MZ2007011.aspx
             if (!DataConnectionHelper.DdexProviderIsInstalled(new Guid(Resources.SqlCompact40Provider)))
             {
@@ -171,6 +178,7 @@ namespace ErikEJ.SqlCeToolbox.Commands
             {
                 DataConnectionHelper.SendError(ex, DatabaseType.SQLCE40, false);
             }
+#endif
         }
 
         private bool TryGetInitialPath(SqlCeToolboxPackage package, out string path)
