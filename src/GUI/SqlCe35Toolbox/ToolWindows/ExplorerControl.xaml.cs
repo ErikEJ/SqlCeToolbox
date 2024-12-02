@@ -10,6 +10,7 @@ using ErikEJ.SqlCeToolbox.Commands;
 using ErikEJ.SqlCeToolbox.ContextMenues;
 using ErikEJ.SqlCeToolbox.Dialogs;
 using ErikEJ.SqlCeToolbox.Helpers;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.VisualStudio.Shell.Interop;
 using SelectionContainer = Microsoft.VisualStudio.Shell.SelectionContainer;
 using Trigger = ErikEJ.SqlCeScripting.Trigger;

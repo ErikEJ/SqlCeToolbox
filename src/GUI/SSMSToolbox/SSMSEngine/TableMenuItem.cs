@@ -6,7 +6,6 @@ using ErikEJ.SqlCeToolbox.Commands;
 using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
 using MenuItem = System.Windows.Controls.MenuItem;
-using Microsoft.SqlServer.Management.UI.VSIntegration;
 using Microsoft.SqlServer.Management.UI.VSIntegration.Editors;
 using EnvDTE;
 

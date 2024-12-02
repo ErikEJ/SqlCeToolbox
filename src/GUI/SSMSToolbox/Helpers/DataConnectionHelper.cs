@@ -6,13 +6,13 @@ using System.Reflection;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using ErikEJ.SqlCeScripting;
-using Microsoft.VisualStudio.Data.Core;
-using Microsoft.VisualStudio.Data.Services;
 #if SSMS
 using Microsoft.Data.ConnectionUI;
 using ErikEJ.SqlCeToolbox.SSMSEngine;
 #else
 using ErikEJ.SqlCeToolbox.Dialogs;
+using Microsoft.VisualStudio.Data.Core;
+using Microsoft.VisualStudio.Data.Services;
 #endif
 using System.Data.SqlClient;
 using System.Data.SQLite;
@@ -30,8 +30,10 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         internal static Dictionary<string, DatabaseInfo> GetDataConnections(SqlCeToolboxPackage package,
             bool includeServerConnections, bool serverConnectionsOnly)
         {
-            // http://www.mztools.com/articles/2007/MZ2007018.aspx
             Dictionary<string, DatabaseInfo> databaseList = new Dictionary<string, DatabaseInfo>();
+
+#if !SSMS
+            // http://www.mztools.com/articles/2007/MZ2007018.aspx
             var dataExplorerConnectionManager =
                 package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) as IVsDataExplorerConnectionManager;
 
@@ -150,6 +152,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                 }
             }
+#endif
 #if SSMS
             try
             {
@@ -239,6 +242,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal static bool DdexProviderIsInstalled(Guid id)
         {
+#if !SSMS
             try
             {
                 var objIVsDataProviderManager =
@@ -250,11 +254,13 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 //Ignored
             }
+#endif
             return false;
         }
 
         internal void ValidateConnections(SqlCeToolboxPackage package)
         {
+#if !SSMS
             var dataExplorerConnectionManager =
                 package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) as IVsDataExplorerConnectionManager;
             var removals = new List<IVsDataExplorerConnection>();
@@ -320,7 +326,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                 }
             }
-
+#endif
             var ownConnections = GetOwnDataConnections();
             foreach (var item in ownConnections)
             {
@@ -402,11 +408,13 @@ namespace ErikEJ.SqlCeToolbox.Helpers
         internal static void SaveDataConnection(SqlCeToolboxPackage package, string encryptedConnectionString,
             DatabaseType dbType, Guid provider)
         {
+#if !SSMS
             if (package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) is IVsDataExplorerConnectionManager dataExplorerConnectionManager)
             {
                 var savedName = GetFileName(DataProtection.DecryptString(encryptedConnectionString), dbType);
                 dataExplorerConnectionManager.AddConnection(savedName, provider, encryptedConnectionString, true);
             }
+#endif
         }
 
         public static string GetFilePath(string connectionString, DatabaseType dbType)
@@ -433,6 +441,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             var helper = RepositoryHelper.CreateEngineHelper(storeDbType);
             string path = RepositoryHelper.CreateEngineHelper(dbType).PathFromConnectionString(connectionString);
 
+#if !SSMS
             if (package.VsSupportsSimpleDdex4Provider() && dbType == DatabaseType.SQLCE40)
             {
                 SaveDataConnection(package, DataProtection.EncryptString(connectionString), dbType,
@@ -442,7 +451,11 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 helper.SaveDataConnection(CreateStore(storeDbType), connectionString, path, dbType.GetHashCode());
             }
+#else
+            helper.SaveDataConnection(CreateStore(storeDbType), connectionString, path, dbType.GetHashCode());
+#endif
         }
+
 
         internal static void RemoveDataConnection(string connectionString)
         {
@@ -453,6 +466,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
 
         internal static void RemoveDataConnection(SqlCeToolboxPackage package, string connectionString, Guid provider)
         {
+#if !SSMS
             var removals = new List<IVsDataExplorerConnection>();
             if (package.GetServiceHelper(typeof(IVsDataExplorerConnectionManager)) is IVsDataExplorerConnectionManager dataExplorerConnectionManager)
             {
@@ -486,6 +500,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
                     }
                 }
             }
+#endif
         }
 
         public static string PromptForConnectionString(SqlCeToolboxPackage package)
@@ -650,7 +665,7 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             {
                 // ignored
             }
-            return string.Format("- more than {0:0,0} downloads", 1100000d);
+            return string.Format("- more than {0:0,0} downloads", 1400000d);
         }
 
         public static string GetSqlCeFileFilter()
