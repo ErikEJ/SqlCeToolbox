@@ -265,6 +265,11 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\lib\sqlite\x64\SQLite.Interop.dll">
+      <Link>x64\SQLite.Interop.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\LocalDatabaseConnectionStringBuilder.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
