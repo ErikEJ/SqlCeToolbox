@@ -49,6 +49,7 @@ jobs:
       shell: cmd
       run: |
         .nuget\nuget restore .\src\GUI\SqlCeToolbox.sln -NonInteractive -Verbosity quiet -Source "https://api.nuget.org/v3/index.json"
+        .nuget\nuget restore .\src\API\SqlCeScripting40.sln -NonInteractive -Verbosity quiet -Source "https://api.nuget.org/v3/index.json"
 
     - name: Build
       working-directory: src
