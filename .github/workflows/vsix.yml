@@ -94,7 +94,7 @@ jobs:
       run: dotnet tool install --global sign --prerelease
 
     - name: Sign VSIX packages and .exe files # Causes signing requests - max is 5000 per month
-      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      #if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: sign code trusted-signing ./*.vsix ./*.exe `
         --trusted-signing-account ErikEJ `
         --trusted-signing-certificate-profile ErikEJCert `

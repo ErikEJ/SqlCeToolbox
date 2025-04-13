@@ -10,7 +10,7 @@ Visual Studio & SSMS 21 extension, standalone app and command line tools, for ma
 
 If you use my free tools, I would be very grateful for a [rating or review here](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox#review-details)
 
-# Documentation
+## Documentation
 
 [Getting started guide](https://github.com/ErikEJ/SqlCeToolbox/wiki)
 
@@ -22,35 +22,41 @@ If you use my free tools, I would be very grateful for a [rating or review here]
 
 [Scripting API samples](https://github.com/ErikEJ/SqlCeToolbox/wiki/Scripting-API-samples)
 
-# Downloads/builds
+## Downloads/builds
 
-## Visual Studio Extension
-
-**Release**
+### Visual Studio Extension Release
 
 Download the latest version of the Visual Studio extension (for both 3.5, 4.0 and SQLite) from [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=ErikEJ.SQLServerCompactSQLiteToolbox)
 
 Or just install from Tools, Extensions and Updates in Visual Studio! ![](https://github.com/ErikEJ/SqlCeToolbox/blob/master/img/ext.png)
 
-**Daily build**
+### Visual Studio Extension Daily build
 
-You can download the daily build from [VSIX Gallery](https://www.vsixgallery.com/extension/41521019-e4c7-480c-8ea8-fc4a2c6f50aa). 
+You can download the daily build from [VSIX Gallery](https://www.vsixgallery.com/extension/41521019-e4c7-480c-8ea8-fc4a2c6f50aa).
 
 You can also automatically get the [latest build of the Master branch directly in Visual Studio](https://github.com/ErikEJ/SqlCeToolbox/wiki/Subscribing-to-latest-%22daily%22-build)
 
-If you need the Visual Studio 2010 extension, please contact me, and I can provide a link! 
+If you need the Visual Studio 2010 extension, please contact me, and I can provide a link!
 
-## SQL Server Management Studio (SSMS) 21
+### SQL Server Management Studio (SSMS) 21
 
 Once installed, you find the extension under the View menu in SSMS, and from the context menu of a database in Object Explorer.
 
-**Daily build**
+### SSMS Daily build
 
 You can download the daily build of the **SSMS 21** extension from [VSIX Gallery](https://www.vsixgallery.com/extension/d6c77c32-fe4b-4f6d-ad5d-f7b755212760)
 
 Make sure to "Unblock" the downloaded file before proceeding!
 
-### **Installing the SSMS 21 extension**
+### Standalone for SQL Server Compact 4.0 and 3.5 SP2
+
+You can download the latest release of the standalone tools from the [Github build here](https://github.com/ErikEJ/SqlCeToolbox/actions/workflows/vsix.yml)
+
+### Command line tools
+
+You can download the latest release of the command line tools from the [Github build here](https://github.com/ErikEJ/SqlCeToolbox/actions/workflows/vsix.yml)
+
+## Installing the SSMS 21 extension
 
 Since SSMS extensions are unsupported, you must to manually install this extension version (at least until I or someone else decides to create an installer)
 
@@ -68,19 +74,7 @@ You should now have 36 items in the SqlCeToolbox folder, and the extension is "i
 
 The EF Core Power Tools have moved to [this repository](https://github.com/ErikEJ/EFCorePowerTools)
 
-## Standalone for SQL Server Compact 4.0 and 3.5 SP2 
-
-**Release**
-
-You can download the latest release of the standalone tools from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
-
-## Command line tools
-
-**Release**
-
-You can download the latest release of the command line tools from the [Github releases here](https://github.com/ErikEJ/SqlCeToolbox/releases)
-
-# How do I contribute
+## How do I contribute
 
 If you encounter a bug or have a feature request, please use the [Issue Tracker](https://github.com/ErikEJ/SqlCeToolbox/issues/new)
 
