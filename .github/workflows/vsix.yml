@@ -38,6 +38,18 @@ jobs:
       working-directory: src
       shell: pwsh
 
+    - name: Install SQL Compact
+      shell: cmd
+      run: |
+        msiexec /i tools\3.5.8109\SSCERuntime-ENU_x86.msi /quiet /qn
+        msiexec /i tools\3.5.8109\SSCERuntime-ENU_x64.msi /quiet /qn
+        msiexec /i tools\4.0.8902\SSCERuntime_x64-ENU.msi  /quiet /qn
+
+    - name: Restore
+      shell: cmd
+      run: |
+        .nuget\nuget restore .\src\GUI\SqlCeToolbox.sln -NonInteractive -Verbosity quiet -Source "https://api.nuget.org/v3/index.json"
+
     - name: Build
       working-directory: src
       shell: cmd
@@ -46,10 +58,15 @@ jobs:
         msbuild API\Export2SqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
         msbuild API\ExportSqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
         msbuild API\ExportSqlCe40.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
-        nuget restore GUI\SqlCeToolbox.sln -DisableParallelProcessing -Verbosity quiet
         msbuild GUI\SqlCeToolbox.sln /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
         msbuild GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /v:
-        7z a SqlCe35ToolBox.zip GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe
+
+    - name: Zip executables 
+      working-directory: src
+      shell: cmd
+      run: |
+        msbuild GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /v:
+        7z a SqlCe40ToolBox.zip GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe
         7z a SqlCe35ToolBox.zip GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe
 
     - name: Extract and verify vsix file count
@@ -58,10 +75,10 @@ jobs:
         mkdir vsix
         7z x src/GUI/SqlCe35Toolbox/bin/Release/SqlCe35Toolbox.vsix -ovsix -y
         dir /a:-d /s /b "vsix" | find /c ":\" > filecount.txt
-        findstr "73" filecount.txt
+        findstr "36" filecount.txt
 
     - name: Move build output
-      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      #if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |
         mv src/GUI/SqlCe35Toolbox/bin/Release/SqlCe35Toolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix
         mv src/GUI/SSMSToolbox/bin/Release/SSMSToolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix

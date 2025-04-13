@@ -7,3 +7,5 @@ SqlCeToolbox.DDEX4.dll
 SqlCeToolBoxSyncFxLib.dll
 SqlCeVsToolbox.dll
 SQLiteScripting.dll
+SqlCe40ToolBox.exe
+SqlCe35ToolBox.exe
