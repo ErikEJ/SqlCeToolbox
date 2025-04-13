@@ -1,0 +1,121 @@
+name: VSIX
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+    branches:
+      - '*'
+
+permissions:
+  id-token: write # This is required for the federated credential to work
+
+env:
+  VERSION: 4.9.${{ github.run_number }}
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v2
+    
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.201'
+
+    - name: Update Version
+      run: |
+        ((Get-Content -Path GUI/SqlCe35Toolbox/Properties/AssemblyInfo.cs -Raw) -Replace "4.8.0.0", "${{ env.VERSION }}") | Set-Content -Path GUI/SqlCe35Toolbox/Properties/AssemblyInfo.cs
+        ((Get-Content -Path GUI/SqlCe35Toolbox/source.extension.vsixmanifest -Raw) -Replace "4.8.0.0", "${{ env.VERSION }}") | Set-Content -Path GUI/SqlCe35Toolbox/source.extension.vsixmanifest
+        ((Get-Content -Path GUI/SSMSToolbox/source.extension.vsixmanifest -Raw) -Replace "4.8.0.0", "${{ env.VERSION }}") | Set-Content -Path GUI/SSMSToolbox/source.extension.vsixmanifest
+      working-directory: src
+      shell: pwsh
+
+    - name: Install SQL Compact
+      shell: cmd
+      run: |
+        msiexec /i tools\3.5.8109\SSCERuntime-ENU_x86.msi /quiet /qn
+        msiexec /i tools\3.5.8109\SSCERuntime-ENU_x64.msi /quiet /qn
+        msiexec /i tools\4.0.8902\SSCERuntime_x64-ENU.msi  /quiet /qn
+
+    - name: Restore
+      shell: cmd
+      run: |
+        .nuget\nuget restore .\src\GUI\SqlCeToolbox.sln -NonInteractive -Verbosity quiet -Source "https://api.nuget.org/v3/index.json"
+        .nuget\nuget restore .\src\API\SqlCeScripting40.sln -NonInteractive -Verbosity quiet -Source "https://api.nuget.org/v3/index.json"
+
+    - name: Build
+      working-directory: src
+      shell: cmd
+      run: |
+        msbuild API\SqlCeScripting40.sln /p:configuration=Release /v:m
+        msbuild API\Export2SqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
+        msbuild API\ExportSqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
+        msbuild API\ExportSqlCe40.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
+        msbuild GUI\SqlCeToolbox.sln /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
+        msbuild GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /p:Platform="x86" /v:m
+
+    - name: Extract and verify vsix file count
+      shell: cmd
+      run: |
+        mkdir vsix
+        7z x src/GUI/SqlCe35Toolbox/bin/Release/SqlCeVsToolbox.vsix -ovsix -y
+        dir /a:-d /s /b "vsix" | find /c ":\" > filecount.txt
+        findstr "39" filecount.txt
+
+    - name: Move build output
+      #if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      run: |
+        mv src/GUI/SqlCe35Toolbox/bin/Release/SqlCeVsToolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix
+        mv src/GUI/SSMSToolbox/bin/Release/SSMSToolbox.vsix SqliteSSMSToolbox-${{ env.VERSION }}.vsix
+        mv src\GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe SqlCe40ToolBox-${{ env.VERSION }}.exe
+        mv src\GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe SqlCe35ToolBox-${{ env.VERSION }}.exe
+        mv src\API\bin\Release\Export2SqlCE.exe Export2SqlCE-${{ env.VERSION }}.exe
+        mv src\API\bin\Release\ExportSqlCE.exe ExportSqlCE-${{ env.VERSION }}.exe
+        mv src\API\bin\Release\ExportSqlCE40.exe ExportSqlCE40-${{ env.VERSION }}.exe
+
+    # - name: Azure CLI login with federated credential
+    #   if: github.event_name != 'pull_request'
+    #   uses: azure/login@v2
+    #   with:
+    #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
+    #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+    #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    # - name: Install dotnet sign
+    #   if: github.event_name != 'pull_request'
+    #   run: dotnet tool install --global sign --prerelease
+
+    # - name: Sign VSIX packages and .exe files # Causes signing requests - max is 5000 per month
+    #   if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+    #   run: sign code trusted-signing ./*.vsix ./*.exe `
+    #     --trusted-signing-account ErikEJ `
+    #     --trusted-signing-certificate-profile ErikEJCert `
+    #     --trusted-signing-endpoint https://weu.codesigning.azure.net `
+    #     -fl fileslist.txt `
+    #     --verbosity information 
+
+    - name: Publish artifacts
+      # if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      uses: actions/upload-artifact@v4
+      with:
+        name: Artifacts
+        path: |
+          *.vsix
+          *.exe
+
+    - name: Publish to Open VSIX Gallery
+      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      run: |
+        $ErrorActionPreference='Stop'
+        (new-object Net.WebClient).DownloadString("https://raw.github.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1") | iex
+        Vsix-PublishToGallery 
+      shell: pwsh
+      continue-on-error: false

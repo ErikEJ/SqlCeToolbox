@@ -1,0 +1,11 @@
+ISqlCeScripting.dll
+QueryPlanVisualizer.dll
+SqlCeScripting.dll
+SqlCeScripting40.dll
+SqlCeToolbox.Common.dll
+SqlCeToolbox.DDEX4.dll
+SqlCeToolBoxSyncFxLib.dll
+SqlCeVsToolbox.dll
+SQLiteScripting.dll
+SqlCe40ToolBox.exe
+SqlCe35ToolBox.exe
