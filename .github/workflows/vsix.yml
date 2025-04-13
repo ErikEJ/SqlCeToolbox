@@ -62,12 +62,6 @@ jobs:
         msbuild GUI\SqlCeToolbox.sln /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
         msbuild GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /p:Platform="x86" /v:m
 
-    - name: Zip executables 
-      shell: cmd
-      run: |
-        7z a SqlCe40ToolBox.zip .\src\GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe
-        7z a SqlCe35ToolBox.zip .\src\GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe
-
     - name: Extract and verify vsix file count
       shell: cmd
       run: |
@@ -81,6 +75,11 @@ jobs:
       run: |
         mv src/GUI/SqlCe35Toolbox/bin/Release/SqlCeVsToolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix
         mv src/GUI/SSMSToolbox/bin/Release/SSMSToolbox.vsix SqliteSSMSToolbox-${{ env.VERSION }}.vsix
+        mv src\GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe SqlCe40ToolBox-${{ env.VERSION }}.exe
+        mv src\GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe SqlCe35ToolBox-${{ env.VERSION }}.exe
+        mv src\API\bin\Release\Export2SqlCE.exe Export2SqlCE-${{ env.VERSION }}.exe
+        mv src\API\bin\Release\ExportSqlCE.exe ExportSqlCE-${{ env.VERSION }}.exe
+        mv src\API\bin\Release\ExportSqlCE40.exe ExportSqlCE40-${{ env.VERSION }}.exe
 
     # - name: Azure CLI login with federated credential
     #   if: github.event_name != 'pull_request'
@@ -94,9 +93,9 @@ jobs:
     #   if: github.event_name != 'pull_request'
     #   run: dotnet tool install --global sign --prerelease
 
-    # - name: Sign VSIX packages # Causes 4 signing requests - max is 5000 per month
+    # - name: Sign VSIX packages and .exe files # Causes signing requests - max is 5000 per month
     #   if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
-    #   run: sign code trusted-signing *.vsix `
+    #   run: sign code trusted-signing ./*.vsix ./*.exe `
     #     --trusted-signing-account ErikEJ `
     #     --trusted-signing-certificate-profile ErikEJCert `
     #     --trusted-signing-endpoint https://weu.codesigning.azure.net `
@@ -110,7 +109,7 @@ jobs:
         name: Artifacts
         path: |
           *.vsix
-          *.zip
+          *.exe
 
     - name: Publish to Open VSIX Gallery
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
