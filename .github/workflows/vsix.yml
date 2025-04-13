@@ -93,14 +93,23 @@ jobs:
       #if: github.event_name != 'pull_request'
       run: dotnet tool install --global sign --prerelease
 
-    - name: Sign VSIX packages and .exe files # Causes signing requests - max is 5000 per month
+    - name: Sign VSIX packages # Causes signing requests - max is 5000 per month
       #if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
-      run: sign code trusted-signing *.vsix *.exe `
+      run: sign code trusted-signing *.vsix `
         --trusted-signing-account ErikEJ `
         --trusted-signing-certificate-profile ErikEJCert `
         --trusted-signing-endpoint https://weu.codesigning.azure.net `
         -fl fileslist.txt `
         --verbosity information 
+
+    - name: Sign .exe files # Causes signing requests - max is 5000 per month
+      #if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
+      run: sign code trusted-signing *.exe `
+        --trusted-signing-account ErikEJ `
+        --trusted-signing-certificate-profile ErikEJCert `
+        --trusted-signing-endpoint https://weu.codesigning.azure.net `
+        -fl fileslist.txt `
+        --verbosity information
 
     - name: Publish artifacts
       # if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
