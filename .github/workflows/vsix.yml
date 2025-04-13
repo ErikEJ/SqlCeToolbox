@@ -60,15 +60,13 @@ jobs:
         msbuild API\ExportSqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
         msbuild API\ExportSqlCe40.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
         msbuild GUI\SqlCeToolbox.sln /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
-        msbuild GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
+        msbuild GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /p:Platform="x86" /v:m
 
     - name: Zip executables 
-      working-directory: src
       shell: cmd
       run: |
-        msbuild GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /v:
-        7z a SqlCe40ToolBox.zip GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe
-        7z a SqlCe35ToolBox.zip GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe
+        7z a SqlCe40ToolBox.zip .\src\GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe
+        7z a SqlCe35ToolBox.zip .\src\GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe
 
     - name: Extract and verify vsix file count
       shell: cmd
