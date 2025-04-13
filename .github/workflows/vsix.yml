@@ -80,7 +80,7 @@ jobs:
       #if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |
         mv src/GUI/SqlCe35Toolbox/bin/Release/SqlCeVsToolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix
-        mv src/GUI/SSMSToolbox/bin/Release/SSMSToolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix
+        mv src/GUI/SSMSToolbox/bin/Release/SSMSToolbox.vsix SqliteSSMSToolbox-${{ env.VERSION }}.vsix
 
     # - name: Azure CLI login with federated credential
     #   if: github.event_name != 'pull_request'
