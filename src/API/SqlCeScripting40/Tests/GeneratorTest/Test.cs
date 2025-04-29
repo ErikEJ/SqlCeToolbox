@@ -32,6 +32,7 @@ namespace Tests.GeneratorTest
         private string db21Conn = $"Data Source={Path.Combine(dbPath, "DB21.sqlite")}";
         private string northwindConn = $"Data Source={Path.Combine(dbPath, "Northwind.sdf")}";
         private string umbracoConn = $"Data Source={Path.Combine(dbPath, "UmbracoSqlCe.sdf")}";
+        private string umbracoSqliteConn = $"Data Source={Path.Combine(dbPath, "Umbraco.sqlite.db")}";
 
         private const string sdfConnectionString = @"Data Source=C:\data\sqlce\test\ams40.sdf;Max Database Size=512";
         private const string sdfConnectionString2 = @"Data Source=C:\data\sqlce\test\PFIZER_DB40.sdf";
@@ -163,6 +164,20 @@ namespace Tests.GeneratorTest
                 Assert.Throws<SQLiteException>(() =>
                     targetRepository.ExecuteSql(
                         "INSERT INTO [Product] (ProductId, OwnerId1, OwnerId2) Values (3, 1, 1); GO;"));
+            }
+        }
+
+        [Test]
+        public void TestSqliteExportCompositeForeignKey()
+        {
+            var path = @"C:\temp\sqlite_foreign_key.sql";
+
+            IList<string> generatedFiles;
+            using (var sourceRepository = new SQLiteRepository(umbracoSqliteConn))
+            {
+                var generator = new Generator4(sourceRepository, path, false, false, true);
+                generator.ScriptDatabaseToFile(Scope.SchemaDataSQLite);
+                generatedFiles = generator.GeneratedFiles.ToList();
             }
         }
 
