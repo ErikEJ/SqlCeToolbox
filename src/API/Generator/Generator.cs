@@ -1595,7 +1595,12 @@ namespace ErikEJ.SqlCeScripting
             Column column = _allColumns.Single(c => c.TableName == tableName && c.ColumnName == RemoveBrackets(columnName));
 
             string foreignColumnName = constraint.UniqueColumns[0];
-            Column foreignColumn = _allColumns.Single(c => c.TableName == foreignTableName && c.ColumnName == RemoveBrackets(foreignColumnName));
+            Column foreignColumn = _allColumns.SingleOrDefault(c => c.TableName == foreignTableName && c.ColumnName == RemoveBrackets(foreignColumnName));
+
+            if (column == null || foreignColumn == null)
+            {
+                return;
+            }
 
             string triggerName = prefix + "_" + tableName + "_" + RemoveBrackets(columnName) + "_" + foreignTableName + "_" + RemoveBrackets(foreignColumnName);
 
