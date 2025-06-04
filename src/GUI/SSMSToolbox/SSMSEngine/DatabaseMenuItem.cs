@@ -5,6 +5,7 @@ using ErikEJ.SqlCeScripting;
 using ErikEJ.SqlCeToolbox.Commands;
 using ErikEJ.SqlCeToolbox.Helpers;
 using Microsoft.SqlServer.Management.UI.VSIntegration.ObjectExplorer;
+using static ErikEJ.SqlCeToolbox.Helpers.RepositoryHelper;
 using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace ErikEJ.SqlCeToolbox.SSMSEngine
@@ -38,12 +39,21 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             var scriptItem = BuildScriptMenuItem(scriptImage);
 
             var exportSqlCeItem = new ToolStripMenuItem("Export SQL Server to SQL Server Compact 4.0...", exportImage);
+            exportSqlCeItem.BackColor =  System.Drawing.Color.White;
+            exportSqlCeItem.ForeColor = System.Drawing.Color.Black;
+
             exportSqlCeItem.Click += ExportSqlCeItem_Click;
 
             var exportSqliteItem = new ToolStripMenuItem("Export SQL Server to SQLite (beta)...", exportImage);
+            exportSqliteItem.BackColor =  System.Drawing.Color.White;
+            exportSqliteItem.ForeColor = System.Drawing.Color.Black;
+
             exportSqliteItem.Click += ExportSqliteItem_Click;
 
             var aboutItem = new ToolStripMenuItem("Open Toolbox", logo);
+            aboutItem.BackColor =  System.Drawing.Color.White;
+            aboutItem.ForeColor = System.Drawing.Color.Black;
+
             aboutItem.Click += AboutItem_Click;
 
             item.DropDownItems.Add(scriptItem);
@@ -121,9 +131,7 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
 
             var connectionString = parent.Connection.ConnectionString;
 
-            connectionString = ReplaceMdsKeywords(connectionString);
-
-            var builder = new SqlConnectionStringBuilder(connectionString);
+            var builder = SqlConnectionStringBuilderHelper.GetBuilder(connectionString);
             builder.InitialCatalog = parent.InvariantName;
 
             var dbInfo = new DatabaseInfo
@@ -146,28 +154,43 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
         private ToolStripMenuItem BuildScriptMenuItem(System.Drawing.Bitmap scriptImage)
         { 
             var scriptItem = new ToolStripMenuItem("Script SQL Server Database", scriptImage);
+            scriptItem.BackColor =  System.Drawing.Color.White;
+            scriptItem.ForeColor = System.Drawing.Color.Black;
 
             var scriptItem3 = new ToolStripMenuItem("Script SQL Server Database Schema (SQLite)...", scriptImage);
+            scriptItem3.BackColor =  System.Drawing.Color.White;
+            scriptItem3.ForeColor = System.Drawing.Color.Black;
+
             scriptItem3.Tag = Scope.SchemaSQLite;
             scriptItem3.Click += item_Click;
 
             var scriptItem4 = new ToolStripMenuItem("Script SQL Server Database Schema and Data (SQLite)...", scriptImage);
+            scriptItem4.BackColor =  System.Drawing.Color.White;
+            scriptItem4.ForeColor = System.Drawing.Color.Black;
             scriptItem4.Tag = Scope.SchemaDataSQLite;
             scriptItem4.Click += item_Click;
 
             var scriptItem0 = new ToolStripMenuItem("Script SQL Server Database Schema (SQLCE)...", scriptImage);
+            scriptItem0.BackColor =  System.Drawing.Color.White;
+            scriptItem0.ForeColor = System.Drawing.Color.Black;
             scriptItem0.Tag = Scope.Schema;
             scriptItem0.Click += item_Click;
 
             var scriptItem1 = new ToolStripMenuItem("Script SQL Server Database Data (SQLCE)...", scriptImage);
+            scriptItem1.BackColor =  System.Drawing.Color.White;
+            scriptItem1.ForeColor = System.Drawing.Color.Black;
             scriptItem1.Tag = Scope.DataOnly;
             scriptItem1.Click += item_Click;
 
             var scriptItem2 = new ToolStripMenuItem("Script SQL Server Database Schema and Data (SQLCE)...", scriptImage);
+            scriptItem2.BackColor =  System.Drawing.Color.White;
+            scriptItem2.ForeColor = System.Drawing.Color.Black;
             scriptItem2.Tag = Scope.SchemaData;
             scriptItem2.Click += item_Click;
 
             var scriptItem5 = new ToolStripMenuItem("Script SQL Server Database Schema and Data with BLOBs (SQLCE)...", scriptImage);
+            scriptItem5.BackColor =  System.Drawing.Color.White;
+            scriptItem5.ForeColor = System.Drawing.Color.Black;
             scriptItem5.Tag = Scope.SchemaDataBlobs;
             scriptItem5.Click += item_Click;
 
@@ -178,13 +201,6 @@ namespace ErikEJ.SqlCeToolbox.SSMSEngine
             scriptItem.DropDownItems.Add(scriptItem2);
             scriptItem.DropDownItems.Add(scriptItem5);
             return scriptItem;
-        }
-
-        private string ReplaceMdsKeywords(string connectionString)
-        {
-            connectionString = connectionString.Replace("Multiple Active Result Sets=", "MultipleActiveResultSets=");
-            connectionString = connectionString.Replace("Trust Server Certificate=", "TrustServerCertificate=");
-            return connectionString;
         }
     }
 }

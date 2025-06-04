@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CopyVsixExtensionFiles>True</CopyVsixExtensionFiles>
-    <CopyVsixExtensionLocation>C:\Program Files\Microsoft SQL Server Management Studio 21\Preview\Common7\IDE\Extensions\SqlCeToolbox</CopyVsixExtensionLocation>
+    <CopyVsixExtensionLocation>C:\Program Files\Microsoft SQL Server Management Studio 21\Release\Common7\IDE\Extensions\SqlCeToolbox</CopyVsixExtensionLocation>
     <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
