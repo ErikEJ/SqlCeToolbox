@@ -106,6 +106,8 @@ namespace ErikEJ.SqlCeToolbox.Helpers
             }
         }
 
+
+
         internal static class SqlConnectionStringBuilderHelper
         {
             public static SqlConnectionStringBuilder GetBuilder(string connectionString)
