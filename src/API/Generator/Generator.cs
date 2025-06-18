@@ -1604,6 +1604,12 @@ namespace ErikEJ.SqlCeScripting
 
             string triggerName = prefix + "_" + tableName + "_" + RemoveBrackets(columnName) + "_" + foreignTableName + "_" + RemoveBrackets(foreignColumnName);
 
+            if (_allTriggers.Any(t => t.TriggerName == triggerName))
+            {
+                // Trigger already exists, skip
+                return;
+            }
+
             _sbScript.Append(
                 $"CREATE TRIGGER [{triggerName}] BEFORE {triggerType} ON [{tableName}] FOR EACH ROW BEGIN" +
                 $" SELECT RAISE(ROLLBACK, '{triggerType} on table {tableName} violates foreign key constraint {constraintName}')" +

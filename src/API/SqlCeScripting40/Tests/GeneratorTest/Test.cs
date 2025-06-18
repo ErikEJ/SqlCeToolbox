@@ -33,6 +33,7 @@ namespace Tests.GeneratorTest
         private string northwindConn = $"Data Source={Path.Combine(dbPath, "Northwind.sdf")}";
         private string umbracoConn = $"Data Source={Path.Combine(dbPath, "UmbracoSqlCe.sdf")}";
         private string umbracoSqliteConn = $"Data Source={Path.Combine(dbPath, "Umbraco.sqlite.db")}";
+        private string triggerSqliteConn = $"Data Source={Path.Combine(dbPath, "triggerdatabase.db")}";
 
         private const string sdfConnectionString = @"Data Source=C:\data\sqlce\test\ams40.sdf;Max Database Size=512";
         private const string sdfConnectionString2 = @"Data Source=C:\data\sqlce\test\PFIZER_DB40.sdf";
@@ -72,6 +73,19 @@ namespace Tests.GeneratorTest
             {
                 serverRepository.ExecuteSqlFile(path);
             }
+        }
+
+        [Test]
+        public void TestSqliteTrigger()
+        {
+            string path = @"C:\temp\triggers.sql";
+            using (IRepository sourceRepository = new SQLiteRepository(triggerSqliteConn))
+            {
+                var generator = new Generator4(sourceRepository, path, false, false, true);
+                generator.ScriptDatabaseToFile(Scope.SchemaSQLite);
+            }
+
+            Assert.IsTrue(File.Exists(path));
         }
 
         [Test]
