@@ -1519,7 +1519,7 @@ namespace ErikEJ.SqlCeScripting
                     }
                     GenerateIndex();
                     GenerateTriggers(_allTriggers);
-                    GenerateTriggersForForeignKeys();
+                    GenerateTriggersForForeignKeys(_allTriggers);
                     GenerateViews();
                 }
                 GenerateSqliteSuffix();
@@ -1556,36 +1556,36 @@ namespace ErikEJ.SqlCeScripting
             Helper.WriteIntoFile(GeneratedScript, _outFile, FileCounter, _sqlite);
         }
 
-        public void GenerateTriggersForForeignKeys()
+        public void GenerateTriggersForForeignKeys(List<Trigger> existingTriggers)
         {
             foreach (string tableName in _tableNames)
             {
-                GenerateTriggersForForeignKeys(tableName);
+                GenerateTriggersForForeignKeys(tableName, existingTriggers);
             }
         }
 
-        private void GenerateTriggersForForeignKeys(string tableName)
+        private void GenerateTriggersForForeignKeys(string tableName, List<Trigger> existingTriggers)
         {
             List<Constraint> foreignKeys = _allForeignKeys.Where(fk => fk.ConstraintTableName == tableName).ToList();
 
             foreach (Constraint constraint in foreignKeys)
             {
-                GenerateInsertTriggerForForeignKey(constraint);
-                GenerateUpdateTriggerForForeignKey(constraint);
+                GenerateInsertTriggerForForeignKey(constraint, existingTriggers);
+                GenerateUpdateTriggerForForeignKey(constraint, existingTriggers);
             }
         }
 
-        private void GenerateInsertTriggerForForeignKey(Constraint constraint)
+        private void GenerateInsertTriggerForForeignKey(Constraint constraint, List<Trigger> existingTriggers)
         {
-            GenerateTriggerForForeignKey("fki", TriggerType.Insert, constraint);
+            GenerateTriggerForForeignKey("fki", TriggerType.Insert, constraint, existingTriggers);
         }
 
-        private void GenerateUpdateTriggerForForeignKey(Constraint constraint)
+        private void GenerateUpdateTriggerForForeignKey(Constraint constraint, List<Trigger> existingTriggers)
         {
-            GenerateTriggerForForeignKey("fku", TriggerType.Update, constraint);
+            GenerateTriggerForForeignKey("fku", TriggerType.Update, constraint, existingTriggers);
         }
 
-        private void GenerateTriggerForForeignKey(string prefix, string triggerType, Constraint constraint)
+        private void GenerateTriggerForForeignKey(string prefix, string triggerType, Constraint constraint, List<Trigger> existingTriggers)
         {
             string constraintName = constraint.ConstraintName;
             string tableName = constraint.ConstraintTableName;
@@ -1603,6 +1603,12 @@ namespace ErikEJ.SqlCeScripting
             }
 
             string triggerName = prefix + "_" + tableName + "_" + RemoveBrackets(columnName) + "_" + foreignTableName + "_" + RemoveBrackets(foreignColumnName);
+
+            if (existingTriggers.Any(t => t.TriggerName == triggerName))
+            {
+                // Trigger already exists, skip
+                return;
+            }
 
             _sbScript.Append(
                 $"CREATE TRIGGER [{triggerName}] BEFORE {triggerType} ON [{tableName}] FOR EACH ROW BEGIN" +
