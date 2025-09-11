@@ -12,7 +12,7 @@
         <Tags>sql sqlite sqlce entityframework ef linq codegeneration database ssdt ssms</Tags>
     </Metadata>
     <Installation>
-      <InstallationTarget Id="Microsoft.VisualStudio.Ssms" Version="[21.0,22.0)">
+      <InstallationTarget Id="Microsoft.VisualStudio.Ssms" Version="[21.0,23.0)">
         <ProductArchitecture>amd64</ProductArchitecture>
       </InstallationTarget>
     </Installation>
