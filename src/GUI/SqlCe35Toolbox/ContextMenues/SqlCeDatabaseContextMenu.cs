@@ -122,17 +122,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 Icon = ImageHelper.GetImageFromResource("../resources/Synchronize_16xLG.png"),
             };
 
-            var isSyncFxInstalled = DataConnectionHelper.IsSyncFx21Installed();
-
-            syncFxRootMenuItem.Items.Add(BuildSyncFxProvisionMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
-
-            syncFxRootMenuItem.Items.Add(BuildSyncFxDeprovisionMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
-
-            syncFxRootMenuItem.Items.Add(BuildSyncFxGenerateSnapshotMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
-
-            generateCodeRootMenuItem.Items.Add(BuildSyncFxMenuItem(databaseMenuCommandParameters, cecmd, dbType, isSyncFxInstalled));
-            generateCodeRootMenuItem.Items.Add(syncFxRootMenuItem);
-
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(generateCodeRootMenuItem);
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
@@ -144,22 +133,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(BuildCopyConnectionMenuItem(databaseMenuCommandParameters, cecmd));
 
             Items.Add(itemBuilder.BuildRemoveConnectionMenuItem(databaseMenuCommandParameters, dcmd));
-        }
-
-        private MenuItem BuildCreateTableMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabaseMenuCommandsHandler dcmd)
-        {
-            var createTableCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.BuildTable);
-            var createTableMenuItem = new MenuItem
-            {
-                Header = "Build Table (beta)...",
-                Icon = ImageHelper.GetImageFromResource("../resources/AddTable_5632.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters
-            };
-            createTableMenuItem.CommandBindings.Add(createTableCommandBinding);
-            return createTableMenuItem;
         }
 
         private MenuItem BuildScriptAzureSchemaDataMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
@@ -349,85 +322,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
                 scriptWpdcMenuItem.IsEnabled = false;
             }
             return scriptWpdcMenuItem;
-        }
-
-        private MenuItem BuildSyncFxProvisionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            SqlCeDatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
-        {
-            var syncFxProvisionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.SyncFxProvisionScope);
-
-            var syncFxProvisionMenuItem = new MenuItem
-            {
-                Header = "Provision Sync Framework Scope...",
-                Icon = ImageHelper.GetImageFromResource("../resources/Synchronize_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            syncFxProvisionMenuItem.CommandBindings.Add(syncFxProvisionCommandBinding);
-            syncFxProvisionMenuItem.IsEnabled = dbType == DatabaseType.SQLCE35
-                                                && isSyncFxInstalled;
-            return syncFxProvisionMenuItem;
-        }
-
-        private MenuItem BuildSyncFxDeprovisionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            SqlCeDatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
-        {
-            var syncFxDeprovisionCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.SyncFxDeprovisionDatabase);
-
-            var syncFxDeprovisionMenuItem = new MenuItem
-            {
-                Header = "Deprovision Sync Framework Objects from Database",
-                Icon = ImageHelper.GetImageFromResource("../resources/Synchronize_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            syncFxDeprovisionMenuItem.CommandBindings.Add(syncFxDeprovisionCommandBinding);
-
-            syncFxDeprovisionMenuItem.IsEnabled = dbType == DatabaseType.SQLCE35
-                                                  && isSyncFxInstalled;
-            return syncFxDeprovisionMenuItem;
-        }
-
-        private MenuItem BuildSyncFxGenerateSnapshotMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            SqlCeDatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
-        {
-            var syncFxGenerateSnapshotCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.SyncFxGenerateSnapshot);
-
-            var syncFxGenerateSnapshotMenuItem = new MenuItem
-            {
-                Header = "Generate snapshot database to initialize other clients...",
-                Icon = ImageHelper.GetImageFromResource("../resources/Synchronize_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            syncFxGenerateSnapshotMenuItem.CommandBindings.Add(syncFxGenerateSnapshotCommandBinding);
-
-            syncFxGenerateSnapshotMenuItem.IsEnabled = dbType == DatabaseType.SQLCE35
-                                                       && isSyncFxInstalled;
-            return syncFxGenerateSnapshotMenuItem;
-        }
-
-        private MenuItem BuildSyncFxMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            SqlCeDatabaseMenuCommandsHandler dcmd, DatabaseType dbType, bool isSyncFxInstalled)
-        {
-            var syncFxCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.SyncFxGenerateSyncCodeInProject);
-
-            var syncFxMenuItem = new MenuItem
-            {
-                Header = "Add Sync Framework Class to current Project...",
-                Icon = ImageHelper.GetImageFromResource("../resources/Synchronize_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-            };
-            syncFxMenuItem.CommandBindings.Add(syncFxCommandBinding);
-
-            syncFxMenuItem.IsEnabled = dbType == DatabaseType.SQLCE35
-                                       && isSyncFxInstalled;
-            return syncFxMenuItem;
         }
 
         private MenuItem BuildAddDescriptionMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,

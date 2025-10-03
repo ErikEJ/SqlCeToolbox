@@ -61,6 +61,9 @@
     <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DropDownButtonLib, Version=1.1.0.0, Culture=neutral, PublicKeyToken=d9645e6262c2eca7, processorArchitecture=MSIL">
+      <HintPath>..\lib\DropDownButtonLib.dll</HintPath>
+    </Reference>
     <Reference Include="ExtendedGrid">
       <HintPath>..\lib\ExtendedGrid.dll</HintPath>
     </Reference>
@@ -84,6 +87,14 @@
     <Reference Include="Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="PropertyTools">
+      <HintPath>..\lib\PropertyTools.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Ngen>True</Ngen>
+    </Reference>
+    <Reference Include="PropertyTools.Wpf, Version=3.1.0.0, Culture=neutral, PublicKeyToken=ea0c9f2b460934d0, processorArchitecture=MSIL">
+      <HintPath>..\lib\PropertyTools.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
       <HintPath>..\lib\QuickGraph.dll</HintPath>
@@ -123,9 +134,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\lib\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BaseCommandHandler.cs" />
@@ -205,9 +213,6 @@
     </Compile>
     <Compile Include="Dialogs\ExportDialog.xaml.cs">
       <DependentUpon>ExportDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\SyncFxDialog.xaml.cs">
-      <DependentUpon>SyncFxDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\PickTablesDialog.xaml.cs">
       <DependentUpon>PickTablesDialog.xaml</DependentUpon>
@@ -490,10 +495,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Dialogs\ExportDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Dialogs\SyncFxDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

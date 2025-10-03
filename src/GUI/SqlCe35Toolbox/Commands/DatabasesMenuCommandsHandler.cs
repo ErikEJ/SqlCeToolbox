@@ -246,106 +246,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
             EnvDteHelper.LaunchUrl("http://sqlcompact.dk/sqldesigner/");
         }
 
-        public async void SyncFxGenerateLocalDatabaseCacheCode(object sender, ExecutedRoutedEventArgs e)
-        {
-            // http://www.mztools.com/articles/2007/MZ2007011.aspx
-            var menuItem = sender as MenuItem;
-            if (menuItem == null) return;
-            var dteH = new EnvDteHelper();
-            var project = dteH.GetProject();
-            if (project == null)
-            {
-                EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the SyncFx classes to be placed");
-                return;
-            }
-            if (!dteH.ContainsAllowed(project))
-            {
-                EnvDteHelper.ShowError("The selected project type does not support Sync Framework (please let me know if I am wrong)");
-                return;
-            }
-
-            var tfm = ThreadHelper.JoinableTaskFactory.Run(() => project.GetAttributeAsync("TargetFrameworkMoniker"));
-
-            if (string.IsNullOrEmpty(tfm))
-            {
-                EnvDteHelper.ShowError("The selected project type does not support Sync Framework - missing TargetFrameworkMoniker");
-                return;
-            }
-            if (!tfm.Contains(".NETFramework"))
-            {
-                EnvDteHelper.ShowError("The selected project type does not support .NET Desktop - wrong TargetFrameworkMoniker: " + tfm);
-                return;
-            }
-
-            try
-            {
-                var serverConnectionString = DataConnectionHelper.PromptForConnectionString(_package);
-                if (string.IsNullOrEmpty(serverConnectionString)) return;
-                string clientConnectionString;
-
-                //grab target SQL CE Database
-                var dialog = new ConnectionDialog();
-                dialog.DbType = DatabaseType.SQLCE35;
-                var result = dialog.ShowModal();
-                if (result.HasValue && result.Value && !string.IsNullOrWhiteSpace(dialog.ConnectionString))
-                {
-                    clientConnectionString = dialog.ConnectionString;
-                }
-                else
-                {
-                    return;
-                }
-
-                var model = string.Empty;
-                var sfd = new SyncFxDialog();
-                var databaseInfo = new DatabaseMenuCommandParameters
-                {
-                    DatabaseInfo = new DatabaseInfo
-                    {
-                        ConnectionString = serverConnectionString,
-                        DatabaseType = DatabaseType.SQLServer
-                    }
-                };
-                SyncFxGetObjectsForSync(sfd, databaseInfo);
-                sfd.ModelName = model;
-
-                var res = sfd.ShowModal();
-                if (res.HasValue && res.Value && (sfd.Tables.Count > 0) && !string.IsNullOrWhiteSpace(sfd.ModelName))
-                {
-                    model = sfd.ModelName;
-                    var defaultNamespace = ThreadHelper.JoinableTaskFactory.Run(() => project.GetAttributeAsync("DefaultNamespace"));
-
-                    var columns = sfd.Columns.Where(c => sfd.Tables.Contains(c.TableName)).ToList();
-                    var classes = new SyncFxHelper().GenerateCodeForScope(serverConnectionString, clientConnectionString, "SQL", model, columns, defaultNamespace);
-                    var projectPath = Path.GetDirectoryName(project.FullPath);
-
-                    foreach (var item in classes)
-                    {
-                        var fileName = Path.Combine(projectPath, item.Key + ".cs");
-                        if (File.Exists(fileName))
-                        {
-                            File.Delete(fileName);
-                        }
-                        File.WriteAllText(fileName, item.Value);
-                        ThreadHelper.JoinableTaskFactory.Run(() => project.AddExistingFilesAsync(fileName));
-                    }
-                    //Adding references - http://blogs.msdn.com/b/murat/archive/2008/07/30/envdte-adding-a-refernce-to-a-project.aspx
-                    await EnvDteHelper.AddReferenceAsync(project, "System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-
-                    await EnvDteHelper.AddReferenceAsync(project, "Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    await EnvDteHelper .AddReferenceAsync(project, "Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    await EnvDteHelper.AddReferenceAsync(project, "Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    await EnvDteHelper .AddReferenceAsync(project, "Microsoft.Synchronization.Data.SqlServerCe, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91");
-                    EnvDteHelper.ShowMessage("Scope: " + model + " code generated.");
-                    DataConnectionHelper.LogUsage("DatabasesSyncAddLocalDBCache");
-                }
-            }
-            catch (Exception ex)
-            {
-                DataConnectionHelper.SendError(ex, DatabaseType.SQLServer);
-            }
-        }
-
         public void CheckCeVersion(object sender, ExecutedRoutedEventArgs e)
         {
             var helper = Helpers.RepositoryHelper.CreateEngineHelper(DatabaseType.SQLCE40);
@@ -384,16 +284,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 {
                     EnvDteHelper.ShowError(ex.Message);
                 }
-            }
-        }
-
-        private static void SyncFxGetObjectsForSync(SyncFxDialog sfd, DatabaseMenuCommandParameters databaseInfo)
-        {
-            using (var repository = Helpers.RepositoryHelper.CreateRepository(databaseInfo.DatabaseInfo))
-            {
-                sfd.Tables = repository.GetAllTableNames().Where(t => !t.EndsWith("scope_info") && !t.EndsWith("scope_config") && !t.EndsWith("schema_info") && !t.EndsWith("_tracking")).ToList();
-                sfd.Columns = repository.GetAllColumns().Where(t => !t.TableName.EndsWith("scope_info") && !t.TableName.EndsWith("scope_config") && !t.TableName.EndsWith("schema_info") && !t.TableName.EndsWith("_tracking")).ToList();
-                sfd.PrimaryKeyColumns = repository.GetAllPrimaryKeys().Where(t => !t.TableName.EndsWith("scope_info") && !t.TableName.EndsWith("scope_config") && !t.TableName.EndsWith("schema_info") && !t.TableName.EndsWith("_tracking")).ToList();
             }
         }
     }

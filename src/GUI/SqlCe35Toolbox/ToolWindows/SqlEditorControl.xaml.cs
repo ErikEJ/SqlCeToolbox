@@ -6,6 +6,7 @@ using ICSharpCode.AvalonEdit.Search;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -40,6 +41,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             }
         }
 
+        public ObservableCollection<CheckListItem> Items { get; }
+
         //This property must be set by parent window
         private readonly SqlEditorWindow _parentWindow;
         private DatabaseInfo _dbInfo;
@@ -54,6 +57,7 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
 
         public SqlEditorControl(SqlEditorWindow parentWindow)
         {
+            Items = new ObservableCollection<CheckListItem>();
             InitializeComponent();
             _parentWindow = parentWindow;
             LoadDefaultOptions();
@@ -142,76 +146,108 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             _useClassicGrid = Properties.Settings.Default.UseClassicGrid;
         }
 
-        private readonly List<CheckListItem> _items = new List<CheckListItem>();
-
         private void ConfigureOptions()
         {
-            _items.Clear();
+            //Items.Clear();
 
-            _items.Add(new CheckListItem
-                {
-                    IsChecked = _showResultInGrid,
-                    Label = "Show Result in Grid",
-                    Tag = "ShowResultInGrid"
-                });            
-            _items.Add(new CheckListItem
-                {
-                    IsChecked = _showBinaryValuesInResult,
-                    Label = "Show Binary Values in Result",
-                    Tag = "ShowBinaryValuesInResult"
-                });
+            Items.Add(new CheckListItem
+            {
+                IsChecked = _showResultInGrid,
+                Label = "Show Result in Grid",
+                Tag = "ShowResultInGrid"
+            });            
+            Items.Add(new CheckListItem
+            {
+                IsChecked = _showBinaryValuesInResult,
+                Label = "Show Binary Values in Result",
+                Tag = "ShowBinaryValuesInResult"
+            });
 
-            _items.Add(new CheckListItem
+            Items.Add(new CheckListItem
             {
                 IsChecked = _showNullValuesAsNull,
                 Label = "Show null Values as NULL",
                 Tag = "ShowNullValuesAsNULL"
             });
-            _items.Add(new CheckListItem
+            Items.Add(new CheckListItem
             {
                 IsChecked = _ignoreDdlErrors,
                 Label = "Ignore DDL Errors",
                 Tag = "_ignoreDdlErrors"
             });
-            _items.Add(new CheckListItem
+            Items.Add(new CheckListItem
             {
                 IsChecked = _useClassicGrid,
                 Label = "Use classic (plain) grid",
                 Tag = "_useClassicGrid"
             });
-            chkOptions.ItemsSource = null;
-            chkOptions.ItemsSource = _items;
-        }
 
-        private void chkOptions_ItemSelectionChanged(object sender, Xceed.Wpf.Toolkit.Primitives.ItemSelectionChangedEventArgs e)
-        {
-            var item = e.Item as CheckListItem;
-            if (item != null)
+            DataContext = this;
+            chkOptions.ItemsSource = Items;
+
+            for (int i = 0; i < Items.Count; i++)
             {
-                switch (item.Tag)
+                var item = (CheckListItem)chkOptions.Items.GetItemAt(i);
+                if (item.IsChecked)
                 {
-                    case "_ignoreDdlErrors":
-                        _ignoreDdlErrors = item.IsChecked;
-                        break;
-                    case "ShowResultInGrid":
-                        _showResultInGrid = item.IsChecked;
-                        break;
-                    case "ShowBinaryValuesInResult":
-                        _showBinaryValuesInResult = item.IsChecked;
-                        break;
-                    case "ShowNullValuesAsNULL":
-                        _showNullValuesAsNull = item.IsChecked;
-                        break;
-                    case "_useClassicGrid":
-                        _useClassicGrid = item.IsChecked;
-                        break;
+                    chkOptions.SelectedItems.Add(item);
                 }
             }
         }
 
-        private void ddButton_Click(object sender, RoutedEventArgs e)
+        private void chkOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ConfigureOptions();
+            foreach (var item in e.AddedItems)
+            {
+                var checkListItem = item as CheckListItem;
+                if (checkListItem != null)
+                {
+                    switch (checkListItem.Tag)
+                    {
+                        case "_ignoreDdlErrors":
+                            _ignoreDdlErrors = true;
+                            break;
+                        case "ShowResultInGrid":
+                            _showResultInGrid = true;
+                            break;
+                        case "ShowBinaryValuesInResult":
+                            _showBinaryValuesInResult = true;
+                            break;
+                        case "ShowNullValuesAsNULL":
+                            _showNullValuesAsNull = true;
+                            break;
+                        case "_useClassicGrid":
+                            _useClassicGrid = true;
+                            break;
+                    }
+                }
+            }
+
+            foreach (var item in e.RemovedItems)
+            {
+                var checkListItem = item as CheckListItem;
+                if (checkListItem != null)
+                {
+                    switch (checkListItem.Tag)
+                    {
+                        case "_ignoreDdlErrors":
+                            _ignoreDdlErrors = false;
+                            break;
+                        case "ShowResultInGrid":
+                            _showResultInGrid = false;
+                            break;
+                        case "ShowBinaryValuesInResult":
+                            _showBinaryValuesInResult = false;
+                            break;
+                        case "ShowNullValuesAsNULL":
+                            _showNullValuesAsNull = false;
+                            break;
+                        case "_useClassicGrid":
+                            _useClassicGrid = false;
+                            break;
+                    }
+                }
+            }
         }
 
         void SqlTextBox_TextChanged(object sender, EventArgs e)

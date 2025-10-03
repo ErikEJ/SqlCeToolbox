@@ -32,8 +32,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             Items.Add(BuildDesignDatabaseMenuItem(databaseMenuCommandParameters, dcmd));
             Items.Add(new Separator());
 
-            if (SqlCeToolboxPackage.IsVsExtension) Items.Add(BuildLocalDatabaseCacheMenuItem(databaseMenuCommandParameters, dcmd, ver35IsInstalled));
-
             if (SqlCeToolboxPackage.IsVsExtension) Items.Add(new Separator());
 
             Items.Add(BuildVersionDetectMenuItem(databaseMenuCommandParameters, dcmd));
@@ -190,24 +188,6 @@ namespace ErikEJ.SqlCeToolbox.ContextMenues
             };
             designDatabaseMenuItem.CommandBindings.Add(designDatabaseCommandBinding);
             return designDatabaseMenuItem;
-        }
-
-        private MenuItem BuildLocalDatabaseCacheMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,
-            DatabasesMenuCommandsHandler dcmd, bool ver35IsInstalled)
-        {
-            var localDatabaseCacheCommandBinding = new CommandBinding(DatabaseMenuCommands.DatabaseCommand,
-                dcmd.SyncFxGenerateLocalDatabaseCacheCode);
-            var localDatabaseCacheMenuItem = new MenuItem
-            {
-                Header = "Generate Local Database Cache code...",
-                Icon = ImageHelper.GetImageFromResource("../resources/Synchronize_16xLG.png"),
-                Command = DatabaseMenuCommands.DatabaseCommand,
-                CommandParameter = databaseMenuCommandParameters,
-                Tag = SqlCeScripting.Scope.SchemaDataBlobs
-            };
-            localDatabaseCacheMenuItem.CommandBindings.Add(localDatabaseCacheCommandBinding);
-            localDatabaseCacheMenuItem.IsEnabled = (ver35IsInstalled && DataConnectionHelper.IsSyncFx21Installed());
-            return localDatabaseCacheMenuItem;
         }
 
         private MenuItem BuildVersionDetectMenuItem(DatabaseMenuCommandParameters databaseMenuCommandParameters,

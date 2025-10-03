@@ -26,7 +26,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Props.ShowSummary = true;
+            Props.ShowDescriptionIcons = true;
             Props.SelectedObject = _builder;
         }
 
