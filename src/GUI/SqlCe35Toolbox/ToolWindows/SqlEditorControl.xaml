@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
-             xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:xctk="clr-namespace:DropDownButtonLib.Controls;assembly=DropDownButtonLib"
              mc:Ignorable="d" 
              d:DesignHeight="309" d:DesignWidth="800"
              Name="SqlEditorWindow" Loaded="SqlEditorWindow_Loaded" GotFocus="SqlEditorControl_OnGotFocus" Focusable="True" >
@@ -74,16 +74,25 @@
                     </StackPanel>
                 </Button>
                 <Separator></Separator>
-                <extToolkit:DropDownButton 
+                <xctk:DropDownButton 
                     Background="Transparent" BorderThickness="0" BorderBrush="{x:Null}" 
-                    x:Name="ddButton" Click="ddButton_Click" ToolTip="Options (Current Window)" Margin="0,1,0,-1">
-                    <extToolkit:DropDownButton.Content>
+                    x:Name="ddButton" ToolTip="Options (Current Window)" Margin="0,1,0,-1">
+                    <xctk:DropDownButton.Content>
                         <Image Height="20" Width="20" Stretch="None" Source="../Resources/gear_16xLG.png" />
-                    </extToolkit:DropDownButton.Content>
-                    <extToolkit:DropDownButton.DropDownContent>
-                        <extToolkit:CheckListBox x:Name="chkOptions" DisplayMemberPath="Label" SelectedMemberPath="IsChecked" ItemSelectionChanged="chkOptions_ItemSelectionChanged" />
-                    </extToolkit:DropDownButton.DropDownContent>
-                </extToolkit:DropDownButton>
+                    </xctk:DropDownButton.Content>
+                    <xctk:DropDownButton.DropDownContent>
+                        <ListBox x:Name="chkOptions" ItemsSource="{Binding Path=Items}" SelectionMode="Multiple" SelectionChanged="chkOptions_SelectionChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <CheckBox IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected}" DockPanel.Dock="Left" />
+                                        <TextBlock Text="{Binding}" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </xctk:DropDownButton.DropDownContent>
+                </xctk:DropDownButton>
                 <Button Name="Options" Click="Options_Click" ToolTip="Options" Padding="0,0,0,0" >
                     <Image Height="20" Width="20" Stretch="None" Source="../Resources/gear_16xLG.png"  />
                 </Button>

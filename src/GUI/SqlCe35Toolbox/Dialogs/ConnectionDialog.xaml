@@ -4,8 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:ErikEJ.SqlCeToolbox"
         xmlns:Dialogs="clr-namespace:ErikEJ.SqlCeToolbox.Dialogs"
-        xmlns:extToolkit="clr-namespace:Xceed.Wpf.Toolkit.PropertyGrid;assembly=Xceed.Wpf.Toolkit"
-        xmlns:extToolkit2="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        xmlns:pt="clr-namespace:PropertyTools.Wpf;assembly=PropertyTools.Wpf"
         Icon="../Resources/gear_16xLG.png"
         Title="Add SQL Server Compact Connection" 
         WindowStyle="SingleBorderWindow"
@@ -27,7 +26,8 @@
         <Label Margin="12,51.6,0,0" Grid.Row="1" x:Name="lblPw" Content="Password:" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="109" Grid.RowSpan="2"></Label>
 
         <TextBox Name="dataSourceTextBox" TextChanged="textBox_TextChanged" Margin="12,0,12,30" TabIndex="0" Height="23" VerticalAlignment="Bottom" />
-        <extToolkit2:IntegerUpDown x:Name="maxSize" IsReadOnly="False" Value="256" Increment="1" Maximum="4091" Minimum="16" Grid.Row="1" Margin="12,29,0,0" TabIndex="2" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="89" ValueChanged="maxSize_ValueChanged" />
+        <TextBox Grid.Row="1" Margin="12,29,0,0" TabIndex="2" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="89" />
+        <TextBox x:Name="maxSize" BorderThickness="0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="73" TextChanged="textBox_TextChanged">256</TextBox>
         <TextBox x:Name="password" Grid.Row="2"  TextChanged="password_PasswordChanged" Margin="12,0" TabIndex="3" Height="23" VerticalAlignment="Bottom" />
         <TextBox TextWrapping="Wrap" x:Name="txtConnection" Grid.Row="3" TextChanged="txtConnection_TextChanged" Margin="12,21,12,0" TabIndex="4" Height="48" VerticalAlignment="Top" />
 

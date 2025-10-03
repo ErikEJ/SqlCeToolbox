@@ -94,11 +94,6 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             dataSourceTextBox.Text = ofd.FileName;
         }
 
-        private void maxSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            UpdateBuilder();
-        }
-
         private void textBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             UpdateBuilder();

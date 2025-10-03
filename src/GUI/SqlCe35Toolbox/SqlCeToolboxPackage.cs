@@ -206,7 +206,10 @@ namespace ErikEJ.SqlCeToolbox
                 var seItem = new OleMenuCommand(ShowToolWindow, seCommandId);
                 mcs.AddCommand(seItem);
             }
-            base.Initialize();
+
+            typeof(PropertyTools.Wpf.PropertyGrid).ToString();
+            typeof(PropertyTools.DataAnnotations.AutoUpdateTextAttribute).ToString();
+            typeof(DropDownButtonLib.Controls.DropDownButton).ToString();
         }
     }
 }

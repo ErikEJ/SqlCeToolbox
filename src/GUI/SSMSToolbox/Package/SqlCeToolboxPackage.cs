@@ -228,6 +228,7 @@ namespace ErikEJ.SqlCeToolbox
 
                 _objectExplorerManager = new ObjectExplorerManager(this);
                 _objectExplorerManager.SetObjectExplorerEventProvider();
+                typeof(DropDownButtonLib.Controls.DropDownButton).ToString();
             }
             catch (Exception ex)
             {

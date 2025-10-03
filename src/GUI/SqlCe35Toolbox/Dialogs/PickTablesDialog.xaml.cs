@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ErikEJ.SqlCeToolbox.Helpers;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using ErikEJ.SqlCeToolbox.Helpers;
-using Microsoft.Win32;
 
 namespace ErikEJ.SqlCeToolbox.Dialogs
 {
@@ -14,6 +15,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         public PickTablesDialog(bool allowWindow)
         {
             Telemetry.TrackPageView(nameof(PickTablesDialog));
+            Items = new ObservableCollection<CheckListItem>();
             InitializeComponent();
             Background = VsThemes.GetWindowBackground();
             if (!allowWindow)
@@ -23,9 +25,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             };
         }
 
-        public bool IncludeTables { get; set; }
-
-        private List<CheckListItem> items = new List<CheckListItem>();
+        public ObservableCollection<CheckListItem> Items { get; }
 
         public List<string> Tables { get; set; }
 
@@ -37,9 +37,10 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             { 
                 var isChecked = !table.StartsWith("__");
                 isChecked = !table.StartsWith("dbo.__");
-                items.Add(new CheckListItem { IsChecked = isChecked, Label = table });                
+                Items.Add(new CheckListItem { IsChecked = isChecked, Label = table });                
             }
-            chkTables.ItemsSource = items;
+            chkTables.ItemsSource = Items;
+            DataContext = this;
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)
@@ -55,8 +56,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             foreach (var item in chkTables.Items)
             {
                 var checkItem = (CheckListItem)item;
-                if ((!checkItem.IsChecked && !IncludeTables)
-                    || (checkItem.IsChecked && IncludeTables))
+                if (!chkTables.SelectedItems.Contains(item))
                 {
                     Tables.Add(checkItem.Label);
                 }
@@ -80,7 +80,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
         {
             if (chkClear.IsChecked != null && chkClear.IsChecked.Value)
             {
-                foreach (var item in items)
+                foreach (var item in Items)
                 {
                     if (!item.IsChecked)
                     {
@@ -90,7 +90,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             }
             else
             {
-                foreach (var item in items)
+                foreach (var item in Items)
                 {
                     if (item.IsChecked)
                     {
@@ -99,7 +99,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
                 }
             }
             chkTables.ItemsSource = null;
-            chkTables.ItemsSource = items;
+            chkTables.ItemsSource = Items;
         }
 
         private void BtnSaveSelection_OnClick(object sender, RoutedEventArgs e)
@@ -136,14 +136,12 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             if (ofd.ShowDialog() != true) return;
 
             var lines = File.ReadAllLines(ofd.FileName);
-            foreach (var item in items)
+            foreach (var item in Items)
             {
                 item.IsChecked = lines.Contains(item.Label);
             }
             chkTables.ItemsSource = null;
-            chkTables.ItemsSource = items;
+            chkTables.ItemsSource = Items;
         }
-
-        
     }
 }
