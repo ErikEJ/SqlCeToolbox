@@ -620,11 +620,6 @@ namespace ErikEJ.SqlCeToolbox.Commands
                 EnvDteHelper.ShowError("Please select a project in Solution Explorer, where you want the DataAccess.cs to be placed");
                 return;
             }
-            if (!dteH.ContainsAllowed(project))
-            {
-                EnvDteHelper.ShowError("The selected project type does not support sqlite-net (please let me know if I am wrong)");
-                return;
-            }
             if (databaseInfo.DatabaseInfo.DatabaseType != DatabaseType.SQLite)
             {
                 EnvDteHelper.ShowError("Sorry, only SQLite databases are supported");
