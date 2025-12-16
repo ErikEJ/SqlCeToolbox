@@ -31,7 +31,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CopyVsixExtensionFiles>True</CopyVsixExtensionFiles>
-    <CopyVsixExtensionLocation>C:\Program Files\Microsoft SQL Server Management Studio 21\Release\Common7\IDE\Extensions\SqlCeToolbox</CopyVsixExtensionLocation>
+    <CopyVsixExtensionLocation>C:\Program Files\Microsoft SQL Server Management Studio 22\Release\Common7\IDE\Extensions\SqlCeToolbox</CopyVsixExtensionLocation>
     <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -427,22 +427,30 @@
     </Reference>
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=17.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\v21\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+      <HintPath>..\lib\v22\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=17.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\v21\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+      <HintPath>..\lib\v22\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Smo, Version=17.100.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\v21\Microsoft.SqlServer.Smo.dll</HintPath>
+      <HintPath>..\lib\v22\Microsoft.SqlServer.Smo.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.SqlServer.SqlTools.VSIntegration, Version=21.200.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\lib\v21\Microsoft.SqlServer.SqlTools.VSIntegration.dll</HintPath>
+    <Reference Include="Microsoft.SqlServer.SqlTools.VSIntegration, Version=22.200.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\lib\v22\Microsoft.SqlServer.SqlTools.VSIntegration.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="PropertyTools">
+      <HintPath>..\lib\PropertyTools.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Ngen>True</Ngen>
+    </Reference>
+    <Reference Include="PropertyTools.Wpf, Version=3.1.0.0, Culture=neutral, PublicKeyToken=ea0c9f2b460934d0, processorArchitecture=MSIL">
+      <HintPath>..\lib\PropertyTools.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -467,16 +475,16 @@
     <Reference Include="SqlCeToolBoxSyncFxLib">
       <HintPath>..\lib\SqlCeToolBoxSyncFxLib.dll</HintPath>
     </Reference>
-    <Reference Include="SQLEditors, Version=21.200.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+    <Reference Include="SQLEditors, Version=22.200.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\v21\SQLEditors.dll</HintPath>
+      <HintPath>..\lib\v22\SQLEditors.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SQLiteScripting">
       <HintPath>..\lib\SQLiteScripting.dll</HintPath>
     </Reference>
-    <Reference Include="SqlWorkbench.Interfaces, Version=21.200.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\lib\v21\SqlWorkbench.Interfaces.dll</HintPath>
+    <Reference Include="SqlWorkbench.Interfaces, Version=22.200.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\lib\v22\SqlWorkbench.Interfaces.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -491,9 +499,6 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="Xceed.Wpf.Toolkit, Version=5.0.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\lib\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="..\SqlCe35Toolbox\ToolWindows\DataEditControl.xaml">
