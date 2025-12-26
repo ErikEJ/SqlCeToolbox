@@ -5,6 +5,7 @@ using System.Threading;
 using Community.VisualStudio.Toolkit;
 using ErikEJ.SqlCeToolbox.Helpers;
 using ErikEJ.SqlCeToolbox.ToolWindows;
+using ICSharpCode.AvalonEdit;
 using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -211,6 +212,7 @@ namespace ErikEJ.SqlCeToolbox
             typeof(PropertyTools.Wpf.PropertyGrid).ToString();
             typeof(PropertyTools.DataAnnotations.AutoUpdateTextAttribute).ToString();
             typeof(DropDownButtonLib.Controls.DropDownButton).ToString();
+            typeof(AvalonEditCommands).ToString();
         }
     }
 }
