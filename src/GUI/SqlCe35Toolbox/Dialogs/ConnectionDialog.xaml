@@ -26,8 +26,7 @@
         <Label Margin="12,51.6,0,0" Grid.Row="1" x:Name="lblPw" Content="Password:" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="109" Grid.RowSpan="2"></Label>
 
         <TextBox Name="dataSourceTextBox" TextChanged="textBox_TextChanged" Margin="12,0,12,30" TabIndex="0" Height="23" VerticalAlignment="Bottom" />
-        <TextBox Grid.Row="1" Margin="12,29,0,0" TabIndex="2" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="89" />
-        <TextBox x:Name="maxSize" BorderThickness="0" HorizontalContentAlignment="Right" HorizontalAlignment="Left" Width="73" TextChanged="textBox_TextChanged">256</TextBox>
+        <TextBox x:Name="maxSize" Grid.Row="1" Margin="12,29,0,0" TabIndex="2" Height="23" VerticalAlignment="Top" TextChanged="textBox_TextChanged" HorizontalAlignment="Left" Width="89">256</TextBox>
         <TextBox x:Name="password" Grid.Row="2"  TextChanged="password_PasswordChanged" Margin="12,0" TabIndex="3" Height="23" VerticalAlignment="Bottom" />
         <TextBox TextWrapping="Wrap" x:Name="txtConnection" Grid.Row="3" TextChanged="txtConnection_TextChanged" Margin="12,21,12,0" TabIndex="4" Height="48" VerticalAlignment="Top" />
 
