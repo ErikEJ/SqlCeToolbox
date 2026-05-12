@@ -42,6 +42,8 @@ namespace ErikEJ.SqlCeToolbox.ToolWindows
             {
                 if (disposing)
                 {
+                    ResultsetGrid?.Connection?.Dispose();
+                    ResultsetGrid?.SQLiteConnection?.Dispose();
                     ResultsetGrid?.Dispose();
                     winFormHost?.Dispose();
                 }
