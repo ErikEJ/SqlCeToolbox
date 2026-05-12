@@ -27,6 +27,8 @@ namespace ErikEJ.SqlCeToolbox.WinForms
         }
 
         public string TableName { get; set; }
+        public DbConnection Connection { get; set; }
+        public SQLiteConnection SQLiteConnection { get; set; }
         public DatabaseInfo DatabaseInfo { get; set; }
         public bool ReadOnly { get; set; }
         public List<int> ReadOnlyColumns { get; set; }
@@ -153,12 +155,14 @@ namespace ErikEJ.SqlCeToolbox.WinForms
         {
             if (DatabaseInfo.DatabaseType == DatabaseType.SQLite)
             {
-                var conn = new SQLiteConnection();
-                conn.ConnectionString = DatabaseInfo.ConnectionString;
+                SQLiteConnection = new SQLiteConnection
+                {
+                    ConnectionString = DatabaseInfo.ConnectionString
+                };
 
-                SQLiteCommand command = conn.CreateCommand();
+                SQLiteCommand command = SQLiteConnection.CreateCommand();
                 command.CommandText = sqlText;
-                command.Connection = conn;
+                command.Connection = SQLiteConnection;
                 
                 var sqliteadapter = new SQLiteDataAdapter();
                 sqliteadapter.SelectCommand = command;
@@ -174,16 +178,16 @@ namespace ErikEJ.SqlCeToolbox.WinForms
 
                 var factory = DbProviderFactories.GetFactory(invariantName);
 
-                var conn = factory.CreateConnection();
-                if (conn != null)
+                Connection = factory.CreateConnection();
+                if (Connection != null)
                 {
-                    conn.ConnectionString = DatabaseInfo.ConnectionString;
+                    Connection.ConnectionString = DatabaseInfo.ConnectionString;
                 
                     DbCommand command = factory.CreateCommand();
                     if (command != null)
                     {
                         command.CommandText = sqlText;
-                        command.Connection = conn;
+                        command.Connection = Connection;
 
                         var adapter = factory.CreateDataAdapter();
                         if (adapter != null)
