@@ -118,19 +118,13 @@ jobs:
 
     - name: Publish to Open VSIX Gallery
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
-      run: |
-        $ErrorActionPreference='Stop'
-        (new-object Net.WebClient).DownloadString("https://raw.github.com/madskristensen/ExtensionScripts/master/AppVeyor/vsix.ps1") | iex
-        Vsix-PublishToGallery 
-      shell: pwsh
-      continue-on-error: false
+      uses: madskristensen/publish-vsixgallery@v1
+      with:
+        vsix-file: SqliteToolbox-${{ env.VERSION }}.vsix
 
     - name: Upload to SSMS Gallery
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-      shell: cmd
-      run: |
-        if not exist "SqliteSSMSToolbox-${{ env.VERSION }}.vsix" (
-          echo ERROR: Expected VSIX not found: SqliteSSMSToolbox-${{ env.VERSION }}.vsix
-          exit /b 1
-        )
-        curl --fail --show-error "https://ssmsgallery.azurewebsites.net/api/upload" -F "file=@SqliteSSMSToolbox-${{ env.VERSION }}.vsix"
+      uses: madskristensen/publish-vsixgallery@v1
+      with:
+        vsix-file: SqliteSSMSToolbox-${{ env.VERSION }}.vsix
+        gallery-url: https://ssmsgallery.azurewebsites.net
