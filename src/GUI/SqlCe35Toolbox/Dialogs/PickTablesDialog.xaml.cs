@@ -56,7 +56,7 @@ namespace ErikEJ.SqlCeToolbox.Dialogs
             foreach (var item in chkTables.Items)
             {
                 var checkItem = (CheckListItem)item;
-                if (!chkTables.SelectedItems.Contains(item))
+                if (!checkItem.IsChecked)
                 {
                     Tables.Add(checkItem.Label);
                 }

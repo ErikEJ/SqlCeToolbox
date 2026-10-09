@@ -14,7 +14,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel>
-                            <CheckBox IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}, Path=IsSelected}" DockPanel.Dock="Left" />
+                            <CheckBox IsChecked="{Binding Path=IsChecked, Mode=TwoWay}" DockPanel.Dock="Left" />
                             <TextBlock Text="{Binding}" />
                         </DockPanel>
                     </DataTemplate>
