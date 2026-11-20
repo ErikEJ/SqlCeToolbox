@@ -29,7 +29,7 @@ chdir /d %ORIGINAL_DIR%
 @REM  cd ..
 @REM  pause
 
-msbuild SqlCeScripting40.sln /p:Configuration=Release
+msbuild SqlCeScripting40.sln /t:Rebuild /p:Platform="x64" /p:Configuration=Release
 copy bin\Release\*.dll ..\..\..\
 copy bin\x86\Release\*.dll ..\..\..\
 copy bin\x64\Release\*.dll ..\..\..\

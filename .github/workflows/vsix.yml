@@ -64,13 +64,13 @@ jobs:
         mkdir vsix
         7z x src/GUI/SqlCe35Toolbox/bin/x64/Release/SqlCeVsToolbox.vsix -ovsix -y
         dir /a:-d /s /b "vsix" | find /c ":\" > filecount.txt
-        findstr "42" filecount.txt
+        findstr "40" filecount.txt
 
     - name: Move build output
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |
         mv src/GUI/SqlCe35Toolbox/bin/x64/Release/SqlCeVsToolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix
-        mv src/GUI/SSMSToolbox/bin/Release/SSMSToolbox.vsix SqliteSSMSToolbox-${{ env.VERSION }}.vsix
+        mv src/GUI/SSMSToolbox/bin/x64/Release/SSMSToolbox.vsix SqliteSSMSToolbox-${{ env.VERSION }}.vsix
         mv src\GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe SqlCe40ToolBox-${{ env.VERSION }}.exe
         mv src\GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe SqlCe35ToolBox-${{ env.VERSION }}.exe
         mv src\API\bin\Release\Export2SqlCE.exe Export2SqlCE-${{ env.VERSION }}.exe
