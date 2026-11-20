@@ -55,7 +55,7 @@ jobs:
         msbuild API\Export2SqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
         msbuild API\ExportSqlCe.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
         msbuild API\ExportSqlCe40.sln /p:configuration=Release /p:Platform="Any CPU" /v:m
-        msbuild GUI\SqlCeToolbox.sln /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
+        msbuild GUI\SqlCeToolbox.sln /p:configuration=Release /p:Platform="x64" /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal /v:m
         msbuild GUI\SqlCe40ToolboxExe.sln /p:configuration=Release /p:Platform="x86" /v:m
 
     - name: Extract and verify vsix file count
@@ -69,7 +69,7 @@ jobs:
     - name: Move build output
       if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
       run: |
-        mv src/GUI/SqlCe35Toolbox/bin/Release/SqlCeVsToolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix
+        mv src/GUI/SqlCe35Toolbox/bin/x64/Release/SqlCeVsToolbox.vsix SqliteToolbox-${{ env.VERSION }}.vsix
         mv src/GUI/SSMSToolbox/bin/Release/SSMSToolbox.vsix SqliteSSMSToolbox-${{ env.VERSION }}.vsix
         mv src\GUI\SqlCe40ToolboxExe\bin\Release40\SqlCe40ToolBox.exe SqlCe40ToolBox-${{ env.VERSION }}.exe
         mv src\GUI\SqlCe40ToolboxExe\bin\Release\SqlCe35ToolBox.exe SqlCe35ToolBox-${{ env.VERSION }}.exe
