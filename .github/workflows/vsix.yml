@@ -62,7 +62,7 @@ jobs:
       shell: cmd
       run: |
         mkdir vsix
-        7z x src/GUI/SqlCe35Toolbox/bin/Release/SqlCeVsToolbox.vsix -ovsix -y
+        7z x src/GUI/SqlCe35Toolbox/bin/x64/Release/SqlCeVsToolbox.vsix -ovsix -y
         dir /a:-d /s /b "vsix" | find /c ":\" > filecount.txt
         findstr "42" filecount.txt
 
